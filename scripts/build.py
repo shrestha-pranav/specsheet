@@ -62,6 +62,15 @@ def main():
     shutil.copy(ROOT / "schema.json", API / "gan-chargers" / "schema.json")
     dump(API / "lookup" / "models.json", lookup)
     (OUT / ".nojekyll").write_text("")
+    # guard: a JS syntax error silently empties the page (shipped once, 2026-11-22)
+    import subprocess, tempfile
+    html = (OUT / "index.html").read_text()
+    js = html.split("<script>", 1)[1].split("</script>", 1)[0]
+    with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False) as t:
+        t.write(js)
+    r = subprocess.run(["node", "--check", t.name], capture_output=True, text=True)
+    if r.returncode:
+        raise SystemExit(f"index.html script has a syntax error:\n{r.stderr}")
     print(f"built {len(recs)} products into {OUT}")
 
 

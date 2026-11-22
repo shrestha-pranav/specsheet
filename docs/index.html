@@ -57,7 +57,7 @@ const $ = id => document.getElementById(id);
 let rows = [], sortK = "brand", sortDir = 1, open = null;
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const tri = v => v === true ? '<span class="yes">yes</span>' : v === false ? '<span class="no">no</span>' : '<span class="unk">?</span>';
-const single = r => r.max_single_port_w ?? Math.max(0, ...(r.ports || []).map(p => p.max_w || 0)) || null;
+const single = r => r.max_single_port_w ?? (Math.max(0, ...(r.ports || []).map(p => p.max_w || 0)) || null);
 const val = (r, k) => ({model: (r.model_numbers || []).join(" "), single: single(r), nports: (r.ports || []).length,
                         pps: r.pps === true ? 2 : r.pps === null || r.pps === undefined ? 1 : 0}[k] ?? r[k]);
 
