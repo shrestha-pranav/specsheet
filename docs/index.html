@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>specsheet: USB-C GaN chargers</title>
+<style>
+  :root { color-scheme: light dark; --b: #8884; --mut: #888; }
+  body { font: 14px/1.4 system-ui, sans-serif; margin: 1rem 1.5rem; }
+  h1 { font-size: 1.3rem; margin: 0 0 .2rem; }
+  .sub { color: var(--mut); margin-bottom: 1rem; }
+  .filters { display: flex; flex-wrap: wrap; gap: .6rem 1.2rem; align-items: center; margin-bottom: .8rem; }
+  .filters label { white-space: nowrap; }
+  input[type=number] { width: 4.5rem; }
+  input[type=search] { width: 16rem; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border-bottom: 1px solid var(--b); padding: .35rem .5rem; text-align: left; vertical-align: top; }
+  th { cursor: pointer; position: sticky; top: 0; background: Canvas; user-select: none; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .yes { color: #2a7; font-weight: 600; } .no { color: #c44; } .unk { color: var(--mut); }
+  tr.detail td { background: #8881; font-size: 13px; }
+  tr.row { cursor: pointer; }
+  .src a { margin-right: .6rem; }
+  code { font-size: 12px; }
+</style>
+</head>
+<body>
+<h1>specsheet: USB-C GaN wall chargers</h1>
+<div class="sub">Cross-brand specs with sources. Prototype: data collected by agents from official pages,
+ChargerLAB and retailers. <b>Unreviewed prototype data: unknown ≠ no, and model crosswalks are unverified.</b> Click a row for sources and notes.
+Static dataset (JSON): <a href="api/v1/categories.json">api/v1/</a> ·
+<a href="https://github.com/shrestha-pranav/specsheet/issues/new?title=Correction:%20">suggest a correction</a></div>
+
+<div class="filters">
+  <input type="search" id="q" placeholder="search name / model…">
+  <label>Brand <select id="brand"><option value="">all</option></select></label>
+  <label>Single-port ≥ <input type="number" id="minw" min="0" step="5"> W</label>
+  <label>Ports ≥ <input type="number" id="minports" min="1" max="8"></label>
+  <label>Price ≤ $<input type="number" id="maxp" min="0" step="5"></label>
+  <label><input type="checkbox" id="pps"> PPS confirmed</label>
+  <label><input type="checkbox" id="cur"> current only</label>
+  <span id="count" class="sub"></span>
+</div>
+
+<table>
+  <thead><tr>
+    <th data-k="brand">Brand</th><th data-k="product_name">Product</th><th data-k="model">Model(s)</th>
+    <th data-k="max_total_w">Total W</th><th data-k="single">Max 1-port W</th><th data-k="nports">Ports</th>
+    <th data-k="pps">PPS</th><th data-k="pps_ranges">PPS ranges</th><th data-k="typical_price_usd">Price</th>
+    <th data-k="status">Status</th><th data-k="confidence">Conf.</th>
+  </tr></thead>
+  <tbody id="tb"></tbody>
+</table>
+
+<script>
+const $ = id => document.getElementById(id);
+let rows = [], sortK = "brand", sortDir = 1, open = null;
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const tri = v => v === true ? '<span class="yes">yes</span>' : v === false ? '<span class="no">no</span>' : '<span class="unk">?</span>';
+const single = r => r.max_single_port_w ?? Math.max(0, ...(r.ports || []).map(p => p.max_w || 0)) || null;
+const val = (r, k) => ({model: (r.model_numbers || []).join(" "), single: single(r), nports: (r.ports || []).length,
+                        pps: r.pps === true ? 2 : r.pps === null || r.pps === undefined ? 1 : 0}[k] ?? r[k]);
+
+fetch("api/v1/gan-chargers/products.json").then(r => r.json()).then(d => {
+  rows = d;
+  [...new Set(d.map(r => r.brand))].sort().forEach(b => $("brand").insertAdjacentHTML("beforeend", `<option>${esc(b)}</option>`));
+  const p = new URLSearchParams(location.hash.slice(1));
+  for (const [k, v] of p) if ($(k)) $(k).type === "checkbox" ? $(k).checked = v === "1" : $(k).value = v;
+  render();
+});
+
+function render() {
+  const q = $("q").value.toLowerCase(), b = $("brand").value, minw = +$("minw").value || 0,
+        minp = +$("minports").value || 0, maxp = +$("maxp").value || Infinity;
+  const f = rows.filter(r =>
+    (!q || [r.product_name, r.series, ...(r.model_numbers || [])].join(" ").toLowerCase().includes(q)) &&
+    (!b || r.brand === b) && (single(r) || 0) >= minw && (r.ports || []).length >= minp &&
+    (maxp === Infinity || (r.typical_price_usd ?? r.msrp_usd ?? Infinity) <= maxp) &&
+    (!$("pps").checked || r.pps === true) && (!$("cur").checked || r.status === "current"));
+  f.sort((a, c) => { const x = val(a, sortK), y = val(c, sortK);
+    return (x == null) - (y == null) || (x > y ? 1 : x < y ? -1 : 0) * sortDir; });
+  $("count").textContent = `${f.length} of ${rows.length}`;
+  const price = r => r.typical_price_usd ?? (r.msrp_usd != null ? r.msrp_usd + " (MSRP)" : null);
+  $("tb").innerHTML = f.map(r => `<tr class="row" data-id="${esc(r.id)}">
+    <td>${esc(r.brand)}</td><td>${esc(r.product_name)}</td><td><code>${esc((r.model_numbers || []).join(", "))}</code></td>
+    <td class="num">${esc(r.max_total_w)}</td><td class="num">${esc(single(r))}</td><td class="num">${(r.ports || []).length || ""}</td>
+    <td>${tri(r.pps)}</td><td>${esc(r.pps_ranges ?? "")}</td><td class="num">${price(r) != null ? "$" + esc(price(r)) : ""}</td>
+    <td>${esc(r.status)}</td><td>${esc(r.confidence)}</td></tr>` +
+    (open === r.id ? `<tr class="detail"><td colspan="11">
+      <b>Ports:</b> ${(r.ports || []).map(p => `${esc(p.name)} ${esc(p.type)} ${esc(p.max_w ?? "?")}W`).join(" · ")}<br>
+      <b>Port sharing:</b> ${esc(r.port_sharing ?? "?")}<br>
+      <b>Fixed PDOs:</b> ${esc(r.pd_fixed_pdos ?? "?")} · <b>PD</b> ${esc(r.usb_pd_version ?? "?")} · <b>EPR/AVS</b> ${tri(r.epr_avs)}
+      · <b>Other:</b> ${esc((r.other_protocols || []).join(", ") || "?")}<br>
+      <b>Foldable</b> ${tri(r.foldable_plug)} · <b>Weight</b> ${esc(r.weight_g ?? "?")} g · <b>Certs</b> ${esc((r.safety_certs || []).join(", ") || "?")}<br>
+      ${r.notes ? `<b>Notes:</b> ${esc(r.notes)}<br>` : ""}
+      <span class="src"><b>Sources:</b> ${(r.sources || []).map((s, i) => `<a href="${esc(s)}" rel="noopener nofollow" target="_blank">[${i}]</a>`).join("")}</span>
+      · <a href="api/v1/gan-chargers/products/${esc(r.id)}.json">JSON</a></td></tr>` : "")).join("");
+  const p = new URLSearchParams();
+  ["q","brand","minw","minports","maxp"].forEach(k => $(k).value && p.set(k, $(k).value));
+  ["pps","cur"].forEach(k => $(k).checked && p.set(k, "1"));
+  history.replaceState(null, "", "#" + p);
+}
+document.querySelectorAll(".filters input, .filters select").forEach(e => e.addEventListener("input", render));
+document.querySelectorAll("th").forEach(th => th.onclick = () => {
+  sortDir = sortK === th.dataset.k ? -sortDir : 1; sortK = th.dataset.k; render(); });
+$("tb").onclick = e => { const tr = e.target.closest("tr.row"); if (!tr || e.target.closest("a")) return;
+  open = open === tr.dataset.id ? null : tr.dataset.id; render(); };
+</script>
+</body>
+</html>

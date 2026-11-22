@@ -1,0 +1,63 @@
+{
+ "brand": "Anker",
+ "product_name": "Anker 736 Charger (Nano II 100W)",
+ "model_numbers": [
+  "A2145"
+ ],
+ "series": "Nano II",
+ "release_year": 2022,
+ "status": "discontinued",
+ "max_total_w": 100,
+ "max_single_port_w": 100,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": 22.5
+  }
+ ],
+ "port_sharing": "C1+C2: 60+40; C1/C2+A: 80+18 or 60+22.5; C1+C2+A: 45+30+18 (93W)",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": "5V3A 9V3A 15V3A 20V5A",
+ "pps": true,
+ "pps_ranges": "single port: 3.3-16V 5A (80W); dual-port C1: 3.3-16V 3.75A (60W); C2: 3.3-16V 2.5A (40W)",
+ "pps_max_w": 80,
+ "epr_avs": null,
+ "other_protocols": [
+  "PowerIQ 3.0"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": "no",
+ "msrp_usd": null,
+ "typical_price_usd": null,
+ "official_url": "https://service.anker.com/product-description/a085g000004zeErAAI/736-charger-nano-ii-100w",
+ "sources": [
+  "https://service.anker.com/product-description/a085g000004zeErAAI/736-charger-nano-ii-100w",
+  "https://www.chargerlab.com/teardown-of-anker-100w-usb-c-charger-736-charger-nano-ii-100w"
+ ],
+ "field_sources": {
+  "port_sharing": 0,
+  "pd_fixed_pdos": 0,
+  "pps_ranges": 0,
+  "model_numbers": 0
+ },
+ "confidence": "high",
+ "notes": "Status inferred (absent from Anker US store; superseded by A2688/A121B). ChargerLAB teardown lists Navitas NV6136A GaN + SW3516H protocol chip but no PDO/PPS data. A2674 sometimes cited elsewhere - not confirmed.",
+ "id": "anker-a2145"
+}

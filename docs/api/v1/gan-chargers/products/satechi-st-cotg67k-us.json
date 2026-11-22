@@ -1,0 +1,63 @@
+{
+ "brand": "Satechi",
+ "product_name": "OntheGo 67W Slim Wall Charger",
+ "model_numbers": [
+  "ST-COTG67K-US",
+  "ST-COTG67W-US",
+  "ST-COTG67R-US"
+ ],
+ "series": "OntheGo",
+ "release_year": 2025,
+ "status": "current",
+ "max_total_w": 67,
+ "max_single_port_w": 67,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 67
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 67
+  }
+ ],
+ "port_sharing": "One device: 67W on either port; two devices: 45W + 20W",
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": null,
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 96.4,
+ "dimensions_mm": "81.3 x 52.1 x 17.3",
+ "safety_certs": [],
+ "cable_included": "No",
+ "msrp_usd": 59.99,
+ "typical_price_usd": 41.99,
+ "official_url": "https://satechi.com/products/onthego-67w-slim-wall-charger",
+ "sources": [
+  "https://satechi.com/products/onthego-67w-slim-wall-charger",
+  "https://www.amazon.com/Satechi-OntheGo-Charger-Travel-MacBook/dp/B0FG9TRBL6",
+  "https://www.cultofmac.com/reviews/satechi-onthego-67w-slim-wall-charger-review"
+ ],
+ "field_sources": {
+  "port_sharing": 0,
+  "pps": 0,
+  "usb_pd_version": 1,
+  "gan": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "typical_price_usd": 0,
+  "msrp_usd": 0
+ },
+ "confidence": "medium",
+ "notes": "PPS claimed by Satechi (page FAQ + Amazon '(PD 3.0+PPS)'); no exact V/A ranges and no independent PDO test found. Cult of Mac measured throttling from 66W to 43W after ~10 min. Sale price $41.99 (regular $59.99). Dimensions in page FAQ: 8.1x5.2x1.7 cm.",
+ "id": "satechi-st-cotg67k-us"
+}

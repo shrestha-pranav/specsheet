@@ -1,0 +1,53 @@
+{
+ "brand": "Baseus",
+ "product_name": "Baseus GaN2 USB-C Fast Charger 100W",
+ "model_numbers": [
+  "TZCCGAN-Z01"
+ ],
+ "series": "GaN2",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 100,
+ "max_single_port_w": 100,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 100
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "QC5.0"
+ ],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": 249,
+ "dimensions_mm": "93x37x112 (3.66x1.45x4.4 in)",
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": null,
+ "typical_price_usd": 79.99,
+ "official_url": "https://www.baseus.com/products/gan2-usb-c-fast-charger-100w",
+ "sources": [
+  "https://www.baseus.com/products/gan2-usb-c-fast-charger-100w"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "ports": 0,
+  "typical_price_usd": 0,
+  "other_protocols": 0,
+  "weight_g": 0
+ },
+ "confidence": "low",
+ "notes": "Spec says 96W wattage and outputs 5V/12V 3A, 9V/15V/20V 5A. PPS not stated. Looks like an older single-port 100W; price list $79.99.",
+ "id": "baseus-tzccgan-z01"
+}

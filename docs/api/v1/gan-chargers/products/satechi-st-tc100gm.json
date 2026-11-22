@@ -1,0 +1,65 @@
+{
+ "brand": "Satechi",
+ "product_name": "100W USB-C PD Compact GaN Charger (2x USB-C + USB-A)",
+ "model_numbers": [
+  "ST-TC100GM",
+  "ST-TC100GM-EU",
+  "ST-TC100GM-UK",
+  "ST-TC100GM-AU"
+ ],
+ "series": null,
+ "release_year": 2020,
+ "status": "current",
+ "max_total_w": 100,
+ "max_single_port_w": 100,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 60
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": 12
+  }
+ ],
+ "port_sharing": "1xC: 100W; 2xC: 60W/30W; C+A: 100W/12W; 2xC+A: 60W/30W/12W",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": false,
+ "plug_region": null,
+ "display": false,
+ "weight_g": 317,
+ "dimensions_mm": "95.3 x 63.5 x 31.8",
+ "safety_certs": [],
+ "cable_included": "2-pin AC power connector (detachable); no USB-C cable",
+ "msrp_usd": 79.99,
+ "typical_price_usd": 55.99,
+ "official_url": "https://satechi.com/products/100w-usb-c-pd-compact-charger",
+ "sources": [
+  "https://satechi.com/products/100w-usb-c-pd-compact-charger"
+ ],
+ "field_sources": {
+  "port_sharing": 0,
+  "typical_price_usd": 0,
+  "msrp_usd": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "gan": 0
+ },
+ "confidence": "medium",
+ "notes": "Desktop-style charger with detachable 2-pin power connector. Page 'Regular price $59.99 / $79.99' vs sale $55.99 (json). PPS not documented; pps null. ChargerLAB has a teardown of this model (not fetched).",
+ "id": "satechi-st-tc100gm"
+}

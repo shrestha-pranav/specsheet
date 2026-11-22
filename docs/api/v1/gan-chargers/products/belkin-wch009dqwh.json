@@ -1,0 +1,52 @@
+{
+ "brand": "Belkin",
+ "product_name": "BoostCharge 20W USB-C PD GaN Wall Charger",
+ "model_numbers": [
+  "WCH009dqWH",
+  "WCH009dq1MWHB6 (with cable)"
+ ],
+ "series": "BoostCharge",
+ "release_year": null,
+ "status": "unknown",
+ "max_total_w": 20,
+ "max_single_port_w": 20,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 20
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": false,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": null,
+ "display": false,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": 19.99,
+ "typical_price_usd": null,
+ "official_url": null,
+ "sources": [
+  "https://www.belkin.com/support-article/?articleNum=335922",
+  "https://www.belkin.com/support-article/?articleNum=317785"
+ ],
+ "field_sources": {
+  "pps": 0,
+  "gan": 0,
+  "msrp_usd": 0,
+  "max_total_w": 0
+ },
+ "confidence": "low",
+ "notes": "20W: below the 30W floor of requested scope; included for completeness. Belkin chart max-output row says 30W but per-port figures top at 20W; Belkin US page text says '18 or 20 W'; FAQ claims 3-yr warranty vs 2-yr elsewhere.",
+ "id": "belkin-wch009dqwh"
+}

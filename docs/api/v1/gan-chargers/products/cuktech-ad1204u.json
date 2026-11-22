@@ -1,0 +1,85 @@
+{
+ "brand": "CUKTECH",
+ "product_name": "CUKTECH 10 Ultra 100W Charger (4-port, smart display)",
+ "model_numbers": [
+  "AD1204U"
+ ],
+ "series": "No.10 Ultra",
+ "release_year": 2025,
+ "status": "current",
+ "max_total_w": 110,
+ "max_single_port_w": 100,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C3",
+   "type": "USB-C",
+   "max_w": 44
+  },
+  {
+   "name": "A",
+   "type": "USB-A",
+   "max_w": 33
+  }
+ ],
+ "port_sharing": "Multi-port total up to 110W on 100-130V input (120W on 200-240V); adaptive dynamic split, table not published",
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V5A; C3: 5V3A 9V3A 12V2.5A 15V2A",
+ "pps": true,
+ "pps_ranges": "C1/C2: 5-11V 5A and 5-20V 5A; C3: 5-11V 3A",
+ "pps_max_w": 100,
+ "epr_avs": null,
+ "other_protocols": [
+  "UFCS",
+  "QC5 (C1/C2)",
+  "QC2.0/4+",
+  "FCP",
+  "SCP",
+  "AFC",
+  "Xiaomi 120W proprietary",
+  "Apple 2.4A",
+  "DCP"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": true,
+ "weight_g": 234,
+ "dimensions_mm": "66.89x75.59x33.13",
+ "safety_certs": [],
+ "cable_included": "240W 6A USB-C cable",
+ "msrp_usd": null,
+ "typical_price_usd": 56.99,
+ "official_url": "https://cuktech.com/products/cuktech-10-ultra-power-charger",
+ "sources": [
+  "https://www.chargerlab.com/teardown-of-cuktech-10-gan-charger-ultra-ad1204u",
+  "https://cuktech.com/products/cuktech-10-ultra-power-charger",
+  "https://www.notebookcheck.net/Cuktech-unveils-new-100-W-wall-laptop-GaN-charger-with-built-in-display.1260377.0.html"
+ ],
+ "field_sources": {
+  "model_numbers": 0,
+  "max_total_w": 0,
+  "ports": 0,
+  "pd_fixed_pdos": 0,
+  "pps": 0,
+  "pps_ranges": 0,
+  "other_protocols": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "port_sharing": 0,
+  "typical_price_usd": 2,
+  "display": 1
+ },
+ "confidence": "high",
+ "notes": "Marketing says 100W; ChargerLAB/Neowin measure 110W total on US-voltage input. C3/A reviews say 45W/18W vs ChargerLAB 44W/33W. HUSB362 supports PD3.1 EPR but no EPR PDOs observed. Price $56.99 (Notebookcheck/GSMGoTech) vs $59 (9to5Mac). US model suffix unconfirmed.",
+ "id": "cuktech-ad1204u"
+}

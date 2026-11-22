@@ -1,0 +1,52 @@
+{
+ "brand": "CUKTECH",
+ "product_name": "CUKTECH GaN3 Charger 30W (US: 2-pack)",
+ "model_numbers": [
+  "AD301N"
+ ],
+ "series": "GaN3",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 30,
+ "max_single_port_w": 30,
+ "ports": [
+  {
+   "name": "C",
+   "type": "USB-C",
+   "max_w": 30
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": "5V3A 9V3A 12V2.5A 15V2A 20V1.5A",
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": null,
+ "dimensions_mm": "31x31x38 (1.22x1.22x1.50 in, excl. prongs)",
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": null,
+ "typical_price_usd": null,
+ "official_url": "https://cuktech.com/products/a03-cuktech-30w-gan3-charger",
+ "sources": [
+  "https://cuktech.com/products/a03-cuktech-30w-gan3-charger",
+  "https://www.amazon.com/CUKTECH-Charger-Charging-Compact-Foldable/dp/B0DQKG4HDT"
+ ],
+ "field_sources": {
+  "model_numbers": 0,
+  "pd_fixed_pdos": 0,
+  "pps": 0,
+  "dimensions_mm": 0,
+  "max_total_w": 0
+ },
+ "confidence": "medium",
+ "notes": "PPS claimed on official page ('PD3.0 PPS protocol') but no PPS ranges published. Price not captured (cuktech.com shows placeholder $999; Amazon blocked).",
+ "id": "cuktech-ad301n"
+}

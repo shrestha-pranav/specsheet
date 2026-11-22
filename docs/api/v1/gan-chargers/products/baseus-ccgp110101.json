@@ -1,0 +1,72 @@
+{
+ "brand": "Baseus",
+ "product_name": "Baseus GaN5 4 Ports Charging Station 67W (2C+1A+HDMI)",
+ "model_numbers": [
+  "CCGP110101"
+ ],
+ "series": "GaN5",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 67,
+ "max_single_port_w": 45,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 20
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 45
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": null
+  }
+ ],
+ "port_sharing": "C1+C2: 20W+45W; C1 20W profile 5V3A 9V2.22A 12V1.67A; C2 45W profile up to 20V2.25A",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "QC4+",
+  "QC3.0",
+  "QC2.0",
+  "SCP",
+  "FCP",
+  "AFC",
+  "PE+",
+  "HDMI 4K30 output"
+ ],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": 431,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": null,
+ "typical_price_usd": 59.99,
+ "official_url": "https://www.baseus.com/products/gan5-4-ports-charging-sation-67w",
+ "sources": [
+  "https://www.baseus.com/products/gan5-4-ports-charging-sation-67w"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "ports": 0,
+  "typical_price_usd": 0,
+  "port_sharing": 0,
+  "pps": 0,
+  "other_protocols": 0,
+  "weight_g": 0
+ },
+ "confidence": "low",
+ "notes": "Product type Power Strips on Baseus site; included as desktop station. PPS named in protocol list; no ranges. Spec table lists C1/C2 20V 3.35A which conflicts with 20W+45W split.",
+ "id": "baseus-ccgp110101"
+}

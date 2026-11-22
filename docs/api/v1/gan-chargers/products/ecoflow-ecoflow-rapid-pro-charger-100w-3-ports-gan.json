@@ -1,0 +1,66 @@
+{
+ "brand": "EcoFlow",
+ "product_name": "EcoFlow RAPID Pro Charger (100W, 3 Ports, GaN)",
+ "model_numbers": [],
+ "series": "RAPID Pro",
+ "release_year": 2025,
+ "status": "unknown",
+ "max_total_w": 100,
+ "max_single_port_w": 100,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "A",
+   "type": "USB-A",
+   "max_w": null
+  }
+ ],
+ "port_sharing": "Reported example: 70W USB-C + 22.5W USB-A (retailer, unverified)",
+ "usb_pd_version": "3.1",
+ "pd_fixed_pdos": null,
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "QC2.0",
+  "QC3.0",
+  "SCP",
+  "FCP",
+  "Apple 2.4A",
+  "BC1.2"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 185,
+ "dimensions_mm": "55.5x40.6x46.6",
+ "safety_certs": [],
+ "cable_included": "none",
+ "msrp_usd": null,
+ "typical_price_usd": null,
+ "official_url": "https://us.ecoflow.com/products/ecoflow-rapid-pro-charger-100w-3-ports-gan",
+ "sources": [
+  "https://us.ecoflow.com/products/ecoflow-rapid-pro-charger-100w-3-ports-gan",
+  "https://powerstationinfo.com/ef-ecoflow-rapid-pro-charger-100w-review/"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "dimensions_mm": 0,
+  "pps": 0,
+  "other_protocols": 0
+ },
+ "confidence": "low",
+ "notes": "Only search-result summaries read; the US page was not fetched (429 rate limit) and the product is absent from the US store product feed on 2026-11-22. PPS from official/retailer protocol list, ranges unknown. Japan Amazon lists PDOs up to 28V5A on C1/C2, contradicting 100W rating - unresolved. Weight 185g from one retailer. No ChargerLAB test found.",
+ "id": "ecoflow-ecoflow-rapid-pro-charger-100w-3-ports-gan"
+}

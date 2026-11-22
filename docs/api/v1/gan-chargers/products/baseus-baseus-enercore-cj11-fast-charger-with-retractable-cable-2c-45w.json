@@ -1,0 +1,52 @@
+{
+ "brand": "Baseus",
+ "product_name": "Baseus EnerCore CJ11 Fast Charger with Retractable Cable 2C 45W",
+ "model_numbers": [],
+ "series": "EnerCore",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 45,
+ "max_single_port_w": 45,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 45
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 45
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": null,
+ "typical_price_usd": null,
+ "official_url": "https://www.baseus.com/products/enercore-cj11-fast-charger-with-retractable-cable-2c-45w",
+ "sources": [
+  "https://www.baseus.com/products/enercore-cj11-fast-charger-with-retractable-cable-2c-45w"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "ports": 0,
+  "typical_price_usd": 0
+ },
+ "confidence": "low",
+ "notes": "Retractable 32in USB-C cable. Price not captured (variant price not extracted). Per-port data absent. PPS not stated for this variant.",
+ "id": "baseus-baseus-enercore-cj11-fast-charger-with-retractable-cable-2c-45w"
+}

@@ -1,0 +1,1899 @@
+[
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode Air Slim Charger (100W, 3-Port, Foldable Plug)",
+  "model_numbers": [
+   "75554",
+   "75554B (Best Buy)"
+  ],
+  "series": "Nexode Air",
+  "release_year": 2026,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": 100,
+  "ports": [
+   {
+    "name": "C1",
+    "type": 100,
+    "max_w": null
+   },
+   {
+    "name": "C2",
+    "type": 100,
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": 22.5,
+    "max_w": null
+   }
+  ],
+  "port_sharing": "2 devices: C+C 65+30 or 80+18 (varies by source); 3 ports: one USB-C 80W, other USB-C + USB-A share 15W; one review saw 60+40 on C+C",
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "QC4",
+   "SCP"
+  ],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 74.99,
+  "typical_price_usd": 74.99,
+  "official_url": "https://us.ugreen.com/products/nexode-air-slim-charger-100w-3-port-foldable-plug",
+  "sources": [
+   "https://us.ugreen.com/products/nexode-air-slim-charger-100w-3-port-foldable-plug",
+   "https://us.ugreen.com/collections/charger",
+   "https://www.gizmochina.com/2026/09/13/ugreen-nexode-air-slim-100w-uk-launch-price/",
+   "https://www.notebookcheck.net/Ugreen-brings-new-ultra-slim-100W-charger-to-the-US-with-vastly-different-pricing.1353408.0.html"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1,
+   "ports": 2,
+   "port_sharing": 2,
+   "pps": 2,
+   "release_year": 2
+  },
+  "confidence": "medium",
+  "notes": "PPS true inferred from Japanese Amazon title (PD3.0/PPS/QC4/SCP) and a reviewer measuring 37.3W PPS on OPPO Find N6; exact PPS ranges not found. UK variant 92x56.3x18.24mm 196g incl. UK plug; China variant 90.2x55.6x18.2mm; no US weight found. Split figures vary between sources. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode Air Slim Charger (65W, 3-Port, Foldable Plug)",
+  "model_numbers": [
+   "95861"
+  ],
+  "series": "Nexode Air",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": null,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 49.99,
+  "typical_price_usd": 49.99,
+  "official_url": "https://us.ugreen.com/products/nexode-air-slim-charger-65w-3-port-foldable-plug",
+  "sources": [
+   "https://us.ugreen.com/products/nexode-air-slim-charger-65w-3-port-foldable-plug",
+   "https://us.ugreen.com/collections/charger"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1
+  },
+  "confidence": "low",
+  "notes": "Port types/split/PPS not found; UAE site lists the same product as ae-95960. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode Pro 160W Charger with Retractable USB-C Cable",
+  "model_numbers": [
+   "95127"
+  ],
+  "series": "Nexode Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 160,
+  "max_single_port_w": 140,
+  "ports": [],
+  "port_sharing": "Two ports can reach 140W when used alone; total shared at 160W (Gadgeteer, no table)",
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 149.99,
+  "typical_price_usd": 149.99,
+  "official_url": "https://us.ugreen.com/products/ugreen-160w-retractable-charger",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-160w-retractable-charger",
+   "https://us.ugreen.com/collections/charger",
+   "https://the-gadgeteer.com/2026/11/21/ugreen-nexode-pro-160w-retractable-cable-deal/"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1,
+   "port_sharing": 2,
+   "max_single_port_w": 2
+  },
+  "confidence": "low",
+  "notes": "Gadgeteer lists it at deal pricing; ports list and PPS not verified. Current US page shows sale ~$99.98 vs $149.99 list. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode Pro 300W 8-Port GaN Desktop Charger",
+  "model_numbers": [
+   "75752",
+   "X873"
+  ],
+  "series": "Nexode Pro (desktop charging station)",
+  "release_year": 2026,
+  "status": "current",
+  "max_total_w": 300,
+  "max_single_port_w": 140,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": true,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 199.99,
+  "typical_price_usd": 199.99,
+  "official_url": "https://us.ugreen.com/products/ugreen-nexode-300w-charger",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-nexode-300w-charger",
+   "https://us.ugreen.com/collections/charger",
+   "https://dongknows.com/ugreen-nexode-pro-300w-desktop-charger-x873-review/",
+   "https://www.notebookcheck.net/Powerful-fast-charging-hub-with-DC-port-Ugreen-Nexode-Pro-300W-Desktop-Charger-review.1370087.0.html",
+   "https://www.geekextreme.com/ugreen-nexode-pro-300w-review/"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1,
+   "release_year": 2,
+   "display": 2,
+   "max_single_port_w": 4
+  },
+  "confidence": "low",
+  "notes": "Desktop station. Port count conflict: US title says 8-port, image filename says 5-port, reviews say 5 or 6 USB-C + 1 USB-A + a 240W DC output; one port 140W. Launch July 30 2026 at $199.99 per search summary. PPS not confirmed; do not confuse with older CD333 300W 5-in-1 (55474). Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode Pro 160W 5-Port USB-C Charger",
+  "model_numbers": [
+   "65636",
+   "X774"
+  ],
+  "series": "Nexode Pro",
+  "release_year": 2025,
+  "status": "current",
+  "max_total_w": 160,
+  "max_single_port_w": 140,
+  "ports": [
+   {
+    "name": "C1",
+    "type": 140,
+    "max_w": null
+   },
+   {
+    "name": "C2",
+    "type": 140,
+    "max_w": null
+   },
+   {
+    "name": "C3",
+    "type": 30,
+    "max_w": null
+   },
+   {
+    "name": "C4",
+    "type": 30,
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": 22.5,
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": "3.1",
+  "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V5A 28V5A; C3/C4: 5V3A 9V3A 12V2.5A",
+  "pps": true,
+  "pps_ranges": "C1/C2: 5-21V 5A; C3/C4: 5-11V 2.75A",
+  "pps_max_w": 105,
+  "epr_avs": true,
+  "other_protocols": [
+   "QC5",
+   "UFCS",
+   "SCP",
+   "AFC",
+   "FCP"
+  ],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": true,
+  "weight_g": 360,
+  "dimensions_mm": "75.9 x 75.7 x 35.8",
+  "safety_certs": [],
+  "cable_included": "USB-C to USB-C ~154cm",
+  "msrp_usd": 89.99,
+  "typical_price_usd": 89.99,
+  "official_url": "https://us.ugreen.com/products/ugreen-nexode-pro-160w-usb-c-charger",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-nexode-pro-160w-usb-c-charger",
+   "https://us.ugreen.com/collections/charger",
+   "https://www.chargerlab.com/teardown-of-ugreen-nexode-160w-5-port-gan-charger-x774",
+   "https://the-gadgeteer.com/2026/06/09/ugreen-nexode-pro-160w-x774/"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1,
+   "ports": 2,
+   "max_single_port_w": 2,
+   "pd_fixed_pdos": 2,
+   "pps": 2,
+   "pps_ranges": 2,
+   "epr_avs": 2,
+   "weight_g": 2,
+   "dimensions_mm": 2,
+   "cable_included": 2,
+   "display": 3,
+   "release_year": 2,
+   "other_protocols": 3,
+   "usb_pd_version": 3
+  },
+  "confidence": "high",
+  "notes": "Mapping of ChargerLAB X774 to US item 65636 inferred from name/port count (4C+1A, 160W). ChargerLAB lists AVS as '15-285A' (typo, likely 15-28V 5A) so epr_avs=true is from the 28V5A PDO. pps_max_w = 21V x 5A = 105W. No port-sharing table published by ChargerLAB. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode Pro 100W 4-Port GaN Charger with Smart Display",
+  "model_numbers": [
+   "95405"
+  ],
+  "series": "Nexode Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": null,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": true,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 64.99,
+  "typical_price_usd": 64.99,
+  "official_url": "https://us.ugreen.com/products/ugreen-100w-4-port-gan-charger",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-100w-4-port-gan-charger",
+   "https://us.ugreen.com/collections/charger"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1
+  },
+  "confidence": "low",
+  "notes": "Port types/split/PPS not found. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN x Honkai: Star Rail 65W Charger",
+  "model_numbers": [
+   "95169HSR",
+   "95169 (base Air 65W)"
+  ],
+  "series": "Nexode Air (collab edition)",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": null,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 36.99,
+  "typical_price_usd": 27.54,
+  "official_url": "https://us.ugreen.com/products/ugreen-honkai-star-rail-usb-c-charger-65w-gan-foldable-plug",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-honkai-star-rail-usb-c-charger-65w-gan-foldable-plug",
+   "https://us.ugreen.com/collections/charger"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1
+  },
+  "confidence": "low",
+  "notes": "Collab skin of Nexode Air 65W (base item 95169 per PH site); spec presumed same as Air 65W (single USB-C) but not verified. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode Air USB-C Charger (65W, GaN, Foldable Plug)",
+  "model_numbers": [
+   "35478",
+   "75813",
+   "X860 (ChargerLAB/Cubed3 name)"
+  ],
+  "series": "Nexode Air",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": 65,
+  "ports": [
+   {
+    "name": "C1",
+    "type": 65,
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": "3.2",
+  "pd_fixed_pdos": null,
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "QC",
+   "AFC",
+   "FCP"
+  ],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 39.99,
+  "typical_price_usd": 39.99,
+  "official_url": "https://us.ugreen.com/products/nexode-air-usb-c-charger-65w-gan-foldable-plug",
+  "sources": [
+   "https://us.ugreen.com/products/nexode-air-usb-c-charger-65w-gan-foldable-plug",
+   "https://us.ugreen.com/collections/charger",
+   "https://www.notebookcheck.net/Compact-powerful-and-efficient-Ugreen-Nexode-Air-65W-USB-C-GaN-charger-review.1343228.0.html",
+   "https://www.cubed3.com/tech/reviews/accessories/ugreen-65w-usb-c-gan-fast-charger-set-x860"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1,
+   "ports": 3,
+   "pps": 2,
+   "usb_pd_version": 2,
+   "other_protocols": 2,
+   "foldable_plug": 0
+  },
+  "confidence": "low",
+  "notes": "Item numbers 35478 (collection) and 75813 (older Shopify handle) both seen for the 65W Air; X860 mapping unverified. Notebookcheck says PD3.2 with AVS and PPS; AVS present suggests PD3.2 but ranges not found. Sale price at 24.99 on the pages fetched vs 39.99 in JSON feed (promo). Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode Air USB-C Charger (45W, GaN, Foldable Plug)",
+  "model_numbers": [
+   "95536",
+   "X840"
+  ],
+  "series": "Nexode Air",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 45,
+  "max_single_port_w": 45,
+  "ports": [
+   {
+    "name": "C1",
+    "type": 45,
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": "3.2",
+  "pd_fixed_pdos": "5V3A 9V3A 12V3A 15V3A 20V2.25A",
+  "pps": true,
+  "pps_ranges": "5-11V 4.5A",
+  "pps_max_w": 49.5,
+  "epr_avs": false,
+  "other_protocols": [
+   "QC3.0/4+",
+   "FCP",
+   "SCP",
+   "AFC",
+   "Apple 2.4A"
+  ],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 49,
+  "dimensions_mm": "36.12 x 30.39 x 30.41",
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 24.99,
+  "typical_price_usd": 15.19,
+  "official_url": "https://us.ugreen.com/products/nexode-air-usb-c-charger-45w-gan-foldable-plug",
+  "sources": [
+   "https://us.ugreen.com/products/nexode-air-usb-c-charger-45w-gan-foldable-plug",
+   "https://us.ugreen.com/collections/charger",
+   "https://www.chargerlab.com/teardown-of-ugreen-nexode-air-45w-gan-charger-x840"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1,
+   "ports": 2,
+   "pd_fixed_pdos": 2,
+   "pps": 2,
+   "pps_ranges": 2,
+   "usb_pd_version": 2,
+   "other_protocols": 2,
+   "weight_g": 2,
+   "dimensions_mm": 2,
+   "epr_avs": 2
+  },
+  "confidence": "high",
+  "notes": "epr_avs set false: ChargerLAB lists AVS 9-20V only (PD3.2 SPR AVS, not 28V EPR). pps_max_w = 11V x 4.5A = 49.5W exceeds the 45W rating; actual cap is 45W. X840->95536 mapping from eBay/regional page code; Notebookcheck said UGREEN does not document protocols. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode 500W 6-Port Desktop Charger",
+  "model_numbers": [
+   "55549",
+   "55551 (SG)",
+   "0224"
+  ],
+  "series": "Nexode (desktop charging station)",
+  "release_year": 2025,
+  "status": "current",
+  "max_total_w": 500,
+  "max_single_port_w": 240,
+  "ports": [
+   {
+    "name": "C1",
+    "type": 240,
+    "max_w": null
+   },
+   {
+    "name": "C2",
+    "type": null,
+    "max_w": null
+   },
+   {
+    "name": "C3",
+    "type": null,
+    "max_w": null
+   },
+   {
+    "name": "C4",
+    "type": null,
+    "max_w": null
+   },
+   {
+    "name": "C5",
+    "type": null,
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": null,
+    "max_w": null
+   }
+  ],
+  "port_sharing": "C1 up to 240W PD3.1 (48V5A); C2-C5 100W each alone, dropping to 60W each when 4+ ports used (Macworld); UGREEN SG/EU pages say 60W for C2-C5",
+  "usb_pd_version": "3.1",
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": true,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 2200,
+  "dimensions_mm": "146 x 115 x 61",
+  "safety_certs": [],
+  "cable_included": "none",
+  "msrp_usd": 249.99,
+  "typical_price_usd": 249.99,
+  "official_url": "https://us.ugreen.com/products/ugreen-500w-usbc-desktop-charger",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-500w-usbc-desktop-charger",
+   "https://us.ugreen.com/collections/charger",
+   "https://www.macworld.com/article/2824637/ugreen-nexode-500w-desktop-charger-review.html",
+   "https://www.tldevtech.com/gadget/laptop-charger/ugreen-nexode-500w",
+   "https://the-gadgeteer.com/2025/06/16/ugreen-nexode-500w-gan-desktop-charger-review-more-power/"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1,
+   "epr_avs": 2,
+   "weight_g": 2,
+   "dimensions_mm": 2,
+   "port_sharing": 2,
+   "cable_included": 2,
+   "release_year": 4
+  },
+  "confidence": "medium",
+  "notes": "CONTRADICTION: C2-C5 per-port max 60W (UGREEN SG/EU) vs 100W (TL Dev Tech, Macworld alone-case); USB-A 22.5W vs 20W. PPS not found in any source (pps null). Desktop station. Gadgeteer says four ports 100W + one 240W. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Uno 100W 4-Port Charger",
+  "model_numbers": [
+   "45514"
+  ],
+  "series": "Uno",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": null,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 79.99,
+  "typical_price_usd": 56.99,
+  "official_url": "https://us.ugreen.com/products/ugreen-uno-100w-usb-c-gan-charger-4-ports",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-uno-100w-usb-c-gan-charger-4-ports",
+   "https://us.ugreen.com/collections/charger"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1
+  },
+  "confidence": "low",
+  "notes": "Specs not found beyond title (4 ports). Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode 100W 3-Port Charger with Foldable Plug",
+  "model_numbers": [
+   "35037"
+  ],
+  "series": "Nexode",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": null,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 59.99,
+  "typical_price_usd": 40.99,
+  "official_url": "https://us.ugreen.com/products/ugreen-nexode-100w-usb-c-gan-charger-3-ports",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-nexode-100w-usb-c-gan-charger-3-ports",
+   "https://us.ugreen.com/collections/charger"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1
+  },
+  "confidence": "low",
+  "notes": "Specs not found beyond title. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode 100W Charger with Retractable USB-C Cable",
+  "model_numbers": [
+   "65585",
+   "X606",
+   "65591"
+  ],
+  "series": "Nexode",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": 100,
+  "ports": [
+   {
+    "name": "Cable",
+    "type": 100,
+    "max_w": null
+   },
+   {
+    "name": "C1",
+    "type": 100,
+    "max_w": null
+   },
+   {
+    "name": "C2",
+    "type": 30,
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": 22.5,
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": "3.0",
+  "pd_fixed_pdos": "Cable & C1: 5V3A 9V3A 12V3A 15V3A 20V5A; C2: 5V3A 9V3A 12V2.5A 15V2A 20V1.5A",
+  "pps": true,
+  "pps_ranges": "Cable & C1: 5-21V 5A; C2: 5-11V 2.75A",
+  "pps_max_w": 100,
+  "epr_avs": null,
+  "other_protocols": [
+   "QC3.0",
+   "FCP",
+   "SCP",
+   "AFC",
+   "SFCP",
+   "UFCS",
+   "Apple 2.4A",
+   "Samsung 5V2A"
+  ],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 303.8,
+  "dimensions_mm": "57.02 x 50.53 x 69.08",
+  "safety_certs": [],
+  "cable_included": "built-in retractable USB-C ~72.5cm",
+  "msrp_usd": 59.99,
+  "typical_price_usd": 49.99,
+  "official_url": "https://us.ugreen.com/products/ugreen-100w-retractable-gan-charger",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-100w-retractable-gan-charger",
+   "https://us.ugreen.com/collections/charger",
+   "https://www.chargerlab.com/teardown-of-the-ugreen-nexode-100w-charger-with-retractable-usb-c-cable"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1,
+   "ports": 2,
+   "pd_fixed_pdos": 2,
+   "pps": 2,
+   "pps_ranges": 2,
+   "usb_pd_version": 2,
+   "other_protocols": 2,
+   "weight_g": 2,
+   "dimensions_mm": 2,
+   "cable_included": 2
+  },
+  "confidence": "high",
+  "notes": "ChargerLAB model X606 / part 65591 mapped to US item 65585 by name (unverified). Article intro claims every port 100W, spec sheet says C2 30W, A 22.5W; used spec sheet. No port-sharing table. pps_max_w=21Vx5A=105 capped by 100W total. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode 65W Charger with Retractable USB-C Cable",
+  "model_numbers": [
+   "55897",
+   "X605"
+  ],
+  "series": "Nexode",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": 65,
+  "ports": [
+   {
+    "name": "Cable",
+    "type": 60,
+    "max_w": null
+   },
+   {
+    "name": "C1",
+    "type": 65,
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": 22.5,
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": "3.0",
+  "pd_fixed_pdos": "Cable: 5V3A 9V3A 12V3A 15V3A 20V3A; C1: 5V3A 9V3A 12V3A 15V3A 20V3.25A",
+  "pps": true,
+  "pps_ranges": "Cable: 5-21V 3A; C1: 5-11V 4.5A",
+  "pps_max_w": 63,
+  "epr_avs": null,
+  "other_protocols": [
+   "UFCS",
+   "FCP",
+   "SCP",
+   "AFC",
+   "SFCP",
+   "QC3+/4+",
+   "Apple 2.4A"
+  ],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 197,
+  "dimensions_mm": "58.41 x 48.98 x 52.68",
+  "safety_certs": [],
+  "cable_included": "built-in retractable USB-C ~68cm",
+  "msrp_usd": 49.99,
+  "typical_price_usd": 38.99,
+  "official_url": "https://us.ugreen.com/products/ugreen-65w-retractable-cable-gan-charger-3port",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-65w-retractable-cable-gan-charger-3port",
+   "https://us.ugreen.com/collections/charger",
+   "https://www.chargerlab.com/teardown-of-ugreen-nexode-65w-charger-with-retractable-usb-c-cable-x605"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1,
+   "ports": 2,
+   "pd_fixed_pdos": 2,
+   "pps": 2,
+   "pps_ranges": 2,
+   "usb_pd_version": 2,
+   "other_protocols": 2,
+   "weight_g": 2,
+   "dimensions_mm": 2,
+   "cable_included": 2,
+   "foldable_plug": 2
+  },
+  "confidence": "high",
+  "notes": "X605->55897 mapping by name. Single-port-class model (cable+C1 share 65W). pps_max_w = 21V3A=63W (cable). Foldable plug taken from ChargerLAB text via search snippet. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode 65W 3-Port Travel Charger with US/UK/EU Plug",
+  "model_numbers": [
+   "90409"
+  ],
+  "series": "Nexode",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": null,
+  "ports": [],
+  "port_sharing": "2 USB-C: 45+20; all three ports: 45+8.5+8.5 (SmartGadgetKit review; may refer to this travel variant)",
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "multi",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 49.99,
+  "typical_price_usd": 49.99,
+  "official_url": "https://us.ugreen.com/products/ugreen-65w-nexode-gan-usb-c-3-port-charger-with-us-uk-eu-plug-for-travel",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-65w-nexode-gan-usb-c-3-port-charger-with-us-uk-eu-plug-for-travel",
+   "https://us.ugreen.com/collections/charger",
+   "https://smartgadgetkit.com/ugreen-nexode-65w-travel-charger-review/"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1,
+   "port_sharing": 2
+  },
+  "confidence": "low",
+  "notes": "Split from third-party review of a 'travel charger with 3 plug heads'; mapping unverified. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN 200W 4-Port Laptop Charger",
+  "model_numbers": [
+   "35538A",
+   "35538"
+  ],
+  "series": "Nexode (multi-port)",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 200,
+  "max_single_port_w": null,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 99.99,
+  "typical_price_usd": 61.99,
+  "official_url": "https://us.ugreen.com/products/ugreen-200w-dual-laptop-type-c-charge",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-200w-dual-laptop-type-c-charge",
+   "https://us.ugreen.com/collections/charger"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1
+  },
+  "confidence": "low",
+  "notes": "Specs not found; title '200W Dual Laptop' suggests two high-power USB-C ports. Older 'Nexode 200W 4-Port' listed as usa-35538 in global feed. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode Air Slim USB-C Charger (45W, Foldable Plug)",
+  "model_numbers": [
+   "85252"
+  ],
+  "series": "Nexode Air",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 45,
+  "max_single_port_w": null,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 34.99,
+  "typical_price_usd": 34.99,
+  "official_url": "https://us.ugreen.com/products/nexode-air-slim-usb-c-charger-45w-foldable-plug",
+  "sources": [
+   "https://us.ugreen.com/products/nexode-air-slim-usb-c-charger-45w-foldable-plug",
+   "https://us.ugreen.com/collections/charger",
+   "https://www.notebookcheck.net/Pocket-sized-power-Ugreen-Nexode-Air-Slim-45W-review.1324697.0.html"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1
+  },
+  "confidence": "low",
+  "notes": "Notebookcheck reviewed this Slim 45W; found peak efficiency ~95.4% (per search summary, may be mismatched) and no protocol disclosure; PPS unverified. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode 65W 3-Port Charger",
+  "model_numbers": [
+   "10334",
+   "CD244 (unverified)"
+  ],
+  "series": "Nexode (GaN II)",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": 65,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 39.99,
+  "typical_price_usd": 39.99,
+  "official_url": "https://us.ugreen.com/products/65w-3-ports-gan-fast-charger",
+  "sources": [
+   "https://us.ugreen.com/products/65w-3-ports-gan-fast-charger",
+   "https://us.ugreen.com/collections/charger",
+   "https://www.bhphotovideo.com/c/product/1783991-REG/ugreen_10334_nexode_65w_usb_c_gan.html"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1
+  },
+  "confidence": "low",
+  "notes": "B&H: 2xUSB-C + 1xUSB-A, either USB-C up to 65W alone; GaN II. PPS not confirmed (an Amazon snippet mentions PPS for a different 'Nexode X' listing). Foldable plug per Amazon title. Bundle variant 10334+70427P also sold. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode Pro 65W 3-Port Ultra-Slim Charger",
+  "model_numbers": [
+   "15817"
+  ],
+  "series": "Nexode Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": 65,
+  "ports": [
+   {
+    "name": "C1",
+    "type": 65,
+    "max_w": null
+   },
+   {
+    "name": "C2",
+    "type": 30,
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": 22.5,
+    "max_w": null
+   }
+  ],
+  "port_sharing": "C1+C2: 45+20; three ports: ~45 + ~7.5 + ~7.5 (Best Batteries); other review lists C2 20W in 2-port use",
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 104,
+  "dimensions_mm": "84 x 48 x 14",
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 55.99,
+  "typical_price_usd": 55.99,
+  "official_url": "https://us.ugreen.com/products/ugreen-nexode-pro-65w-ultra-slim-gan-fast-charger",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-nexode-pro-65w-ultra-slim-gan-fast-charger",
+   "https://us.ugreen.com/collections/charger",
+   "https://en.best-batteries.com/reviews/ugreen-nexode-pro-65w-slim-charger/",
+   "https://www.techradar.com/phones/phone-accessories/ugreen-nexode-pro-65w-ultra-slim-3-port-charger-review"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1,
+   "ports": 2,
+   "weight_g": 2,
+   "dimensions_mm": 2,
+   "port_sharing": 2
+  },
+  "confidence": "low",
+  "notes": "Interchangeable US/UK/EU plugs per one review. PPS not confirmed. Weight bare 104g. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode Pro 160W 4-Port Charger",
+  "model_numbers": [
+   "25094"
+  ],
+  "series": "Nexode Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 160,
+  "max_single_port_w": 140,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 119.99,
+  "typical_price_usd": 119.99,
+  "official_url": "https://us.ugreen.com/products/ugreen-nexode-pro-160w-gan-fast-charger",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-nexode-pro-160w-gan-fast-charger",
+   "https://us.ugreen.com/collections/charger"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1
+  },
+  "confidence": "low",
+  "notes": "Page title says 4-port; Korean listing says 3C1A; per-port data not found. 140W single-port inferred only from 'Nexode Pro 160W' family claims (US series page). Marketed as PD3.1 PPS in a YouTube title. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode Pro 100W 3-Port Charger",
+  "model_numbers": [
+   "15202"
+  ],
+  "series": "Nexode Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": null,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 74.99,
+  "typical_price_usd": 74.99,
+  "official_url": "https://us.ugreen.com/products/ugreen-nexode-pro-100w-gan-fast-charger",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-nexode-pro-100w-gan-fast-charger",
+   "https://us.ugreen.com/collections/charger"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1
+  },
+  "confidence": "low",
+  "notes": "Specs not found. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN 45W 3-Port Mini Charger",
+  "model_numbers": [
+   "65155"
+  ],
+  "series": "Nexode (mini)",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 45,
+  "max_single_port_w": null,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 26.99,
+  "typical_price_usd": 20.89,
+  "official_url": "https://us.ugreen.com/products/ugreen-45w-gan-fast-charger-3-port",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-45w-gan-fast-charger-3-port",
+   "https://us.ugreen.com/collections/charger"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1
+  },
+  "confidence": "low",
+  "notes": "Specs not found. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode 100W 4-Port Charger",
+  "model_numbers": [
+   "40737",
+   "CD226"
+  ],
+  "series": "Nexode",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": 100,
+  "ports": [
+   {
+    "name": "C1",
+    "type": 100,
+    "max_w": null
+   },
+   {
+    "name": "C2",
+    "type": 100,
+    "max_w": null
+   },
+   {
+    "name": "C3",
+    "type": null,
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": 22.5,
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "PD",
+   "QC",
+   "SCP",
+   "FCP"
+  ],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 54.99,
+  "typical_price_usd": 54.99,
+  "official_url": "https://us.ugreen.com/products/100w-3c1a-gan-fast-charger",
+  "sources": [
+   "https://us.ugreen.com/products/100w-3c1a-gan-fast-charger",
+   "https://us.ugreen.com/collections/charger",
+   "https://www.bhphotovideo.com/c/product/1784001-REG/ugreen_40737_nexode_100w_usb_c_gan.html",
+   "https://mychooz.com/en/reviews/ugreen-cd226-150927"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1,
+   "pps": 2,
+   "other_protocols": 2,
+   "ports": 3
+  },
+  "confidence": "medium",
+  "notes": "B&H lists PD, QC, PPS, SCP, FCP. Split conflicts: sources say each USB-C 65W independently / total 96W / laptop held ~65W with 3 others. PPS ranges not found. Layout 3C1A from handle '100w-3c1a'. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN 100W 6-Port Charger",
+  "model_numbers": [
+   "65189"
+  ],
+  "series": "Desktop charging station",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": null,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": null,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 49.99,
+  "typical_price_usd": 49.99,
+  "official_url": "https://us.ugreen.com/products/100w-6port-desktop-charger",
+  "sources": [
+   "https://us.ugreen.com/products/100w-6port-desktop-charger",
+   "https://us.ugreen.com/collections/charger"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1
+  },
+  "confidence": "low",
+  "notes": "Desktop strip-style station; specs not found; GaN unconfirmed. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode 45W 2-Port Charger",
+  "model_numbers": [
+   "90572"
+  ],
+  "series": "Nexode",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 45,
+  "max_single_port_w": null,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 29.99,
+  "typical_price_usd": 22.79,
+  "official_url": "https://us.ugreen.com/products/ugreen-nexode-45w-dual-c-port-wall-charger",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-nexode-45w-dual-c-port-wall-charger",
+   "https://us.ugreen.com/collections/charger"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1
+  },
+  "confidence": "low",
+  "notes": "Dual USB-C per URL; split/PPS not found. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode 45W 2-Port Charger with Retractable Cable",
+  "model_numbers": [
+   "65786"
+  ],
+  "series": "Nexode",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 45,
+  "max_single_port_w": null,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 37.99,
+  "typical_price_usd": 28.49,
+  "official_url": "https://us.ugreen.com/products/ugreen-retractable-cable-gan-charger-45w",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-retractable-cable-gan-charger-45w",
+   "https://us.ugreen.com/collections/charger"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1
+  },
+  "confidence": "low",
+  "notes": "Specs not found. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Uno 65W 3-Port Charger",
+  "model_numbers": [
+   "15570",
+   "35856 (Cyan)",
+   "CD361"
+  ],
+  "series": "Uno (Nexode RG)",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": 65,
+  "ports": [
+   {
+    "name": "C1",
+    "type": 65,
+    "max_w": null
+   },
+   {
+    "name": "C2",
+    "type": 30,
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": 22.5,
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": "3.0",
+  "pd_fixed_pdos": "C1: 5V3A 9V3A 12V3A 15V3A 20V3.25A; C2: 5V3A 9V3A 12V2.5A 15V2A 20V1.5A",
+  "pps": true,
+  "pps_ranges": "C1: 3.3-21V 3A; C2: 3.3-11V 2.75A",
+  "pps_max_w": 63,
+  "epr_avs": null,
+  "other_protocols": [
+   "QC3.0/4+/5",
+   "FCP",
+   "SCP",
+   "AFC",
+   "SFCP",
+   "PE2.0",
+   "Apple 2.4A",
+   "Samsung 2A"
+  ],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 131,
+  "dimensions_mm": "50 x 47 x 43 (without plug shoe)",
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 52.99,
+  "typical_price_usd": 52.99,
+  "official_url": "https://us.ugreen.com/products/ugreen-nexode-rg-65w-usb-c-gan-charger",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-nexode-rg-65w-usb-c-gan-charger",
+   "https://us.ugreen.com/collections/charger",
+   "https://www.chargerlab.com/teardown-of-ugreen-65w-3-in-1-nexode-rg-gan-charger-cd361",
+   "https://us.ugreen.com/products/ugreen-uno-charger-65w-pink-blue"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1,
+   "ports": 2,
+   "pd_fixed_pdos": 2,
+   "pps": 2,
+   "pps_ranges": 2,
+   "usb_pd_version": 2,
+   "other_protocols": 2,
+   "weight_g": 2,
+   "dimensions_mm": 2
+  },
+  "confidence": "high",
+  "notes": "CD361->15570 mapping by 'RG'/65W/3-port; likely but not stated. Weight 139g with shoe covers, 131g without. Cyan colour is 35856. Price shown $52.99 for this listing vs lower on bundles. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN 100W Desktop Charger",
+  "model_numbers": [
+   "90736"
+  ],
+  "series": "Desktop charging station",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": null,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": null,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 79.99,
+  "typical_price_usd": 67.99,
+  "official_url": "https://us.ugreen.com/products/ugreen-100w-usb-c-charger",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-100w-usb-c-charger",
+   "https://us.ugreen.com/collections/charger"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1
+  },
+  "confidence": "low",
+  "notes": "Specs not found; may not be GaN. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode 100W 5-Port USB-C Charger",
+  "model_numbers": [
+   "35535"
+  ],
+  "series": "Nexode",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": null,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 59.99,
+  "typical_price_usd": 47.99,
+  "official_url": "https://us.ugreen.com/products/ugreen-100w-usb-c-gan-charger-block",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-100w-usb-c-gan-charger-block",
+   "https://us.ugreen.com/collections/charger"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1
+  },
+  "confidence": "low",
+  "notes": "Specs not found. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN 100W 4-Port Power Station with Qi2 Wireless Charging",
+  "model_numbers": [
+   "90905"
+  ],
+  "series": "Desktop charging station",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": null,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": null,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 149.99,
+  "typical_price_usd": 149.99,
+  "official_url": "https://us.ugreen.com/products/ugreen-magsafe-wireless-desktop-charging-station",
+  "sources": [
+   "https://us.ugreen.com/products/ugreen-magsafe-wireless-desktop-charging-station",
+   "https://us.ugreen.com/collections/charger"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1
+  },
+  "confidence": "low",
+  "notes": "Desktop station with Qi2 wireless pad; wired specs not found. Included because it is a USB-C desktop charging station. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode 300W 5-Port Desktop Charger (CD333)",
+  "model_numbers": [
+   "CD333",
+   "55474"
+  ],
+  "series": "Nexode (desktop charging station)",
+  "release_year": null,
+  "status": "unknown",
+  "max_total_w": 300,
+  "max_single_port_w": 140,
+  "ports": [
+   {
+    "name": "C1",
+    "type": 140,
+    "max_w": null
+   },
+   {
+    "name": "C2",
+    "type": 100,
+    "max_w": null
+   },
+   {
+    "name": "C3",
+    "type": 45,
+    "max_w": null
+   },
+   {
+    "name": "C4",
+    "type": 45,
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": 22.5,
+    "max_w": null
+   }
+  ],
+  "port_sharing": "C1+C2: 130+61; C1-C3: 119.8+88.9+9.5; C1-C4: 133.6+57.3+60.4+15.5; all five: 132+57.3+45.2+18.1+15.0 (measured W)",
+  "usb_pd_version": "3.1",
+  "pd_fixed_pdos": "C1: 5V3A 9V3A 12V3A 15V3A 20V5A 28V5A; C4: 5V3A 9V3A 12V3A 15V3A 20V2.25A",
+  "pps": true,
+  "pps_ranges": "C1: 3.3-21V 5A; C2/C3: 3.3-21V 5A (per ChargerLAB teardown summary); C4: 3.3-16V 3A",
+  "pps_max_w": 105,
+  "epr_avs": true,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 839,
+  "dimensions_mm": "112 x 94 x 53",
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": null,
+  "official_url": null,
+  "sources": [
+   "https://us.ugreen.com/collections/charger",
+   "https://www.chargerlab.com/review-of-ugreen-300w-nexode-5-in-1-charger"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1,
+   "ports": 1,
+   "pd_fixed_pdos": 1,
+   "pps": 1,
+   "pps_ranges": 1,
+   "port_sharing": 1,
+   "weight_g": 1,
+   "dimensions_mm": 1,
+   "epr_avs": 1,
+   "usb_pd_version": 1
+  },
+  "confidence": "medium",
+  "notes": "Not in current us.ugreen.com collection (item 55474 appeared in global feed as 'Nexode 300W 5-Port'); status unknown/likely superseded by Pro 300W 75752. ChargerLAB measured port maxima 140/100/45/22.5 (C3/C4 45W in text) and notes measured five-port sum ~268W vs 300W rating; C2/C3 PPS details inferred from search summary. Original-era PD version assumed 3.1 from 28V PDO. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode 200W 6-Port Desktop Charger",
+  "model_numbers": [
+   "40913"
+  ],
+  "series": "Nexode (desktop charging station)",
+  "release_year": null,
+  "status": "unknown",
+  "max_total_w": 200,
+  "max_single_port_w": null,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": null,
+  "official_url": null,
+  "sources": [
+   "https://us.ugreen.com/collections/charger",
+   "https://www.chargerlab.com/6-in-1-charging-station-charging-review-of-ugreen-200w-nexode-desktop-charger"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1
+  },
+  "confidence": "low",
+  "notes": "Appeared in UGREEN global feed (usa-40913) but not in current US collection. ChargerLAB review exists but port/PDO details not extractable. Status unknown. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ },
+ {
+  "brand": "UGREEN",
+  "product_name": "UGREEN Nexode 140W 3-Port Charger with Retractable USB-C Cable",
+  "model_numbers": [
+   "90548"
+  ],
+  "series": "Nexode",
+  "release_year": null,
+  "status": "unknown",
+  "max_total_w": 140,
+  "max_single_port_w": null,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": null,
+  "official_url": null,
+  "sources": [
+   "https://us.ugreen.com/collections/charger"
+  ],
+  "field_sources": {
+   "product_name": 0,
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 1,
+   "msrp_usd": 1,
+   "status": 1
+  },
+  "confidence": "low",
+  "notes": "Appeared in global feed (usa-90548) but not in current US collection; no specs found. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise."
+ }
+]

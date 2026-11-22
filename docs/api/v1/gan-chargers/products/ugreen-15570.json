@@ -1,0 +1,84 @@
+{
+ "brand": "UGREEN",
+ "product_name": "UGREEN Uno 65W 3-Port Charger",
+ "model_numbers": [
+  "15570",
+  "35856 (Cyan)",
+  "CD361"
+ ],
+ "series": "Uno (Nexode RG)",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 65,
+ "max_single_port_w": 65,
+ "ports": [
+  {
+   "name": "C1",
+   "type": 65,
+   "max_w": null
+  },
+  {
+   "name": "C2",
+   "type": 30,
+   "max_w": null
+  },
+  {
+   "name": "A1",
+   "type": 22.5,
+   "max_w": null
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": "C1: 5V3A 9V3A 12V3A 15V3A 20V3.25A; C2: 5V3A 9V3A 12V2.5A 15V2A 20V1.5A",
+ "pps": true,
+ "pps_ranges": "C1: 3.3-21V 3A; C2: 3.3-11V 2.75A",
+ "pps_max_w": 63,
+ "epr_avs": null,
+ "other_protocols": [
+  "QC3.0/4+/5",
+  "FCP",
+  "SCP",
+  "AFC",
+  "SFCP",
+  "PE2.0",
+  "Apple 2.4A",
+  "Samsung 2A"
+ ],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": 131,
+ "dimensions_mm": "50 x 47 x 43 (without plug shoe)",
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": 52.99,
+ "typical_price_usd": 52.99,
+ "official_url": "https://us.ugreen.com/products/ugreen-nexode-rg-65w-usb-c-gan-charger",
+ "sources": [
+  "https://us.ugreen.com/products/ugreen-nexode-rg-65w-usb-c-gan-charger",
+  "https://us.ugreen.com/collections/charger",
+  "https://www.chargerlab.com/teardown-of-ugreen-65w-3-in-1-nexode-rg-gan-charger-cd361",
+  "https://us.ugreen.com/products/ugreen-uno-charger-65w-pink-blue"
+ ],
+ "field_sources": {
+  "product_name": 0,
+  "model_numbers": 0,
+  "max_total_w": 0,
+  "typical_price_usd": 1,
+  "msrp_usd": 1,
+  "status": 1,
+  "ports": 2,
+  "pd_fixed_pdos": 2,
+  "pps": 2,
+  "pps_ranges": 2,
+  "usb_pd_version": 2,
+  "other_protocols": 2,
+  "weight_g": 2,
+  "dimensions_mm": 2
+ },
+ "confidence": "high",
+ "notes": "CD361->15570 mapping by 'RG'/65W/3-port; likely but not stated. Weight 139g with shoe covers, 131g without. Cyan colour is 35856. Price shown $52.99 for this listing vs lower on bundles. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise.",
+ "id": "ugreen-15570"
+}

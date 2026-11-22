@@ -1,0 +1,69 @@
+{
+ "brand": "UGREEN",
+ "product_name": "UGREEN Nexode Pro 65W 3-Port Ultra-Slim Charger",
+ "model_numbers": [
+  "15817"
+ ],
+ "series": "Nexode Pro",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 65,
+ "max_single_port_w": 65,
+ "ports": [
+  {
+   "name": "C1",
+   "type": 65,
+   "max_w": null
+  },
+  {
+   "name": "C2",
+   "type": 30,
+   "max_w": null
+  },
+  {
+   "name": "A1",
+   "type": 22.5,
+   "max_w": null
+  }
+ ],
+ "port_sharing": "C1+C2: 45+20; three ports: ~45 + ~7.5 + ~7.5 (Best Batteries); other review lists C2 20W in 2-port use",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": 104,
+ "dimensions_mm": "84 x 48 x 14",
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": 55.99,
+ "typical_price_usd": 55.99,
+ "official_url": "https://us.ugreen.com/products/ugreen-nexode-pro-65w-ultra-slim-gan-fast-charger",
+ "sources": [
+  "https://us.ugreen.com/products/ugreen-nexode-pro-65w-ultra-slim-gan-fast-charger",
+  "https://us.ugreen.com/collections/charger",
+  "https://en.best-batteries.com/reviews/ugreen-nexode-pro-65w-slim-charger/",
+  "https://www.techradar.com/phones/phone-accessories/ugreen-nexode-pro-65w-ultra-slim-3-port-charger-review"
+ ],
+ "field_sources": {
+  "product_name": 0,
+  "model_numbers": 0,
+  "max_total_w": 0,
+  "typical_price_usd": 1,
+  "msrp_usd": 1,
+  "status": 1,
+  "ports": 2,
+  "weight_g": 2,
+  "dimensions_mm": 2,
+  "port_sharing": 2
+ },
+ "confidence": "low",
+ "notes": "Interchangeable US/UK/EU plugs per one review. PPS not confirmed. Weight bare 104g. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise.",
+ "id": "ugreen-15817"
+}

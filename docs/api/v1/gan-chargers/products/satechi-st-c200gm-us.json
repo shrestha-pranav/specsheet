@@ -1,0 +1,81 @@
+{
+ "brand": "Satechi",
+ "product_name": "200W USB-C 6-Port GaN Charger",
+ "model_numbers": [
+  "ST-C200GM-US",
+  "ST-C200GM-EU",
+  "ST-C200GM-UK",
+  "ST-C200GM-AU"
+ ],
+ "series": null,
+ "release_year": 2023,
+ "status": "current",
+ "max_total_w": 200,
+ "max_single_port_w": 140,
+ "ports": [
+  {
+   "name": "PD1",
+   "type": "USB-C",
+   "max_w": 140
+  },
+  {
+   "name": "PD2",
+   "type": "USB-C",
+   "max_w": 140
+  },
+  {
+   "name": "PD3",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "PD4",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "PD5",
+   "type": "USB-C",
+   "max_w": null
+  },
+  {
+   "name": "PD6",
+   "type": "USB-C",
+   "max_w": null
+  }
+ ],
+ "port_sharing": "1 device on PD1/PD2: 140W; all six ports: 65/45/20/20/20/20W (200W total); full table in a Satechi schematic article",
+ "usb_pd_version": "3.1 (PD1/PD2); 3.0 (PD3-PD6)",
+ "pd_fixed_pdos": "PD1/PD2: 5V3A 9V3A 12V3A 20V5A 28V5A; PD3/PD4: 5V3A 9V3A 12V3A 15V3A 20V5A; PD5/PD6: 5V3A 9V2.22A 12V1.x (truncated on page)",
+ "pps": true,
+ "pps_ranges": "PD1/PD2: 3.3-21V 5A (140W max); PD3/PD4: 3.3-20V 5A (100W max); PD5/PD6: not captured",
+ "pps_max_w": 140,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": false,
+ "plug_region": null,
+ "display": false,
+ "weight_g": 620,
+ "dimensions_mm": "105 x 35 x 105",
+ "safety_certs": [],
+ "cable_included": "Power cord and stand",
+ "msrp_usd": 149.99,
+ "typical_price_usd": 149.99,
+ "official_url": "https://satechi.com/products/6-port-gan-charger",
+ "sources": [
+  "https://satechi.com/products/6-port-gan-charger"
+ ],
+ "field_sources": {
+  "pd_fixed_pdos": 0,
+  "pps_ranges": 0,
+  "port_sharing": 0,
+  "usb_pd_version": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "typical_price_usd": 0
+ },
+ "confidence": "high",
+ "notes": "Page showed 'Sold Out' on 2026-11-22 (US). PD5/PD6 PDO line truncated in page text. 28V5A PDO is on PD1/PD2 so EPR-level voltage exists, but AVS not documented (epr_avs null). PPS 3.3-21V 5A x 21V = 105W but marketed as 140W max (PDO 28V5A) - pps_max_w=140 is the page's '(140W Max)' label; treat as upper bound.",
+ "id": "satechi-st-c200gm-us"
+}

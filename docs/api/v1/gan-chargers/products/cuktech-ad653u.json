@@ -1,0 +1,68 @@
+{
+ "brand": "CUKTECH",
+ "product_name": "CUKTECH 6 Ultra Charger 65W (smart display, 3-port)",
+ "model_numbers": [
+  "AD653U"
+ ],
+ "series": "No.6 Ultra",
+ "release_year": 2026,
+ "status": "current",
+ "max_total_w": 65,
+ "max_single_port_w": 65,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 65
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 65
+  },
+  {
+   "name": "A",
+   "type": "USB-A",
+   "max_w": 33
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "QC4.0",
+  "AFC",
+  "FCP",
+  "Xiaomi (CN: 100W)"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": true,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": "240W 6A USB-C cable",
+ "msrp_usd": null,
+ "typical_price_usd": null,
+ "official_url": "https://cuktech.com/products/cuktech-6-ultra-charger",
+ "sources": [
+  "https://cuktech.com/products/cuktech-6-ultra-charger",
+  "https://furper.com/products/cuktech-6-ultra-ad653u-charger-3-usb-c-ports-x2-usb-a-pd-3-0-qc-4-0-pps-fast-charging-100w",
+  "https://www.amazon.com/CUKTECH-Charger-Phone-Laptop-Display/dp/B0GYS98G6K"
+ ],
+ "field_sources": {
+  "pps": 1,
+  "other_protocols": 1,
+  "max_total_w": 0,
+  "display": 0,
+  "cable_included": 0
+ },
+ "confidence": "low",
+ "notes": "Official page: 65W single port, TFT display; no PDO/PPS table. PPS comes from retailer/manual text only. Retailers list it as '100W' (Xiaomi-phone figure in CN version) - contradiction with 65W US listing. Port A 33W from retailer. No ChargerLAB test found. Price not captured.",
+ "id": "cuktech-ad653u"
+}

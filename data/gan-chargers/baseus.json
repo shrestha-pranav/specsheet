@@ -1,0 +1,2164 @@
+[
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus GaN5 Pro Flat USB-C Wall Charger 65W",
+  "model_numbers": [
+   "CCGP150513"
+  ],
+  "series": "GaN5 Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": 65,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 65
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": 60
+   }
+  ],
+  "port_sharing": "Page text contradictory: single C 65W; C+A 45W+20W (spec text) vs 25W+20W (marketing line); single A 60W",
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 97,
+  "dimensions_mm": "92x51x17 (3.62x2.01x0.67 in)",
+  "safety_certs": [],
+  "cable_included": "3.3ft USB-C cable",
+  "msrp_usd": null,
+  "typical_price_usd": 40.99,
+  "official_url": "https://www.baseus.com/products/gan5-pro-flat-wall-charger-65w",
+  "sources": [
+   "https://www.baseus.com/products/gan5-pro-flat-wall-charger-65w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "pps": 0,
+   "port_sharing": 0,
+   "weight_g": 0,
+   "dimensions_mm": 0,
+   "cable_included": 0
+  },
+  "confidence": "medium",
+  "notes": "PPS stated in marketing copy only; no ranges published. Dual-port split contradicts within the same page (25+20 vs 45+20). Typical price = baseus.com list price during Black Friday period; MSRP not captured."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus GaN5 Pro USB-C Travel Adapter 65W (US/UK/EU)",
+  "model_numbers": [
+   "CCGP150113"
+  ],
+  "series": "GaN5 Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": 65,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 65
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": 60
+   }
+  ],
+  "port_sharing": "C+A: 45W+20W max",
+  "usb_pd_version": null,
+  "pd_fixed_pdos": "5V3A 9V3A 12V3A 15V3A 20V3.25A",
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "multi (US/UK/EU)",
+  "display": null,
+  "weight_g": 98,
+  "dimensions_mm": "91x48x15 (3.6x1.9x0.6 in)",
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 25.99,
+  "official_url": "https://www.baseus.com/products/gan5-pro-usb-c-travel-adapter-65w",
+  "sources": [
+   "https://www.baseus.com/products/gan5-pro-usb-c-travel-adapter-65w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "pd_fixed_pdos": 0,
+   "port_sharing": 0,
+   "weight_g": 0
+  },
+  "confidence": "medium",
+  "notes": "PPS not stated on page (null). USB-A outputs 5V/9V/12V/20V 3A per spec. Marketing line also says 25W+20W for both ports; spec table says 45W+20W."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus GaN5 Pro 3 Ports Fast Charger 65W",
+  "model_numbers": [
+   "CCGP120101"
+  ],
+  "series": "GaN5 Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": 65,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 65
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "Samsung Super Fast Charging 45W (8 protocols listed, not enumerated)"
+  ],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 39.99,
+  "official_url": "https://www.baseus.com/products/gan5-pro-3-ports-fast-charger-65w",
+  "sources": [
+   "https://www.baseus.com/products/gan5-pro-3-ports-fast-charger-65w",
+   "https://www.chargerlab.com/teardown-of-baseus-65w-gan5-pro-charger-ccgan65c5"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0
+  },
+  "confidence": "low",
+  "notes": "Baseus page does not state PPS. ChargerLAB tested a different-code Baseus 65W GaN5 Pro 2C1A (CCGAN65C5): 5 fixed PDOs 5V3A 9V3A 12V3A 15V3A 20V3.25A + PPS 5-11V 5A on C1 and C2; mapping of CCGP120101 to CCGAN65C5 NOT confirmed so pps left null. Samsung 45W support implies PPS but unverified."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus GaN5 Pro 2 Pack 3-Port Fast Charger 2C+U 65W",
+  "model_numbers": [
+   "E0104500"
+  ],
+  "series": "GaN5 Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": 65,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 65
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": "3.0",
+  "pd_fixed_pdos": null,
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "QC3.0"
+  ],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [
+   "CE",
+   "FCC",
+   "TUV"
+  ],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 49.99,
+  "official_url": "https://www.baseus.com/products/gan5-pro-2-pack-fast-charger-2c-u-65w",
+  "sources": [
+   "https://www.baseus.com/products/gan5-pro-2-pack-fast-charger-2c-u-65w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "pps": 0,
+   "usb_pd_version": 0,
+   "other_protocols": 0,
+   "safety_certs": 0
+  },
+  "confidence": "medium",
+  "notes": "Pack of 2 chargers ($49.99 for two; ~$25 each). PPS named on page; no ranges. Single-port 65W and per-port split not published on page."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus GaN5 Pro Dual USB-C Fast Charger 40W",
+  "model_numbers": [
+   "CCGP180201"
+  ],
+  "series": "GaN5 Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 40,
+  "max_single_port_w": 40,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 40
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 40
+   }
+  ],
+  "port_sharing": "Single port 40W; both ports 20W+20W",
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 70,
+  "dimensions_mm": "62x34x29 (2.44x1.34x1.14 in)",
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 27.99,
+  "official_url": "https://www.baseus.com/products/gan5-pro-dual-usb-c-fast-charger-40w",
+  "sources": [
+   "https://www.baseus.com/products/gan5-pro-dual-usb-c-fast-charger-40w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "port_sharing": 0,
+   "weight_g": 0
+  },
+  "confidence": "medium",
+  "notes": "PPS not stated on page."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus GaN5S USB-C Fast Charger 30W",
+  "model_numbers": [
+   "P10162505113-00"
+  ],
+  "series": "GaN5S",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 30,
+  "max_single_port_w": 30,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 30
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": "5V3A 9V3A 12V2A 15V2A 20V1.5A",
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 45,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 12.99,
+  "official_url": "https://www.baseus.com/products/gan5s-usb-c-fast-charger-30w",
+  "sources": [
+   "https://www.baseus.com/products/gan5s-usb-c-fast-charger-30w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "pd_fixed_pdos": 0,
+   "weight_g": 0
+  },
+  "confidence": "medium",
+  "notes": "PPS not stated."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus GaN3 USB-C Fast Charger 30W",
+  "model_numbers": [
+   "CCGN010201"
+  ],
+  "series": "GaN3",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 30,
+  "max_single_port_w": 30,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 30
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": "3.0",
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 82,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 18.99,
+  "official_url": "https://www.baseus.com/products/gan3-usb-c-fast-charger-30w",
+  "sources": [
+   "https://www.baseus.com/products/gan3-usb-c-fast-charger-30w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "usb_pd_version": 0,
+   "weight_g": 0
+  },
+  "confidence": "medium",
+  "notes": "PPS not stated."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus Super Si Pro Dual Port Fast Charger 30W",
+  "model_numbers": [
+   "CCSUPP-D01"
+  ],
+  "series": "Super Si Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 30,
+  "max_single_port_w": 30,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 30
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": null,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 68,
+  "dimensions_mm": "48x35x30 (1.88x1.37x1.18 in)",
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 19.99,
+  "official_url": "https://www.baseus.com/products/super-si-pro-dual-port-fast-charger-30w",
+  "sources": [
+   "https://www.baseus.com/products/super-si-pro-dual-port-fast-charger-30w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "weight_g": 0
+  },
+  "confidence": "medium",
+  "notes": "GaN not stated on page (gan=null). PPS not stated."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus Compact 3 Ports Fast Charger 30W",
+  "model_numbers": [
+   "CCXJ-D01"
+  ],
+  "series": "Compact",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 30,
+  "max_single_port_w": 30,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 30
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": null
+   },
+   {
+    "name": "A2",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": "C+A1+A2: 5V3A total when multiple used (spec text)",
+  "usb_pd_version": null,
+  "pd_fixed_pdos": "5V3A 9V3A 12V2.5A 15V2A 20V1.5A",
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": null,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 100,
+  "dimensions_mm": "40x20x60 (1.57x0.79x2.36 in)",
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 19.99,
+  "official_url": "https://www.baseus.com/products/compact-3-ports-fast-charger-30w",
+  "sources": [
+   "https://www.baseus.com/products/compact-3-ports-fast-charger-30w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "pd_fixed_pdos": 0,
+   "weight_g": 0
+  },
+  "confidence": "medium",
+  "notes": "GaN not stated; PPS not stated; spec lists no PPS."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus PicoGo GaN USB-C Charger 45W",
+  "model_numbers": [
+   "P10176801213-00"
+  ],
+  "series": "PicoGo",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 45,
+  "max_single_port_w": 45,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 45
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": "5V3A 9V3A 12V3A 15V3A 20V2.25A",
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 83,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 12.99,
+  "official_url": "https://www.baseus.com/products/picogo-gan-usb-c-charger-45w",
+  "sources": [
+   "https://www.baseus.com/products/picogo-gan-usb-c-charger-45w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "pd_fixed_pdos": 0,
+   "weight_g": 0
+  },
+  "confidence": "medium",
+  "notes": "PPS stated only on the 2-pack page ('45W PPS/PD'); this single-pack page shares the identical spec block but PPS is not stated, so left null."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus PicoGo GaN USB-C Charger 45W 2 Pack",
+  "model_numbers": [
+   "P10162603123-00"
+  ],
+  "series": "PicoGo",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 45,
+  "max_single_port_w": 45,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 45
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": "5V3A 9V3A 12V3A 15V3A 20V2.25A",
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 83,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 29.99,
+  "official_url": "https://www.baseus.com/products/picogo-gan-usb-c-charger-45w-2-pack",
+  "sources": [
+   "https://www.baseus.com/products/picogo-gan-usb-c-charger-45w-2-pack"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "pps": 0,
+   "pd_fixed_pdos": 0,
+   "weight_g": 0
+  },
+  "confidence": "medium",
+  "notes": "2 chargers per pack (~$15 each). PPS stated in page text; no ranges."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus EnerFill FN22 Fast Charger 1C 45W 2-Pack",
+  "model_numbers": [
+   "E0123204"
+  ],
+  "series": "EnerFill (GaN6)",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 45,
+  "max_single_port_w": 45,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 45
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 99,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 31.99,
+  "official_url": "https://www.baseus.com/products/enerfill-fn22-fast-charger-1c-45w-2-pack",
+  "sources": [
+   "https://www.baseus.com/products/enerfill-fn22-fast-charger-1c-45w-2-pack"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "weight_g": 0
+  },
+  "confidence": "medium",
+  "notes": "2 chargers per pack (7 oz total). PPS not stated."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus PicoGo AN13 Fast Charger 2C 45W",
+  "model_numbers": [
+   "E0121G00"
+  ],
+  "series": "PicoGo",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 45,
+  "max_single_port_w": 45,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 45
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [
+   "CE",
+   "FCC",
+   "TUV"
+  ],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 39.99,
+  "official_url": "https://www.baseus.com/products/picogo-an13-fast-charger-2c-45w",
+  "sources": [
+   "https://www.baseus.com/products/picogo-an13-fast-charger-2c-45w",
+   "https://www.gizmochina.com/2025/10/18/baseus-picogo-ae11-and-an13-gan-chargers-full-review/"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "pps": 1
+  },
+  "confidence": "low",
+  "notes": "PPS per Gizmochina review text (secondary source, not Baseus page nor ChargerLAB); no ranges. Per-port split not on Baseus page."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus PicoGo AE11 Fast Charger 2C+U 67W",
+  "model_numbers": [
+   "E0121000"
+  ],
+  "series": "PicoGo",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 67,
+  "max_single_port_w": 67,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 67
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": "3.0",
+  "pd_fixed_pdos": null,
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [
+   "TUV Rheinland"
+  ],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 29.99,
+  "official_url": "https://www.baseus.com/products/picogo-ae11-fast-charger-2c-u-67w",
+  "sources": [
+   "https://www.baseus.com/products/picogo-ae11-fast-charger-2c-u-67w",
+   "https://www.gizmochina.com/2025/10/18/baseus-picogo-ae11-and-an13-gan-chargers-full-review/"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "pps": 1,
+   "usb_pd_version": 1
+  },
+  "confidence": "low",
+  "notes": "PPS and PD3.0 per Gizmochina review (secondary); no ranges."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus PicoGo AE21 Fast Charger 2C+U 100W",
+  "model_numbers": [
+   "E0121C00"
+  ],
+  "series": "PicoGo",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": 100,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 100
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": true,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 59.99,
+  "official_url": "https://www.baseus.com/products/picogo-ae21-fast-charger-2c-u-100w",
+  "sources": [
+   "https://www.baseus.com/products/picogo-ae21-fast-charger-2c-u-100w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "display": 0
+  },
+  "confidence": "low",
+  "notes": "Smart display listed in feature text. PPS not stated."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus PicoGo Pro AH22 Digital Display 3-Port Fast Charger 100W",
+  "model_numbers": [
+   "E0125901 (black)",
+   "E0125902 (Dark Cherry)"
+  ],
+  "series": "PicoGo Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": 100,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 100
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "C3",
+    "type": "USB-C",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": true,
+  "weight_g": 258,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 59.99,
+  "official_url": "https://www.baseus.com/products/picogo-ah22-digital-display-fast-charger-3c-100w",
+  "sources": [
+   "https://www.baseus.com/products/picogo-ah22-digital-display-fast-charger-3c-100w",
+   "https://geardiary.com/2026/11/20/baseus-picogo-pro-ah22-review/"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0
+  },
+  "confidence": "low",
+  "notes": "Dark Cherry edition is a separate listing, same electronics presumably. PPS not stated; Gear Diary review (Nov 2026) confirms 3x USB-C sharing 100W total."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus PicoGo AH11 4-Port Fast Charger 3C+U 140W",
+  "model_numbers": [
+   "E0122400",
+   "E01207 (ChargerLAB code)"
+  ],
+  "series": "PicoGo",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 140,
+  "max_single_port_w": 140,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 140
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 140
+   },
+   {
+    "name": "C3",
+    "type": "USB-C",
+    "max_w": 100
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": "3.1",
+  "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V5A 28V5A; C3: 5V3A 9V3A 12V3A 15V3A 20V5A",
+  "pps": true,
+  "pps_ranges": "C1/C2: 5-11V 5A; 5-21V 5A. C3: PPS present (ChargerLAB summary: up to 5-20V 5A; verify)",
+  "pps_max_w": 105,
+  "epr_avs": true,
+  "other_protocols": [
+   "QC3.0/5",
+   "SCP",
+   "AFC",
+   "DCP",
+   "Apple 2.4A"
+  ],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 248,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 31.99,
+  "official_url": "https://www.baseus.com/products/picogo-ah11-fast-charger-3c-u-140w",
+  "sources": [
+   "https://www.baseus.com/products/picogo-ah11-fast-charger-3c-u-140w",
+   "https://www.chargerlab.com/teardown-of-baseus-picogo-ah11-140w-gan-fast-charger-e01207"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "usb_pd_version": 1,
+   "pd_fixed_pdos": 1,
+   "pps": 1,
+   "pps_ranges": 1,
+   "epr_avs": 1,
+   "other_protocols": 1,
+   "weight_g": 1
+  },
+  "confidence": "high",
+  "notes": "ChargerLAB tested model E01207; mapped to Baseus US SKU E0122400 by name (PicoGo AH11 140W) - not 100% confirmed. 28V5A fixed PDO = PD3.1 EPR 140W. pps_max_w=5A*21V=105W. Price $31.99 looks like a sale price (EnerFill FH11 140W sister model lists $59.99)."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus EnerFill FE11 3-Port USB-C Fast Charger 100W",
+  "model_numbers": [
+   "P10182101123-00"
+  ],
+  "series": "EnerFill",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": 100,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 100
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 49.99,
+  "official_url": "https://www.baseus.com/products/enerfill-fe11-3-port-usb-c-fast-charger-100w",
+  "sources": [
+   "https://www.baseus.com/products/enerfill-fe11-3-port-usb-c-fast-charger-100w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0
+  },
+  "confidence": "low",
+  "notes": "PPS not stated. Price may be list; likely discounted."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus EnerFill FE22 GaN6 3-Port Fast Charger 2C+U 70W",
+  "model_numbers": [
+   "E0123600"
+  ],
+  "series": "EnerFill (GaN6)",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 70,
+  "max_single_port_w": 70,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 70
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 39.99,
+  "official_url": "https://www.baseus.com/products/enerfill-fe22-gan-fast-charger-2c-u-70w",
+  "sources": [
+   "https://www.baseus.com/products/enerfill-fe22-gan-fast-charger-2c-u-70w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "max_single_port_w": 0
+  },
+  "confidence": "low",
+  "notes": "Single USB-C port can deliver the full 70W per page. PPS not stated."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus EnerFill FH11 4-Port GaN Fast Charger 3C+U 140W",
+  "model_numbers": [
+   "E0121K00"
+  ],
+  "series": "EnerFill",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 140,
+  "max_single_port_w": 140,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 140
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "C3",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": "3.1",
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": true,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [
+   "CE",
+   "FCC",
+   "TUV"
+  ],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 59.99,
+  "official_url": "https://www.baseus.com/products/enerfill-fh11-gan-fast-charger-3c-u-140w",
+  "sources": [
+   "https://www.baseus.com/products/enerfill-fh11-gan-fast-charger-3c-u-140w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "usb_pd_version": 0,
+   "epr_avs": 0,
+   "safety_certs": 0
+  },
+  "confidence": "medium",
+  "notes": "PD3.1 140W; Amazon spec lists 28V output (EPR). PPS not stated. Retractable/foldable plug per Amazon-sourced feature list ('Retractable Plug')."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus PowerMega 3 Ports Fast Charger 140W",
+  "model_numbers": [
+   "CCGP100101"
+  ],
+  "series": "PowerMega (GaN5)",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 140,
+  "max_single_port_w": 140,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 140
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": "3.1",
+  "pd_fixed_pdos": null,
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": true,
+  "other_protocols": [
+   "QC5.0",
+   "QC4.0+",
+   "QC3.0"
+  ],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 288,
+  "dimensions_mm": "95x60x30 (3.74x2.36x1.18 in)",
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 69.99,
+  "official_url": "https://www.baseus.com/products/powermega-3-ports-fast-charger-140w",
+  "sources": [
+   "https://www.baseus.com/products/powermega-3-ports-fast-charger-140w",
+   "https://www.chargerlab.com/teardown-of-baseus-140w-pd3-1-gan-charger"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "usb_pd_version": 0,
+   "pps": 0,
+   "epr_avs": 0,
+   "other_protocols": 0,
+   "weight_g": 0
+  },
+  "confidence": "medium",
+  "notes": "PPS named on page; no ranges. ChargerLAB tested a Baseus 140W PD3.1 GaN charger (C1 28V5A, C2 20V5A, A no PD) with matching weight 287g - likely same product but model code not confirmed; its PPS ranges were 'a set of PPS' unspecified. Page lists '3 ports' while ChargerLAB device is 2C1A."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus GaN2 3 Ports Fast Charger 65W",
+  "model_numbers": [
+   "CCGAN2P-G01"
+  ],
+  "series": "GaN2",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": 65,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 65
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": "3.0",
+  "pd_fixed_pdos": null,
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "QC3.0",
+   "Samsung Super Fast Charging 45W"
+  ],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 152,
+  "dimensions_mm": "70x36x32 (2.76x1.42x1.26 in)",
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 36.99,
+  "official_url": "https://www.baseus.com/products/gan2-3-ports-fast-charger-65w",
+  "sources": [
+   "https://www.baseus.com/products/gan2-3-ports-fast-charger-65w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "pps": 0,
+   "usb_pd_version": 0,
+   "other_protocols": 0,
+   "weight_g": 0
+  },
+  "confidence": "medium",
+  "notes": "PPS named in page text; no ranges."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus GaN2 4 Ports Fast Charger 100W",
+  "model_numbers": [
+   "CCGAN2P-M01"
+  ],
+  "series": "GaN2",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": 100,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 100
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 100
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": null
+   },
+   {
+    "name": "A2",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": "3.0",
+  "pd_fixed_pdos": null,
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "QC3.0",
+   "Samsung Super Fast Charging (C1/C2)"
+  ],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 281,
+  "dimensions_mm": "85x54x30 (3.34x2.12x1.18 in)",
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 59.99,
+  "official_url": "https://www.baseus.com/products/gan2-4-ports-fast-charger-100w",
+  "sources": [
+   "https://www.baseus.com/products/gan2-4-ports-fast-charger-100w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "pps": 0,
+   "other_protocols": 0,
+   "weight_g": 0
+  },
+  "confidence": "medium",
+  "notes": "PPS named among '12 protocols'; no ranges. 100W only when one C port used."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus GaN2 Pro 3 Ports USB-C Fast Charger 120W",
+  "model_numbers": [
+   "CCGAN-I02"
+  ],
+  "series": "GaN2 Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 120,
+  "max_single_port_w": 100,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 100
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 100
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": 30
+   }
+  ],
+  "port_sharing": "C1+C2: 60W+60W; C1/C2+A: 87W+30W; C1+C2+A: 60W+30W+30W",
+  "usb_pd_version": "3.0",
+  "pd_fixed_pdos": "5V3A 9V3A 12V3A 15V3A 20V5A (per C port)",
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "QC4+",
+   "QC3.0",
+   "SCP",
+   "FCP",
+   "AFC"
+  ],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 220,
+  "dimensions_mm": "94x55x31 (3.7x2.16x1.22 in)",
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 59.99,
+  "official_url": "https://www.baseus.com/products/gan2-pro-3-ports-usb-c-fast-charger-120w",
+  "sources": [
+   "https://www.baseus.com/products/gan2-pro-3-ports-usb-c-fast-charger-120w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "port_sharing": 0,
+   "pd_fixed_pdos": 0,
+   "other_protocols": 0,
+   "weight_g": 0
+  },
+  "confidence": "low",
+  "notes": "Spec sheet lists C1/C2 output as '3.3-20V=5A' which may indicate PPS but PPS is not named; pps left null. Name says 120W while headline claims 100W single USB-C."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus GaN2 USB-C Fast Charger 100W",
+  "model_numbers": [
+   "TZCCGAN-Z01"
+  ],
+  "series": "GaN2",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": 100,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 100
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "QC5.0"
+  ],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 249,
+  "dimensions_mm": "93x37x112 (3.66x1.45x4.4 in)",
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 79.99,
+  "official_url": "https://www.baseus.com/products/gan2-usb-c-fast-charger-100w",
+  "sources": [
+   "https://www.baseus.com/products/gan2-usb-c-fast-charger-100w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "other_protocols": 0,
+   "weight_g": 0
+  },
+  "confidence": "low",
+  "notes": "Spec says 96W wattage and outputs 5V/12V 3A, 9V/15V/20V 5A. PPS not stated. Looks like an older single-port 100W; price list $79.99."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus EnerCore CJ11 Fast Charger with Retractable Cable 2C 45W",
+  "model_numbers": [
+   "unknown"
+  ],
+  "series": "EnerCore",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 45,
+  "max_single_port_w": 45,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 45
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 45
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": null,
+  "official_url": "https://www.baseus.com/products/enercore-cj11-fast-charger-with-retractable-cable-2c-45w",
+  "sources": [
+   "https://www.baseus.com/products/enercore-cj11-fast-charger-with-retractable-cable-2c-45w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0
+  },
+  "confidence": "low",
+  "notes": "Retractable 32in USB-C cable. Price not captured (variant price not extracted). Per-port data absent. PPS not stated for this variant."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus EnerCore CJ11 Fast Charger with Retractable Cable 3C 67W",
+  "model_numbers": [
+   "unknown"
+  ],
+  "series": "EnerCore",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 67,
+  "max_single_port_w": 67,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 67
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 67
+   },
+   {
+    "name": "C3 (retractable cable)",
+    "type": "USB-C",
+    "max_w": 67
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": true,
+  "pps_ranges": "includes 18V 2A profile (Pixel 10 Pro XL ~37W measured); full ranges not published",
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": null,
+  "official_url": "https://www.baseus.com/products/enercore-cj11-fast-charger-with-retractable-cable-3c-67w",
+  "sources": [
+   "https://www.baseus.com/products/enercore-cj11-fast-charger-with-retractable-cable-3c-67w",
+   "https://www.androidauthority.com/baseus-enercore-cj11-usb-c-wall-charger-review-3595326/"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "pps": 1,
+   "pps_ranges": 1
+  },
+  "confidence": "low",
+  "notes": "Each of 3 outputs individually rated 67W, 67W total shared. PPS evidence is Android Authority test (Pixel 18V/2A) - no ChargerLAB or PDO dump. Price not captured."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus EnerCore CJ11 Fast Charger with Retractable Cable 2C+U 100W",
+  "model_numbers": [
+   "unknown"
+  ],
+  "series": "EnerCore",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": 100,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 100
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": "Built-in 100W USB-C retractable cable",
+  "msrp_usd": null,
+  "typical_price_usd": null,
+  "official_url": "https://www.baseus.com/products/enercore-cj11-fast-charger-with-retractable-cable-2c-u-100w",
+  "sources": [
+   "https://www.baseus.com/products/enercore-cj11-fast-charger-with-retractable-cable-2c-u-100w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0
+  },
+  "confidence": "low",
+  "notes": "PPS not stated. Price not captured."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus EnerCore CJ21 Fast Charger with Dual Retractable Cables 3C 67W",
+  "model_numbers": [
+   "unknown"
+  ],
+  "series": "EnerCore",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 67,
+  "max_single_port_w": 67,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "C2 (retractable)",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "C3 (retractable)",
+    "type": "USB-C",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": null,
+  "official_url": "https://www.baseus.com/products/enercore-cj21-fast-charger-with-dual-retractable-cables-3c-67w",
+  "sources": [
+   "https://www.baseus.com/products/enercore-cj21-fast-charger-with-dual-retractable-cables-3c-67w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0
+  },
+  "confidence": "low",
+  "notes": "Meta says dual 45W ports; title says 3C 67W. Contradictory/unclear. PPS not stated. Price not captured."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus GaN3 Pro 4 Ports Desktop Charger 65W (desktop station)",
+  "model_numbers": [
+   "CCGN030001"
+  ],
+  "series": "GaN3 Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": 65,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 65
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": null
+   },
+   {
+    "name": "A2",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "QC",
+   "Samsung AFC 45W"
+  ],
+  "gan": true,
+  "foldable_plug": false,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 238,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 49.99,
+  "official_url": "https://www.baseus.com/products/gan3-pro-4-ports-desktop-charger-65w",
+  "sources": [
+   "https://www.baseus.com/products/gan3-pro-4-ports-desktop-charger-65w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "other_protocols": 0,
+   "weight_g": 0
+  },
+  "confidence": "medium",
+  "notes": "Desktop (corded, 5ft AC cable). PPS not stated; page lists PD 20W iPhone, QC, Samsung 45W."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus GaN3 Pro 4 Ports Desktop Charger 100W (desktop station)",
+  "model_numbers": [
+   "CCGP000201"
+  ],
+  "series": "GaN3 Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": 100,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 100
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 100
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": null
+   },
+   {
+    "name": "A2",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": false,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 295,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 49.99,
+  "official_url": "https://www.baseus.com/products/gan3-pro-4-ports-desktop-charger-100w",
+  "sources": [
+   "https://www.baseus.com/products/gan3-pro-4-ports-desktop-charger-100w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "weight_g": 0
+  },
+  "confidence": "medium",
+  "notes": "Any C port gives 100W when others idle. PPS not stated."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus GaN5 4 Ports Charging Station 67W (2C+1A+HDMI)",
+  "model_numbers": [
+   "CCGP110101"
+  ],
+  "series": "GaN5",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 67,
+  "max_single_port_w": 45,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 20
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 45
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": "C1+C2: 20W+45W; C1 20W profile 5V3A 9V2.22A 12V1.67A; C2 45W profile up to 20V2.25A",
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "QC4+",
+   "QC3.0",
+   "QC2.0",
+   "SCP",
+   "FCP",
+   "AFC",
+   "PE+",
+   "HDMI 4K30 output"
+  ],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 431,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 59.99,
+  "official_url": "https://www.baseus.com/products/gan5-4-ports-charging-sation-67w",
+  "sources": [
+   "https://www.baseus.com/products/gan5-4-ports-charging-sation-67w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0,
+   "port_sharing": 0,
+   "pps": 0,
+   "other_protocols": 0,
+   "weight_g": 0
+  },
+  "confidence": "low",
+  "notes": "Product type Power Strips on Baseus site; included as desktop station. PPS named in protocol list; no ranges. Spec table lists C1/C2 20V 3.35A which conflicts with 20W+45W split."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus EnerFill FH21 Desktop Charging Station 4C+2U 120W",
+  "model_numbers": [
+   "E0120S00"
+  ],
+  "series": "EnerFill",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 120,
+  "max_single_port_w": 65,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 65
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "C3",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "C4",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": null
+   },
+   {
+    "name": "A2",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": false,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 39.99,
+  "official_url": "https://www.baseus.com/products/enerfill-fh21-desktop-charging-station-4c-2u-120w",
+  "sources": [
+   "https://www.baseus.com/products/enerfill-fh21-desktop-charging-station-4c-2u-120w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0
+  },
+  "confidence": "low",
+  "notes": "Meta: 65W laptop charging. PPS not stated. Per-port detail unknown."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus Nomos NH21 5-in-1 Desktop Charging Station 160W",
+  "model_numbers": [
+   "E0121800"
+  ],
+  "series": "Nomos",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 160,
+  "max_single_port_w": null,
+  "ports": [
+   {
+    "name": "C",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "C",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "C",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "A",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": false,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 119.99,
+  "official_url": "https://www.baseus.com/products/nomos-nh21-5-in-1-desktop-charging-station-3c-u-160w",
+  "sources": [
+   "https://www.baseus.com/products/nomos-nh21-5-in-1-desktop-charging-station-3c-u-160w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0
+  },
+  "confidence": "low",
+  "notes": "3C+U plus 5th output (likely wireless/AC? unverified). Details not published on fetched page. PPS not stated."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus Nomos NH21 6-in-1 Desktop Charging Station 245W",
+  "model_numbers": [
+   "E0120Z00"
+  ],
+  "series": "Nomos",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 245,
+  "max_single_port_w": null,
+  "ports": [],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": false,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 199.99,
+  "official_url": "https://www.baseus.com/products/nomos-nh21-6-in-1-desktop-charging-station-245w",
+  "sources": [
+   "https://www.baseus.com/products/nomos-nh21-6-in-1-desktop-charging-station-245w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "typical_price_usd": 0
+  },
+  "confidence": "low",
+  "notes": "Port detail not captured; includes wireless charging per spec feature list. PPS not stated."
+ },
+ {
+  "brand": "Baseus",
+  "product_name": "Baseus PicoGo Pro 45W GaN Charger (display, ChargerLAB-tested)",
+  "model_numbers": [
+   "unknown"
+  ],
+  "series": "PicoGo Pro",
+  "release_year": null,
+  "status": "unknown",
+  "max_total_w": 45,
+  "max_single_port_w": 45,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 45
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": "3.2",
+  "pd_fixed_pdos": "5V3A 9V3A 12V3A 15V3A 20V2.25A",
+  "pps": true,
+  "pps_ranges": "5-20V 5A; AVS 9-20V 3A/2.25A; UFCS 5-11V 4A",
+  "pps_max_w": 45,
+  "epr_avs": null,
+  "other_protocols": [
+   "UFCS",
+   "QC3.0",
+   "QC4+",
+   "FCP",
+   "SCP",
+   "AFC",
+   "DCP",
+   "Apple 2.4A"
+  ],
+  "gan": true,
+  "foldable_plug": null,
+  "plug_region": "US",
+  "display": null,
+  "weight_g": 69,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": null,
+  "official_url": null,
+  "sources": [
+   "https://www.chargerlab.com/teardown-of-the-baseus-picogo-pro-45w-gan-charger"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "usb_pd_version": 0,
+   "pd_fixed_pdos": 0,
+   "pps": 0,
+   "pps_ranges": 0,
+   "other_protocols": 0,
+   "weight_g": 0
+  },
+  "confidence": "low",
+  "notes": "Probably the same charger as one of Baseus's US 45W PicoGo listings but not matched to a US SKU; ChargerLAB reports PPS '5-20V 5A' (looks like a chip limit; real power capped at 45W so pps_max_w uncertain; 100W is nominal). AVS is not EPR AVS (9-20V)."
+ }
+]

@@ -1,0 +1,69 @@
+{
+ "brand": "Baseus",
+ "product_name": "Baseus GaN5 Pro 2 Pack 3-Port Fast Charger 2C+U 65W",
+ "model_numbers": [
+  "E0104500"
+ ],
+ "series": "GaN5 Pro",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 65,
+ "max_single_port_w": 65,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 65
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": null
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": null
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": null,
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "QC3.0"
+ ],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [
+  "CE",
+  "FCC",
+  "TUV"
+ ],
+ "cable_included": null,
+ "msrp_usd": null,
+ "typical_price_usd": 49.99,
+ "official_url": "https://www.baseus.com/products/gan5-pro-2-pack-fast-charger-2c-u-65w",
+ "sources": [
+  "https://www.baseus.com/products/gan5-pro-2-pack-fast-charger-2c-u-65w"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "ports": 0,
+  "typical_price_usd": 0,
+  "pps": 0,
+  "usb_pd_version": 0,
+  "other_protocols": 0,
+  "safety_certs": 0
+ },
+ "confidence": "medium",
+ "notes": "Pack of 2 chargers ($49.99 for two; ~$25 each). PPS named on page; no ranges. Single-port 65W and per-port split not published on page.",
+ "id": "baseus-e0104500"
+}

@@ -1,0 +1,89 @@
+{
+ "brand": "UGREEN",
+ "product_name": "UGREEN Nexode 100W Charger with Retractable USB-C Cable",
+ "model_numbers": [
+  "65585",
+  "X606",
+  "65591"
+ ],
+ "series": "Nexode",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 100,
+ "max_single_port_w": 100,
+ "ports": [
+  {
+   "name": "Cable",
+   "type": 100,
+   "max_w": null
+  },
+  {
+   "name": "C1",
+   "type": 100,
+   "max_w": null
+  },
+  {
+   "name": "C2",
+   "type": 30,
+   "max_w": null
+  },
+  {
+   "name": "A1",
+   "type": 22.5,
+   "max_w": null
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": "Cable & C1: 5V3A 9V3A 12V3A 15V3A 20V5A; C2: 5V3A 9V3A 12V2.5A 15V2A 20V1.5A",
+ "pps": true,
+ "pps_ranges": "Cable & C1: 5-21V 5A; C2: 5-11V 2.75A",
+ "pps_max_w": 100,
+ "epr_avs": null,
+ "other_protocols": [
+  "QC3.0",
+  "FCP",
+  "SCP",
+  "AFC",
+  "SFCP",
+  "UFCS",
+  "Apple 2.4A",
+  "Samsung 5V2A"
+ ],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": 303.8,
+ "dimensions_mm": "57.02 x 50.53 x 69.08",
+ "safety_certs": [],
+ "cable_included": "built-in retractable USB-C ~72.5cm",
+ "msrp_usd": 59.99,
+ "typical_price_usd": 49.99,
+ "official_url": "https://us.ugreen.com/products/ugreen-100w-retractable-gan-charger",
+ "sources": [
+  "https://us.ugreen.com/products/ugreen-100w-retractable-gan-charger",
+  "https://us.ugreen.com/collections/charger",
+  "https://www.chargerlab.com/teardown-of-the-ugreen-nexode-100w-charger-with-retractable-usb-c-cable"
+ ],
+ "field_sources": {
+  "product_name": 0,
+  "model_numbers": 0,
+  "max_total_w": 0,
+  "typical_price_usd": 1,
+  "msrp_usd": 1,
+  "status": 1,
+  "ports": 2,
+  "pd_fixed_pdos": 2,
+  "pps": 2,
+  "pps_ranges": 2,
+  "usb_pd_version": 2,
+  "other_protocols": 2,
+  "weight_g": 2,
+  "dimensions_mm": 2,
+  "cable_included": 2
+ },
+ "confidence": "high",
+ "notes": "ChargerLAB model X606 / part 65591 mapped to US item 65585 by name (unverified). Article intro claims every port 100W, spec sheet says C2 30W, A 22.5W; used spec sheet. No port-sharing table. pps_max_w=21Vx5A=105 capped by 100W total. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise.",
+ "id": "ugreen-65585"
+}

@@ -1,0 +1,48 @@
+{
+ "brand": "UGREEN",
+ "product_name": "UGREEN Nexode Air Slim USB-C Charger (45W, Foldable Plug)",
+ "model_numbers": [
+  "85252"
+ ],
+ "series": "Nexode Air",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 45,
+ "max_single_port_w": null,
+ "ports": [],
+ "port_sharing": null,
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": 34.99,
+ "typical_price_usd": 34.99,
+ "official_url": "https://us.ugreen.com/products/nexode-air-slim-usb-c-charger-45w-foldable-plug",
+ "sources": [
+  "https://us.ugreen.com/products/nexode-air-slim-usb-c-charger-45w-foldable-plug",
+  "https://us.ugreen.com/collections/charger",
+  "https://www.notebookcheck.net/Pocket-sized-power-Ugreen-Nexode-Air-Slim-45W-review.1324697.0.html"
+ ],
+ "field_sources": {
+  "product_name": 0,
+  "model_numbers": 0,
+  "max_total_w": 0,
+  "typical_price_usd": 1,
+  "msrp_usd": 1,
+  "status": 1
+ },
+ "confidence": "low",
+ "notes": "Notebookcheck reviewed this Slim 45W; found peak efficiency ~95.4% (per search summary, may be mismatched) and no protocol disclosure; PPS unverified. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise.",
+ "id": "ugreen-85252"
+}

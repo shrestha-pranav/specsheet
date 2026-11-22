@@ -1,0 +1,58 @@
+{
+ "brand": "Anker",
+ "product_name": "Anker Nano Charger (45W, Smart Display, 180 degree Foldable)",
+ "model_numbers": [
+  "A121D",
+  "B121D"
+ ],
+ "series": "Nano",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 45,
+ "max_single_port_w": 45,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 45
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": null,
+ "pd_fixed_pdos": "5V3A 9V3A 15V3A 20V2.25A",
+ "pps": true,
+ "pps_ranges": "up to 3A (explicitly no 5A PPS); voltage window not published",
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "Samsung Super Fast Charging (some S23/S24 limited to 27W)"
+ ],
+ "gan": null,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": true,
+ "weight_g": 75,
+ "dimensions_mm": "34 x 35.5 x 40 (page also lists 34 x 35 x 40)",
+ "safety_certs": [
+  "TUV (Care Mode)"
+ ],
+ "cable_included": "no (bundles with 3ft/6ft cable sold as variants)",
+ "msrp_usd": 39.99,
+ "typical_price_usd": 25.99,
+ "official_url": "https://www.anker.com/products/a121d-45w-usb-c-fast-charger-foldable-plug-compact",
+ "sources": [
+  "https://www.anker.com/products/a121d-45w-usb-c-fast-charger-foldable-plug-compact",
+  "https://www.anker.com/collections/fast-wall-charger"
+ ],
+ "field_sources": {
+  "pd_fixed_pdos": 0,
+  "pps": 0,
+  "weight_g": 0,
+  "display": 0,
+  "typical_price_usd": 1,
+  "msrp_usd": 1
+ },
+ "confidence": "medium",
+ "notes": "Page showed 'Sold Out' at fetch time; price from collection listing. Also sold as 2-pack ($51.98) and 3-pack ($119.97) and with cable bundles.",
+ "id": "anker-a121d"
+}

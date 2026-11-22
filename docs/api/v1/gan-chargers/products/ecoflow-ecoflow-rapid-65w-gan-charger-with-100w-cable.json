@@ -1,0 +1,63 @@
+{
+ "brand": "EcoFlow",
+ "product_name": "EcoFlow RAPID 65W GaN Charger with 100W Cable",
+ "model_numbers": [],
+ "series": "RAPID",
+ "release_year": 2024,
+ "status": "current",
+ "max_total_w": 65,
+ "max_single_port_w": 65,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 65
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 65
+  },
+  {
+   "name": "A",
+   "type": "USB-A",
+   "max_w": 60
+  }
+ ],
+ "port_sharing": "C1+C2: 45+20; C1+A: 45+18; C2+A: 15 combined; C1+(C2+A): 45 / 15 combined",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 133,
+ "dimensions_mm": "29.5x44.5x61.5 (1.16x1.75x2.42 in)",
+ "safety_certs": [],
+ "cable_included": "1m 5A/100W USB-C to USB-C",
+ "msrp_usd": 49,
+ "typical_price_usd": 29.99,
+ "official_url": "https://us.ecoflow.com/products/rapid-65w-gan-charger-with-100w-cable",
+ "sources": [
+  "https://us.ecoflow.com/products/rapid-65w-gan-charger-with-100w-cable",
+  "https://eu.ecoflow.com/products/rapid-charger-65w"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "ports": 0,
+  "port_sharing": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "cable_included": 0,
+  "msrp_usd": 0,
+  "typical_price_usd": 0
+ },
+ "confidence": "low",
+ "notes": "US page publishes no protocol list, no PDO list, no PPS info -> pps null. Search summary of the EU page suggests PPS/PD but not fetched/confirmed. USB-A single port listed as 60W (likely a typo for 18W) on US page; unverified. Weight from 4.7 oz.",
+ "id": "ecoflow-ecoflow-rapid-65w-gan-charger-with-100w-cable"
+}

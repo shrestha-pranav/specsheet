@@ -1,0 +1,51 @@
+{
+ "brand": "CUKTECH",
+ "product_name": "CUKTECH Type-C Charger 65W (single port)",
+ "model_numbers": [
+  "AD651N"
+ ],
+ "series": "GaN3",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 65,
+ "max_single_port_w": 65,
+ "ports": [
+  {
+   "name": "C",
+   "type": "USB-C",
+   "max_w": 65
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": "5V3A 9V3A 10V5A 12V3A 15V3A 20V3.25A",
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": "100W 6ft USB-C to USB-C",
+ "msrp_usd": null,
+ "typical_price_usd": null,
+ "official_url": "https://cuktech.com/products/a12-cuktech-65w-usb-c-pd-power-charger",
+ "sources": [
+  "https://cuktech.com/products/a12-cuktech-65w-usb-c-pd-power-charger",
+  "https://www.amazon.com/CUKTECH-Charger-Foldable-Charging-MacBook/dp/B0C9STFPCB"
+ ],
+ "field_sources": {
+  "model_numbers": 0,
+  "pd_fixed_pdos": 0,
+  "pps": 0,
+  "cable_included": 0
+ },
+ "confidence": "medium",
+ "notes": "Official page: 'supports both PD 3.0 and PPS'. Output list includes '10V5A' which is unusual for fixed PDO (probably PPS/proprietary step). PPS ranges, price, weight unknown.",
+ "id": "cuktech-ad651n"
+}

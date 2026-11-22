@@ -1,0 +1,73 @@
+{
+ "brand": "UGREEN",
+ "product_name": "UGREEN Nexode Air Slim Charger (100W, 3-Port, Foldable Plug)",
+ "model_numbers": [
+  "75554",
+  "75554B (Best Buy)"
+ ],
+ "series": "Nexode Air",
+ "release_year": 2026,
+ "status": "current",
+ "max_total_w": 100,
+ "max_single_port_w": 100,
+ "ports": [
+  {
+   "name": "C1",
+   "type": 100,
+   "max_w": null
+  },
+  {
+   "name": "C2",
+   "type": 100,
+   "max_w": null
+  },
+  {
+   "name": "A1",
+   "type": 22.5,
+   "max_w": null
+  }
+ ],
+ "port_sharing": "2 devices: C+C 65+30 or 80+18 (varies by source); 3 ports: one USB-C 80W, other USB-C + USB-A share 15W; one review saw 60+40 on C+C",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "QC4",
+  "SCP"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": 74.99,
+ "typical_price_usd": 74.99,
+ "official_url": "https://us.ugreen.com/products/nexode-air-slim-charger-100w-3-port-foldable-plug",
+ "sources": [
+  "https://us.ugreen.com/products/nexode-air-slim-charger-100w-3-port-foldable-plug",
+  "https://us.ugreen.com/collections/charger",
+  "https://www.gizmochina.com/2026/09/13/ugreen-nexode-air-slim-100w-uk-launch-price/",
+  "https://www.notebookcheck.net/Ugreen-brings-new-ultra-slim-100W-charger-to-the-US-with-vastly-different-pricing.1353408.0.html"
+ ],
+ "field_sources": {
+  "product_name": 0,
+  "model_numbers": 0,
+  "max_total_w": 0,
+  "typical_price_usd": 1,
+  "msrp_usd": 1,
+  "status": 1,
+  "ports": 2,
+  "port_sharing": 2,
+  "pps": 2,
+  "release_year": 2
+ },
+ "confidence": "medium",
+ "notes": "PPS true inferred from Japanese Amazon title (PD3.0/PPS/QC4/SCP) and a reviewer measuring 37.3W PPS on OPPO Find N6; exact PPS ranges not found. UK variant 92x56.3x18.24mm 196g incl. UK plug; China variant 90.2x55.6x18.2mm; no US weight found. Split figures vary between sources. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise.",
+ "id": "ugreen-75554"
+}

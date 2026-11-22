@@ -1,0 +1,61 @@
+{
+ "brand": "Anker",
+ "product_name": "Anker 715 Charger (Nano II 65W)",
+ "model_numbers": [
+  "A2663"
+ ],
+ "series": "Nano II",
+ "release_year": 2022,
+ "status": "current",
+ "max_total_w": 65,
+ "max_single_port_w": 65,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 65
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": null,
+ "pd_fixed_pdos": "5V3A 9V3A 15V3A 20V3.25A",
+ "pps": true,
+ "pps_ranges": "5-21V 3.25A (as printed on Anker support page)",
+ "pps_max_w": 65,
+ "epr_avs": null,
+ "other_protocols": [
+  "PowerIQ 3.0",
+  "Samsung Super Fast Charging (not SFC 2.0 45W)"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 112,
+ "dimensions_mm": "41.9 x 36.1 x 44.2 (1.65 x 1.42 x 1.74 in)",
+ "safety_certs": [
+  "IEC 62368-1",
+  "TUV NRTL (image alt text)"
+ ],
+ "cable_included": "no",
+ "msrp_usd": 29.99,
+ "typical_price_usd": 19.99,
+ "official_url": "https://www.anker.com/products/a2663",
+ "sources": [
+  "https://www.anker.com/products/a2663",
+  "https://service.anker.com/product-description/a085g000004x2BTAAY/anker-715-charger-nano-ii-65w",
+  "https://www.anker.com/collections/gan-charger"
+ ],
+ "field_sources": {
+  "pd_fixed_pdos": 0,
+  "pps_ranges": 1,
+  "other_protocols": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "typical_price_usd": 0,
+  "msrp_usd": 0
+ },
+ "confidence": "medium",
+ "notes": "Anker US page does not state PPS; Anker support page says 'PPS' and prints range '5.0V-21.0V=3..25A Max' (typo; lower bound 5V not 3.3V - unverified, treat as unconfirmed). Weight 3.96 oz converted to 112 g. Single-port 65W with PPS and ~$20: candidate for <=$25 criterion.",
+ "id": "anker-a2663"
+}

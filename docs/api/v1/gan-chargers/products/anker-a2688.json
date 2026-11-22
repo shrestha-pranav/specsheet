@@ -1,0 +1,61 @@
+{
+ "brand": "Anker",
+ "product_name": "Anker Prime Charger (100W, 3 Ports, GaN)",
+ "model_numbers": [
+  "A2688"
+ ],
+ "series": "Prime",
+ "release_year": 2026,
+ "status": "current",
+ "max_total_w": 100,
+ "max_single_port_w": 100,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": 22.5
+  }
+ ],
+ "port_sharing": "1 port: 100W; 2 ports: 100W total; 3 ports: 89W total",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": "5V3A 9V3A 15V3A 20V5A",
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 170,
+ "dimensions_mm": "43.5 x 29 x 67.8",
+ "safety_certs": [],
+ "cable_included": "no",
+ "msrp_usd": 69.99,
+ "typical_price_usd": 45.99,
+ "official_url": "https://www.anker.com/products/a2688-anker-prime-charger-100w-3-ports-gan",
+ "sources": [
+  "https://www.anker.com/products/a2688-anker-prime-charger-100w-3-ports-gan"
+ ],
+ "field_sources": {
+  "port_sharing": 0,
+  "pd_fixed_pdos": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "typical_price_usd": 0
+ },
+ "confidence": "medium",
+ "notes": "Page showed pre-order shipping Nov 25-Dec 5 2026 so release_year 2026 is inferred. PPS not stated. A2343 (another 100W Prime 3-port) is referenced in an Anker FAQ but its page returned no specs - not catalogued.",
+ "id": "anker-a2688"
+}

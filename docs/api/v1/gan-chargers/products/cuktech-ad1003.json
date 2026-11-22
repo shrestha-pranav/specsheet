@@ -1,0 +1,70 @@
+{
+ "brand": "CUKTECH",
+ "product_name": "CUKTECH No.10 100W GaN Charger (2C1A)",
+ "model_numbers": [
+  "AD1003",
+  "AD1003US",
+  "AD1003EU"
+ ],
+ "series": "No.10",
+ "release_year": 2024,
+ "status": "current",
+ "max_total_w": 100,
+ "max_single_port_w": 100,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "A",
+   "type": "USB-A",
+   "max_w": 18
+  }
+ ],
+ "port_sharing": "C1+C2: 67W + 33W; C1/C2+A: 67W + 18W; C1+C2+A: 45W + 33W + 18W (EU manual)",
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V5A (+11V6.1A step); A: 5V3A 9V2A 12V1.5A",
+ "pps": true,
+ "pps_ranges": "PPS to 20V (Charge-Test); exact ranges not published",
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "QC"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": null,
+ "dimensions_mm": "73x94.2x35.6",
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": null,
+ "typical_price_usd": 59.99,
+ "official_url": "https://cuktech.com/products/cuktech-10-100w-gan-charger",
+ "sources": [
+  "https://cuktech.com/products/cuktech-10-100w-gan-charger",
+  "https://m.media-amazon.com/images/I/B1Pupp-krAL.pdf",
+  "https://charge-test.com/cuktech-gan-charger-100w-review-compact-power-with-premium-ambition/",
+  "https://www.neowin.net/reviews/cuktech-10-100w-gan-charger-review-cant-go-wrong-with-this-one/"
+ ],
+ "field_sources": {
+  "model_numbers": 0,
+  "pps": 0,
+  "pd_fixed_pdos": 1,
+  "port_sharing": 1,
+  "dimensions_mm": 1,
+  "pps_ranges": 2,
+  "typical_price_usd": 0
+ },
+ "confidence": "medium",
+ "notes": "Manual is EU model AD1003EU; US AD1003US assumed equal. Neowin says single-port drops to 65W when another port used - consistent with manual 67W. Price $59.99 only from a search summary (unverified, Amazon blocked). No ChargerLAB test found.",
+ "id": "cuktech-ad1003"
+}

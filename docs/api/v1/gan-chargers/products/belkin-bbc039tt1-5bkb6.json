@@ -1,0 +1,55 @@
+{
+ "brand": "Belkin",
+ "product_name": "BoostCharge USB-C GaN Wall Charger 100W (single port) + 5 ft USB-C cable",
+ "model_numbers": [
+  "BBC039tt1.5BKB6",
+  "WCH025dq1.5WHB6"
+ ],
+ "series": "BoostCharge",
+ "release_year": 2026,
+ "status": "current",
+ "max_total_w": 100,
+ "max_single_port_w": 100,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 100
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "QC5 (image caption)",
+  "Samsung SFC 2.0 (image caption)"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US foldable",
+ "display": false,
+ "weight_g": null,
+ "dimensions_mm": "81 x 61 x 31 (65 x 61 x 31 folded)",
+ "safety_certs": [],
+ "cable_included": "Yes, 1.5 m USB-C to USB-C",
+ "msrp_usd": 29.99,
+ "typical_price_usd": 29.99,
+ "official_url": "https://www.belkin.com/p/usb-c-gan-wall-charger-100w-plus-usb-c-cable/BBC039tt1.5BKB6.html",
+ "sources": [
+  "https://www.belkin.com/p/usb-c-gan-wall-charger-100w-plus-usb-c-cable/BBC039tt1.5BKB6.html",
+  "https://9to5toys.com/2026/07/13/belkin-100w-usb-c-wall-charger/"
+ ],
+ "field_sources": {
+  "typical_price_usd": 0,
+  "cable_included": 0,
+  "dimensions_mm": 0,
+  "other_protocols": 0
+ },
+ "confidence": "low",
+ "notes": "PPS NOT confirmed; image caption mentions 'PD3.2'. Price $29.99 INCLUDES the cable; 9to5Toys reported Amazon deal $25.50 (expired). thetestedhub review (same ASIN B0H2BTQQYX) describes 4 ports / 63x63x30 mm / 175 g, which contradicts Belkin's 1-port page; treated as unreliable. WCH025 model number comes from a B&H listing (403 on fetch), not verified. KEY CANDIDATE for a cheap >=65W single-port unit; needs PPS test.",
+ "id": "belkin-bbc039tt1-5bkb6"
+}

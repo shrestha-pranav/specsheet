@@ -1,0 +1,59 @@
+{
+ "brand": "Spigen",
+ "product_name": "ArcStation Pro GaN 651 Wall Charger (65W PPS, single port)",
+ "model_numbers": [
+  "PE2201",
+  "PE2201UJ",
+  "ACH05474 (white)",
+  "ACH05473 (black)"
+ ],
+ "series": "ArcStation Pro",
+ "release_year": null,
+ "status": "unknown",
+ "max_total_w": 65,
+ "max_single_port_w": 65,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 65
+  }
+ ],
+ "port_sharing": "Single port",
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": null,
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": 65,
+ "epr_avs": null,
+ "other_protocols": [
+  "Samsung Super Fast Charging 2.0"
+ ],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 96,
+ "dimensions_mm": "40.4 x 28.4 x 50.3",
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": 64.99,
+ "typical_price_usd": null,
+ "official_url": "https://partners.spigen.com/products/arcstation-pro-gan-651-wall-charger-pe2201",
+ "sources": [
+  "https://partners.spigen.com/products/arcstation-pro-gan-651-wall-charger-pe2201",
+  "https://forcetop.com/en/products/spigen-arcstation-pro-gan-651-usb-c-pd-3-0-pps-65w-power-charger-usb-c-cable-black-21782"
+ ],
+ "field_sources": {
+  "pps": 0,
+  "usb_pd_version": 1,
+  "max_total_w": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "msrp_usd": 0,
+  "other_protocols": 0
+ },
+ "confidence": "medium",
+ "notes": "Spigen page: 'provides PPS 65W' + SFC 2.0. PPS V/A ranges not published; no ChargerLAB test found. Cable not included on page; a retailer sells it with cable. No US street price captured (Amazon not fetched); $64.99 is partner-site list. CANDIDATE: >=65W single-port PPS, price on Amazon unverified. spigen.com (consumer store) and partners.spigen.com pages 404 or delisted for most ArcStation chargers as of 2026-11-22; status 'unknown/discontinued on Spigen's own storefront' - still sold via Amazon. partners.spigen.com price is the B2B storefront list price, not street price.",
+ "id": "spigen-pe2201"
+}

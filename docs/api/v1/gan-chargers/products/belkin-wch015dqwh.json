@@ -1,0 +1,72 @@
+{
+ "brand": "Belkin",
+ "product_name": "BoostCharge Pro 200W 4-Port USB-C GaN Charger",
+ "model_numbers": [
+  "WCH015dqWH",
+  "WCH015zbWH (IN)",
+  "WCH015myWH"
+ ],
+ "series": "BoostCharge Pro",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 200,
+ "max_single_port_w": 140,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 140
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 140
+  },
+  {
+   "name": "C3",
+   "type": "USB-C",
+   "max_w": 60
+  },
+  {
+   "name": "C4",
+   "type": "USB-C",
+   "max_w": 60
+  }
+ ],
+ "port_sharing": "C1+C2 share 140W; C3+C4 share 60W (per Navitas/CDT teardown); 200W total",
+ "usb_pd_version": "3.1",
+ "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 15V3A 20V5A 28V5A; C3/C4: 5V3A 9V3A 15V3A 20V3A",
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": true,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": false,
+ "plug_region": null,
+ "display": false,
+ "weight_g": null,
+ "dimensions_mm": "119 x 91 x 36",
+ "safety_certs": [],
+ "cable_included": "No USB-C cable; 1.5 m detachable AC cord",
+ "msrp_usd": 129.99,
+ "typical_price_usd": 129.99,
+ "official_url": "https://www.belkin.com/p/200w-4-port-usb-c-gan-charger/WCH015dqWH.html",
+ "sources": [
+  "https://www.belkin.com/p/200w-4-port-usb-c-gan-charger/WCH015dqWH.html",
+  "https://www.belkin.com/support-article/?articleNum=336311",
+  "https://navitassemi.com/cdt-teardown-report-of-belkin-200w-quad-usb-c-port-gallium-nitride-desktop-charger/"
+ ],
+ "field_sources": {
+  "pd_fixed_pdos": 1,
+  "port_sharing": 2,
+  "max_single_port_w": 0,
+  "epr_avs": 1,
+  "typical_price_usd": 0,
+  "dimensions_mm": 0,
+  "usb_pd_version": 0
+ },
+ "confidence": "medium",
+ "notes": "Desktop charger (removable AC cord). Belkin support lists 28V5A (140W) on C1/C2 so epr_avs true by 28V PDO (fixed EPR-level voltage); AVS ranges not published. CONTRADICTION: the support page says 'PPS is required for all USB-C ports' (ambiguous wording); actual PPS ranges not found, pps left null. No ChargerLAB test found.",
+ "id": "belkin-wch015dqwh"
+}

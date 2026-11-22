@@ -1,0 +1,61 @@
+{
+ "brand": "Anker",
+ "product_name": "Anker GaNPrime 65W Charger (3-port)",
+ "model_numbers": [
+  "A2668"
+ ],
+ "series": "Prime",
+ "release_year": null,
+ "status": "unknown",
+ "max_total_w": 65,
+ "max_single_port_w": null,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": null
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": null
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": null
+  }
+ ],
+ "port_sharing": "Middle USB-C and USB-A share max 24W when both used",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "PowerIQ 4.0"
+ ],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": null,
+ "display": false,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": null,
+ "typical_price_usd": null,
+ "official_url": null,
+ "sources": [
+  "https://support.anker.com/s/article/What-are-the-differences-between-Anker-Prime-67W-Charger-and-Anker-GaNPrime-65W-Charger",
+  "https://support.anker.com/s/article/What-are-the-differences-between-GaN-II-and-GaNPrime"
+ ],
+ "field_sources": {
+  "port_sharing": 0,
+  "pps": 1
+ },
+ "confidence": "low",
+ "notes": "Predecessor to A2669 Prime 67W; legacy, probably discontinued. Only search-snippet data (PPS listed in Anker compatibility list). Per-port wattage not retrieved.",
+ "id": "anker-a2668"
+}

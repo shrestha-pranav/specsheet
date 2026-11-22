@@ -1,0 +1,63 @@
+{
+ "brand": "Belkin",
+ "product_name": "BoostCharge Pro Dual USB-C GaN Wall Charger with PPS 65W",
+ "model_numbers": [
+  "WCH013dqWH",
+  "BBC013-BK",
+  "WCH013dq2MWH-B6 (with cable)",
+  "ENA007dqBK (Nintendo Switch 2 edition)"
+ ],
+ "series": "BoostCharge Pro",
+ "release_year": 2022,
+ "status": "current",
+ "max_total_w": 65,
+ "max_single_port_w": 65,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 65
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 20
+  }
+ ],
+ "port_sharing": "Single: 65W; dual: top 45W + bottom 20W",
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": null,
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": null,
+ "display": false,
+ "weight_g": null,
+ "dimensions_mm": "39 x 40 x 69",
+ "safety_certs": [],
+ "cable_included": "No (standalone); -B6 bundle includes cable",
+ "msrp_usd": 49.99,
+ "typical_price_usd": 50.99,
+ "official_url": "https://www.belkin.com/p/dual-usb-c-gan-wall-charger-with-pps-65w/WCH013dqWH.html",
+ "sources": [
+  "https://www.belkin.com/p/dual-usb-c-gan-wall-charger-with-pps-65w/WCH013dqWH.html",
+  "https://www.belkin.com/support-article/?articleNum=335922",
+  "https://www.belkin.com/pr-belkin-introduces-the-boostcharge-pro-dual-usbc-gan-wall-charger-with-pps.html"
+ ],
+ "field_sources": {
+  "pps": 0,
+  "port_sharing": 0,
+  "typical_price_usd": 0,
+  "usb_pd_version": 0,
+  "gan": 1,
+  "msrp_usd": 1,
+  "release_year": 2
+ },
+ "confidence": "medium",
+ "notes": "PPS ranges not published; ChargerLAB tests of sibling WCH020 (67W) show 5-11V 4.5A / 5-21V 3.15A but that is a different SKU. ENA007dqBK Switch-2 edition ($29.99 on sale, was $50.99) is the same 65W dual design per Belkin listing (same price history), not independently verified as identical internals. Sale pricing seen on Belkin: ENA007 $29.99.",
+ "id": "belkin-wch013dqwh"
+}

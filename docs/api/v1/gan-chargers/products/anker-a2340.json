@@ -1,0 +1,67 @@
+{
+ "brand": "Anker",
+ "product_name": "Anker 747 Charger (GaNPrime 150W)",
+ "model_numbers": [
+  "A2340",
+  "A2029"
+ ],
+ "series": "Prime",
+ "release_year": 2022,
+ "status": "discontinued",
+ "max_total_w": 150,
+ "max_single_port_w": 100,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C3",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": 22.5
+  }
+ ],
+ "port_sharing": "C1+C2: 150; C1+C3: 150; C2/C3+A: 100+22.5; C2+(C1+A): 100+24; 4 ports: 150",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": "5V3A 9V3A 15V3A 20V5A",
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "PowerIQ 4.0"
+ ],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": "no",
+ "msrp_usd": null,
+ "typical_price_usd": null,
+ "official_url": "https://service.anker.com/product-description/a085g000004xGpeAAE/anker-747-charger-ganprime-150w",
+ "sources": [
+  "https://service.anker.com/product-description/a085g000004xGpeAAE/anker-747-charger-ganprime-150w"
+ ],
+ "field_sources": {
+  "port_sharing": 0,
+  "pd_fixed_pdos": 0,
+  "pps": 0
+ },
+ "confidence": "medium",
+ "notes": "Support page manual label is A2340; A2029 was my prior and could not be confirmed - contradiction left open. PPS range not published. Status inferred.",
+ "id": "anker-a2340"
+}

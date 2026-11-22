@@ -1,0 +1,78 @@
+{
+ "brand": "Anker",
+ "product_name": "Anker Prime Charger (250W, 6 Ports, GaNPrime)",
+ "model_numbers": [
+  "A2345"
+ ],
+ "series": "station",
+ "release_year": 2023,
+ "status": "current",
+ "max_total_w": 250,
+ "max_single_port_w": 140,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 140
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C3",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C4",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": 22.5
+  },
+  {
+   "name": "A2",
+   "type": "USB-A",
+   "max_w": 22.5
+  }
+ ],
+ "port_sharing": "2 ports: 240W total; 3-6 ports: 250W total",
+ "usb_pd_version": "3.1",
+ "pd_fixed_pdos": "C1: 9V3A 15V3A 20V5A 28V5A; C2-C4: 9V3A 15V3A 20V5A",
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": true,
+ "other_protocols": [
+  "PowerIQ 4.0"
+ ],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": true,
+ "weight_g": 640,
+ "dimensions_mm": "106.2 x 40.2 x 92.5",
+ "safety_certs": [],
+ "cable_included": "AC cord yes (implied); no USB cables",
+ "msrp_usd": 149.99,
+ "typical_price_usd": 149.99,
+ "official_url": "https://www.anker.com/products/a2345-anker-prime-charger-250w-6-ports-ganprime",
+ "sources": [
+  "https://www.anker.com/products/a2345-anker-prime-charger-250w-6-ports-ganprime",
+  "https://www.anker.com/collections/fast-wall-charger"
+ ],
+ "field_sources": {
+  "port_sharing": 0,
+  "pd_fixed_pdos": 0,
+  "weight_g": 0,
+  "typical_price_usd": 1
+ },
+ "confidence": "medium",
+ "notes": "Desktop station with 2.26in LCD. PPS not stated. Weight 640 g vs 1.41 lb comparison table (640 g = 1.41 lb, consistent). Release year is a prior, unverified.",
+ "id": "anker-a2345"
+}

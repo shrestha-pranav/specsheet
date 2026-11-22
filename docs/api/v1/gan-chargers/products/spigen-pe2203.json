@@ -1,0 +1,59 @@
+{
+ "brand": "Spigen",
+ "product_name": "ArcStation Pro GaN 452 Dual USB-C Wall Charger (GaN III 452, 45W)",
+ "model_numbers": [
+  "PE2203",
+  "PE2203UJ"
+ ],
+ "series": "ArcStation Pro",
+ "release_year": null,
+ "status": "unknown",
+ "max_total_w": 45,
+ "max_single_port_w": 45,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 45
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": null
+  }
+ ],
+ "port_sharing": "Not published (45W max total; IPD)",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 92,
+ "dimensions_mm": "38.0 x 40.5 x 44.0 (excl. plug)",
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": 64.99,
+ "typical_price_usd": null,
+ "official_url": "https://www.amazon.com/Spigen-Compact-Foldable-Charger-Charging/dp/B0BXNWK9GC",
+ "sources": [
+  "https://www.amazon.com/Spigen-Compact-Foldable-Charger-Charging/dp/B0BXNWK9GC",
+  "https://device.report/manual/10620431",
+  "https://partners.spigen.com/products/arcstation-pro-gan-452-dual-port-wall-charger-pe2203"
+ ],
+ "field_sources": {
+  "pps": 0,
+  "weight_g": 1,
+  "dimensions_mm": 1,
+  "max_total_w": 1,
+  "msrp_usd": 2
+ },
+ "confidence": "low",
+ "notes": "PPS taken from Amazon listing title ('PD PPS Fast Charging') via search snippet; Amazon page itself returned 503 on fetch. Weight/dimensions/45W from manual snippet in search results (device.report 403 on fetch). Spigen partner page was a $64.99 listing in search results but now 404. No Amazon price captured. spigen.com (consumer store) and partners.spigen.com pages 404 or delisted for most ArcStation chargers as of 2026-11-22; status 'unknown/discontinued on Spigen's own storefront' - still sold via Amazon. partners.spigen.com price is the B2B storefront list price, not street price.",
+ "id": "spigen-pe2203"
+}

@@ -1,0 +1,79 @@
+{
+ "brand": "Baseus",
+ "product_name": "Baseus PicoGo AH11 4-Port Fast Charger 3C+U 140W",
+ "model_numbers": [
+  "E0122400",
+  "E01207 (ChargerLAB code)"
+ ],
+ "series": "PicoGo",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 140,
+ "max_single_port_w": 140,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 140
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 140
+  },
+  {
+   "name": "C3",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": null
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": "3.1",
+ "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V5A 28V5A; C3: 5V3A 9V3A 12V3A 15V3A 20V5A",
+ "pps": true,
+ "pps_ranges": "C1/C2: 5-11V 5A; 5-21V 5A. C3: PPS present (ChargerLAB summary: up to 5-20V 5A; verify)",
+ "pps_max_w": 105,
+ "epr_avs": true,
+ "other_protocols": [
+  "QC3.0/5",
+  "SCP",
+  "AFC",
+  "DCP",
+  "Apple 2.4A"
+ ],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": 248,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": null,
+ "typical_price_usd": 31.99,
+ "official_url": "https://www.baseus.com/products/picogo-ah11-fast-charger-3c-u-140w",
+ "sources": [
+  "https://www.baseus.com/products/picogo-ah11-fast-charger-3c-u-140w",
+  "https://www.chargerlab.com/teardown-of-baseus-picogo-ah11-140w-gan-fast-charger-e01207"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "ports": 0,
+  "typical_price_usd": 0,
+  "usb_pd_version": 1,
+  "pd_fixed_pdos": 1,
+  "pps": 1,
+  "pps_ranges": 1,
+  "epr_avs": 1,
+  "other_protocols": 1,
+  "weight_g": 1
+ },
+ "confidence": "high",
+ "notes": "ChargerLAB tested model E01207; mapped to Baseus US SKU E0122400 by name (PicoGo AH11 140W) - not 100% confirmed. 28V5A fixed PDO = PD3.1 EPR 140W. pps_max_w=5A*21V=105W. Price $31.99 looks like a sale price (EnerFill FH11 140W sister model lists $59.99).",
+ "id": "baseus-e0122400"
+}

@@ -1,0 +1,553 @@
+[
+ {
+  "brand": "CUKTECH",
+  "product_name": "CUKTECH GaN3 Charger 30W (US: 2-pack)",
+  "model_numbers": [
+   "AD301N"
+  ],
+  "series": "GaN3",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 30,
+  "max_single_port_w": 30,
+  "ports": [
+   {
+    "name": "C",
+    "type": "USB-C",
+    "max_w": 30
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": "3.0",
+  "pd_fixed_pdos": "5V3A 9V3A 12V2.5A 15V2A 20V1.5A",
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": false,
+  "weight_g": null,
+  "dimensions_mm": "31x31x38 (1.22x1.22x1.50 in, excl. prongs)",
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": null,
+  "official_url": "https://cuktech.com/products/a03-cuktech-30w-gan3-charger",
+  "sources": [
+   "https://cuktech.com/products/a03-cuktech-30w-gan3-charger",
+   "https://www.amazon.com/CUKTECH-Charger-Charging-Compact-Foldable/dp/B0DQKG4HDT"
+  ],
+  "field_sources": {
+   "model_numbers": 0,
+   "pd_fixed_pdos": 0,
+   "pps": 0,
+   "dimensions_mm": 0,
+   "max_total_w": 0
+  },
+  "confidence": "medium",
+  "notes": "PPS claimed on official page ('PD3.0 PPS protocol') but no PPS ranges published. Price not captured (cuktech.com shows placeholder $999; Amazon blocked)."
+ },
+ {
+  "brand": "CUKTECH",
+  "product_name": "CUKTECH Type-C Charger 65W (single port)",
+  "model_numbers": [
+   "AD651N"
+  ],
+  "series": "GaN3",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": 65,
+  "ports": [
+   {
+    "name": "C",
+    "type": "USB-C",
+    "max_w": 65
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": "3.0",
+  "pd_fixed_pdos": "5V3A 9V3A 10V5A 12V3A 15V3A 20V3.25A",
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": false,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": "100W 6ft USB-C to USB-C",
+  "msrp_usd": null,
+  "typical_price_usd": null,
+  "official_url": "https://cuktech.com/products/a12-cuktech-65w-usb-c-pd-power-charger",
+  "sources": [
+   "https://cuktech.com/products/a12-cuktech-65w-usb-c-pd-power-charger",
+   "https://www.amazon.com/CUKTECH-Charger-Foldable-Charging-MacBook/dp/B0C9STFPCB"
+  ],
+  "field_sources": {
+   "model_numbers": 0,
+   "pd_fixed_pdos": 0,
+   "pps": 0,
+   "cable_included": 0
+  },
+  "confidence": "medium",
+  "notes": "Official page: 'supports both PD 3.0 and PPS'. Output list includes '10V5A' which is unusual for fixed PDO (probably PPS/proprietary step). PPS ranges, price, weight unknown."
+ },
+ {
+  "brand": "CUKTECH",
+  "product_name": "CUKTECH Multi-ports GaN Charger 65W (2C1A, foldable)",
+  "model_numbers": [
+   "AD653N",
+   "AD653-US (Slickdeals)",
+   "A15CEU (EU variant)",
+   "AD653CUS (Taiwan variant)"
+  ],
+  "series": "GaN3",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": 65,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 65
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 65
+   },
+   {
+    "name": "A",
+    "type": "USB-A",
+    "max_w": 18
+   }
+  ],
+  "port_sharing": "C1+C2: 20V2.25A (45W) + 5V2.4A/9V2A/12V1.5A (18W); C1+A: same split; C2+A: 5V3A max; C1+(C2+A): 45W + 5V2.4A (per official spec table)",
+  "usb_pd_version": "3.0",
+  "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V3.25A; A: 5V3A 9V2.5A 10V2.25A 12V1.87A",
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "QC3.5 (US page)",
+   "QC4+/3.0 (EU page)",
+   "Super Fast Charging 2.0",
+   "AFC",
+   "FCP",
+   "SCP"
+  ],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": false,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 29,
+  "official_url": "https://cuktech.com/products/ad653n-cuktech-65w-gan-charger-2c1a",
+  "sources": [
+   "https://cuktech.com/products/ad653n-cuktech-65w-gan-charger-2c1a",
+   "https://cuktech.com/products/a15c-cuktech-65w-gan-charger-2c1a",
+   "https://www.dealnews.com/products/Cuktech-65-W-USB-C-Ga-N-III-Fast-Charger/463086.html",
+   "https://dealsfinders.com/cuktech-65w-gan-charger-amazon/",
+   "https://slickdeals.net/f/20210988-cuktech-65w-3-port-foldable-gan-wall-charger-w-usb-c-cable-15-10-free-shipping-w-prime-or-on-35"
+  ],
+  "field_sources": {
+   "model_numbers": 0,
+   "port_sharing": 0,
+   "pd_fixed_pdos": 0,
+   "pps": 0,
+   "other_protocols": 0,
+   "typical_price_usd": 2
+  },
+  "confidence": "medium",
+  "notes": "PPS stated on official page ('Samsung PPS') but no ranges; Chinese teardown (chongdiantou, AD653C) reportedly shows PPS 5-11V 3A on one port, unverified/port ambiguous. Price: ~$28-33 regular, promo deals $11.99-$15.10 (promo codes). Variant mapping (AD653-US/AD653CUS) is inferred from deal/retailer titles. Multiple Amazon listings (grey/silver, with/without cable)."
+ },
+ {
+  "brand": "CUKTECH",
+  "product_name": "CUKTECH 67W CP6 GaN Charger with Retractable Cable",
+  "model_numbers": [
+   "AD653W"
+  ],
+  "series": "CP6",
+  "release_year": 2025,
+  "status": "unknown",
+  "max_total_w": 67,
+  "max_single_port_w": 67,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 65
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 67
+   },
+   {
+    "name": "A",
+    "type": "USB-A",
+    "max_w": 22.5
+   }
+  ],
+  "port_sharing": "C1+C2: 45+20; C1+A: 45+18; C2+A: 20 (5V4A); C1+(C2+A): 45+15",
+  "usb_pd_version": "3.0",
+  "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V3.35A (measured); label says 20V3.25A",
+  "pps": true,
+  "pps_ranges": "C1: 5-11V 5A (measured); proprietary Xiaomi ranges on C2",
+  "pps_max_w": 55,
+  "epr_avs": null,
+  "other_protocols": [
+   "Xiaomi 65W/67W",
+   "QC3.0",
+   "QC3+",
+   "DCP",
+   "FCP",
+   "SCP",
+   "AFC",
+   "Apple 2.4A"
+  ],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": false,
+  "weight_g": 166,
+  "dimensions_mm": "51.07x51.01x53.63",
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": null,
+  "official_url": null,
+  "sources": [
+   "https://www.chargerlab.com/teardown-of-cuktech-67w-cp6-gan-charger-ad653w"
+  ],
+  "field_sources": {
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "ports": 0,
+   "port_sharing": 0,
+   "pd_fixed_pdos": 0,
+   "pps": 0,
+   "pps_ranges": 0,
+   "other_protocols": 0,
+   "weight_g": 0,
+   "dimensions_mm": 0
+  },
+  "confidence": "low",
+  "notes": "ChargerLAB teardown (China-market). US availability, price and US model suffix NOT confirmed; status unknown. Spec label vs measured 20V: 3.25A vs 3.35A. C2 shows no standard PPS. pps_max_w=5*11 approx."
+ },
+ {
+  "brand": "CUKTECH",
+  "product_name": "CUKTECH 6 Ultra Charger 65W (smart display, 3-port)",
+  "model_numbers": [
+   "AD653U"
+  ],
+  "series": "No.6 Ultra",
+  "release_year": 2026,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": 65,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 65
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 65
+   },
+   {
+    "name": "A",
+    "type": "USB-A",
+    "max_w": 33
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "QC4.0",
+   "AFC",
+   "FCP",
+   "Xiaomi (CN: 100W)"
+  ],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": true,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": "240W 6A USB-C cable",
+  "msrp_usd": null,
+  "typical_price_usd": null,
+  "official_url": "https://cuktech.com/products/cuktech-6-ultra-charger",
+  "sources": [
+   "https://cuktech.com/products/cuktech-6-ultra-charger",
+   "https://furper.com/products/cuktech-6-ultra-ad653u-charger-3-usb-c-ports-x2-usb-a-pd-3-0-qc-4-0-pps-fast-charging-100w",
+   "https://www.amazon.com/CUKTECH-Charger-Phone-Laptop-Display/dp/B0GYS98G6K"
+  ],
+  "field_sources": {
+   "pps": 1,
+   "other_protocols": 1,
+   "max_total_w": 0,
+   "display": 0,
+   "cable_included": 0
+  },
+  "confidence": "low",
+  "notes": "Official page: 65W single port, TFT display; no PDO/PPS table. PPS comes from retailer/manual text only. Retailers list it as '100W' (Xiaomi-phone figure in CN version) - contradiction with 65W US listing. Port A 33W from retailer. No ChargerLAB test found. Price not captured."
+ },
+ {
+  "brand": "CUKTECH",
+  "product_name": "CUKTECH No.10 100W GaN Charger (2C1A)",
+  "model_numbers": [
+   "AD1003",
+   "AD1003US",
+   "AD1003EU"
+  ],
+  "series": "No.10",
+  "release_year": 2024,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": 100,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 100
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 100
+   },
+   {
+    "name": "A",
+    "type": "USB-A",
+    "max_w": 18
+   }
+  ],
+  "port_sharing": "C1+C2: 67W + 33W; C1/C2+A: 67W + 18W; C1+C2+A: 45W + 33W + 18W (EU manual)",
+  "usb_pd_version": "3.0",
+  "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V5A (+11V6.1A step); A: 5V3A 9V2A 12V1.5A",
+  "pps": true,
+  "pps_ranges": "PPS to 20V (Charge-Test); exact ranges not published",
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "QC"
+  ],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": false,
+  "weight_g": null,
+  "dimensions_mm": "73x94.2x35.6",
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": null,
+  "typical_price_usd": 59.99,
+  "official_url": "https://cuktech.com/products/cuktech-10-100w-gan-charger",
+  "sources": [
+   "https://cuktech.com/products/cuktech-10-100w-gan-charger",
+   "https://m.media-amazon.com/images/I/B1Pupp-krAL.pdf",
+   "https://charge-test.com/cuktech-gan-charger-100w-review-compact-power-with-premium-ambition/",
+   "https://www.neowin.net/reviews/cuktech-10-100w-gan-charger-review-cant-go-wrong-with-this-one/"
+  ],
+  "field_sources": {
+   "model_numbers": 0,
+   "pps": 0,
+   "pd_fixed_pdos": 1,
+   "port_sharing": 1,
+   "dimensions_mm": 1,
+   "pps_ranges": 2,
+   "typical_price_usd": 0
+  },
+  "confidence": "medium",
+  "notes": "Manual is EU model AD1003EU; US AD1003US assumed equal. Neowin says single-port drops to 65W when another port used - consistent with manual 67W. Price $59.99 only from a search summary (unverified, Amazon blocked). No ChargerLAB test found."
+ },
+ {
+  "brand": "CUKTECH",
+  "product_name": "CUKTECH 10 Ultra 100W Charger (4-port, smart display)",
+  "model_numbers": [
+   "AD1204U"
+  ],
+  "series": "No.10 Ultra",
+  "release_year": 2025,
+  "status": "current",
+  "max_total_w": 110,
+  "max_single_port_w": 100,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 100
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 100
+   },
+   {
+    "name": "C3",
+    "type": "USB-C",
+    "max_w": 44
+   },
+   {
+    "name": "A",
+    "type": "USB-A",
+    "max_w": 33
+   }
+  ],
+  "port_sharing": "Multi-port total up to 110W on 100-130V input (120W on 200-240V); adaptive dynamic split, table not published",
+  "usb_pd_version": "3.0",
+  "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V5A; C3: 5V3A 9V3A 12V2.5A 15V2A",
+  "pps": true,
+  "pps_ranges": "C1/C2: 5-11V 5A and 5-20V 5A; C3: 5-11V 3A",
+  "pps_max_w": 100,
+  "epr_avs": null,
+  "other_protocols": [
+   "UFCS",
+   "QC5 (C1/C2)",
+   "QC2.0/4+",
+   "FCP",
+   "SCP",
+   "AFC",
+   "Xiaomi 120W proprietary",
+   "Apple 2.4A",
+   "DCP"
+  ],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": true,
+  "weight_g": 234,
+  "dimensions_mm": "66.89x75.59x33.13",
+  "safety_certs": [],
+  "cable_included": "240W 6A USB-C cable",
+  "msrp_usd": null,
+  "typical_price_usd": 56.99,
+  "official_url": "https://cuktech.com/products/cuktech-10-ultra-power-charger",
+  "sources": [
+   "https://www.chargerlab.com/teardown-of-cuktech-10-gan-charger-ultra-ad1204u",
+   "https://cuktech.com/products/cuktech-10-ultra-power-charger",
+   "https://www.notebookcheck.net/Cuktech-unveils-new-100-W-wall-laptop-GaN-charger-with-built-in-display.1260377.0.html"
+  ],
+  "field_sources": {
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "ports": 0,
+   "pd_fixed_pdos": 0,
+   "pps": 0,
+   "pps_ranges": 0,
+   "other_protocols": 0,
+   "weight_g": 0,
+   "dimensions_mm": 0,
+   "port_sharing": 0,
+   "typical_price_usd": 2,
+   "display": 1
+  },
+  "confidence": "high",
+  "notes": "Marketing says 100W; ChargerLAB/Neowin measure 110W total on US-voltage input. C3/A reviews say 45W/18W vs ChargerLAB 44W/33W. HUSB362 supports PD3.1 EPR but no EPR PDOs observed. Price $56.99 (Notebookcheck/GSMGoTech) vs $59 (9to5Mac). US model suffix unconfirmed."
+ },
+ {
+  "brand": "CUKTECH",
+  "product_name": "CUKTECH 15 140W GaN Charger (4-port)",
+  "model_numbers": [
+   "AD1404U",
+   "AD1404US"
+  ],
+  "series": "No.15",
+  "release_year": 2025,
+  "status": "current",
+  "max_total_w": 140,
+  "max_single_port_w": 140,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 140
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 140
+   },
+   {
+    "name": "C3",
+    "type": "USB-C",
+    "max_w": 33
+   },
+   {
+    "name": "A",
+    "type": "USB-A",
+    "max_w": 33
+   }
+  ],
+  "port_sharing": "100W+33W; 65W+45W; 45W+33W+33W (ChargerLAB). Amazon listing: A 18W, C3 33W single-port",
+  "usb_pd_version": "3.1",
+  "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V5A (28V5A mentioned by ChargerLAB text, not in PDO list)",
+  "pps": true,
+  "pps_ranges": "C1/C2: 5-11V 5A; 5-20V 3A",
+  "pps_max_w": 60,
+  "epr_avs": null,
+  "other_protocols": [
+   "Xiaomi 120W",
+   "QC",
+   "AFC",
+   "FCP",
+   "SCP"
+  ],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": false,
+  "weight_g": 335,
+  "dimensions_mm": "79.38x65.04x32.18",
+  "safety_certs": [],
+  "cable_included": "1.5m 240W USB-C cable (cuktech.com page)",
+  "msrp_usd": 99.99,
+  "typical_price_usd": null,
+  "official_url": "https://cuktech.com/products/1406",
+  "sources": [
+   "https://www.chargerlab.com/pd3-1-xiaomi-120w-protocol-meet-the-cuktech-140w-gan-charger",
+   "https://cuktech.com/products/1406",
+   "https://www.amazon.com/CUKTECH-Charger-Foldable-Advanced-Charging/dp/B0DSVNM5RB",
+   "https://www.notebookcheck.net/New-Cuktech-15-140-W-GaN-charger-debuts-with-quad-ports-and-travel-friendly-design.1004385.0.html"
+  ],
+  "field_sources": {
+   "model_numbers": 0,
+   "ports": 0,
+   "port_sharing": 0,
+   "pd_fixed_pdos": 0,
+   "pps": 0,
+   "pps_ranges": 0,
+   "other_protocols": 0,
+   "dimensions_mm": 0,
+   "weight_g": 1,
+   "cable_included": 1,
+   "msrp_usd": 2
+  },
+  "confidence": "medium",
+  "notes": "ChargerLAB tested the China AD1404U; AD1404US is the US code from launch coverage. 28V5A (PD3.1 EPR fixed) mentioned in ChargerLAB prose but not in its PDO list -> epr_avs null. Weight 335g from cuktech.com may include cable (conflict with 224g class). Launch MSRP $99.99; promos ~40% off; current typical price not captured. pps_max_w=5-20V*3A=60W."
+ }
+]

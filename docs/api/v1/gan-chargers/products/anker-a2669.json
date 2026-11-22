@@ -1,0 +1,68 @@
+{
+ "brand": "Anker",
+ "product_name": "Anker Prime 67W GaN Wall Charger (3 Ports)",
+ "model_numbers": [
+  "A2669"
+ ],
+ "series": "Prime",
+ "release_year": 2023,
+ "status": "current",
+ "max_total_w": 67,
+ "max_single_port_w": 67,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 67
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 67
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": 22.5
+  }
+ ],
+ "port_sharing": "1 port: 67W; any 2 ports: 65W max total; 3 ports: 64.5W max total",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": "5V3A 9V3A 12V3A 15V3A 20V3.35A",
+ "pps": true,
+ "pps_ranges": "3.3-21V 3.25A (third-party FNB58 reading only; not on Anker pages)",
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "PowerIQ 4.0",
+  "ActiveShield 2.0"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 135.7,
+ "dimensions_mm": "39.8 x 38.5 x 50",
+ "safety_certs": [],
+ "cable_included": "no",
+ "msrp_usd": 49.99,
+ "typical_price_usd": 32.99,
+ "official_url": "https://www.anker.com/products/a2669-3-port-wall-charger",
+ "sources": [
+  "https://www.anker.com/products/a2669-3-port-wall-charger",
+  "https://service.anker.com/product-description/a085g0000050Q1zAAE/anker-prime-67w-charger",
+  "https://cairovolt.com/en/anker/wall-chargers/anker-prime-a2669-67w-gan-charger"
+ ],
+ "field_sources": {
+  "pd_fixed_pdos": 0,
+  "port_sharing": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "pps": 1,
+  "pps_ranges": 2,
+  "typical_price_usd": 0
+ },
+ "confidence": "medium",
+ "notes": "Anker lists 'Power IQ 4.0, PPS' with no range. Seller page (cairovolt) cites meter reading of 3.3-21V/3.25A; treat as unconfirmed. Dimensions: spec section 39.8x38.5x50 vs key features 1.57x1.52x1.98 in (slight mismatch). Also sold as 2-pack and in Costco 67W+30W bundle.",
+ "id": "anker-a2669"
+}

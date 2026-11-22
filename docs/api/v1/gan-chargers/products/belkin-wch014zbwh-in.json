@@ -1,0 +1,78 @@
+{
+ "brand": "Belkin",
+ "product_name": "BoostCharge Pro 140W 4-Port GaN Wall Charger",
+ "model_numbers": [
+  "WCH014zbWH (IN)",
+  "WCH014dqWH (PH)",
+  "WCH014btWH (UK)",
+  "WCH014myWH (SG)",
+  "WCH014"
+ ],
+ "series": "BoostCharge Pro",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 140,
+ "max_single_port_w": 140,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 140
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 65
+  },
+  {
+   "name": "C3",
+   "type": "USB-C",
+   "max_w": 65
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": 12
+  }
+ ],
+ "port_sharing": "C2+C3 share 65W max; combos cited: 65W+65W and 65W+45W+20W; total 140W",
+ "usb_pd_version": "3.1",
+ "pd_fixed_pdos": "C1: 5V3A 9V3A 15V3A 20V5A 28V5A; C2/C3: 5V3A 9V3A 15V3A 20V3.25A",
+ "pps": true,
+ "pps_ranges": "C1: 5-21V 5A (KM003C) / 4.75A (label); C2/C3: 3.3-21V 3.25A (KM003C) / 3.05A (label)",
+ "pps_max_w": 100,
+ "epr_avs": null,
+ "other_protocols": [
+  "QC",
+  "DCP",
+  "Apple 2.4A (USB-A)"
+ ],
+ "gan": true,
+ "foldable_plug": false,
+ "plug_region": null,
+ "display": false,
+ "weight_g": 327,
+ "dimensions_mm": "95.97 x 77.26 x 30.92",
+ "safety_certs": [],
+ "cable_included": "Yes, ~2 m dual USB-C cable (per ChargerLAB)",
+ "msrp_usd": 129.99,
+ "typical_price_usd": null,
+ "official_url": null,
+ "sources": [
+  "https://www.chargerlab.com/teardown-of-belkin-boostcharge-pro-140w-4-port-gan-wall-charger-wch014",
+  "https://www.belkin.com/support-article/?articleNum=335917",
+  "https://www.belkin.com/support-article/?articleNum=335922"
+ ],
+ "field_sources": {
+  "pd_fixed_pdos": 0,
+  "pps_ranges": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "port_sharing": 0,
+  "max_total_w": 1,
+  "msrp_usd": 2
+ },
+ "confidence": "high",
+ "notes": "Belkin US product page URL 404'd at fetch time, so current US price/stock unverified (chart MSRP $129.99). CONTRADICTION: Belkin chart says C1 single-port reaches 20V/4.8A/96W while ChargerLAB/label show a 28V5A (140W) PDO on C1. epr_avs left null: 28V5A fixed PDO is present (ChargerLAB) but AVS not confirmed. pps_max_w = ~100W (21V x 4.75A) assumes PPS C1 limit. Has removable AC cord, not foldable-plug.",
+ "id": "belkin-wch014zbwh-in"
+}

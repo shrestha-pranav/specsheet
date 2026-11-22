@@ -1,0 +1,63 @@
+{
+ "brand": "Anker",
+ "product_name": "Anker Nano Charger (70W, 3 Ports)",
+ "model_numbers": [
+  "A121A",
+  "B121A"
+ ],
+ "series": "Nano",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 70,
+ "max_single_port_w": 70,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 70
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 70
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": 33
+  }
+ ],
+ "port_sharing": "C1+C2 or C+A: 45+22.5 or 60+5; C1+C2+A: 45+7.5+7.5",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": "C1: 5V3A 9V3A 15V3A 20V3.5A; C2 also 10V2.25A",
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 120,
+ "dimensions_mm": "53 x 42.6 x 31.5",
+ "safety_certs": [],
+ "cable_included": "ambiguous - title says 'with USB-C Cable'",
+ "msrp_usd": 39.99,
+ "typical_price_usd": 32.99,
+ "official_url": "https://www.anker.com/products/a121a-70w-3-ports-charger",
+ "sources": [
+  "https://www.anker.com/products/a121a-70w-3-ports-charger",
+  "https://www.anker.com/collections/fast-wall-charger"
+ ],
+ "field_sources": {
+  "port_sharing": 0,
+  "pd_fixed_pdos": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "typical_price_usd": 1
+ },
+ "confidence": "medium",
+ "notes": "PPS not stated (10V/11V rows appear but are not labelled PPS). Do not infer false.",
+ "id": "anker-a121a"
+}

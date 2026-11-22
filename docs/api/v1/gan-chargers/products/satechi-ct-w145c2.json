@@ -1,0 +1,67 @@
+{
+ "brand": "Satechi",
+ "product_name": "145W USB-C 4-Port GaN Travel Charger",
+ "model_numbers": [
+  "CT-W145C2"
+ ],
+ "series": null,
+ "release_year": 2023,
+ "status": "current",
+ "max_total_w": 145,
+ "max_single_port_w": 140,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 140
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 140
+  },
+  {
+   "name": "C3",
+   "type": "USB-C",
+   "max_w": null
+  },
+  {
+   "name": "C4",
+   "type": "USB-C",
+   "max_w": null
+  }
+ ],
+ "port_sharing": "1x: 140W; 2x: 100W each; 3x: 65/30/45 or 100/25/20; 4x: 65/30/25/20 (145W total). Only PD1 and PD2 reach 140W",
+ "usb_pd_version": "3.1",
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": false,
+ "plug_region": "multi (interchangeable US/UK/EU/AU adapters)",
+ "display": false,
+ "weight_g": 346.5,
+ "dimensions_mm": "97 x 77 x 31",
+ "safety_certs": [],
+ "cable_included": "No; includes UK/EU/AU adapters and mesh bag",
+ "msrp_usd": 119.99,
+ "typical_price_usd": 83.99,
+ "official_url": "https://satechi.com/products/145w-usb-c-4-port-gan-travel-charger",
+ "sources": [
+  "https://satechi.com/products/145w-usb-c-4-port-gan-travel-charger"
+ ],
+ "field_sources": {
+  "port_sharing": 0,
+  "usb_pd_version": 0,
+  "typical_price_usd": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "gan": 0
+ },
+ "confidence": "medium",
+ "notes": "PPS/PDO not published and no teardown found; PPS null. 140W on PD1/PD2 implies a 28V PDO but not documented. Needs eMark cable and MagSafe 3 cable on MacBook Pro for 140W.",
+ "id": "satechi-ct-w145c2"
+}

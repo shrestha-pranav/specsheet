@@ -1,0 +1,82 @@
+{
+ "brand": "Satechi",
+ "product_name": "165W USB-C 4-Port PD GaN Charger",
+ "model_numbers": [
+  "ST-UC165GM",
+  "ST-UC165GM-EU",
+  "ST-UC165GM-UK",
+  "ST-UC165GM-AU"
+ ],
+ "series": null,
+ "release_year": 2022,
+ "status": "current",
+ "max_total_w": 165,
+ "max_single_port_w": 100,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C3",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C4",
+   "type": "USB-C",
+   "max_w": 100
+  }
+ ],
+ "port_sharing": "1x: 100W; 2x: 100/60; 3x: 60/60/45 or 100/30/30; 4x: 60/45/30/30 (165W total)",
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": "5V3A 9V3A 12V3A 15V3A 20V5A (all four ports)",
+ "pps": true,
+ "pps_ranges": "3.3-21V 5A (per Chinese ChargerLAB sister site Chongdiantou summary; ChargerLAB EN article gives no range)",
+ "pps_max_w": 100,
+ "epr_avs": false,
+ "other_protocols": [
+  "QC5",
+  "QC3.0",
+  "FCP",
+  "SCP",
+  "AFC",
+  "SFCP",
+  "Apple 2.4A"
+ ],
+ "gan": true,
+ "foldable_plug": false,
+ "plug_region": null,
+ "display": false,
+ "weight_g": 336,
+ "dimensions_mm": "100 x 72 x 32",
+ "safety_certs": [],
+ "cable_included": "1.2 m AC power cord",
+ "msrp_usd": 119.99,
+ "typical_price_usd": 119.99,
+ "official_url": "https://satechi.com/products/165w-usb-c-4-port-pd-gan-charger",
+ "sources": [
+  "https://satechi.com/products/165w-usb-c-4-port-pd-gan-charger",
+  "https://www.chargerlab.com/teardown-of-satechi-165w-gan-desktop-charger-st-uc165gm",
+  "https://www.chongdiantou.com/archives/204043.html"
+ ],
+ "field_sources": {
+  "pd_fixed_pdos": 1,
+  "pps": 1,
+  "pps_ranges": 2,
+  "port_sharing": 0,
+  "weight_g": 1,
+  "dimensions_mm": 1,
+  "typical_price_usd": 0,
+  "other_protocols": 1
+ },
+ "confidence": "high",
+ "notes": "Satechi page lists 12 oz / 3.94x1.2x2.8 in (different orientation) vs ChargerLAB 336 g / 100x72x32. PPS range 3.3-21V 5A comes from a search-result summary of the Chongdiantou article (not fetched directly); verify. Page UK price listed 83.99 vs US 119.99.",
+ "id": "satechi-st-uc165gm"
+}

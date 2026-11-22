@@ -1,0 +1,8 @@
+[
+ {
+  "id": "gan-chargers",
+  "name": "USB-C GaN wall chargers",
+  "count": 150,
+  "products": "gan-chargers/products.json"
+ }
+]

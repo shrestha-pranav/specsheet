@@ -1,0 +1,54 @@
+{
+ "brand": "INIU",
+ "product_name": "INIU I625 65W 2-Port USB-C + USB-A Charger",
+ "model_numbers": [
+  "I625"
+ ],
+ "series": "I-series",
+ "release_year": 2025,
+ "status": "current",
+ "max_total_w": 65,
+ "max_single_port_w": 65,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 65
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": null
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": null,
+ "typical_price_usd": 25.0,
+ "official_url": "https://iniushop.com/products/65w-2-port-usb-c-usb-a-charger",
+ "sources": [
+  "https://iniushop.com/products/65w-2-port-usb-c-usb-a-charger"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "ports": 0,
+  "typical_price_usd": 0
+ },
+ "confidence": "low",
+ "notes": "Official page shows only name and price ($25, sold out) - no spec table. Single-port 65W and port config inferred from title; PPS unknown. Not buyable at official shop (sold out).",
+ "id": "iniu-i625"
+}

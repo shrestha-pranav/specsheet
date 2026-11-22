@@ -1,0 +1,60 @@
+{
+ "brand": "Belkin",
+ "product_name": "BoostCharge Pro Dual USB-C PD GaN Wall Charger 68W (+ USB-C cable)",
+ "model_numbers": [
+  "WCH003dq2MWH-B6",
+  "WCH003"
+ ],
+ "series": "BoostCharge Pro",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 68,
+ "max_single_port_w": 60,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 60
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 18
+  }
+ ],
+ "port_sharing": "Single port up to 60W; dual: 50W + 18W",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": null,
+ "display": false,
+ "weight_g": null,
+ "dimensions_mm": "62.3 x 30 x 66",
+ "safety_certs": [],
+ "cable_included": "Yes, 2 m USB-C to USB-C",
+ "msrp_usd": 54.99,
+ "typical_price_usd": 68.99,
+ "official_url": "https://www.belkin.com/p/dual-usb-c-gan-wall-charger-68w-plus-usb-c-cable/WCH003dq2MWH-B6.html",
+ "sources": [
+  "https://www.belkin.com/p/dual-usb-c-gan-wall-charger-68w-plus-usb-c-cable/WCH003dq2MWH-B6.html",
+  "https://www.belkin.com/support-article/?articleNum=335922"
+ ],
+ "field_sources": {
+  "port_sharing": 0,
+  "max_total_w": 0,
+  "typical_price_usd": 0,
+  "cable_included": 0,
+  "dimensions_mm": 0,
+  "gan": 1,
+  "msrp_usd": 1
+ },
+ "confidence": "medium",
+ "notes": "CONTRADICTION: Belkin chart says PPS=Yes and 68W shared; product page does not mention PPS (pps left null). Chart MSRP $54.99 is for charger alone; $68.99 is bundle with cable. Out of stock at fetch time. 'WCH003dq2MWH-B6' sold with 2m cable.",
+ "id": "belkin-wch003dq2mwh-b6"
+}

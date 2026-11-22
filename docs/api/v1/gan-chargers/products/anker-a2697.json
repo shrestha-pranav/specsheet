@@ -1,0 +1,67 @@
+{
+ "brand": "Anker",
+ "product_name": "Anker Charger (140W, 4-Port, PD 3.1) with USB-C Cable",
+ "model_numbers": [
+  "A2697",
+  "B2697"
+ ],
+ "series": "Prime",
+ "release_year": 2025,
+ "status": "current",
+ "max_total_w": 140,
+ "max_single_port_w": 140,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 140
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 140
+  },
+  {
+   "name": "C3",
+   "type": "USB-C",
+   "max_w": 40
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": 33
+  }
+ ],
+ "port_sharing": "C1+C2: 70+70; C1/C2+C3: 100+40; C1/C2+A: 100+33; C3+A: 24 total; C1+C2+C3 or +A: 65+45+30; 4 ports: 134W total",
+ "usb_pd_version": "3.1",
+ "pd_fixed_pdos": "C1/C2: 9V3A 15V3A 20V5A 28V5A; C3: 5V3A 9V3A 15V2.65A 20V2A",
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": true,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": true,
+ "weight_g": 395,
+ "dimensions_mm": "69 x 69 x 36",
+ "safety_certs": [],
+ "cable_included": "yes - USB-C cable (E-marker not stated)",
+ "msrp_usd": 89.99,
+ "typical_price_usd": 59.99,
+ "official_url": "https://www.anker.com/products/a2697-anker-charger-140w-4-port",
+ "sources": [
+  "https://www.anker.com/products/a2697-anker-charger-140w-4-port"
+ ],
+ "field_sources": {
+  "port_sharing": 0,
+  "pd_fixed_pdos": 0,
+  "epr_avs": 0,
+  "weight_g": 0,
+  "typical_price_usd": 0
+ },
+ "confidence": "medium",
+ "notes": "Weight conflict: spec 395 g vs marketing '9.7 oz'. PPS not stated (A1 shows 10V/11V rows, unlabelled). C1/C2 28V5A=140W. Release year inferred.",
+ "id": "anker-a2697"
+}

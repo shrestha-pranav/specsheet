@@ -1,0 +1,58 @@
+{
+ "brand": "Anker",
+ "product_name": "Anker Nano Charger (30W) [511 Charger (Nano 3) 30W]",
+ "model_numbers": [
+  "A2147"
+ ],
+ "series": "Nano",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 30,
+ "max_single_port_w": 30,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 30
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": "5V3A 9V3A 15V2A 20V1.5A",
+ "pps": true,
+ "pps_ranges": "3.3-11V 3A; 3.3-16V 2A",
+ "pps_max_w": 30,
+ "epr_avs": null,
+ "other_protocols": [
+  "PowerIQ 3.0",
+  "QC3.0",
+  "Samsung Super Fast Charging 25W"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": null,
+ "dimensions_mm": "28.4 x 28.4 x 35.3 (1.12 x 1.12 x 1.39 in)",
+ "safety_certs": [],
+ "cable_included": "no",
+ "msrp_usd": 15.99,
+ "typical_price_usd": 12.99,
+ "official_url": "https://www.anker.com/products/a2147",
+ "sources": [
+  "https://www.anker.com/products/a2147",
+  "https://service.anker.com/product-description/a085g000004zRHdAAM/anker-511-charger-nano-3-30w",
+  "https://www.anker.com/collections/fast-wall-charger"
+ ],
+ "field_sources": {
+  "pd_fixed_pdos": 0,
+  "pps_ranges": 1,
+  "other_protocols": 1,
+  "dimensions_mm": 0,
+  "typical_price_usd": 2,
+  "msrp_usd": 0
+ },
+ "confidence": "high",
+ "notes": "PPS ranges quoted from Anker support search snippet of the Nano 3 30W product page (identical to Nano II 30W) and consistent with the US store page. Foldable plug from image caption/support article (A2147 US has foldable pins). Weight not stated. PD version inferred from Anker article ('PD 3.0'). A2147 also surfaced as '30W foldable PPS' on device.report.",
+ "id": "anker-a2147"
+}

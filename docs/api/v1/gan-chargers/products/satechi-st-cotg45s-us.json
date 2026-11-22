@@ -1,0 +1,57 @@
+{
+ "brand": "Satechi",
+ "product_name": "OntheGo 45W Charger with 60W Max",
+ "model_numbers": [
+  "ST-COTG45S-US",
+  "ST-COTG45B-US",
+  "ST-COTG45P-US",
+  "ST-COTG45Y-US"
+ ],
+ "series": "OntheGo",
+ "release_year": 2026,
+ "status": "current",
+ "max_total_w": 60,
+ "max_single_port_w": 60,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 60
+  }
+ ],
+ "port_sharing": "Single port; 60W peak at plug-in then 45W sustained",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "AVS (SPR)"
+ ],
+ "gan": null,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 64.9,
+ "dimensions_mm": "34.5 x 41 x 36",
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": 29.99,
+ "typical_price_usd": 29.99,
+ "official_url": "https://satechi.com/products/onthego-45w-charger-with-60w-max",
+ "sources": [
+  "https://satechi.com/products/onthego-45w-charger-with-60w-max"
+ ],
+ "field_sources": {
+  "pps": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "typical_price_usd": 0,
+  "foldable_plug": 0,
+  "other_protocols": 0
+ },
+ "confidence": "medium",
+ "notes": "Satechi lists 'USB-C PD, PPS, AVS'; PPS ranges not published. GaN not stated on page. Max 60W transient / 45W sustained (title says 45W). New (Oct 2026). epr_avs left null: AVS here is SPR AVS (not 28V EPR).",
+ "id": "satechi-st-cotg45s-us"
+}

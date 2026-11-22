@@ -1,0 +1,50 @@
+{
+ "brand": "EcoFlow",
+ "product_name": "EcoFlow RAPID 30W GaN Charger with 60W Cable",
+ "model_numbers": [],
+ "series": "RAPID",
+ "release_year": 2024,
+ "status": "current",
+ "max_total_w": 30,
+ "max_single_port_w": 30,
+ "ports": [
+  {
+   "name": "C",
+   "type": "USB-C",
+   "max_w": 30
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 48,
+ "dimensions_mm": "28.4x28.4x38.1 (1.12x1.12x1.5 in)",
+ "safety_certs": [],
+ "cable_included": "1m 3A/60W USB-C to USB-C",
+ "msrp_usd": 29,
+ "typical_price_usd": 19.99,
+ "official_url": "https://us.ecoflow.com/products/ecoflow-rapid-30w-gan-charger-with-60w-cable",
+ "sources": [
+  "https://us.ecoflow.com/products/ecoflow-rapid-30w-gan-charger-with-60w-cable"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "cable_included": 0,
+  "msrp_usd": 0,
+  "typical_price_usd": 0
+ },
+ "confidence": "low",
+ "notes": "Only '30W Max (20V Max)' published; no PDO/PPS list -> pps null. Also sold as a Prime Day bundle SKU at $25.99.",
+ "id": "ecoflow-ecoflow-rapid-30w-gan-charger-with-60w-cable"
+}

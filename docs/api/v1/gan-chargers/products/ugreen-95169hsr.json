@@ -1,0 +1,48 @@
+{
+ "brand": "UGREEN",
+ "product_name": "UGREEN x Honkai: Star Rail 65W Charger",
+ "model_numbers": [
+  "95169HSR",
+  "95169 (base Air 65W)"
+ ],
+ "series": "Nexode Air (collab edition)",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 65,
+ "max_single_port_w": null,
+ "ports": [],
+ "port_sharing": null,
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": 36.99,
+ "typical_price_usd": 27.54,
+ "official_url": "https://us.ugreen.com/products/ugreen-honkai-star-rail-usb-c-charger-65w-gan-foldable-plug",
+ "sources": [
+  "https://us.ugreen.com/products/ugreen-honkai-star-rail-usb-c-charger-65w-gan-foldable-plug",
+  "https://us.ugreen.com/collections/charger"
+ ],
+ "field_sources": {
+  "product_name": 0,
+  "model_numbers": 0,
+  "max_total_w": 0,
+  "typical_price_usd": 1,
+  "msrp_usd": 1,
+  "status": 1
+ },
+ "confidence": "low",
+ "notes": "Collab skin of Nexode Air 65W (base item 95169 per PH site); spec presumed same as Air 65W (single USB-C) but not verified. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise.",
+ "id": "ugreen-95169hsr"
+}

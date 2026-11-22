@@ -1,0 +1,59 @@
+{
+ "brand": "Spigen",
+ "product_name": "ArcStation Pro GaN 100W Dual Port Wall Charger",
+ "model_numbers": [
+  "PE2006",
+  "ACH02122 (white)",
+  "ACH02121 (black)"
+ ],
+ "series": "ArcStation Pro",
+ "release_year": null,
+ "status": "unknown",
+ "max_total_w": 100,
+ "max_single_port_w": 100,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 45
+  }
+ ],
+ "port_sharing": "Single port 100W; dual port 45W (45+45 per marketing image caption)",
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 215,
+ "dimensions_mm": "67.6 x 67.6 x 35.3",
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": 79.99,
+ "typical_price_usd": null,
+ "official_url": "https://partners.spigen.com/products/arcstation-pro-100w-wall-charger",
+ "sources": [
+  "https://partners.spigen.com/products/arcstation-pro-100w-wall-charger"
+ ],
+ "field_sources": {
+  "port_sharing": 0,
+  "usb_pd_version": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "msrp_usd": 0,
+  "foldable_plug": 0
+ },
+ "confidence": "medium",
+ "notes": "Page lists dual port use output '45W' (per port) which would exceed 100W/2; search snippet says 45+45 image caption - total dual-port is likely 90W; flagged unverified. Page lists only 5V3A / 9V3A PDOs (truncated, evidently incomplete); PPS not mentioned. spigen.com (consumer store) and partners.spigen.com pages 404 or delisted for most ArcStation chargers as of 2026-11-22; status 'unknown/discontinued on Spigen's own storefront' - still sold via Amazon. partners.spigen.com price is the B2B storefront list price, not street price.",
+ "id": "spigen-pe2006"
+}

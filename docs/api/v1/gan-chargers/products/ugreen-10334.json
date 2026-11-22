@@ -1,0 +1,49 @@
+{
+ "brand": "UGREEN",
+ "product_name": "UGREEN Nexode 65W 3-Port Charger",
+ "model_numbers": [
+  "10334",
+  "CD244 (unverified)"
+ ],
+ "series": "Nexode (GaN II)",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 65,
+ "max_single_port_w": 65,
+ "ports": [],
+ "port_sharing": null,
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": 39.99,
+ "typical_price_usd": 39.99,
+ "official_url": "https://us.ugreen.com/products/65w-3-ports-gan-fast-charger",
+ "sources": [
+  "https://us.ugreen.com/products/65w-3-ports-gan-fast-charger",
+  "https://us.ugreen.com/collections/charger",
+  "https://www.bhphotovideo.com/c/product/1783991-REG/ugreen_10334_nexode_65w_usb_c_gan.html"
+ ],
+ "field_sources": {
+  "product_name": 0,
+  "model_numbers": 0,
+  "max_total_w": 0,
+  "typical_price_usd": 1,
+  "msrp_usd": 1,
+  "status": 1
+ },
+ "confidence": "low",
+ "notes": "B&H: 2xUSB-C + 1xUSB-A, either USB-C up to 65W alone; GaN II. PPS not confirmed (an Amazon snippet mentions PPS for a different 'Nexode X' listing). Foldable plug per Amazon title. Bundle variant 10334+70427P also sold. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise.",
+ "id": "ugreen-10334"
+}

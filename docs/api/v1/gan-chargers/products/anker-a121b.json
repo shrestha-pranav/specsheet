@@ -1,0 +1,65 @@
+{
+ "brand": "Anker",
+ "product_name": "Anker Charger (100W, 3 Ports, Smart Display)",
+ "model_numbers": [
+  "A121B",
+  "B121B"
+ ],
+ "series": "Nano",
+ "release_year": 2026,
+ "status": "current",
+ "max_total_w": 100,
+ "max_single_port_w": 100,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": 33
+  }
+ ],
+ "port_sharing": "C1+C2: 70+30 or 95+5; C+A: 67+33 or 95+5; all three: 80+12+7.5",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": "5V3A 9V3A 15V3A 20V5A",
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "ActiveShield 4.0"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": true,
+ "weight_g": 212,
+ "dimensions_mm": "69 x 55.1 x 34 (2.72 x 2.17 x 1.34 in)",
+ "safety_certs": [],
+ "cable_included": "yes (USB-C cable per title)",
+ "msrp_usd": 69.99,
+ "typical_price_usd": 45.99,
+ "official_url": "https://www.anker.com/products/a121b-100w-3-ports-gan-charger",
+ "sources": [
+  "https://www.anker.com/products/a121b-100w-3-ports-gan-charger"
+ ],
+ "field_sources": {
+  "port_sharing": 0,
+  "pd_fixed_pdos": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "display": 0,
+  "typical_price_usd": 0
+ },
+ "confidence": "medium",
+ "notes": "Page shows pre-order ship Dec 2026 (release_year inferred). Weight 7.47 oz converted. PPS not stated.",
+ "id": "anker-a121b"
+}

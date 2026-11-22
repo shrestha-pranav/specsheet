@@ -1,0 +1,69 @@
+{
+ "brand": "Belkin",
+ "product_name": "BoostCharge Pro 4-Port GaN Charger 108W",
+ "model_numbers": [
+  "WCH010dqWH"
+ ],
+ "series": "BoostCharge Pro",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 108,
+ "max_single_port_w": 96,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 96
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": null
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": null
+  },
+  {
+   "name": "A2",
+   "type": "USB-A",
+   "max_w": null
+  }
+ ],
+ "port_sharing": "Intelligent power sharing; one USB-C in use up to 96W; combo table not on page",
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": false,
+ "plug_region": null,
+ "display": false,
+ "weight_g": null,
+ "dimensions_mm": "99 x 80 x 32",
+ "safety_certs": [],
+ "cable_included": "2 m AC power cord only (desktop-style); no USB-C cable",
+ "msrp_usd": 89.99,
+ "typical_price_usd": 89.99,
+ "official_url": "https://www.belkin.com/p/4-port-gan-charger-108w/WCH010dqWH.html",
+ "sources": [
+  "https://www.belkin.com/p/4-port-gan-charger-108w/WCH010dqWH.html",
+  "https://www.belkin.com/support-article/?articleNum=335922"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "max_single_port_w": 0,
+  "usb_pd_version": 0,
+  "typical_price_usd": 0,
+  "dimensions_mm": 0,
+  "gan": 1,
+  "pps": 1
+ },
+ "confidence": "medium",
+ "notes": "Desktop charger with removable cord (not a wall-plug). Belkin chart lists PPS=No for WCH010, but I kept pps null (not verified from product page/teardown); chart says 'PD USB-C only'. Single-port 'up to 96W' per page; per-port wattage of other ports unknown.",
+ "id": "belkin-wch010dqwh"
+}

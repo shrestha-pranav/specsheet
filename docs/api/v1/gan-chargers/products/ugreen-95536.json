@@ -1,0 +1,70 @@
+{
+ "brand": "UGREEN",
+ "product_name": "UGREEN Nexode Air USB-C Charger (45W, GaN, Foldable Plug)",
+ "model_numbers": [
+  "95536",
+  "X840"
+ ],
+ "series": "Nexode Air",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 45,
+ "max_single_port_w": 45,
+ "ports": [
+  {
+   "name": "C1",
+   "type": 45,
+   "max_w": null
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": "3.2",
+ "pd_fixed_pdos": "5V3A 9V3A 12V3A 15V3A 20V2.25A",
+ "pps": true,
+ "pps_ranges": "5-11V 4.5A",
+ "pps_max_w": 49.5,
+ "epr_avs": false,
+ "other_protocols": [
+  "QC3.0/4+",
+  "FCP",
+  "SCP",
+  "AFC",
+  "Apple 2.4A"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": 49,
+ "dimensions_mm": "36.12 x 30.39 x 30.41",
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": 24.99,
+ "typical_price_usd": 15.19,
+ "official_url": "https://us.ugreen.com/products/nexode-air-usb-c-charger-45w-gan-foldable-plug",
+ "sources": [
+  "https://us.ugreen.com/products/nexode-air-usb-c-charger-45w-gan-foldable-plug",
+  "https://us.ugreen.com/collections/charger",
+  "https://www.chargerlab.com/teardown-of-ugreen-nexode-air-45w-gan-charger-x840"
+ ],
+ "field_sources": {
+  "product_name": 0,
+  "model_numbers": 0,
+  "max_total_w": 0,
+  "typical_price_usd": 1,
+  "msrp_usd": 1,
+  "status": 1,
+  "ports": 2,
+  "pd_fixed_pdos": 2,
+  "pps": 2,
+  "pps_ranges": 2,
+  "usb_pd_version": 2,
+  "other_protocols": 2,
+  "weight_g": 2,
+  "dimensions_mm": 2,
+  "epr_avs": 2
+ },
+ "confidence": "high",
+ "notes": "epr_avs set false: ChargerLAB lists AVS 9-20V only (PD3.2 SPR AVS, not 28V EPR). pps_max_w = 11V x 4.5A = 49.5W exceeds the 45W rating; actual cap is 45W. X840->95536 mapping from eBay/regional page code; Notebookcheck said UGREEN does not document protocols. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise.",
+ "id": "ugreen-95536"
+}

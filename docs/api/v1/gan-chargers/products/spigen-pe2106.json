@@ -1,0 +1,56 @@
+{
+ "brand": "Spigen",
+ "product_name": "ArcStation Pro GaN 652 Dual Port Wall Charger (65W)",
+ "model_numbers": [
+  "PE2106",
+  "ACH03719"
+ ],
+ "series": "ArcStation Pro",
+ "release_year": null,
+ "status": "unknown",
+ "max_total_w": 65,
+ "max_single_port_w": 65,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": null
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": null
+  }
+ ],
+ "port_sharing": "Not published; IPD charges iPhone + AirPods simultaneously",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 111,
+ "dimensions_mm": "40.4 x 37.8 x 47.5",
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": 74.99,
+ "typical_price_usd": null,
+ "official_url": "https://www.spigen.com/products/arcstation-pro-gan-652-dual-port-wall-charger",
+ "sources": [
+  "https://partners.spigen.com/products/arcstation-pro-gan-652-dual-port-wall-charger"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "msrp_usd": 0
+ },
+ "confidence": "low",
+ "notes": "Out of stock on partners page; no PPS or port-split info found anywhere. Search lists a separate PE2204 'Pro GaN 652 Dual USB-C' - not resolved. max_single_port_w=65 is an assumption from 'Output: 65W' (page does not state single-port). spigen.com (consumer store) and partners.spigen.com pages 404 or delisted for most ArcStation chargers as of 2026-11-22; status 'unknown/discontinued on Spigen's own storefront' - still sold via Amazon. partners.spigen.com price is the B2B storefront list price, not street price.",
+ "id": "spigen-pe2106"
+}

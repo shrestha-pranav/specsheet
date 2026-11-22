@@ -1,0 +1,70 @@
+{
+ "brand": "INIU",
+ "product_name": "INIU Cougar A11 100W GaN Charger",
+ "model_numbers": [
+  "A11-E1",
+  "D01-A11-E1-US-BK"
+ ],
+ "series": "Cougar",
+ "release_year": 2024,
+ "status": "current",
+ "max_total_w": 100,
+ "max_single_port_w": 100,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "A",
+   "type": "USB-A",
+   "max_w": 22.5
+  }
+ ],
+ "port_sharing": "C1+C2: 70W+30W; C1+A: 70W+22.5W; C2+A: 70W+22.5W; C1+C2+A: 45W+30W+22.5W (97.5W max)",
+ "usb_pd_version": "2.0/3.0",
+ "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V5A; A: 5V3A 9V2A 10V2.25A 12V1.5A",
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "AFC",
+  "QC2.0",
+  "QC3.0"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 210,
+ "dimensions_mm": "68x58x33 (2.68x2.28x1.30 in)",
+ "safety_certs": [],
+ "cable_included": "100W USB-C to USB-C cable",
+ "msrp_usd": null,
+ "typical_price_usd": 29.99,
+ "official_url": "https://iniushop.com/products/iniu-a11-e1-100w-gan-charger-usb-c",
+ "sources": [
+  "https://iniushop.com/products/iniu-a11-e1-100w-gan-charger-usb-c",
+  "https://www.bestbuy.com/site/iniu-100w-usb-c-wall-charger-gan-usb-a-usb-c-fast-charging-with-foldable-plug-for-laptops-tablets-phones-earbuds-etc-black/6629034.p?skuId=6629034"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "ports": 0,
+  "typical_price_usd": 0,
+  "pps": 0,
+  "other_protocols": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "port_sharing": 0
+ },
+ "confidence": "high",
+ "notes": "Official page lists PPS in 'Supported Protocol' but gives NO PPS voltage/current ranges, and its Output list shows only fixed profiles. No ChargerLAB test found. Another table on the same page says 100W + 'Single USB C Output Max 100W'. White and Black variants; 2-pack $55.98. Does not state EPR. Price shown is current list price on iniushop (Black Friday period).",
+ "id": "iniu-a11-e1"
+}

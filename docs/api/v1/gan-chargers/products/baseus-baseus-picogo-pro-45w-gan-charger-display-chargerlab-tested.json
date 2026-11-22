@@ -1,0 +1,60 @@
+{
+ "brand": "Baseus",
+ "product_name": "Baseus PicoGo Pro 45W GaN Charger (display, ChargerLAB-tested)",
+ "model_numbers": [],
+ "series": "PicoGo Pro",
+ "release_year": null,
+ "status": "unknown",
+ "max_total_w": 45,
+ "max_single_port_w": 45,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 45
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": "3.2",
+ "pd_fixed_pdos": "5V3A 9V3A 12V3A 15V3A 20V2.25A",
+ "pps": true,
+ "pps_ranges": "5-20V 5A; AVS 9-20V 3A/2.25A; UFCS 5-11V 4A",
+ "pps_max_w": 45,
+ "epr_avs": null,
+ "other_protocols": [
+  "UFCS",
+  "QC3.0",
+  "QC4+",
+  "FCP",
+  "SCP",
+  "AFC",
+  "DCP",
+  "Apple 2.4A"
+ ],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": 69,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": null,
+ "typical_price_usd": null,
+ "official_url": null,
+ "sources": [
+  "https://www.chargerlab.com/teardown-of-the-baseus-picogo-pro-45w-gan-charger"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "usb_pd_version": 0,
+  "pd_fixed_pdos": 0,
+  "pps": 0,
+  "pps_ranges": 0,
+  "other_protocols": 0,
+  "weight_g": 0
+ },
+ "confidence": "low",
+ "notes": "Probably the same charger as one of Baseus's US 45W PicoGo listings but not matched to a US SKU; ChargerLAB reports PPS '5-20V 5A' (looks like a chip limit; real power capped at 45W so pps_max_w uncertain; 100W is nominal). AVS is not EPR AVS (9-20V).",
+ "id": "baseus-baseus-picogo-pro-45w-gan-charger-display-chargerlab-tested"
+}

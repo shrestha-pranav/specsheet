@@ -1,0 +1,741 @@
+{
+ "A2147": [
+  "anker-a2147"
+ ],
+ "A2665": [
+  "anker-a2665"
+ ],
+ "A2146": [
+  "anker-a2665"
+ ],
+ "A2658": [
+  "anker-a2658"
+ ],
+ "A2664": [
+  "anker-a2664"
+ ],
+ "A2664J111": [
+  "anker-a2664"
+ ],
+ "A121D": [
+  "anker-a121d"
+ ],
+ "B121D": [
+  "anker-a121d"
+ ],
+ "A2692": [
+  "anker-a2692"
+ ],
+ "B2692": [
+  "anker-a2692"
+ ],
+ "A2663": [
+  "anker-a2663"
+ ],
+ "A2667": [
+  "anker-a2667"
+ ],
+ "A2668": [
+  "anker-a2668"
+ ],
+ "A2669": [
+  "anker-a2669"
+ ],
+ "B2639": [
+  "anker-b2639"
+ ],
+ "B2639H111": [
+  "anker-b2639"
+ ],
+ "A121A": [
+  "anker-a121a"
+ ],
+ "B121A": [
+  "anker-a121a"
+ ],
+ "A2145": [
+  "anker-a2145"
+ ],
+ "A2148": [
+  "anker-a2148"
+ ],
+ "A2340": [
+  "anker-a2340"
+ ],
+ "A2029": [
+  "anker-a2340"
+ ],
+ "A2688": [
+  "anker-a2688"
+ ],
+ "A121B": [
+  "anker-a121b"
+ ],
+ "B121B": [
+  "anker-a121b"
+ ],
+ "A120F": [
+  "anker-a120f"
+ ],
+ "B120F": [
+  "anker-a120f"
+ ],
+ "A2697": [
+  "anker-a2697"
+ ],
+ "B2697": [
+  "anker-a2697"
+ ],
+ "A2687": [
+  "anker-a2687"
+ ],
+ "A2683": [
+  "anker-a2683"
+ ],
+ "A2345": [
+  "anker-a2345"
+ ],
+ "CCGP150513": [
+  "baseus-ccgp150513"
+ ],
+ "CCGP150113": [
+  "baseus-ccgp150113"
+ ],
+ "CCGP120101": [
+  "baseus-ccgp120101"
+ ],
+ "E0104500": [
+  "baseus-e0104500"
+ ],
+ "CCGP180201": [
+  "baseus-ccgp180201"
+ ],
+ "P1016250511300": [
+  "baseus-p10162505113-00"
+ ],
+ "CCGN010201": [
+  "baseus-ccgn010201"
+ ],
+ "CCSUPPD01": [
+  "baseus-ccsupp-d01"
+ ],
+ "CCXJD01": [
+  "baseus-ccxj-d01"
+ ],
+ "P1017680121300": [
+  "baseus-p10176801213-00"
+ ],
+ "P1016260312300": [
+  "baseus-p10162603123-00"
+ ],
+ "E0123204": [
+  "baseus-e0123204"
+ ],
+ "E0121G00": [
+  "baseus-e0121g00"
+ ],
+ "E0121000": [
+  "baseus-e0121000"
+ ],
+ "E0121C00": [
+  "baseus-e0121c00"
+ ],
+ "E0125901BLACK": [
+  "baseus-e0125901-black"
+ ],
+ "E0125902DARKCHERRY": [
+  "baseus-e0125901-black"
+ ],
+ "E0122400": [
+  "baseus-e0122400"
+ ],
+ "E01207CHARGERLABCODE": [
+  "baseus-e0122400"
+ ],
+ "P1018210112300": [
+  "baseus-p10182101123-00"
+ ],
+ "E0123600": [
+  "baseus-e0123600"
+ ],
+ "E0121K00": [
+  "baseus-e0121k00"
+ ],
+ "CCGP100101": [
+  "baseus-ccgp100101"
+ ],
+ "CCGAN2PG01": [
+  "baseus-ccgan2p-g01"
+ ],
+ "CCGAN2PM01": [
+  "baseus-ccgan2p-m01"
+ ],
+ "CCGANI02": [
+  "baseus-ccgan-i02"
+ ],
+ "TZCCGANZ01": [
+  "baseus-tzccgan-z01"
+ ],
+ "CCGN030001": [
+  "baseus-ccgn030001"
+ ],
+ "CCGP000201": [
+  "baseus-ccgp000201"
+ ],
+ "CCGP110101": [
+  "baseus-ccgp110101"
+ ],
+ "E0120S00": [
+  "baseus-e0120s00"
+ ],
+ "E0121800": [
+  "baseus-e0121800"
+ ],
+ "E0120Z00": [
+  "baseus-e0120z00"
+ ],
+ "WCH001DQWH": [
+  "belkin-wch001dqwh"
+ ],
+ "WCH001DQ1MWHB6WITHCABLE": [
+  "belkin-wch001dqwh"
+ ],
+ "WCH008": [
+  "belkin-wch008"
+ ],
+ "WCH009DQWH": [
+  "belkin-wch009dqwh"
+ ],
+ "WCH009DQ1MWHB6WITHCABLE": [
+  "belkin-wch009dqwh"
+ ],
+ "WCB008DQWH": [
+  "belkin-wcb008dqwh"
+ ],
+ "WCB008VFWH": [
+  "belkin-wcb008dqwh"
+ ],
+ "WCB008DQ04WH": [
+  "belkin-wcb008dqwh"
+ ],
+ "WCH003DQ2MWHB6": [
+  "belkin-wch003dq2mwh-b6"
+ ],
+ "WCH003": [
+  "belkin-wch003dq2mwh-b6"
+ ],
+ "WCH010DQWH": [
+  "belkin-wch010dqwh"
+ ],
+ "WCH011DQWH": [
+  "belkin-wch011dqwh"
+ ],
+ "BBC015BK": [
+  "belkin-wch011dqwh"
+ ],
+ "WCH011": [
+  "belkin-wch011dqwh"
+ ],
+ "WCH013DQWH": [
+  "belkin-wch013dqwh"
+ ],
+ "BBC013BK": [
+  "belkin-wch013dqwh"
+ ],
+ "WCH013DQ2MWHB6WITHCABLE": [
+  "belkin-wch013dqwh"
+ ],
+ "ENA007DQBKNINTENDOSWITCH2EDITION": [
+  "belkin-wch013dqwh"
+ ],
+ "WCH014ZBWHIN": [
+  "belkin-wch014zbwh-in"
+ ],
+ "WCH014DQWHPH": [
+  "belkin-wch014zbwh-in"
+ ],
+ "WCH014BTWHUK": [
+  "belkin-wch014zbwh-in"
+ ],
+ "WCH014MYWHSG": [
+  "belkin-wch014zbwh-in"
+ ],
+ "WCH014": [
+  "belkin-wch014zbwh-in"
+ ],
+ "WCH015DQWH": [
+  "belkin-wch015dqwh"
+ ],
+ "WCH015ZBWHIN": [
+  "belkin-wch015dqwh"
+ ],
+ "WCH015MYWH": [
+  "belkin-wch015dqwh"
+ ],
+ "WCH016DQWH": [
+  "belkin-wch016dqwh"
+ ],
+ "WCH016FQWHTRAVELKIT": [
+  "belkin-wch016dqwh"
+ ],
+ "WCH016YZ": [
+  "belkin-wch016dqwh"
+ ],
+ "WCH016THWH": [
+  "belkin-wch016dqwh"
+ ],
+ "WCH018DQWH": [
+  "belkin-wch018dqwh"
+ ],
+ "WCH018FQWHTRAVELKIT": [
+  "belkin-wch018dqwh"
+ ],
+ "WCH018THWH": [
+  "belkin-wch018dqwh"
+ ],
+ "WCH019DQWH": [
+  "belkin-wch019dqwh"
+ ],
+ "WCH019DQ1MWHB6WITHCABLE": [
+  "belkin-wch019dqwh"
+ ],
+ "WCH020DQWH": [
+  "belkin-wch020dqwh"
+ ],
+ "BBC035TTBK": [
+  "belkin-wch020dqwh"
+ ],
+ "WCH020YZ": [
+  "belkin-wch020dqwh"
+ ],
+ "WCH020AUWH": [
+  "belkin-wch020dqwh"
+ ],
+ "WCH020MYWH": [
+  "belkin-wch020dqwh"
+ ],
+ "WCH020THWH": [
+  "belkin-wch020dqwh"
+ ],
+ "WCH022DQWH": [
+  "belkin-wch022dqwh"
+ ],
+ "WCH022BKBKMVSPIDERMANEDITION": [
+  "belkin-wch022dqwh"
+ ],
+ "WCH022": [
+  "belkin-wch022dqwh"
+ ],
+ "BBC039TT15BKB6": [
+  "belkin-bbc039tt1-5bkb6"
+ ],
+ "WCH025DQ15WHB6": [
+  "belkin-bbc039tt1-5bkb6"
+ ],
+ "WCA008DQWH": [
+  "belkin-wca008dqwh"
+ ],
+ "WCA008DQ2MBLB6WITHBRAIDEDCABLEMACBOOKNEO": [
+  "belkin-wca008dqwh"
+ ],
+ "WCC002DQWH": [
+  "belkin-wcc002dqwh"
+ ],
+ "AD301N": [
+  "cuktech-ad301n"
+ ],
+ "AD651N": [
+  "cuktech-ad651n"
+ ],
+ "AD653N": [
+  "cuktech-ad653n"
+ ],
+ "AD653USSLICKDEALS": [
+  "cuktech-ad653n"
+ ],
+ "A15CEUEUVARIANT": [
+  "cuktech-ad653n"
+ ],
+ "AD653CUSTAIWANVARIANT": [
+  "cuktech-ad653n"
+ ],
+ "AD653W": [
+  "cuktech-ad653w"
+ ],
+ "AD653U": [
+  "cuktech-ad653u"
+ ],
+ "AD1003": [
+  "cuktech-ad1003"
+ ],
+ "AD1003US": [
+  "cuktech-ad1003"
+ ],
+ "AD1003EU": [
+  "cuktech-ad1003"
+ ],
+ "AD1204U": [
+  "cuktech-ad1204u"
+ ],
+ "AD1404U": [
+  "cuktech-ad1404u"
+ ],
+ "AD1404US": [
+  "cuktech-ad1404u"
+ ],
+ "EFWC140CN": [
+  "ecoflow-ef-wc-140-cn"
+ ],
+ "A11E1": [
+  "iniu-a11-e1"
+ ],
+ "D01A11E1USBK": [
+  "iniu-a11-e1"
+ ],
+ "A21E1": [
+  "iniu-a21-e1"
+ ],
+ "D01A21E1USBK": [
+  "iniu-a21-e1"
+ ],
+ "I624": [
+  "iniu-i624"
+ ],
+ "D01I624US": [
+  "iniu-i624"
+ ],
+ "I625": [
+  "iniu-i625"
+ ],
+ "A12E1": [
+  "iniu-a12-e1",
+  "iniu-a12-e1-2"
+ ],
+ "D01A12E11PLUSBK": [
+  "iniu-a12-e1"
+ ],
+ "D01A12E12PLUSBK": [
+  "iniu-a12-e1-2"
+ ],
+ "I622": [
+  "iniu-i622"
+ ],
+ "STCOTG45SUS": [
+  "satechi-st-cotg45s-us"
+ ],
+ "STCOTG45BUS": [
+  "satechi-st-cotg45s-us"
+ ],
+ "STCOTG45PUS": [
+  "satechi-st-cotg45s-us"
+ ],
+ "STCOTG45YUS": [
+  "satechi-st-cotg45s-us"
+ ],
+ "STCOTG67KUS": [
+  "satechi-st-cotg67k-us"
+ ],
+ "STCOTG67WUS": [
+  "satechi-st-cotg67k-us"
+ ],
+ "STCOTG67RUS": [
+  "satechi-st-cotg67k-us"
+ ],
+ "STUC100WSM": [
+  "satechi-st-uc100wsm"
+ ],
+ "STUC100WSMEU": [
+  "satechi-st-uc100wsm"
+ ],
+ "STUC100WSMUK": [
+  "satechi-st-uc100wsm"
+ ],
+ "STUC100WSMAU": [
+  "satechi-st-uc100wsm"
+ ],
+ "STTC100GM": [
+  "satechi-st-tc100gm"
+ ],
+ "STTC100GMEU": [
+  "satechi-st-tc100gm"
+ ],
+ "STTC100GMUK": [
+  "satechi-st-tc100gm"
+ ],
+ "STTC100GMAU": [
+  "satechi-st-tc100gm"
+ ],
+ "STTC108WM": [
+  "satechi-st-tc108wm"
+ ],
+ "CTW145C2": [
+  "satechi-ct-w145c2"
+ ],
+ "STUC165GM": [
+  "satechi-st-uc165gm"
+ ],
+ "STUC165GMEU": [
+  "satechi-st-uc165gm"
+ ],
+ "STUC165GMUK": [
+  "satechi-st-uc165gm"
+ ],
+ "STUC165GMAU": [
+  "satechi-st-uc165gm"
+ ],
+ "STC200GMUS": [
+  "satechi-st-c200gm-us"
+ ],
+ "STC200GMEU": [
+  "satechi-st-c200gm-us"
+ ],
+ "STC200GMUK": [
+  "satechi-st-c200gm-us"
+ ],
+ "STC200GMAU": [
+  "satechi-st-c200gm-us"
+ ],
+ "STC4CV140CUS": [
+  "satechi-st-c4cv140c-us"
+ ],
+ "STC4CV140CEU": [
+  "satechi-st-c4cv140c-us"
+ ],
+ "STC4CV140CUK": [
+  "satechi-st-c4cv140c-us"
+ ],
+ "STC4CV140CAU": [
+  "satechi-st-c4cv140c-us"
+ ],
+ "STC4CV140CKR": [
+  "satechi-st-c4cv140c-us"
+ ],
+ "STC6CV240CUS": [
+  "satechi-st-c6cv240c-us"
+ ],
+ "STC6CV240CEU": [
+  "satechi-st-c6cv240c-us"
+ ],
+ "STC6CV240CUK": [
+  "satechi-st-c6cv240c-us"
+ ],
+ "STC6CV240CAU": [
+  "satechi-st-c6cv240c-us"
+ ],
+ "STC6CV240CKR": [
+  "satechi-st-c6cv240c-us"
+ ],
+ "PE2009": [
+  "spigen-pe2009"
+ ],
+ "ACH02021BLACK": [
+  "spigen-pe2009"
+ ],
+ "ACH02022WHITE": [
+  "spigen-pe2009"
+ ],
+ "PE2104": [
+  "spigen-pe2104"
+ ],
+ "ACH03713": [
+  "spigen-pe2104"
+ ],
+ "PE2203": [
+  "spigen-pe2203"
+ ],
+ "PE2203UJ": [
+  "spigen-pe2203"
+ ],
+ "PE2201": [
+  "spigen-pe2201"
+ ],
+ "PE2201UJ": [
+  "spigen-pe2201"
+ ],
+ "ACH05474WHITE": [
+  "spigen-pe2201"
+ ],
+ "ACH05473BLACK": [
+  "spigen-pe2201"
+ ],
+ "PE2106": [
+  "spigen-pe2106"
+ ],
+ "ACH03719": [
+  "spigen-pe2106"
+ ],
+ "PE2007": [
+  "spigen-pe2007"
+ ],
+ "ACH02081": [
+  "spigen-pe2007"
+ ],
+ "PE2006": [
+  "spigen-pe2006"
+ ],
+ "ACH02122WHITE": [
+  "spigen-pe2006"
+ ],
+ "ACH02121BLACK": [
+  "spigen-pe2006"
+ ],
+ "PE2109": [
+  "spigen-pe2109"
+ ],
+ "PE2109UJ": [
+  "spigen-pe2109"
+ ],
+ "75554": [
+  "ugreen-75554"
+ ],
+ "75554BBESTBUY": [
+  "ugreen-75554"
+ ],
+ "95861": [
+  "ugreen-95861"
+ ],
+ "95127": [
+  "ugreen-95127"
+ ],
+ "75752": [
+  "ugreen-75752"
+ ],
+ "X873": [
+  "ugreen-75752"
+ ],
+ "65636": [
+  "ugreen-65636"
+ ],
+ "X774": [
+  "ugreen-65636"
+ ],
+ "95405": [
+  "ugreen-95405"
+ ],
+ "95169HSR": [
+  "ugreen-95169hsr"
+ ],
+ "95169BASEAIR65W": [
+  "ugreen-95169hsr"
+ ],
+ "35478": [
+  "ugreen-35478"
+ ],
+ "75813": [
+  "ugreen-35478"
+ ],
+ "X860CHARGERLABCUBED3NAME": [
+  "ugreen-35478"
+ ],
+ "95536": [
+  "ugreen-95536"
+ ],
+ "X840": [
+  "ugreen-95536"
+ ],
+ "55549": [
+  "ugreen-55549"
+ ],
+ "55551SG": [
+  "ugreen-55549"
+ ],
+ "0224": [
+  "ugreen-55549"
+ ],
+ "45514": [
+  "ugreen-45514"
+ ],
+ "35037": [
+  "ugreen-35037"
+ ],
+ "65585": [
+  "ugreen-65585"
+ ],
+ "X606": [
+  "ugreen-65585"
+ ],
+ "65591": [
+  "ugreen-65585"
+ ],
+ "55897": [
+  "ugreen-55897"
+ ],
+ "X605": [
+  "ugreen-55897"
+ ],
+ "90409": [
+  "ugreen-90409"
+ ],
+ "35538A": [
+  "ugreen-35538a"
+ ],
+ "35538": [
+  "ugreen-35538a"
+ ],
+ "85252": [
+  "ugreen-85252"
+ ],
+ "10334": [
+  "ugreen-10334"
+ ],
+ "CD244UNVERIFIED": [
+  "ugreen-10334"
+ ],
+ "15817": [
+  "ugreen-15817"
+ ],
+ "25094": [
+  "ugreen-25094"
+ ],
+ "15202": [
+  "ugreen-15202"
+ ],
+ "65155": [
+  "ugreen-65155"
+ ],
+ "40737": [
+  "ugreen-40737"
+ ],
+ "CD226": [
+  "ugreen-40737"
+ ],
+ "65189": [
+  "ugreen-65189"
+ ],
+ "90572": [
+  "ugreen-90572"
+ ],
+ "65786": [
+  "ugreen-65786"
+ ],
+ "15570": [
+  "ugreen-15570"
+ ],
+ "35856CYAN": [
+  "ugreen-15570"
+ ],
+ "CD361": [
+  "ugreen-15570"
+ ],
+ "90736": [
+  "ugreen-90736"
+ ],
+ "35535": [
+  "ugreen-35535"
+ ],
+ "90905": [
+  "ugreen-90905"
+ ],
+ "CD333": [
+  "ugreen-cd333"
+ ],
+ "55474": [
+  "ugreen-cd333"
+ ],
+ "40913": [
+  "ugreen-40913"
+ ],
+ "90548": [
+  "ugreen-90548"
+ ]
+}

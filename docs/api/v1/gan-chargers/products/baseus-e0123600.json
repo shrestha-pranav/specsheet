@@ -1,0 +1,60 @@
+{
+ "brand": "Baseus",
+ "product_name": "Baseus EnerFill FE22 GaN6 3-Port Fast Charger 2C+U 70W",
+ "model_numbers": [
+  "E0123600"
+ ],
+ "series": "EnerFill (GaN6)",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 70,
+ "max_single_port_w": 70,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 70
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": null
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": null
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": null,
+ "typical_price_usd": 39.99,
+ "official_url": "https://www.baseus.com/products/enerfill-fe22-gan-fast-charger-2c-u-70w",
+ "sources": [
+  "https://www.baseus.com/products/enerfill-fe22-gan-fast-charger-2c-u-70w"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "ports": 0,
+  "typical_price_usd": 0,
+  "max_single_port_w": 0
+ },
+ "confidence": "low",
+ "notes": "Single USB-C port can deliver the full 70W per page. PPS not stated.",
+ "id": "baseus-e0123600"
+}

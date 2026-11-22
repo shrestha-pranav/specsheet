@@ -1,0 +1,71 @@
+{
+ "brand": "Satechi",
+ "product_name": "108W Pro USB-C PD Desktop Charger",
+ "model_numbers": [
+  "ST-TC108WM"
+ ],
+ "series": null,
+ "release_year": 2020,
+ "status": "current",
+ "max_total_w": 108,
+ "max_single_port_w": 90,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 90
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 18
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": 12
+  },
+  {
+   "name": "A2",
+   "type": "USB-A",
+   "max_w": 12
+  }
+ ],
+ "port_sharing": "C 90W + C 18W + 2x USB-A total 12W (no sharing claimed)",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": null,
+ "foldable_plug": false,
+ "plug_region": null,
+ "display": false,
+ "weight_g": 417,
+ "dimensions_mm": "120.7 x 30.2 x 79.5",
+ "safety_certs": [
+  "CE",
+  "ETL",
+  "USB-IF",
+  "FCC"
+ ],
+ "cable_included": "4 ft AC cable",
+ "msrp_usd": 79.99,
+ "typical_price_usd": 55.99,
+ "official_url": "https://satechi.com/products/108w-pro-usb-c-pd-desktop-charger",
+ "sources": [
+  "https://satechi.com/products/108w-pro-usb-c-pd-desktop-charger"
+ ],
+ "field_sources": {
+  "ports": 0,
+  "typical_price_usd": 0,
+  "safety_certs": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0
+ },
+ "confidence": "low",
+ "notes": "GaN NOT stated on page (2019-era design; likely silicon); gan left null. Included for completeness. Desktop; PPS unknown.",
+ "id": "satechi-st-tc108wm"
+}

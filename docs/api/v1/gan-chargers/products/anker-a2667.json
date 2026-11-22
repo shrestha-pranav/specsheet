@@ -1,0 +1,71 @@
+{
+ "brand": "Anker",
+ "product_name": "Anker 735 Charger (Nano II 65W)",
+ "model_numbers": [
+  "A2667"
+ ],
+ "series": "Nano II",
+ "release_year": 2022,
+ "status": "current",
+ "max_total_w": 65,
+ "max_single_port_w": 65,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 65
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 65
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": 22.5
+  }
+ ],
+ "port_sharing": "C1+C2: 45+20; C1+A: 40+22.5; C2+A: 12+12; C1+C2+A: 40+12+12",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "PowerIQ 3.0",
+  "PowerIQ 2.0",
+  "Samsung Super Fast Charging (not 45W SFC2.0)"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": null,
+ "dimensions_mm": "38.26 x 29.12 x 66.10",
+ "safety_certs": [
+  "IEC 62368-1"
+ ],
+ "cable_included": "no",
+ "msrp_usd": 29.99,
+ "typical_price_usd": 22.77,
+ "official_url": "https://www.anker.com/products/a2667",
+ "sources": [
+  "https://www.anker.com/products/a2667",
+  "https://service.anker.com/product-description/a085g000004x2BVAAY/anker-735-charger-nano-ii-65w",
+  "https://en.best-batteries.com/reviews/anker-nano-ii-65w-charger/",
+  "https://www.anker.com/collections/gan-charger"
+ ],
+ "field_sources": {
+  "port_sharing": 0,
+  "pps": 1,
+  "other_protocols": 1,
+  "dimensions_mm": 0,
+  "typical_price_usd": 3,
+  "msrp_usd": 0
+ },
+ "confidence": "medium",
+ "notes": "PPS supported (Anker support: 'PPS, PIQ 3.0, PIQ 2.0, GaN II') but no official PPS range; PDO list not published. Best Batteries review claims PPS caps at 11V (unverified, secondary) and a Gadget Explained review mentions a 12V PDO (unverified). Also sold as 2-pack bundle ($49.38). Single-port 65W with PPS under $25 at sale price.",
+ "id": "anker-a2667"
+}

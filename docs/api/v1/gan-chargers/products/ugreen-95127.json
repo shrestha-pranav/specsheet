@@ -1,0 +1,50 @@
+{
+ "brand": "UGREEN",
+ "product_name": "UGREEN Nexode Pro 160W Charger with Retractable USB-C Cable",
+ "model_numbers": [
+  "95127"
+ ],
+ "series": "Nexode Pro",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 160,
+ "max_single_port_w": 140,
+ "ports": [],
+ "port_sharing": "Two ports can reach 140W when used alone; total shared at 160W (Gadgeteer, no table)",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": 149.99,
+ "typical_price_usd": 149.99,
+ "official_url": "https://us.ugreen.com/products/ugreen-160w-retractable-charger",
+ "sources": [
+  "https://us.ugreen.com/products/ugreen-160w-retractable-charger",
+  "https://us.ugreen.com/collections/charger",
+  "https://the-gadgeteer.com/2026/11/21/ugreen-nexode-pro-160w-retractable-cable-deal/"
+ ],
+ "field_sources": {
+  "product_name": 0,
+  "model_numbers": 0,
+  "max_total_w": 0,
+  "typical_price_usd": 1,
+  "msrp_usd": 1,
+  "status": 1,
+  "port_sharing": 2,
+  "max_single_port_w": 2
+ },
+ "confidence": "low",
+ "notes": "Gadgeteer lists it at deal pricing; ports list and PPS not verified. Current US page shows sale ~$99.98 vs $149.99 list. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise.",
+ "id": "ugreen-95127"
+}

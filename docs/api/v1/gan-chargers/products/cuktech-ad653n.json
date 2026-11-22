@@ -1,0 +1,76 @@
+{
+ "brand": "CUKTECH",
+ "product_name": "CUKTECH Multi-ports GaN Charger 65W (2C1A, foldable)",
+ "model_numbers": [
+  "AD653N",
+  "AD653-US (Slickdeals)",
+  "A15CEU (EU variant)",
+  "AD653CUS (Taiwan variant)"
+ ],
+ "series": "GaN3",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 65,
+ "max_single_port_w": 65,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 65
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 65
+  },
+  {
+   "name": "A",
+   "type": "USB-A",
+   "max_w": 18
+  }
+ ],
+ "port_sharing": "C1+C2: 20V2.25A (45W) + 5V2.4A/9V2A/12V1.5A (18W); C1+A: same split; C2+A: 5V3A max; C1+(C2+A): 45W + 5V2.4A (per official spec table)",
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V3.25A; A: 5V3A 9V2.5A 10V2.25A 12V1.87A",
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "QC3.5 (US page)",
+  "QC4+/3.0 (EU page)",
+  "Super Fast Charging 2.0",
+  "AFC",
+  "FCP",
+  "SCP"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": null,
+ "typical_price_usd": 29,
+ "official_url": "https://cuktech.com/products/ad653n-cuktech-65w-gan-charger-2c1a",
+ "sources": [
+  "https://cuktech.com/products/ad653n-cuktech-65w-gan-charger-2c1a",
+  "https://cuktech.com/products/a15c-cuktech-65w-gan-charger-2c1a",
+  "https://www.dealnews.com/products/Cuktech-65-W-USB-C-Ga-N-III-Fast-Charger/463086.html",
+  "https://dealsfinders.com/cuktech-65w-gan-charger-amazon/",
+  "https://slickdeals.net/f/20210988-cuktech-65w-3-port-foldable-gan-wall-charger-w-usb-c-cable-15-10-free-shipping-w-prime-or-on-35"
+ ],
+ "field_sources": {
+  "model_numbers": 0,
+  "port_sharing": 0,
+  "pd_fixed_pdos": 0,
+  "pps": 0,
+  "other_protocols": 0,
+  "typical_price_usd": 2
+ },
+ "confidence": "medium",
+ "notes": "PPS stated on official page ('Samsung PPS') but no ranges; Chinese teardown (chongdiantou, AD653C) reportedly shows PPS 5-11V 3A on one port, unverified/port ambiguous. Price: ~$28-33 regular, promo deals $11.99-$15.10 (promo codes). Variant mapping (AD653-US/AD653CUS) is inferred from deal/retailer titles. Multiple Amazon listings (grey/silver, with/without cable).",
+ "id": "cuktech-ad653n"
+}

@@ -1,0 +1,64 @@
+{
+ "brand": "INIU",
+ "product_name": "INIU Cougar A12 30W Charger (1-pack / with cable)",
+ "model_numbers": [
+  "A12-E1",
+  "D01-A12-E1-1P-L-US-BK"
+ ],
+ "series": "Cougar",
+ "release_year": 2023,
+ "status": "current",
+ "max_total_w": 30,
+ "max_single_port_w": 30,
+ "ports": [
+  {
+   "name": "C",
+   "type": "USB-C",
+   "max_w": 30
+  },
+  {
+   "name": "A",
+   "type": "USB-A",
+   "max_w": 22.5
+  }
+ ],
+ "port_sharing": "C+A together: 5V3A 15W total (C+A: 5.0V 3.0A 15W)",
+ "usb_pd_version": "2.0/3.0",
+ "pd_fixed_pdos": "C: 5V3A 9V3A 12V2.5A 15V2A 20V1.5A; A: 5V3A 9V2A 10V2.25A 12V1.5A",
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "AFC",
+  "QC2.0",
+  "QC3.0"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 63,
+ "dimensions_mm": "38x48x30",
+ "safety_certs": [],
+ "cable_included": "60W USB-C cable (with-cable variant)",
+ "msrp_usd": null,
+ "typical_price_usd": 10.99,
+ "official_url": "https://iniushop.com/products/iniu-powercube-duo-30w-eu-usb-c-charger",
+ "sources": [
+  "https://iniushop.com/products/iniu-powercube-duo-30w-eu-usb-c-charger"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "ports": 0,
+  "typical_price_usd": 0,
+  "pps": 0,
+  "other_protocols": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "port_sharing": 0
+ },
+ "confidence": "medium",
+ "notes": "PPS listed in protocol list only, no ranges; fixed 15V 2A / 20V 1.5A profiles shown. 2-pack with cable $17.99 is a separate listing (A12-E1 2P). Title says 'EU' in URL slug only; US variants exist.",
+ "id": "iniu-a12-e1"
+}

@@ -1,0 +1,50 @@
+{
+ "brand": "EcoFlow",
+ "product_name": "EcoFlow RAPID 20W GaN Charger with 60W Cable",
+ "model_numbers": [],
+ "series": "RAPID",
+ "release_year": 2024,
+ "status": "current",
+ "max_total_w": 20,
+ "max_single_port_w": 20,
+ "ports": [
+  {
+   "name": "C",
+   "type": "USB-C",
+   "max_w": 20
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 37,
+ "dimensions_mm": "28.4x28.4x35.6 (1.12x1.12x1.4 in)",
+ "safety_certs": [],
+ "cable_included": "1m 3A/60W USB-C to USB-C",
+ "msrp_usd": 29,
+ "typical_price_usd": 12.99,
+ "official_url": "https://us.ecoflow.com/products/rapid-charger-20w",
+ "sources": [
+  "https://us.ecoflow.com/products/rapid-charger-20w"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "cable_included": 0,
+  "msrp_usd": 0,
+  "typical_price_usd": 0
+ },
+ "confidence": "low",
+ "notes": "Outside the requested 30W+ range but a current USB-C GaN wall charger; '20W Max (12V Max)'. No PPS info published.",
+ "id": "ecoflow-ecoflow-rapid-20w-gan-charger-with-60w-cable"
+}

@@ -1,0 +1,85 @@
+{
+ "brand": "EcoFlow",
+ "product_name": "EcoFlow RAPID Pro Charger (140W, 4 Ports, GaN)",
+ "model_numbers": [
+  "EF-WC-140-CN"
+ ],
+ "series": "RAPID Pro",
+ "release_year": 2025,
+ "status": "unknown",
+ "max_total_w": 140,
+ "max_single_port_w": 140,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 140
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 140
+  },
+  {
+   "name": "C3",
+   "type": "USB-C",
+   "max_w": 30
+  },
+  {
+   "name": "A",
+   "type": "USB-A",
+   "max_w": 30
+  }
+ ],
+ "port_sharing": "C1+C2: 70+70; C3+A: 18; C1/C2+C3/A: 100+30; C1/C2+(C3+A): 100+18; C1+C2+C3: 65+45+30; C1+C2+A: 65+45+18",
+ "usb_pd_version": "3.1",
+ "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V5A 28V5A; C3: 5V3A 9V3A 12V2.5A",
+ "pps": true,
+ "pps_ranges": "C1/C2: 5-21V 5A; C3: 5-11V 3A",
+ "pps_max_w": 100,
+ "epr_avs": true,
+ "other_protocols": [
+  "UFCS",
+  "QC3+/5 (C1/C2)",
+  "QC3+/4+ (C3)",
+  "FCP",
+  "SCP",
+  "AFC",
+  "SFCP",
+  "Samsung 2A",
+  "Apple 2.4A",
+  "DCP"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 224,
+ "dimensions_mm": "63.18x66.99x30.78",
+ "safety_certs": [],
+ "cable_included": "none (E-Marked 5A cable recommended)",
+ "msrp_usd": null,
+ "typical_price_usd": null,
+ "official_url": "https://us.ecoflow.com/products/ecoflow-rapid-pro-charger-140w-4-ports-gan",
+ "sources": [
+  "https://www.chargerlab.com/teardown-of-ecoflow-rapid-pro-140w-4%E2%80%91port-gan-charger-ef-wc-140-cn",
+  "https://us.ecoflow.com/products/ecoflow-rapid-pro-charger-140w-4-ports-gan",
+  "https://www.notebookcheck.net/EcoFlow-launches-new-140W-Rapid-Pro-4-port-charger-with-discount.1053990.0.html"
+ ],
+ "field_sources": {
+  "model_numbers": 0,
+  "max_total_w": 0,
+  "ports": 0,
+  "port_sharing": 0,
+  "pd_fixed_pdos": 0,
+  "pps": 0,
+  "pps_ranges": 0,
+  "epr_avs": 0,
+  "other_protocols": 0,
+  "weight_g": 0,
+  "dimensions_mm": 0
+ },
+ "confidence": "medium",
+ "notes": "Specs are ChargerLAB's teardown of the CN model EF-WC-140-CN; US model number and US plug variant not confirmed. us.ecoflow.com product URL returned 404 on 2026-11-22 and it is absent from the US store product feed (still bundled in a RAPID Pro bundle page) -> status unknown (possibly delisted from US store; may remain on Amazon). AVS 15-28V 140W listed by ChargerLAB; its own text does not label it EPR. Notebookcheck says first two C ports both 140W, consistent. Earlier search snippet suggested 5-21V; pps_max_w=100 is 20V*5A (21V*5A=105W) - approximate. EU page lists 67x63x31mm dims; teardown measured 63.18x66.99x30.78. typical price not found.",
+ "id": "ecoflow-ef-wc-140-cn"
+}

@@ -1,0 +1,66 @@
+{
+ "brand": "Belkin",
+ "product_name": "BoostCharge Pro Dual USB-C GaN Wall Charger 67W",
+ "model_numbers": [
+  "WCH020dqWH",
+  "BBC035ttBK",
+  "WCH020yz",
+  "WCH020auWH",
+  "WCH020myWH",
+  "WCH020thWH"
+ ],
+ "series": "BoostCharge Pro",
+ "release_year": 2025,
+ "status": "current",
+ "max_total_w": 67,
+ "max_single_port_w": 67,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 67
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 67
+  }
+ ],
+ "port_sharing": "Single 67W; dual C1+C2: 45W + 20W (65W max)",
+ "usb_pd_version": "3.1",
+ "pd_fixed_pdos": "5V3A 9V3A 12V3A 15V3A 20V3.35A (both ports)",
+ "pps": true,
+ "pps_ranges": "5-11V 4.5A; 5-21V 3.15A",
+ "pps_max_w": 66,
+ "epr_avs": false,
+ "other_protocols": [
+  "QC5",
+  "DCP"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": null,
+ "display": false,
+ "weight_g": 112,
+ "dimensions_mm": "49.92 x 37.99 x 41.58 (ChargerLAB) / 50 x 42 x 38 (Belkin)",
+ "safety_certs": [],
+ "cable_included": "No",
+ "msrp_usd": 59.99,
+ "typical_price_usd": 59.99,
+ "official_url": "https://www.belkin.com/p/dual-usb-c-gan-wall-charger-67w/WCH020dqWH.html",
+ "sources": [
+  "https://www.chargerlab.com/teardown-of-belkin-boostcharge-pro-dual-usb-c-67w-gan-wall-charger-wch020yz",
+  "https://www.belkin.com/p/dual-usb-c-gan-wall-charger-67w/WCH020dqWH.html"
+ ],
+ "field_sources": {
+  "pd_fixed_pdos": 0,
+  "pps_ranges": 0,
+  "port_sharing": 0,
+  "weight_g": 0,
+  "typical_price_usd": 1,
+  "dimensions_mm": 0
+ },
+ "confidence": "high",
+ "notes": "Belkin page title says 50W in places (typo on page title) but specs say 67W. Release year from ChargerLAB article date Dec 19 2025 (approximate). Chip supports UFCS/SCP/PD3.1 per ChargerLAB but KM003C shows PD3.0, PPS, QC5.",
+ "id": "belkin-wch020dqwh"
+}

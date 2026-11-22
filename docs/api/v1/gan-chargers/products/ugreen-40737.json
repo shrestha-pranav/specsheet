@@ -1,0 +1,79 @@
+{
+ "brand": "UGREEN",
+ "product_name": "UGREEN Nexode 100W 4-Port Charger",
+ "model_numbers": [
+  "40737",
+  "CD226"
+ ],
+ "series": "Nexode",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 100,
+ "max_single_port_w": 100,
+ "ports": [
+  {
+   "name": "C1",
+   "type": 100,
+   "max_w": null
+  },
+  {
+   "name": "C2",
+   "type": 100,
+   "max_w": null
+  },
+  {
+   "name": "C3",
+   "type": null,
+   "max_w": null
+  },
+  {
+   "name": "A1",
+   "type": 22.5,
+   "max_w": null
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "PD",
+  "QC",
+  "SCP",
+  "FCP"
+ ],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": 54.99,
+ "typical_price_usd": 54.99,
+ "official_url": "https://us.ugreen.com/products/100w-3c1a-gan-fast-charger",
+ "sources": [
+  "https://us.ugreen.com/products/100w-3c1a-gan-fast-charger",
+  "https://us.ugreen.com/collections/charger",
+  "https://www.bhphotovideo.com/c/product/1784001-REG/ugreen_40737_nexode_100w_usb_c_gan.html",
+  "https://mychooz.com/en/reviews/ugreen-cd226-150927"
+ ],
+ "field_sources": {
+  "product_name": 0,
+  "model_numbers": 0,
+  "max_total_w": 0,
+  "typical_price_usd": 1,
+  "msrp_usd": 1,
+  "status": 1,
+  "pps": 2,
+  "other_protocols": 2,
+  "ports": 3
+ },
+ "confidence": "medium",
+ "notes": "B&H lists PD, QC, PPS, SCP, FCP. Split conflicts: sources say each USB-C 65W independently / total 96W / laptop held ~65W with 3 others. PPS ranges not found. Layout 3C1A from handle '100w-3c1a'. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise.",
+ "id": "ugreen-40737"
+}

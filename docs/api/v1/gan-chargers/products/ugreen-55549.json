@@ -1,0 +1,89 @@
+{
+ "brand": "UGREEN",
+ "product_name": "UGREEN Nexode 500W 6-Port Desktop Charger",
+ "model_numbers": [
+  "55549",
+  "55551 (SG)",
+  "0224"
+ ],
+ "series": "Nexode (desktop charging station)",
+ "release_year": 2025,
+ "status": "current",
+ "max_total_w": 500,
+ "max_single_port_w": 240,
+ "ports": [
+  {
+   "name": "C1",
+   "type": 240,
+   "max_w": null
+  },
+  {
+   "name": "C2",
+   "type": null,
+   "max_w": null
+  },
+  {
+   "name": "C3",
+   "type": null,
+   "max_w": null
+  },
+  {
+   "name": "C4",
+   "type": null,
+   "max_w": null
+  },
+  {
+   "name": "C5",
+   "type": null,
+   "max_w": null
+  },
+  {
+   "name": "A1",
+   "type": null,
+   "max_w": null
+  }
+ ],
+ "port_sharing": "C1 up to 240W PD3.1 (48V5A); C2-C5 100W each alone, dropping to 60W each when 4+ ports used (Macworld); UGREEN SG/EU pages say 60W for C2-C5",
+ "usb_pd_version": "3.1",
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": true,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": 2200,
+ "dimensions_mm": "146 x 115 x 61",
+ "safety_certs": [],
+ "cable_included": "none",
+ "msrp_usd": 249.99,
+ "typical_price_usd": 249.99,
+ "official_url": "https://us.ugreen.com/products/ugreen-500w-usbc-desktop-charger",
+ "sources": [
+  "https://us.ugreen.com/products/ugreen-500w-usbc-desktop-charger",
+  "https://us.ugreen.com/collections/charger",
+  "https://www.macworld.com/article/2824637/ugreen-nexode-500w-desktop-charger-review.html",
+  "https://www.tldevtech.com/gadget/laptop-charger/ugreen-nexode-500w",
+  "https://the-gadgeteer.com/2025/06/16/ugreen-nexode-500w-gan-desktop-charger-review-more-power/"
+ ],
+ "field_sources": {
+  "product_name": 0,
+  "model_numbers": 0,
+  "max_total_w": 0,
+  "typical_price_usd": 1,
+  "msrp_usd": 1,
+  "status": 1,
+  "epr_avs": 2,
+  "weight_g": 2,
+  "dimensions_mm": 2,
+  "port_sharing": 2,
+  "cable_included": 2,
+  "release_year": 4
+ },
+ "confidence": "medium",
+ "notes": "CONTRADICTION: C2-C5 per-port max 60W (UGREEN SG/EU) vs 100W (TL Dev Tech, Macworld alone-case); USB-A 22.5W vs 20W. PPS not found in any source (pps null). Desktop station. Gadgeteer says four ports 100W + one 240W. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise.",
+ "id": "ugreen-55549"
+}

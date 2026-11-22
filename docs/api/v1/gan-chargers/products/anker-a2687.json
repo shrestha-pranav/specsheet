@@ -1,0 +1,65 @@
+{
+ "brand": "Anker",
+ "product_name": "Anker Prime Charger (160W, 3 Ports, Smart Display)",
+ "model_numbers": [
+  "A2687"
+ ],
+ "series": "Prime",
+ "release_year": 2025,
+ "status": "current",
+ "max_total_w": 160,
+ "max_single_port_w": 150,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 150
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 150
+  },
+  {
+   "name": "C3",
+   "type": "USB-C",
+   "max_w": 150
+  }
+ ],
+ "port_sharing": "2 or 3 ports in use: 160W total",
+ "usb_pd_version": "3.1",
+ "pd_fixed_pdos": "5V3A 9V3A 15V3A 20V5A 28V5A 28V5.36A",
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": true,
+ "other_protocols": [
+  "PowerIQ 5.0",
+  "Anker Protocol",
+  "GaNPrime 2.0"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": true,
+ "weight_g": 220,
+ "dimensions_mm": "65 x 52 x 35",
+ "safety_certs": [],
+ "cable_included": "no",
+ "msrp_usd": 149.99,
+ "typical_price_usd": 99.99,
+ "official_url": "https://www.anker.com/products/a2687-anker-prime-charger-160w-3-ports-gan",
+ "sources": [
+  "https://www.anker.com/products/a2687-anker-prime-charger-160w-3-ports-gan"
+ ],
+ "field_sources": {
+  "port_sharing": 0,
+  "pd_fixed_pdos": 0,
+  "weight_g": 0,
+  "typical_price_usd": 0,
+  "max_single_port_w": 0
+ },
+ "confidence": "medium",
+ "notes": "Single-port conflict: spec table 150W (28V/5.36A) vs key features / FAQ 140W. Refurbished unit listed at $119.99. PPS not stated.",
+ "id": "anker-a2687"
+}

@@ -1,0 +1,80 @@
+{
+ "brand": "Anker",
+ "product_name": "Anker Prime Charger (200W, 6 Ports, GaN)",
+ "model_numbers": [
+  "A2683"
+ ],
+ "series": "station",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 200,
+ "max_single_port_w": 100,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C3",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "C4",
+   "type": "USB-C",
+   "max_w": 100
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": 22.5
+  },
+  {
+   "name": "A2",
+   "type": "USB-A",
+   "max_w": 22.5
+  }
+ ],
+ "port_sharing": "2-4 ports: 200W total; 5-6 ports: 199W total",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": "C: 5V3A 9V3A 10V2.25A 15V3A 20V5A",
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 563,
+ "dimensions_mm": "112 x 76 x 35",
+ "safety_certs": [
+  "UL",
+  "CB"
+ ],
+ "cable_included": "conflicting: AC cord both 'not included' and 'provided'",
+ "msrp_usd": 69.99,
+ "typical_price_usd": 55.99,
+ "official_url": "https://www.anker.com/products/a2683-anker-prime-charger-200w-6-ports-gan",
+ "sources": [
+  "https://www.anker.com/products/a2683-anker-prime-charger-200w-6-ports-gan",
+  "https://www.anker.com/collections/fast-wall-charger"
+ ],
+ "field_sources": {
+  "port_sharing": 0,
+  "pd_fixed_pdos": 0,
+  "weight_g": 0,
+  "typical_price_usd": 1,
+  "safety_certs": 0
+ },
+ "confidence": "medium",
+ "notes": "Desktop charging station (AC cord). Page price $69.99 vs collection sale $55.99. PPS not stated.",
+ "id": "anker-a2683"
+}

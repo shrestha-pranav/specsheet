@@ -1,0 +1,55 @@
+{
+ "brand": "Baseus",
+ "product_name": "Baseus Super Si Pro Dual Port Fast Charger 30W",
+ "model_numbers": [
+  "CCSUPP-D01"
+ ],
+ "series": "Super Si Pro",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 30,
+ "max_single_port_w": 30,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 30
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": null
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": null,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": 68,
+ "dimensions_mm": "48x35x30 (1.88x1.37x1.18 in)",
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": null,
+ "typical_price_usd": 19.99,
+ "official_url": "https://www.baseus.com/products/super-si-pro-dual-port-fast-charger-30w",
+ "sources": [
+  "https://www.baseus.com/products/super-si-pro-dual-port-fast-charger-30w"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "ports": 0,
+  "typical_price_usd": 0,
+  "weight_g": 0
+ },
+ "confidence": "medium",
+ "notes": "GaN not stated on page (gan=null). PPS not stated.",
+ "id": "baseus-ccsupp-d01"
+}

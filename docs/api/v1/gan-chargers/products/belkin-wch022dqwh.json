@@ -1,0 +1,60 @@
+{
+ "brand": "Belkin",
+ "product_name": "UltraCharge Retractable GaN Wall Charger 67W (with built-in retractable USB-C cable)",
+ "model_numbers": [
+  "WCH022dqWH",
+  "WCH022bkBK-MV (Spider-Man edition)",
+  "WCH022"
+ ],
+ "series": "UltraCharge",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 67,
+ "max_single_port_w": 67,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 67
+  },
+  {
+   "name": "Cable",
+   "type": "USB-C",
+   "max_w": 67
+  }
+ ],
+ "port_sharing": "Single device up to 67W via built-in cable; second device via USB-C port; split not published",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "AVS (Adjustable Voltage Supply)"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": null,
+ "display": false,
+ "weight_g": 188,
+ "dimensions_mm": "58 x 35 x 72",
+ "safety_certs": [],
+ "cable_included": "Yes, built-in 1 m retractable USB-C (magnetic end)",
+ "msrp_usd": 39.99,
+ "typical_price_usd": 39.99,
+ "official_url": "https://www.belkin.com/p/retractable-gan-wall-charger-67w/WCH022dqWH.html",
+ "sources": [
+  "https://www.belkin.com/p/retractable-gan-wall-charger-67w/WCH022dqWH.html"
+ ],
+ "field_sources": {
+  "weight_g": 0,
+  "typical_price_usd": 0,
+  "dimensions_mm": 0,
+  "cable_included": 0,
+  "other_protocols": 0
+ },
+ "confidence": "low",
+ "notes": "Page names AVS; PPS and PD version not stated. Page inconsistent on port count (spec says 1 USB-C, FAQ says 1 port + built-in cable). A 45W variant (WCH023dqWH) is referenced via selector, price $34.99 per Belkin GaN category range; specs not fetched. 'GaN' based on Belkin GaN category listing.",
+ "id": "belkin-wch022dqwh"
+}

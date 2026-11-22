@@ -1,0 +1,1096 @@
+[
+ {
+  "brand": "Belkin",
+  "product_name": "BoostCharge Pro 30W USB-C PD GaN Wall Charger",
+  "model_numbers": [
+   "WCH001dqWH",
+   "WCH001dq1MWH-B6 (with cable)"
+  ],
+  "series": "BoostCharge Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 30,
+  "max_single_port_w": 30,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 30
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": null,
+  "display": false,
+  "weight_g": null,
+  "dimensions_mm": "40 x 39 x 40 (57 with prongs out)",
+  "safety_certs": [],
+  "cable_included": "No (standalone); -B6 bundle includes USB-C cable",
+  "msrp_usd": 29.99,
+  "typical_price_usd": 30.99,
+  "official_url": "https://www.belkin.com/p/30w-usb-c-pd-gan-wall-charger/P-WCH001.html",
+  "sources": [
+   "https://www.belkin.com/p/30w-usb-c-pd-gan-wall-charger/P-WCH001.html",
+   "https://www.belkin.com/support-article/?articleNum=335922"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "gan": 0,
+   "typical_price_usd": 0,
+   "dimensions_mm": 0,
+   "foldable_plug": 0,
+   "msrp_usd": 1
+  },
+  "confidence": "medium",
+  "notes": "PPS unknown: Belkin comparison chart (support 335922, page flagged as garbled) says PPS yes, product page does not mention PPS; left null. US page was out of stock at fetch time (2026-11-22)."
+ },
+ {
+  "brand": "Belkin",
+  "product_name": "BoostCharge Pro 30W USB-C PD GaN Wall Charger (WCH008)",
+  "model_numbers": [
+   "WCH008"
+  ],
+  "series": "BoostCharge Pro",
+  "release_year": null,
+  "status": "unknown",
+  "max_total_w": 30,
+  "max_single_port_w": 30,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 30
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": "3.0",
+  "pd_fixed_pdos": null,
+  "pps": false,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": null,
+  "display": false,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 29.99,
+  "typical_price_usd": null,
+  "official_url": null,
+  "sources": [
+   "https://www.belkin.com/support-article/?articleNum=317834",
+   "https://www.belkin.com/support-article/?articleNum=335922"
+  ],
+  "field_sources": {
+   "pps": 0,
+   "usb_pd_version": 0,
+   "gan": 1,
+   "msrp_usd": 1,
+   "max_total_w": 1
+  },
+  "confidence": "medium",
+  "notes": "Belkin FAQ says PD 3.0 and does not support PPS (chart agrees: PPS No). No live US product page found; status unknown, possibly superseded by WCH001/WCA008."
+ },
+ {
+  "brand": "Belkin",
+  "product_name": "BoostCharge 20W USB-C PD GaN Wall Charger",
+  "model_numbers": [
+   "WCH009dqWH",
+   "WCH009dq1MWHB6 (with cable)"
+  ],
+  "series": "BoostCharge",
+  "release_year": null,
+  "status": "unknown",
+  "max_total_w": 20,
+  "max_single_port_w": 20,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 20
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": false,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": null,
+  "display": false,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 19.99,
+  "typical_price_usd": null,
+  "official_url": null,
+  "sources": [
+   "https://www.belkin.com/support-article/?articleNum=335922",
+   "https://www.belkin.com/support-article/?articleNum=317785"
+  ],
+  "field_sources": {
+   "pps": 0,
+   "gan": 0,
+   "msrp_usd": 0,
+   "max_total_w": 0
+  },
+  "confidence": "low",
+  "notes": "20W: below the 30W floor of requested scope; included for completeness. Belkin chart max-output row says 30W but per-port figures top at 20W; Belkin US page text says '18 or 20 W'; FAQ claims 3-yr warranty vs 2-yr elsewhere."
+ },
+ {
+  "brand": "Belkin",
+  "product_name": "BoostCharge USB-C PD + USB-A Wall Charger 32W",
+  "model_numbers": [
+   "WCB008dqWH",
+   "WCB008vfWH",
+   "WCB008dq04WH"
+  ],
+  "series": "BoostCharge",
+  "release_year": null,
+  "status": "unknown",
+  "max_total_w": 32,
+  "max_single_port_w": 20,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 20
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": 12
+   }
+  ],
+  "port_sharing": "USB-C 20W + USB-A 12W",
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": false,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": null,
+  "display": false,
+  "weight_g": null,
+  "dimensions_mm": null,
+  "safety_certs": [],
+  "cable_included": null,
+  "msrp_usd": 24.99,
+  "typical_price_usd": null,
+  "official_url": null,
+  "sources": [
+   "https://www.belkin.com/support-article/?articleNum=335922",
+   "https://www.belkin.com/id/p/usb-c-pd-usb-a-wall-charger-32w/WCB008dqWH.html"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 1,
+   "gan": 0,
+   "pps": 0,
+   "msrp_usd": 0
+  },
+  "confidence": "low",
+  "notes": "Belkin chart lists GaN=Yes, PPS=No; a web search found no listing describing it as GaN. Below 30W-65W focus. Status unknown (only regional pages found)."
+ },
+ {
+  "brand": "Belkin",
+  "product_name": "BoostCharge Pro Dual USB-C PD GaN Wall Charger 68W (+ USB-C cable)",
+  "model_numbers": [
+   "WCH003dq2MWH-B6",
+   "WCH003"
+  ],
+  "series": "BoostCharge Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 68,
+  "max_single_port_w": 60,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 60
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 18
+   }
+  ],
+  "port_sharing": "Single port up to 60W; dual: 50W + 18W",
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": null,
+  "display": false,
+  "weight_g": null,
+  "dimensions_mm": "62.3 x 30 x 66",
+  "safety_certs": [],
+  "cable_included": "Yes, 2 m USB-C to USB-C",
+  "msrp_usd": 54.99,
+  "typical_price_usd": 68.99,
+  "official_url": "https://www.belkin.com/p/dual-usb-c-gan-wall-charger-68w-plus-usb-c-cable/WCH003dq2MWH-B6.html",
+  "sources": [
+   "https://www.belkin.com/p/dual-usb-c-gan-wall-charger-68w-plus-usb-c-cable/WCH003dq2MWH-B6.html",
+   "https://www.belkin.com/support-article/?articleNum=335922"
+  ],
+  "field_sources": {
+   "port_sharing": 0,
+   "max_total_w": 0,
+   "typical_price_usd": 0,
+   "cable_included": 0,
+   "dimensions_mm": 0,
+   "gan": 1,
+   "msrp_usd": 1
+  },
+  "confidence": "medium",
+  "notes": "CONTRADICTION: Belkin chart says PPS=Yes and 68W shared; product page does not mention PPS (pps left null). Chart MSRP $54.99 is for charger alone; $68.99 is bundle with cable. Out of stock at fetch time. 'WCH003dq2MWH-B6' sold with 2m cable."
+ },
+ {
+  "brand": "Belkin",
+  "product_name": "BoostCharge Pro 4-Port GaN Charger 108W",
+  "model_numbers": [
+   "WCH010dqWH"
+  ],
+  "series": "BoostCharge Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 108,
+  "max_single_port_w": 96,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 96
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": null
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": null
+   },
+   {
+    "name": "A2",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": "Intelligent power sharing; one USB-C in use up to 96W; combo table not on page",
+  "usb_pd_version": "3.0",
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": false,
+  "plug_region": null,
+  "display": false,
+  "weight_g": null,
+  "dimensions_mm": "99 x 80 x 32",
+  "safety_certs": [],
+  "cable_included": "2 m AC power cord only (desktop-style); no USB-C cable",
+  "msrp_usd": 89.99,
+  "typical_price_usd": 89.99,
+  "official_url": "https://www.belkin.com/p/4-port-gan-charger-108w/WCH010dqWH.html",
+  "sources": [
+   "https://www.belkin.com/p/4-port-gan-charger-108w/WCH010dqWH.html",
+   "https://www.belkin.com/support-article/?articleNum=335922"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "max_single_port_w": 0,
+   "usb_pd_version": 0,
+   "typical_price_usd": 0,
+   "dimensions_mm": 0,
+   "gan": 1,
+   "pps": 1
+  },
+  "confidence": "medium",
+  "notes": "Desktop charger with removable cord (not a wall-plug). Belkin chart lists PPS=No for WCH010, but I kept pps null (not verified from product page/teardown); chart says 'PD USB-C only'. Single-port 'up to 96W' per page; per-port wattage of other ports unknown."
+ },
+ {
+  "brand": "Belkin",
+  "product_name": "BoostCharge Pro Dual USB-C GaN Wall Charger with PPS 45W",
+  "model_numbers": [
+   "WCH011dqWH",
+   "BBC015-BK",
+   "WCH011"
+  ],
+  "series": "BoostCharge Pro",
+  "release_year": 2022,
+  "status": "current",
+  "max_total_w": 45,
+  "max_single_port_w": 45,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 45
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 20
+   }
+  ],
+  "port_sharing": "Single: 45W; dual: C1 25W + C2 20W",
+  "usb_pd_version": "3.0",
+  "pd_fixed_pdos": null,
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": null,
+  "display": false,
+  "weight_g": null,
+  "dimensions_mm": "41 x 39 x 62",
+  "safety_certs": [],
+  "cable_included": "No",
+  "msrp_usd": 39.99,
+  "typical_price_usd": 39.99,
+  "official_url": "https://www.belkin.com/p/dual-usb-c-gan-wall-charger-with-pps-45w/P-WCH011.html",
+  "sources": [
+   "https://www.belkin.com/p/dual-usb-c-gan-wall-charger-with-pps-45w/P-WCH011.html",
+   "https://www.belkin.com/support-article/?articleNum=335922",
+   "https://www.belkin.com/pr-belkin-introduces-the-boostcharge-pro-dual-usbc-gan-wall-charger-with-pps.html"
+  ],
+  "field_sources": {
+   "pps": 0,
+   "port_sharing": 0,
+   "typical_price_usd": 0,
+   "usb_pd_version": 0,
+   "release_year": 2,
+   "gan": 1
+  },
+  "confidence": "medium",
+  "notes": "Exact PPS voltage ranges not published on Belkin page; no ChargerLAB teardown found. BBC015-BK is the black SKU. Release year from 2022-08-30 press release."
+ },
+ {
+  "brand": "Belkin",
+  "product_name": "BoostCharge Pro Dual USB-C GaN Wall Charger with PPS 65W",
+  "model_numbers": [
+   "WCH013dqWH",
+   "BBC013-BK",
+   "WCH013dq2MWH-B6 (with cable)",
+   "ENA007dqBK (Nintendo Switch 2 edition)"
+  ],
+  "series": "BoostCharge Pro",
+  "release_year": 2022,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": 65,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 65
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 20
+   }
+  ],
+  "port_sharing": "Single: 65W; dual: top 45W + bottom 20W",
+  "usb_pd_version": "3.0",
+  "pd_fixed_pdos": null,
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": null,
+  "display": false,
+  "weight_g": null,
+  "dimensions_mm": "39 x 40 x 69",
+  "safety_certs": [],
+  "cable_included": "No (standalone); -B6 bundle includes cable",
+  "msrp_usd": 49.99,
+  "typical_price_usd": 50.99,
+  "official_url": "https://www.belkin.com/p/dual-usb-c-gan-wall-charger-with-pps-65w/WCH013dqWH.html",
+  "sources": [
+   "https://www.belkin.com/p/dual-usb-c-gan-wall-charger-with-pps-65w/WCH013dqWH.html",
+   "https://www.belkin.com/support-article/?articleNum=335922",
+   "https://www.belkin.com/pr-belkin-introduces-the-boostcharge-pro-dual-usbc-gan-wall-charger-with-pps.html"
+  ],
+  "field_sources": {
+   "pps": 0,
+   "port_sharing": 0,
+   "typical_price_usd": 0,
+   "usb_pd_version": 0,
+   "gan": 1,
+   "msrp_usd": 1,
+   "release_year": 2
+  },
+  "confidence": "medium",
+  "notes": "PPS ranges not published; ChargerLAB tests of sibling WCH020 (67W) show 5-11V 4.5A / 5-21V 3.15A but that is a different SKU. ENA007dqBK Switch-2 edition ($29.99 on sale, was $50.99) is the same 65W dual design per Belkin listing (same price history), not independently verified as identical internals. Sale pricing seen on Belkin: ENA007 $29.99."
+ },
+ {
+  "brand": "Belkin",
+  "product_name": "BoostCharge Pro 140W 4-Port GaN Wall Charger",
+  "model_numbers": [
+   "WCH014zbWH (IN)",
+   "WCH014dqWH (PH)",
+   "WCH014btWH (UK)",
+   "WCH014myWH (SG)",
+   "WCH014"
+  ],
+  "series": "BoostCharge Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 140,
+  "max_single_port_w": 140,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 140
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 65
+   },
+   {
+    "name": "C3",
+    "type": "USB-C",
+    "max_w": 65
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": 12
+   }
+  ],
+  "port_sharing": "C2+C3 share 65W max; combos cited: 65W+65W and 65W+45W+20W; total 140W",
+  "usb_pd_version": "3.1",
+  "pd_fixed_pdos": "C1: 5V3A 9V3A 15V3A 20V5A 28V5A; C2/C3: 5V3A 9V3A 15V3A 20V3.25A",
+  "pps": true,
+  "pps_ranges": "C1: 5-21V 5A (KM003C) / 4.75A (label); C2/C3: 3.3-21V 3.25A (KM003C) / 3.05A (label)",
+  "pps_max_w": 100,
+  "epr_avs": null,
+  "other_protocols": [
+   "QC",
+   "DCP",
+   "Apple 2.4A (USB-A)"
+  ],
+  "gan": true,
+  "foldable_plug": false,
+  "plug_region": null,
+  "display": false,
+  "weight_g": 327,
+  "dimensions_mm": "95.97 x 77.26 x 30.92",
+  "safety_certs": [],
+  "cable_included": "Yes, ~2 m dual USB-C cable (per ChargerLAB)",
+  "msrp_usd": 129.99,
+  "typical_price_usd": null,
+  "official_url": null,
+  "sources": [
+   "https://www.chargerlab.com/teardown-of-belkin-boostcharge-pro-140w-4-port-gan-wall-charger-wch014",
+   "https://www.belkin.com/support-article/?articleNum=335917",
+   "https://www.belkin.com/support-article/?articleNum=335922"
+  ],
+  "field_sources": {
+   "pd_fixed_pdos": 0,
+   "pps_ranges": 0,
+   "weight_g": 0,
+   "dimensions_mm": 0,
+   "port_sharing": 0,
+   "max_total_w": 1,
+   "msrp_usd": 2
+  },
+  "confidence": "high",
+  "notes": "Belkin US product page URL 404'd at fetch time, so current US price/stock unverified (chart MSRP $129.99). CONTRADICTION: Belkin chart says C1 single-port reaches 20V/4.8A/96W while ChargerLAB/label show a 28V5A (140W) PDO on C1. epr_avs left null: 28V5A fixed PDO is present (ChargerLAB) but AVS not confirmed. pps_max_w = ~100W (21V x 4.75A) assumes PPS C1 limit. Has removable AC cord, not foldable-plug."
+ },
+ {
+  "brand": "Belkin",
+  "product_name": "BoostCharge Pro 200W 4-Port USB-C GaN Charger",
+  "model_numbers": [
+   "WCH015dqWH",
+   "WCH015zbWH (IN)",
+   "WCH015myWH"
+  ],
+  "series": "BoostCharge Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 200,
+  "max_single_port_w": 140,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 140
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 140
+   },
+   {
+    "name": "C3",
+    "type": "USB-C",
+    "max_w": 60
+   },
+   {
+    "name": "C4",
+    "type": "USB-C",
+    "max_w": 60
+   }
+  ],
+  "port_sharing": "C1+C2 share 140W; C3+C4 share 60W (per Navitas/CDT teardown); 200W total",
+  "usb_pd_version": "3.1",
+  "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 15V3A 20V5A 28V5A; C3/C4: 5V3A 9V3A 15V3A 20V3A",
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": true,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": false,
+  "plug_region": null,
+  "display": false,
+  "weight_g": null,
+  "dimensions_mm": "119 x 91 x 36",
+  "safety_certs": [],
+  "cable_included": "No USB-C cable; 1.5 m detachable AC cord",
+  "msrp_usd": 129.99,
+  "typical_price_usd": 129.99,
+  "official_url": "https://www.belkin.com/p/200w-4-port-usb-c-gan-charger/WCH015dqWH.html",
+  "sources": [
+   "https://www.belkin.com/p/200w-4-port-usb-c-gan-charger/WCH015dqWH.html",
+   "https://www.belkin.com/support-article/?articleNum=336311",
+   "https://navitassemi.com/cdt-teardown-report-of-belkin-200w-quad-usb-c-port-gallium-nitride-desktop-charger/"
+  ],
+  "field_sources": {
+   "pd_fixed_pdos": 1,
+   "port_sharing": 2,
+   "max_single_port_w": 0,
+   "epr_avs": 1,
+   "typical_price_usd": 0,
+   "dimensions_mm": 0,
+   "usb_pd_version": 0
+  },
+  "confidence": "medium",
+  "notes": "Desktop charger (removable AC cord). Belkin support lists 28V5A (140W) on C1/C2 so epr_avs true by 28V PDO (fixed EPR-level voltage); AVS ranges not published. CONTRADICTION: the support page says 'PPS is required for all USB-C ports' (ambiguous wording); actual PPS ranges not found, pps left null. No ChargerLAB test found."
+ },
+ {
+  "brand": "Belkin",
+  "product_name": "BoostCharge Pro 3-Port GaN Wall Charger 100W",
+  "model_numbers": [
+   "WCH016dqWH",
+   "WCH016fqWH (travel kit)",
+   "WCH016yz",
+   "WCH016thWH"
+  ],
+  "series": "BoostCharge Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": 100,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 100
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 100
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": 22.5
+   }
+  ],
+  "port_sharing": "C1+C2: 70+30; C+A: 70+22.5; C1+C2+A: 60+22+18 (ChargerLAB label)",
+  "usb_pd_version": "3.1",
+  "pd_fixed_pdos": "5V3A 9V3A 15V3A 20V5A (both C ports)",
+  "pps": true,
+  "pps_ranges": "5-21V 5A (ChargerLAB text) / 5-21V 4.75A (label)",
+  "pps_max_w": 100,
+  "epr_avs": false,
+  "other_protocols": [
+   "UFCS",
+   "QC3.0/5",
+   "FCP",
+   "SCP",
+   "AFC",
+   "Apple 2.4A"
+  ],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US/CN/JP foldable",
+  "display": false,
+  "weight_g": 178,
+  "dimensions_mm": "64.95 x 42.97 x 42.78",
+  "safety_certs": [],
+  "cable_included": "No",
+  "msrp_usd": 82.99,
+  "typical_price_usd": 82.99,
+  "official_url": "https://www.belkin.com/p/3-port-gan-wall-charger-100w/WCH016dqWH.html",
+  "sources": [
+   "https://www.chargerlab.com/teardown-of-belkin-boostcharge-pro-100w-3-port-gan-wall-charger-wch016yz",
+   "https://www.belkin.com/p/3-port-gan-wall-charger-100w/WCH016dqWH.html"
+  ],
+  "field_sources": {
+   "pd_fixed_pdos": 0,
+   "pps_ranges": 0,
+   "port_sharing": 0,
+   "weight_g": 0,
+   "dimensions_mm": 0,
+   "typical_price_usd": 1,
+   "usb_pd_version": 1,
+   "other_protocols": 0
+  },
+  "confidence": "high",
+  "notes": "Belkin US page says 176 g, ChargerLAB 178 g. ChargerLAB summary lists 70+30 for C+C but 60/22/18 for three ports. epr_avs false: no 28V PDO (max 20V5A). US page out of stock at fetch, 'coming soon by Dec 24, 2026'. Dimensions Belkin 65x43x43."
+ },
+ {
+  "brand": "Belkin",
+  "product_name": "BoostCharge Pro 3-Port GaN Wall Charger 70W",
+  "model_numbers": [
+   "WCH018dqWH",
+   "WCH018fqWH (travel kit)",
+   "WCH018thWH"
+  ],
+  "series": "BoostCharge Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 70,
+  "max_single_port_w": 70,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 70
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 70
+   },
+   {
+    "name": "A1",
+    "type": "USB-A",
+    "max_w": 22.5
+   }
+  ],
+  "port_sharing": "C1+C2: 45+25; C+A: 45+22.5; all three: 45+12+12",
+  "usb_pd_version": "3.1",
+  "pd_fixed_pdos": null,
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": null,
+  "display": false,
+  "weight_g": 104,
+  "dimensions_mm": "38.6 x 43 x 54 (FAQ) vs 42 x 38 x 54 (spec table)",
+  "safety_certs": [],
+  "cable_included": "No",
+  "msrp_usd": 39.99,
+  "typical_price_usd": 31.99,
+  "official_url": "https://www.belkin.com/p/3-port-gan-wall-charger-70w/WCH018dqWH.html",
+  "sources": [
+   "https://www.belkin.com/p/3-port-gan-wall-charger-70w/WCH018dqWH.html"
+  ],
+  "field_sources": {
+   "port_sharing": 0,
+   "pps": 0,
+   "weight_g": 0,
+   "typical_price_usd": 0,
+   "msrp_usd": 0,
+   "usb_pd_version": 0
+  },
+  "confidence": "medium",
+  "notes": "PPS ranges and PDOs not published; no ChargerLAB test found. PD 3.1 from image caption only. US page showed $31.99 sale (was $39.99), out of stock, coming soon Dec 2 2026. Dimension figures conflict within page."
+ },
+ {
+  "brand": "Belkin",
+  "product_name": "BoostCharge Pro Dual USB-C GaN Wall Charger 50W",
+  "model_numbers": [
+   "WCH019dqWH",
+   "WCH019dq1MWH-B6 (with cable)"
+  ],
+  "series": "BoostCharge Pro",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 50,
+  "max_single_port_w": 50,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 50
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": null
+   }
+  ],
+  "port_sharing": "Two C ports share 50W; split not published",
+  "usb_pd_version": "3.1",
+  "pd_fixed_pdos": null,
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": null,
+  "display": false,
+  "weight_g": 89,
+  "dimensions_mm": "46 x 38 x 38",
+  "safety_certs": [],
+  "cable_included": "No (-B6 bundle has cable)",
+  "msrp_usd": 29.99,
+  "typical_price_usd": 24.99,
+  "official_url": "https://www.belkin.com/p/dual-usb-c-gan-wall-charger-50w/WCH019dqWH.html",
+  "sources": [
+   "https://www.belkin.com/p/dual-usb-c-gan-wall-charger-50w/WCH019dqWH.html"
+  ],
+  "field_sources": {
+   "pps": 0,
+   "weight_g": 0,
+   "typical_price_usd": 0,
+   "msrp_usd": 0,
+   "dimensions_mm": 0
+  },
+  "confidence": "medium",
+  "notes": "Price $24.99 sale (was $29.99); one search snippet shows range $24.99-$59.99 across variants/bundles. PPS ranges not published."
+ },
+ {
+  "brand": "Belkin",
+  "product_name": "BoostCharge Pro Dual USB-C GaN Wall Charger 67W",
+  "model_numbers": [
+   "WCH020dqWH",
+   "BBC035ttBK",
+   "WCH020yz",
+   "WCH020auWH",
+   "WCH020myWH",
+   "WCH020thWH"
+  ],
+  "series": "BoostCharge Pro",
+  "release_year": 2025,
+  "status": "current",
+  "max_total_w": 67,
+  "max_single_port_w": 67,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 67
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 67
+   }
+  ],
+  "port_sharing": "Single 67W; dual C1+C2: 45W + 20W (65W max)",
+  "usb_pd_version": "3.1",
+  "pd_fixed_pdos": "5V3A 9V3A 12V3A 15V3A 20V3.35A (both ports)",
+  "pps": true,
+  "pps_ranges": "5-11V 4.5A; 5-21V 3.15A",
+  "pps_max_w": 66,
+  "epr_avs": false,
+  "other_protocols": [
+   "QC5",
+   "DCP"
+  ],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": null,
+  "display": false,
+  "weight_g": 112,
+  "dimensions_mm": "49.92 x 37.99 x 41.58 (ChargerLAB) / 50 x 42 x 38 (Belkin)",
+  "safety_certs": [],
+  "cable_included": "No",
+  "msrp_usd": 59.99,
+  "typical_price_usd": 59.99,
+  "official_url": "https://www.belkin.com/p/dual-usb-c-gan-wall-charger-67w/WCH020dqWH.html",
+  "sources": [
+   "https://www.chargerlab.com/teardown-of-belkin-boostcharge-pro-dual-usb-c-67w-gan-wall-charger-wch020yz",
+   "https://www.belkin.com/p/dual-usb-c-gan-wall-charger-67w/WCH020dqWH.html"
+  ],
+  "field_sources": {
+   "pd_fixed_pdos": 0,
+   "pps_ranges": 0,
+   "port_sharing": 0,
+   "weight_g": 0,
+   "typical_price_usd": 1,
+   "dimensions_mm": 0
+  },
+  "confidence": "high",
+  "notes": "Belkin page title says 50W in places (typo on page title) but specs say 67W. Release year from ChargerLAB article date Dec 19 2025 (approximate). Chip supports UFCS/SCP/PD3.1 per ChargerLAB but KM003C shows PD3.0, PPS, QC5."
+ },
+ {
+  "brand": "Belkin",
+  "product_name": "UltraCharge Retractable GaN Wall Charger 67W (with built-in retractable USB-C cable)",
+  "model_numbers": [
+   "WCH022dqWH",
+   "WCH022bkBK-MV (Spider-Man edition)",
+   "WCH022"
+  ],
+  "series": "UltraCharge",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 67,
+  "max_single_port_w": 67,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 67
+   },
+   {
+    "name": "Cable",
+    "type": "USB-C",
+    "max_w": 67
+   }
+  ],
+  "port_sharing": "Single device up to 67W via built-in cable; second device via USB-C port; split not published",
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "AVS (Adjustable Voltage Supply)"
+  ],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": null,
+  "display": false,
+  "weight_g": 188,
+  "dimensions_mm": "58 x 35 x 72",
+  "safety_certs": [],
+  "cable_included": "Yes, built-in 1 m retractable USB-C (magnetic end)",
+  "msrp_usd": 39.99,
+  "typical_price_usd": 39.99,
+  "official_url": "https://www.belkin.com/p/retractable-gan-wall-charger-67w/WCH022dqWH.html",
+  "sources": [
+   "https://www.belkin.com/p/retractable-gan-wall-charger-67w/WCH022dqWH.html"
+  ],
+  "field_sources": {
+   "weight_g": 0,
+   "typical_price_usd": 0,
+   "dimensions_mm": 0,
+   "cable_included": 0,
+   "other_protocols": 0
+  },
+  "confidence": "low",
+  "notes": "Page names AVS; PPS and PD version not stated. Page inconsistent on port count (spec says 1 USB-C, FAQ says 1 port + built-in cable). A 45W variant (WCH023dqWH) is referenced via selector, price $34.99 per Belkin GaN category range; specs not fetched. 'GaN' based on Belkin GaN category listing."
+ },
+ {
+  "brand": "Belkin",
+  "product_name": "BoostCharge USB-C GaN Wall Charger 100W (single port) + 5 ft USB-C cable",
+  "model_numbers": [
+   "BBC039tt1.5BKB6",
+   "WCH025dq1.5WHB6"
+  ],
+  "series": "BoostCharge",
+  "release_year": 2026,
+  "status": "current",
+  "max_total_w": 100,
+  "max_single_port_w": 100,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 100
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "QC5 (image caption)",
+   "Samsung SFC 2.0 (image caption)"
+  ],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US foldable",
+  "display": false,
+  "weight_g": null,
+  "dimensions_mm": "81 x 61 x 31 (65 x 61 x 31 folded)",
+  "safety_certs": [],
+  "cable_included": "Yes, 1.5 m USB-C to USB-C",
+  "msrp_usd": 29.99,
+  "typical_price_usd": 29.99,
+  "official_url": "https://www.belkin.com/p/usb-c-gan-wall-charger-100w-plus-usb-c-cable/BBC039tt1.5BKB6.html",
+  "sources": [
+   "https://www.belkin.com/p/usb-c-gan-wall-charger-100w-plus-usb-c-cable/BBC039tt1.5BKB6.html",
+   "https://9to5toys.com/2026/07/13/belkin-100w-usb-c-wall-charger/"
+  ],
+  "field_sources": {
+   "typical_price_usd": 0,
+   "cable_included": 0,
+   "dimensions_mm": 0,
+   "other_protocols": 0
+  },
+  "confidence": "low",
+  "notes": "PPS NOT confirmed; image caption mentions 'PD3.2'. Price $29.99 INCLUDES the cable; 9to5Toys reported Amazon deal $25.50 (expired). thetestedhub review (same ASIN B0H2BTQQYX) describes 4 ports / 63x63x30 mm / 175 g, which contradicts Belkin's 1-port page; treated as unreliable. WCH025 model number comes from a B&H listing (403 on fetch), not verified. KEY CANDIDATE for a cheap >=65W single-port unit; needs PPS test."
+ },
+ {
+  "brand": "Belkin",
+  "product_name": "BoostCharge Compact USB-C Charger 30W",
+  "model_numbers": [
+   "WCA008dqWH",
+   "WCA008dq2MBL-B6 (with braided cable, MacBook Neo)"
+  ],
+  "series": "BoostCharge",
+  "release_year": null,
+  "status": "current",
+  "max_total_w": 30,
+  "max_single_port_w": 30,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 30
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": "3.1",
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": null,
+  "display": false,
+  "weight_g": null,
+  "dimensions_mm": "34 x 34 x 35",
+  "safety_certs": [],
+  "cable_included": "No (standalone); bundle includes braided cable",
+  "msrp_usd": null,
+  "typical_price_usd": 14.99,
+  "official_url": "https://www.belkin.com/p/compact-usb-c-charger-30w/WCA008dqWH.html",
+  "sources": [
+   "https://www.belkin.com/p/compact-usb-c-charger-30w/WCA008dqWH.html",
+   "https://www.belkin.com/products/chargers/gan-chargers/"
+  ],
+  "field_sources": {
+   "typical_price_usd": 0,
+   "usb_pd_version": 0,
+   "dimensions_mm": 0,
+   "gan": 1
+  },
+  "confidence": "low",
+  "notes": "Page does not state GaN or PPS; GaN inferred from its listing in Belkin's GaN Chargers category. Bundle with cable $24.99."
+ },
+ {
+  "brand": "Belkin",
+  "product_name": "BoostCharge 3-Port USB-C Wall Charger with PPS 67W",
+  "model_numbers": [
+   "WCC002dqWH"
+  ],
+  "series": "BoostCharge",
+  "release_year": 2025,
+  "status": "current",
+  "max_total_w": 67,
+  "max_single_port_w": 67,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 67
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 20
+   },
+   {
+    "name": "C3",
+    "type": "USB-C",
+    "max_w": 20
+   }
+  ],
+  "port_sharing": "Single 67W; dual 45+20; triple 25+20+20 (reviews/retail)",
+  "usb_pd_version": "3.1",
+  "pd_fixed_pdos": null,
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "Samsung SFC 2.0"
+  ],
+  "gan": null,
+  "foldable_plug": true,
+  "plug_region": "US/CN/JP foldable only",
+  "display": false,
+  "weight_g": null,
+  "dimensions_mm": "43 x 30 x 71",
+  "safety_certs": [],
+  "cable_included": "No",
+  "msrp_usd": null,
+  "typical_price_usd": 46.99,
+  "official_url": "https://www.belkin.com/p/3-port-usb-c-charger-with-pps-67w/WCC002dqWH.html",
+  "sources": [
+   "https://www.belkin.com/p/3-port-usb-c-charger-with-pps-67w/WCC002dqWH.html",
+   "https://www.techradar.com/phones/phone-accessories/belkin-boostcharge-3-port-usb-c-wall-charger-with-pps-67w-review"
+  ],
+  "field_sources": {
+   "pps": 0,
+   "typical_price_usd": 0,
+   "dimensions_mm": 0,
+   "max_total_w": 0
+  },
+  "confidence": "medium",
+  "notes": "GaN not stated on Belkin page; kept null (may be silicon; 'WCC' prefix, not WCH). Page says 65W total with all three ports vs 25+20+20=65. Out of stock at fetch (coming soon Dec 18 2026). PPS ranges unknown. Review-only data on split from search snippets; price $46.99 on Belkin vs lower at retailers not checked."
+ }
+]

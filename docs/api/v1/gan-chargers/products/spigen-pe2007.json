@@ -1,0 +1,61 @@
+{
+ "brand": "Spigen",
+ "product_name": "ArcStation Pro GaN 70W Dual Port Wall Charger",
+ "model_numbers": [
+  "PE2007",
+  "ACH02081"
+ ],
+ "series": "ArcStation Pro",
+ "release_year": null,
+ "status": "unknown",
+ "max_total_w": 70,
+ "max_single_port_w": 60,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 50
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 20
+  }
+ ],
+ "port_sharing": "Single port 60W; dual port 50W + 20W",
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": "Port 2: 5V3A 9V3A 15V3A 20V2.5A (50W); Port 1: 5V3A 9V2.22A (20W) [eBay label transcript]",
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 145,
+ "dimensions_mm": "62.0 x 62.0 x 31.0",
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": 69.99,
+ "typical_price_usd": null,
+ "official_url": "https://partners.spigen.com/products/arcstation-pro-70w-wall-charger",
+ "sources": [
+  "https://partners.spigen.com/products/arcstation-pro-70w-wall-charger",
+  "https://www.ebay.com/itm/203580811235",
+  "https://www.amazon.com/Spigen-ArcStation-Pro-GaN-Charger/dp/B08PS5B2H8"
+ ],
+ "field_sources": {
+  "port_sharing": 0,
+  "usb_pd_version": 0,
+  "pd_fixed_pdos": 1,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "msrp_usd": 0,
+  "foldable_plug": 0
+ },
+ "confidence": "medium",
+ "notes": "Listed PDOs have no PPS entry but PPS is not explicitly denied, so pps left null. Contradiction: Spigen page says single-port 60W (total 70W is only reachable if both ports used: 50+20); an EU retailer lists 65W/60W for the EU variant PE2007EU. Single-port max 60W (<65W). spigen.com (consumer store) and partners.spigen.com pages 404 or delisted for most ArcStation chargers as of 2026-11-22; status 'unknown/discontinued on Spigen's own storefront' - still sold via Amazon. partners.spigen.com price is the B2B storefront list price, not street price.",
+ "id": "spigen-pe2007"
+}

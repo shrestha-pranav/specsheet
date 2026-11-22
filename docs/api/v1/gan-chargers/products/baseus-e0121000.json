@@ -1,0 +1,64 @@
+{
+ "brand": "Baseus",
+ "product_name": "Baseus PicoGo AE11 Fast Charger 2C+U 67W",
+ "model_numbers": [
+  "E0121000"
+ ],
+ "series": "PicoGo",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 67,
+ "max_single_port_w": 67,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 67
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": null
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": null
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": null,
+ "pps": true,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [
+  "TUV Rheinland"
+ ],
+ "cable_included": null,
+ "msrp_usd": null,
+ "typical_price_usd": 29.99,
+ "official_url": "https://www.baseus.com/products/picogo-ae11-fast-charger-2c-u-67w",
+ "sources": [
+  "https://www.baseus.com/products/picogo-ae11-fast-charger-2c-u-67w",
+  "https://www.gizmochina.com/2025/10/18/baseus-picogo-ae11-and-an13-gan-chargers-full-review/"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "ports": 0,
+  "typical_price_usd": 0,
+  "pps": 1,
+  "usb_pd_version": 1
+ },
+ "confidence": "low",
+ "notes": "PPS and PD3.0 per Gizmochina review (secondary); no ranges.",
+ "id": "baseus-e0121000"
+}

@@ -1,0 +1,55 @@
+{
+ "brand": "Anker",
+ "product_name": "Anker 713 Charger (Nano II 45W)",
+ "model_numbers": [
+  "A2664",
+  "A2664J11-1"
+ ],
+ "series": "Nano II",
+ "release_year": 2021,
+ "status": "discontinued",
+ "max_total_w": 45,
+ "max_single_port_w": 45,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 45
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": "5V3A 9V3A 15V3A 20V2.25A",
+ "pps": true,
+ "pps_ranges": "3.3-16V 3A; 3.3-21V 2.25A",
+ "pps_max_w": 45,
+ "epr_avs": null,
+ "other_protocols": [
+  "PowerIQ 3.0",
+  "Samsung Super Fast Charging"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": "no",
+ "msrp_usd": null,
+ "typical_price_usd": null,
+ "official_url": "https://service.anker.com/product-description/a085g000004x2BUAAY/anker-713-charger-nano-ii-45w",
+ "sources": [
+  "https://service.anker.com/product-description/a085g000004x2BUAAY/anker-713-charger-nano-ii-45w",
+  "https://www.bhphotovideo.com/c/product/1811535-REG/anker_a2664j11_1_nano_ii_45w_fast.html"
+ ],
+ "field_sources": {
+  "pd_fixed_pdos": 0,
+  "pps_ranges": 0,
+  "model_numbers": 1,
+  "status": 1
+ },
+ "confidence": "high",
+ "notes": "Status 'discontinued' inferred from B&H listing marked no longer available and absence from Anker US store (superseded by A121D). Price not collected. Support-page PPS ranges are authoritative; PD 3.0 inferred from PIQ 3.0 era.",
+ "id": "anker-a2664"
+}

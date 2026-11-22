@@ -1,0 +1,52 @@
+{
+ "brand": "Belkin",
+ "product_name": "BoostCharge Pro 30W USB-C PD GaN Wall Charger (WCH008)",
+ "model_numbers": [
+  "WCH008"
+ ],
+ "series": "BoostCharge Pro",
+ "release_year": null,
+ "status": "unknown",
+ "max_total_w": 30,
+ "max_single_port_w": 30,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 30
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": null,
+ "pps": false,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": null,
+ "display": false,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": 29.99,
+ "typical_price_usd": null,
+ "official_url": null,
+ "sources": [
+  "https://www.belkin.com/support-article/?articleNum=317834",
+  "https://www.belkin.com/support-article/?articleNum=335922"
+ ],
+ "field_sources": {
+  "pps": 0,
+  "usb_pd_version": 0,
+  "gan": 1,
+  "msrp_usd": 1,
+  "max_total_w": 1
+ },
+ "confidence": "medium",
+ "notes": "Belkin FAQ says PD 3.0 and does not support PPS (chart agrees: PPS No). No live US product page found; status unknown, possibly superseded by WCH001/WCA008.",
+ "id": "belkin-wch008"
+}

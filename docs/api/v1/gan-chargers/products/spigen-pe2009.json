@@ -1,0 +1,55 @@
+{
+ "brand": "Spigen",
+ "product_name": "ArcStation Pro GaN 20W Wall Charger",
+ "model_numbers": [
+  "PE2009",
+  "ACH02021 (black)",
+  "ACH02022 (white)"
+ ],
+ "series": "ArcStation Pro",
+ "release_year": null,
+ "status": "unknown",
+ "max_total_w": 20,
+ "max_single_port_w": 20,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 20
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": "3.0",
+ "pd_fixed_pdos": "5V3A 9V2.22A",
+ "pps": false,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 42,
+ "dimensions_mm": "34.3 x 39.4 x 27.7",
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": 29.99,
+ "typical_price_usd": 29.99,
+ "official_url": "https://partners.spigen.com/products/arcstation-pro-20w-wall-charger",
+ "sources": [
+  "https://partners.spigen.com/products/arcstation-pro-20w-wall-charger",
+  "https://www.androidauthority.com/spigen-powerarc-arcstation-pro-review-1208645/"
+ ],
+ "field_sources": {
+  "pd_fixed_pdos": 0,
+  "usb_pd_version": 0,
+  "pps": 1,
+  "weight_g": 0,
+  "dimensions_mm": 0,
+  "msrp_usd": 0
+ },
+ "confidence": "medium",
+ "notes": "20W is below the 30W floor; included for completeness. PPS=false per Android Authority review of the 20W ArcStation Pro (page itself lists only two PDOs). spigen.com (consumer store) and partners.spigen.com pages 404 or delisted for most ArcStation chargers as of 2026-11-22; status 'unknown/discontinued on Spigen's own storefront' - still sold via Amazon. partners.spigen.com price is the B2B storefront list price, not street price.",
+ "id": "spigen-pe2009"
+}

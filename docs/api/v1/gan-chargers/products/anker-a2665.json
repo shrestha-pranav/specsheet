@@ -1,0 +1,55 @@
+{
+ "brand": "Anker",
+ "product_name": "Anker Nano II 30W (711 Charger)",
+ "model_numbers": [
+  "A2665",
+  "A2146"
+ ],
+ "series": "Nano II",
+ "release_year": 2021,
+ "status": "unknown",
+ "max_total_w": 30,
+ "max_single_port_w": 30,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 30
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": null,
+ "pd_fixed_pdos": "5V3A 9V3A 15V2A 20V1.5A",
+ "pps": true,
+ "pps_ranges": "3.3-11V 3A; 3.3-16V 2A",
+ "pps_max_w": 30,
+ "epr_avs": null,
+ "other_protocols": [
+  "PowerIQ 3.0"
+ ],
+ "gan": true,
+ "foldable_plug": false,
+ "plug_region": "multi",
+ "display": false,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": null,
+ "typical_price_usd": null,
+ "official_url": null,
+ "sources": [
+  "https://service.anker.com/product-description/a085g000004x2BcAAI/anker-nano-ii-30w",
+  "https://service.anker.com/article-description/What-are-the-differences-between-Anker-711-Nano-II-30W-Charger-and-Anker-511-Nano-3-30W-charger"
+ ],
+ "field_sources": {
+  "model_numbers": 0,
+  "pd_fixed_pdos": 0,
+  "pps_ranges": 0,
+  "foldable_plug": 0,
+  "other_protocols": 0
+ },
+ "confidence": "medium",
+ "notes": "Anker support page header gives manual 'A2665 Nano II 30W'; the 711 comparison article names A2146 for 711 Nano II - unresolved which number is which regional/rev variant. 'Not foldable' per support page. Not found on Anker US store; likely discontinued/legacy. Price not collected.",
+ "id": "anker-a2665"
+}

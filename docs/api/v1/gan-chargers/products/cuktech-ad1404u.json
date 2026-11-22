@@ -1,0 +1,82 @@
+{
+ "brand": "CUKTECH",
+ "product_name": "CUKTECH 15 140W GaN Charger (4-port)",
+ "model_numbers": [
+  "AD1404U",
+  "AD1404US"
+ ],
+ "series": "No.15",
+ "release_year": 2025,
+ "status": "current",
+ "max_total_w": 140,
+ "max_single_port_w": 140,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 140
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": 140
+  },
+  {
+   "name": "C3",
+   "type": "USB-C",
+   "max_w": 33
+  },
+  {
+   "name": "A",
+   "type": "USB-A",
+   "max_w": 33
+  }
+ ],
+ "port_sharing": "100W+33W; 65W+45W; 45W+33W+33W (ChargerLAB). Amazon listing: A 18W, C3 33W single-port",
+ "usb_pd_version": "3.1",
+ "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V5A (28V5A mentioned by ChargerLAB text, not in PDO list)",
+ "pps": true,
+ "pps_ranges": "C1/C2: 5-11V 5A; 5-20V 3A",
+ "pps_max_w": 60,
+ "epr_avs": null,
+ "other_protocols": [
+  "Xiaomi 120W",
+  "QC",
+  "AFC",
+  "FCP",
+  "SCP"
+ ],
+ "gan": true,
+ "foldable_plug": true,
+ "plug_region": "US",
+ "display": false,
+ "weight_g": 335,
+ "dimensions_mm": "79.38x65.04x32.18",
+ "safety_certs": [],
+ "cable_included": "1.5m 240W USB-C cable (cuktech.com page)",
+ "msrp_usd": 99.99,
+ "typical_price_usd": null,
+ "official_url": "https://cuktech.com/products/1406",
+ "sources": [
+  "https://www.chargerlab.com/pd3-1-xiaomi-120w-protocol-meet-the-cuktech-140w-gan-charger",
+  "https://cuktech.com/products/1406",
+  "https://www.amazon.com/CUKTECH-Charger-Foldable-Advanced-Charging/dp/B0DSVNM5RB",
+  "https://www.notebookcheck.net/New-Cuktech-15-140-W-GaN-charger-debuts-with-quad-ports-and-travel-friendly-design.1004385.0.html"
+ ],
+ "field_sources": {
+  "model_numbers": 0,
+  "ports": 0,
+  "port_sharing": 0,
+  "pd_fixed_pdos": 0,
+  "pps": 0,
+  "pps_ranges": 0,
+  "other_protocols": 0,
+  "dimensions_mm": 0,
+  "weight_g": 1,
+  "cable_included": 1,
+  "msrp_usd": 2
+ },
+ "confidence": "medium",
+ "notes": "ChargerLAB tested the China AD1404U; AD1404US is the US code from launch coverage. 28V5A (PD3.1 EPR fixed) mentioned in ChargerLAB prose but not in its PDO list -> epr_avs null. Weight 335g from cuktech.com may include cable (conflict with 224g class). Launch MSRP $99.99; promos ~40% off; current typical price not captured. pps_max_w=5-20V*3A=60W.",
+ "id": "cuktech-ad1404u"
+}

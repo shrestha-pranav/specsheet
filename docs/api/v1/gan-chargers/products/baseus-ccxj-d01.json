@@ -1,0 +1,61 @@
+{
+ "brand": "Baseus",
+ "product_name": "Baseus Compact 3 Ports Fast Charger 30W",
+ "model_numbers": [
+  "CCXJ-D01"
+ ],
+ "series": "Compact",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 30,
+ "max_single_port_w": 30,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 30
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": null
+  },
+  {
+   "name": "A2",
+   "type": "USB-A",
+   "max_w": null
+  }
+ ],
+ "port_sharing": "C+A1+A2: 5V3A total when multiple used (spec text)",
+ "usb_pd_version": null,
+ "pd_fixed_pdos": "5V3A 9V3A 12V2.5A 15V2A 20V1.5A",
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [],
+ "gan": null,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": 100,
+ "dimensions_mm": "40x20x60 (1.57x0.79x2.36 in)",
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": null,
+ "typical_price_usd": 19.99,
+ "official_url": "https://www.baseus.com/products/compact-3-ports-fast-charger-30w",
+ "sources": [
+  "https://www.baseus.com/products/compact-3-ports-fast-charger-30w"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "ports": 0,
+  "typical_price_usd": 0,
+  "pd_fixed_pdos": 0,
+  "weight_g": 0
+ },
+ "confidence": "medium",
+ "notes": "GaN not stated; PPS not stated; spec lists no PPS.",
+ "id": "baseus-ccxj-d01"
+}

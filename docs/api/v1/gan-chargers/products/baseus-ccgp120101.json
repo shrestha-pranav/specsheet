@@ -1,0 +1,62 @@
+{
+ "brand": "Baseus",
+ "product_name": "Baseus GaN5 Pro 3 Ports Fast Charger 65W",
+ "model_numbers": [
+  "CCGP120101"
+ ],
+ "series": "GaN5 Pro",
+ "release_year": null,
+ "status": "current",
+ "max_total_w": 65,
+ "max_single_port_w": 65,
+ "ports": [
+  {
+   "name": "C1",
+   "type": "USB-C",
+   "max_w": 65
+  },
+  {
+   "name": "C2",
+   "type": "USB-C",
+   "max_w": null
+  },
+  {
+   "name": "A1",
+   "type": "USB-A",
+   "max_w": null
+  }
+ ],
+ "port_sharing": null,
+ "usb_pd_version": null,
+ "pd_fixed_pdos": null,
+ "pps": null,
+ "pps_ranges": null,
+ "pps_max_w": null,
+ "epr_avs": null,
+ "other_protocols": [
+  "Samsung Super Fast Charging 45W (8 protocols listed, not enumerated)"
+ ],
+ "gan": true,
+ "foldable_plug": null,
+ "plug_region": "US",
+ "display": null,
+ "weight_g": null,
+ "dimensions_mm": null,
+ "safety_certs": [],
+ "cable_included": null,
+ "msrp_usd": null,
+ "typical_price_usd": 39.99,
+ "official_url": "https://www.baseus.com/products/gan5-pro-3-ports-fast-charger-65w",
+ "sources": [
+  "https://www.baseus.com/products/gan5-pro-3-ports-fast-charger-65w",
+  "https://www.chargerlab.com/teardown-of-baseus-65w-gan5-pro-charger-ccgan65c5"
+ ],
+ "field_sources": {
+  "max_total_w": 0,
+  "ports": 0,
+  "typical_price_usd": 0
+ },
+ "confidence": "low",
+ "notes": "Baseus page does not state PPS. ChargerLAB tested a different-code Baseus 65W GaN5 Pro 2C1A (CCGAN65C5): 5 fixed PDOs 5V3A 9V3A 12V3A 15V3A 20V3.25A + PPS 5-11V 5A on C1 and C2; mapping of CCGP120101 to CCGAN65C5 NOT confirmed so pps left null. Samsung 45W support implies PPS but unverified.",
+ "id": "baseus-ccgp120101"
+}

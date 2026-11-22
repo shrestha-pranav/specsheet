@@ -1,0 +1,450 @@
+[
+ {
+  "brand": "EcoFlow",
+  "product_name": "EcoFlow RAPID Charger (65W, Retractable Cable, GaN)",
+  "model_numbers": [],
+  "series": "RAPID",
+  "release_year": 2025,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": 65,
+  "ports": [
+   {
+    "name": "C1 (retractable cable, 70cm)",
+    "type": "USB-C",
+    "max_w": 65
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 65
+   },
+   {
+    "name": "A",
+    "type": "USB-A",
+    "max_w": 18
+   }
+  ],
+  "port_sharing": "C1+C2: 65W max total; C1+A: 45+18; C2+A: 20 (5V2A+5V2A); C1+(C2+A): 45+15+15",
+  "usb_pd_version": "3.2",
+  "pd_fixed_pdos": "5V3A 9V3A 12V3A 15V3A 20V3.25A (C1/C2); A: 5V3A 9V2A 12V1.5A",
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "PD2.0",
+   "QC4+",
+   "QC4.0",
+   "QC3.0",
+   "QC2.0",
+   "Apple 2.4A",
+   "BC1.2",
+   "DCP 1.5A"
+  ],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": false,
+  "weight_g": 171.5,
+  "dimensions_mm": "52.5x51x50.71 (page FAQ says 52.5x51x51.3)",
+  "safety_certs": [],
+  "cable_included": "built-in 70cm retractable USB-C",
+  "msrp_usd": null,
+  "typical_price_usd": 31.99,
+  "official_url": "https://us.ecoflow.com/products/ecoflow-rapid-charger-65w-retractable-calble-gan",
+  "sources": [
+   "https://us.ecoflow.com/products/ecoflow-rapid-charger-65w-retractable-calble-gan"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "port_sharing": 0,
+   "pd_fixed_pdos": 0,
+   "pps": 0,
+   "other_protocols": 0,
+   "weight_g": 0,
+   "dimensions_mm": 0,
+   "typical_price_usd": 0,
+   "usb_pd_version": 0
+  },
+  "confidence": "medium",
+  "notes": "PPS listed in protocol FAQ but no PPS voltage/current ranges published (null). No model number or safety certs published on page. Dimension discrepancy 50.71 vs 51.3 mm on same page. Spec text has typo '20V-3.25A'."
+ },
+ {
+  "brand": "EcoFlow",
+  "product_name": "EcoFlow RAPID Charger (45W, Retractable Cable, GaN)",
+  "model_numbers": [],
+  "series": "RAPID",
+  "release_year": 2025,
+  "status": "current",
+  "max_total_w": 45,
+  "max_single_port_w": 45,
+  "ports": [
+   {
+    "name": "C1 (retractable cable, 70cm)",
+    "type": "USB-C",
+    "max_w": 45
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 45
+   }
+  ],
+  "port_sharing": "C1+C2: 20+20 (40W total)",
+  "usb_pd_version": "3.2",
+  "pd_fixed_pdos": "5V3A 9V3A 12V3A 15V3A 20V2.25A",
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "PD2.0",
+   "QC4+",
+   "QC4.0",
+   "QC3.0",
+   "QC2.0",
+   "Apple 2.4A",
+   "BC1.2",
+   "DCP 1.5A"
+  ],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": false,
+  "weight_g": 133.2,
+  "dimensions_mm": "61x55x35.2",
+  "safety_certs": [],
+  "cable_included": "built-in 70cm retractable USB-C",
+  "msrp_usd": null,
+  "typical_price_usd": 24.99,
+  "official_url": "https://us.ecoflow.com/products/ecoflow-rapid-charger-45w-retractable-calble-gan",
+  "sources": [
+   "https://us.ecoflow.com/products/ecoflow-rapid-charger-45w-retractable-calble-gan"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "port_sharing": 0,
+   "pd_fixed_pdos": 0,
+   "pps": 0,
+   "other_protocols": 0,
+   "weight_g": 0,
+   "dimensions_mm": 0,
+   "typical_price_usd": 0,
+   "usb_pd_version": 0
+  },
+  "confidence": "medium",
+  "notes": "Page overview text says '1x USB-C port + 1x retractable cable' (2 outlets). PPS listed as protocol only; ranges unpublished. Spec text duplicates 12V3A (typo)."
+ },
+ {
+  "brand": "EcoFlow",
+  "product_name": "EcoFlow RAPID 65W GaN Charger with 100W Cable",
+  "model_numbers": [],
+  "series": "RAPID",
+  "release_year": 2024,
+  "status": "current",
+  "max_total_w": 65,
+  "max_single_port_w": 65,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 65
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 65
+   },
+   {
+    "name": "A",
+    "type": "USB-A",
+    "max_w": 60
+   }
+  ],
+  "port_sharing": "C1+C2: 45+20; C1+A: 45+18; C2+A: 15 combined; C1+(C2+A): 45 / 15 combined",
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": false,
+  "weight_g": 133,
+  "dimensions_mm": "29.5x44.5x61.5 (1.16x1.75x2.42 in)",
+  "safety_certs": [],
+  "cable_included": "1m 5A/100W USB-C to USB-C",
+  "msrp_usd": 49,
+  "typical_price_usd": 29.99,
+  "official_url": "https://us.ecoflow.com/products/rapid-65w-gan-charger-with-100w-cable",
+  "sources": [
+   "https://us.ecoflow.com/products/rapid-65w-gan-charger-with-100w-cable",
+   "https://eu.ecoflow.com/products/rapid-charger-65w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "ports": 0,
+   "port_sharing": 0,
+   "weight_g": 0,
+   "dimensions_mm": 0,
+   "cable_included": 0,
+   "msrp_usd": 0,
+   "typical_price_usd": 0
+  },
+  "confidence": "low",
+  "notes": "US page publishes no protocol list, no PDO list, no PPS info -> pps null. Search summary of the EU page suggests PPS/PD but not fetched/confirmed. USB-A single port listed as 60W (likely a typo for 18W) on US page; unverified. Weight from 4.7 oz."
+ },
+ {
+  "brand": "EcoFlow",
+  "product_name": "EcoFlow RAPID 30W GaN Charger with 60W Cable",
+  "model_numbers": [],
+  "series": "RAPID",
+  "release_year": 2024,
+  "status": "current",
+  "max_total_w": 30,
+  "max_single_port_w": 30,
+  "ports": [
+   {
+    "name": "C",
+    "type": "USB-C",
+    "max_w": 30
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": false,
+  "weight_g": 48,
+  "dimensions_mm": "28.4x28.4x38.1 (1.12x1.12x1.5 in)",
+  "safety_certs": [],
+  "cable_included": "1m 3A/60W USB-C to USB-C",
+  "msrp_usd": 29,
+  "typical_price_usd": 19.99,
+  "official_url": "https://us.ecoflow.com/products/ecoflow-rapid-30w-gan-charger-with-60w-cable",
+  "sources": [
+   "https://us.ecoflow.com/products/ecoflow-rapid-30w-gan-charger-with-60w-cable"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "weight_g": 0,
+   "dimensions_mm": 0,
+   "cable_included": 0,
+   "msrp_usd": 0,
+   "typical_price_usd": 0
+  },
+  "confidence": "low",
+  "notes": "Only '30W Max (20V Max)' published; no PDO/PPS list -> pps null. Also sold as a Prime Day bundle SKU at $25.99."
+ },
+ {
+  "brand": "EcoFlow",
+  "product_name": "EcoFlow RAPID 20W GaN Charger with 60W Cable",
+  "model_numbers": [],
+  "series": "RAPID",
+  "release_year": 2024,
+  "status": "current",
+  "max_total_w": 20,
+  "max_single_port_w": 20,
+  "ports": [
+   {
+    "name": "C",
+    "type": "USB-C",
+    "max_w": 20
+   }
+  ],
+  "port_sharing": null,
+  "usb_pd_version": null,
+  "pd_fixed_pdos": null,
+  "pps": null,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": false,
+  "weight_g": 37,
+  "dimensions_mm": "28.4x28.4x35.6 (1.12x1.12x1.4 in)",
+  "safety_certs": [],
+  "cable_included": "1m 3A/60W USB-C to USB-C",
+  "msrp_usd": 29,
+  "typical_price_usd": 12.99,
+  "official_url": "https://us.ecoflow.com/products/rapid-charger-20w",
+  "sources": [
+   "https://us.ecoflow.com/products/rapid-charger-20w"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "weight_g": 0,
+   "dimensions_mm": 0,
+   "cable_included": 0,
+   "msrp_usd": 0,
+   "typical_price_usd": 0
+  },
+  "confidence": "low",
+  "notes": "Outside the requested 30W+ range but a current USB-C GaN wall charger; '20W Max (12V Max)'. No PPS info published."
+ },
+ {
+  "brand": "EcoFlow",
+  "product_name": "EcoFlow RAPID Pro Charger (140W, 4 Ports, GaN)",
+  "model_numbers": [
+   "EF-WC-140-CN"
+  ],
+  "series": "RAPID Pro",
+  "release_year": 2025,
+  "status": "unknown",
+  "max_total_w": 140,
+  "max_single_port_w": 140,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 140
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 140
+   },
+   {
+    "name": "C3",
+    "type": "USB-C",
+    "max_w": 30
+   },
+   {
+    "name": "A",
+    "type": "USB-A",
+    "max_w": 30
+   }
+  ],
+  "port_sharing": "C1+C2: 70+70; C3+A: 18; C1/C2+C3/A: 100+30; C1/C2+(C3+A): 100+18; C1+C2+C3: 65+45+30; C1+C2+A: 65+45+18",
+  "usb_pd_version": "3.1",
+  "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V5A 28V5A; C3: 5V3A 9V3A 12V2.5A",
+  "pps": true,
+  "pps_ranges": "C1/C2: 5-21V 5A; C3: 5-11V 3A",
+  "pps_max_w": 100,
+  "epr_avs": true,
+  "other_protocols": [
+   "UFCS",
+   "QC3+/5 (C1/C2)",
+   "QC3+/4+ (C3)",
+   "FCP",
+   "SCP",
+   "AFC",
+   "SFCP",
+   "Samsung 2A",
+   "Apple 2.4A",
+   "DCP"
+  ],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": false,
+  "weight_g": 224,
+  "dimensions_mm": "63.18x66.99x30.78",
+  "safety_certs": [],
+  "cable_included": "none (E-Marked 5A cable recommended)",
+  "msrp_usd": null,
+  "typical_price_usd": null,
+  "official_url": "https://us.ecoflow.com/products/ecoflow-rapid-pro-charger-140w-4-ports-gan",
+  "sources": [
+   "https://www.chargerlab.com/teardown-of-ecoflow-rapid-pro-140w-4%E2%80%91port-gan-charger-ef-wc-140-cn",
+   "https://us.ecoflow.com/products/ecoflow-rapid-pro-charger-140w-4-ports-gan",
+   "https://www.notebookcheck.net/EcoFlow-launches-new-140W-Rapid-Pro-4-port-charger-with-discount.1053990.0.html"
+  ],
+  "field_sources": {
+   "model_numbers": 0,
+   "max_total_w": 0,
+   "ports": 0,
+   "port_sharing": 0,
+   "pd_fixed_pdos": 0,
+   "pps": 0,
+   "pps_ranges": 0,
+   "epr_avs": 0,
+   "other_protocols": 0,
+   "weight_g": 0,
+   "dimensions_mm": 0
+  },
+  "confidence": "medium",
+  "notes": "Specs are ChargerLAB's teardown of the CN model EF-WC-140-CN; US model number and US plug variant not confirmed. us.ecoflow.com product URL returned 404 on 2026-11-22 and it is absent from the US store product feed (still bundled in a RAPID Pro bundle page) -> status unknown (possibly delisted from US store; may remain on Amazon). AVS 15-28V 140W listed by ChargerLAB; its own text does not label it EPR. Notebookcheck says first two C ports both 140W, consistent. Earlier search snippet suggested 5-21V; pps_max_w=100 is 20V*5A (21V*5A=105W) - approximate. EU page lists 67x63x31mm dims; teardown measured 63.18x66.99x30.78. typical price not found."
+ },
+ {
+  "brand": "EcoFlow",
+  "product_name": "EcoFlow RAPID Pro Charger (100W, 3 Ports, GaN)",
+  "model_numbers": [],
+  "series": "RAPID Pro",
+  "release_year": 2025,
+  "status": "unknown",
+  "max_total_w": 100,
+  "max_single_port_w": 100,
+  "ports": [
+   {
+    "name": "C1",
+    "type": "USB-C",
+    "max_w": 100
+   },
+   {
+    "name": "C2",
+    "type": "USB-C",
+    "max_w": 100
+   },
+   {
+    "name": "A",
+    "type": "USB-A",
+    "max_w": null
+   }
+  ],
+  "port_sharing": "Reported example: 70W USB-C + 22.5W USB-A (retailer, unverified)",
+  "usb_pd_version": "3.1",
+  "pd_fixed_pdos": null,
+  "pps": true,
+  "pps_ranges": null,
+  "pps_max_w": null,
+  "epr_avs": null,
+  "other_protocols": [
+   "QC2.0",
+   "QC3.0",
+   "SCP",
+   "FCP",
+   "Apple 2.4A",
+   "BC1.2"
+  ],
+  "gan": true,
+  "foldable_plug": true,
+  "plug_region": "US",
+  "display": false,
+  "weight_g": 185,
+  "dimensions_mm": "55.5x40.6x46.6",
+  "safety_certs": [],
+  "cable_included": "none",
+  "msrp_usd": null,
+  "typical_price_usd": null,
+  "official_url": "https://us.ecoflow.com/products/ecoflow-rapid-pro-charger-100w-3-ports-gan",
+  "sources": [
+   "https://us.ecoflow.com/products/ecoflow-rapid-pro-charger-100w-3-ports-gan",
+   "https://powerstationinfo.com/ef-ecoflow-rapid-pro-charger-100w-review/"
+  ],
+  "field_sources": {
+   "max_total_w": 0,
+   "dimensions_mm": 0,
+   "pps": 0,
+   "other_protocols": 0
+  },
+  "confidence": "low",
+  "notes": "Only search-result summaries read; the US page was not fetched (429 rate limit) and the product is absent from the US store product feed on 2026-11-22. PPS from official/retailer protocol list, ranges unknown. Japan Amazon lists PDOs up to 28V5A on C1/C2, contradicting 100W rating - unresolved. Weight 185g from one retailer. No ChargerLAB test found."
+ }
+]
