@@ -1,55 +1,239 @@
 {
+ "id": "belkin-bbc039tt1-5bkb6",
+ "category": "gan-chargers",
  "brand": "Belkin",
- "product_name": "BoostCharge USB-C GaN Wall Charger 100W (single port) + 5 ft USB-C cable",
- "model_numbers": [
-  "BBC039tt1.5BKB6",
-  "WCH025dq1.5WHB6"
- ],
- "series": "BoostCharge",
- "release_year": 2026,
- "status": "current",
- "max_total_w": 100,
- "max_single_port_w": 100,
- "ports": [
+ "name": "BoostCharge USB-C GaN Wall Charger 100W (single port) + 5 ft USB-C cable",
+ "family": "BoostCharge",
+ "model": "BBC039tt1.5BKB6",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 100
+   "scheme": "brand_model",
+   "value": "BBC039tt1.5BKB6",
+   "issuer": "Belkin",
+   "market": null,
+   "package_level": "unverified"
+  },
+  {
+   "scheme": "brand_model",
+   "value": "WCH025dq1.5WHB6",
+   "issuer": "Belkin",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": null,
- "usb_pd_version": null,
- "pd_fixed_pdos": null,
- "pps": null,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 1,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 100
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "QC5 (image caption)",
+    "Samsung SFC 2.0 (image caption)"
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US foldable",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "dimensions_mm": {
+   "value": "81 x 61 x 31 (65 x 61 x 31 folded)",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "Yes, 1.5 m USB-C to USB-C",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "release_year": {
+   "value": 2026,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 29.99,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "typical_price_usd": {
+   "value": 29.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "QC5 (image caption)",
   "Samsung SFC 2.0 (image caption)"
  ],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US foldable",
- "display": false,
- "weight_g": null,
- "dimensions_mm": "81 x 61 x 31 (65 x 61 x 31 folded)",
- "safety_certs": [],
- "cable_included": "Yes, 1.5 m USB-C to USB-C",
- "msrp_usd": 29.99,
- "typical_price_usd": 29.99,
- "official_url": "https://www.belkin.com/p/usb-c-gan-wall-charger-100w-plus-usb-c-cable/BBC039tt1.5BKB6.html",
  "sources": [
-  "https://www.belkin.com/p/usb-c-gan-wall-charger-100w-plus-usb-c-cable/BBC039tt1.5BKB6.html",
-  "https://9to5toys.com/2026/07/13/belkin-100w-usb-c-wall-charger/"
+  {
+   "id": "s0",
+   "url": "https://www.belkin.com/p/usb-c-gan-wall-charger-100w-plus-usb-c-cable/BBC039tt1.5BKB6.html",
+   "label": "belkin.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://9to5toys.com/2026/07/13/belkin-100w-usb-c-wall-charger/",
+   "label": "9to5toys.com",
+   "kind": "other"
+  }
  ],
- "field_sources": {
-  "typical_price_usd": 0,
-  "cable_included": 0,
-  "dimensions_mm": 0,
-  "other_protocols": 0
+ "confidence": {
+  "level": "low",
+  "scope": "legacy_record"
  },
- "confidence": "low",
  "notes": "PPS NOT confirmed; image caption mentions 'PD3.2'. Price $29.99 INCLUDES the cable; 9to5Toys reported Amazon deal $25.50 (expired). thetestedhub review (same ASIN B0H2BTQQYX) describes 4 ports / 63x63x30 mm / 175 g, which contradicts Belkin's 1-port page; treated as unreliable. WCH025 model number comes from a B&H listing (403 on fetch), not verified. KEY CANDIDATE for a cheap >=65W single-port unit; needs PPS test.",
- "id": "belkin-bbc039tt1-5bkb6"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

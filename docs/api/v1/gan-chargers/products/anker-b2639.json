@@ -1,67 +1,246 @@
 {
+ "id": "anker-b2639",
+ "category": "gan-chargers",
  "brand": "Anker",
- "product_name": "Anker 2-Pack 67W + 30W Wall Chargers (Costco bundle)",
- "model_numbers": [
-  "B2639",
-  "B2639H11-1"
- ],
- "series": "Prime",
- "release_year": 2024,
- "status": "unknown",
- "max_total_w": 67,
- "max_single_port_w": 67,
- "ports": [
+ "name": "Anker 2-Pack 67W + 30W Wall Chargers (Costco bundle)",
+ "family": "Prime",
+ "model": "B2639",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "67W charger C1",
-   "type": "USB-C",
-   "max_w": 67
+   "scheme": "brand_model",
+   "value": "B2639",
+   "issuer": "Anker",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "67W charger C2",
-   "type": "USB-C",
-   "max_w": 67
-  },
-  {
-   "name": "67W charger A1",
-   "type": "USB-A",
-   "max_w": 22.5
-  },
-  {
-   "name": "30W charger C1",
-   "type": "USB-C",
-   "max_w": 30
+   "scheme": "brand_model",
+   "value": "B2639H11-1",
+   "issuer": "Anker",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "67W charger shares as A2669; 30W charger single port",
- "usb_pd_version": null,
- "pd_fixed_pdos": null,
- "pps": null,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [],
- "gan": true,
- "foldable_plug": null,
- "plug_region": "US",
- "display": false,
- "weight_g": null,
- "dimensions_mm": null,
- "safety_certs": [],
- "cable_included": "no",
- "msrp_usd": 29.99,
- "typical_price_usd": 23.99,
- "official_url": "https://www.costco.com/anker-fast-charging-2-pack-67w-and-30w-wall-chargers.product.4000257231.html",
- "sources": [
-  "https://www.costco.com/anker-fast-charging-2-pack-67w-and-30w-wall-chargers.product.4000257231.html",
-  "https://slickdeals.net/f/18131437-costco-anker-fast-charging-67w-and-30w-wall-charger-bundle-20"
- ],
- "field_sources": {
-  "model_numbers": 1,
-  "msrp_usd": 1,
-  "typical_price_usd": 1,
-  "port_sharing": 1
+ "specs": {
+  "max_total_w": {
+   "value": 67,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 67,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 4,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "67W charger C1",
+     "type": "USB-C",
+     "max_w": 67
+    },
+    {
+     "name": "67W charger C2",
+     "type": "USB-C",
+     "max_w": 67
+    },
+    {
+     "name": "67W charger A1",
+     "type": "USB-A",
+     "max_w": 22.5
+    },
+    {
+     "name": "30W charger C1",
+     "type": "USB-C",
+     "max_w": 30
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "67W charger shares as A2669; 30W charger single port",
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "dimensions_mm": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "no",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": 2024,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "status": {
+   "value": "unknown",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 29.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "typical_price_usd": {
+   "value": 23.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
  },
- "confidence": "low",
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [
+  {
+   "id": "s0",
+   "url": "https://www.costco.com/anker-fast-charging-2-pack-67w-and-30w-wall-chargers.product.4000257231.html",
+   "label": "costco.com",
+   "kind": "other"
+  },
+  {
+   "id": "s1",
+   "url": "https://slickdeals.net/f/18131437-costco-anker-fast-charging-67w-and-30w-wall-charger-bundle-20",
+   "label": "slickdeals.net",
+   "kind": "other"
+  }
+ ],
+ "confidence": {
+  "level": "low",
+  "scope": "legacy_record"
+ },
  "notes": "Bundle of a 3-port 67W (assumed A2669) + 30W single-port (assumed A2147-class); component models NOT confirmed by Anker. Costco member price $19.99-$23.99 (Dec 2024-Feb 2025 deals) vs $29.99 regular; current availability unconfirmed. Per-component PPS unknown.",
- "id": "anker-b2639"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

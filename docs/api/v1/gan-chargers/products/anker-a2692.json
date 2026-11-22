@@ -1,54 +1,233 @@
 {
+ "id": "anker-a2692",
+ "category": "gan-chargers",
  "brand": "Anker",
- "product_name": "Anker Nano Charger (45W) with USB-C to USB-C Cable",
- "model_numbers": [
-  "A2692",
-  "B2692"
- ],
- "series": "Nano",
- "release_year": null,
- "status": "current",
- "max_total_w": 45,
- "max_single_port_w": 45,
- "ports": [
+ "name": "Anker Nano Charger (45W) with USB-C to USB-C Cable",
+ "family": "Nano",
+ "model": "A2692",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 45
+   "scheme": "brand_model",
+   "value": "A2692",
+   "issuer": "Anker",
+   "market": null,
+   "package_level": "unverified"
+  },
+  {
+   "scheme": "brand_model",
+   "value": "B2692",
+   "issuer": "Anker",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": null,
- "usb_pd_version": null,
- "pd_fixed_pdos": "5V3A 9V3A 15V3A 20V2.25A",
- "pps": true,
- "pps_ranges": "5-11V 5A; 4.5-21V 2.25A; 5-16V 3A",
- "pps_max_w": 45,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 45,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 45,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 1,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 45
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": "5V3A 9V3A 15V3A 20V2.25A",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "pps_ranges": {
+   "value": "5-11V 5A; 4.5-21V 2.25A; 5-16V 3A",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_max_w": {
+   "value": 45,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "Samsung Super Fast Charging"
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "gan": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "foldable_plug": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 60,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "33 x 32 x 36.9",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "yes - 6 ft USB-C to USB-C",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "typical_price_usd": {
+   "value": 25.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "Samsung Super Fast Charging"
  ],
- "gan": null,
- "foldable_plug": null,
- "plug_region": "US",
- "display": false,
- "weight_g": 60,
- "dimensions_mm": "33 x 32 x 36.9",
- "safety_certs": [],
- "cable_included": "yes - 6 ft USB-C to USB-C",
- "msrp_usd": null,
- "typical_price_usd": 25.99,
- "official_url": "https://www.anker.com/products/a2692-45w-usb-c-fast-charger",
  "sources": [
-  "https://www.anker.com/products/a2692-45w-usb-c-fast-charger"
+  {
+   "id": "s0",
+   "url": "https://www.anker.com/products/a2692-45w-usb-c-fast-charger",
+   "label": "anker.com",
+   "kind": "manufacturer"
+  }
  ],
- "field_sources": {
-  "pd_fixed_pdos": 0,
-  "pps_ranges": 0,
-  "weight_g": 0,
-  "dimensions_mm": 0,
-  "typical_price_usd": 0
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
  },
- "confidence": "medium",
  "notes": "PPS ranges as printed on Anker US page (5-11V 5A is the 9V/5A Samsung SFC2.0 profile). Charger weight 60 g, cable 58 g. GaN not explicitly stated. 2-pack sold at $37.98.",
- "id": "anker-a2692"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

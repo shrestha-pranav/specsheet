@@ -1,65 +1,240 @@
 {
+ "id": "anker-a2687",
+ "category": "gan-chargers",
  "brand": "Anker",
- "product_name": "Anker Prime Charger (160W, 3 Ports, Smart Display)",
- "model_numbers": [
-  "A2687"
- ],
- "series": "Prime",
- "release_year": 2025,
- "status": "current",
- "max_total_w": 160,
- "max_single_port_w": 150,
- "ports": [
+ "name": "Anker Prime Charger (160W, 3 Ports, Smart Display)",
+ "family": "Prime",
+ "model": "A2687",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 150
-  },
-  {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 150
-  },
-  {
-   "name": "C3",
-   "type": "USB-C",
-   "max_w": 150
+   "scheme": "brand_model",
+   "value": "A2687",
+   "issuer": "Anker",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "2 or 3 ports in use: 160W total",
- "usb_pd_version": "3.1",
- "pd_fixed_pdos": "5V3A 9V3A 15V3A 20V5A 28V5A 28V5.36A",
- "pps": null,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": true,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 160,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 150,
+   "status": "conflicted",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "port_count": {
+   "value": 3,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 150
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 150
+    },
+    {
+     "name": "C3",
+     "type": "USB-C",
+     "max_w": 150
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "2 or 3 ports in use: 160W total",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": "3.1",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "pd_fixed_pdos": {
+   "value": "5V3A 9V3A 15V3A 20V5A 28V5A 28V5.36A",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "other_protocols": {
+   "value": [
+    "PowerIQ 5.0",
+    "Anker Protocol",
+    "GaNPrime 2.0"
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 220,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "65 x 52 x 35",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "no",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": 2025,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 149.99,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "typical_price_usd": {
+   "value": 99.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "PowerIQ 5.0",
   "Anker Protocol",
   "GaNPrime 2.0"
  ],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": true,
- "weight_g": 220,
- "dimensions_mm": "65 x 52 x 35",
- "safety_certs": [],
- "cable_included": "no",
- "msrp_usd": 149.99,
- "typical_price_usd": 99.99,
- "official_url": "https://www.anker.com/products/a2687-anker-prime-charger-160w-3-ports-gan",
  "sources": [
-  "https://www.anker.com/products/a2687-anker-prime-charger-160w-3-ports-gan"
+  {
+   "id": "s0",
+   "url": "https://www.anker.com/products/a2687-anker-prime-charger-160w-3-ports-gan",
+   "label": "anker.com",
+   "kind": "manufacturer"
+  }
  ],
- "field_sources": {
-  "port_sharing": 0,
-  "pd_fixed_pdos": 0,
-  "weight_g": 0,
-  "typical_price_usd": 0,
-  "max_single_port_w": 0
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
  },
- "confidence": "medium",
  "notes": "Single-port conflict: spec table 150W (28V/5.36A) vs key features / FAQ 140W. Refurbished unit listed at $119.99. PPS not stated.",
- "id": "anker-a2687"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

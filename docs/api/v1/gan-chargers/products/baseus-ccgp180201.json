@@ -1,56 +1,227 @@
 {
+ "id": "baseus-ccgp180201",
+ "category": "gan-chargers",
  "brand": "Baseus",
- "product_name": "Baseus GaN5 Pro Dual USB-C Fast Charger 40W",
- "model_numbers": [
-  "CCGP180201"
- ],
- "series": "GaN5 Pro",
- "release_year": null,
- "status": "current",
- "max_total_w": 40,
- "max_single_port_w": 40,
- "ports": [
+ "name": "Baseus GaN5 Pro Dual USB-C Fast Charger 40W",
+ "family": "GaN5 Pro",
+ "model": "CCGP180201",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 40
-  },
-  {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 40
+   "scheme": "brand_model",
+   "value": "CCGP180201",
+   "issuer": "Baseus",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "Single port 40W; both ports 20W+20W",
- "usb_pd_version": null,
- "pd_fixed_pdos": null,
- "pps": null,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [],
- "gan": true,
- "foldable_plug": null,
- "plug_region": "US",
- "display": null,
- "weight_g": 70,
- "dimensions_mm": "62x34x29 (2.44x1.34x1.14 in)",
- "safety_certs": [],
- "cable_included": null,
- "msrp_usd": null,
- "typical_price_usd": 27.99,
- "official_url": "https://www.baseus.com/products/gan5-pro-dual-usb-c-fast-charger-40w",
- "sources": [
-  "https://www.baseus.com/products/gan5-pro-dual-usb-c-fast-charger-40w"
- ],
- "field_sources": {
-  "max_total_w": 0,
-  "ports": 0,
-  "typical_price_usd": 0,
-  "port_sharing": 0,
-  "weight_g": 0
+ "specs": {
+  "max_total_w": {
+   "value": 40,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "max_single_port_w": {
+   "value": 40,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 2,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 40
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 40
+    }
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "port_sharing": {
+   "value": "Single port 40W; both ports 20W+20W",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "weight_g": {
+   "value": 70,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "62x34x29 (2.44x1.34x1.14 in)",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "typical_price_usd": {
+   "value": 27.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
  },
- "confidence": "medium",
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [
+  {
+   "id": "s0",
+   "url": "https://www.baseus.com/products/gan5-pro-dual-usb-c-fast-charger-40w",
+   "label": "baseus.com",
+   "kind": "manufacturer"
+  }
+ ],
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
+ },
  "notes": "PPS not stated on page.",
- "id": "baseus-ccgp180201"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

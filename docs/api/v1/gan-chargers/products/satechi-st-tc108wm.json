@@ -1,71 +1,242 @@
 {
+ "id": "satechi-st-tc108wm",
+ "category": "gan-chargers",
  "brand": "Satechi",
- "product_name": "108W Pro USB-C PD Desktop Charger",
- "model_numbers": [
-  "ST-TC108WM"
- ],
- "series": null,
- "release_year": 2020,
- "status": "current",
- "max_total_w": 108,
- "max_single_port_w": 90,
- "ports": [
+ "name": "108W Pro USB-C PD Desktop Charger",
+ "family": null,
+ "model": "ST-TC108WM",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 90
-  },
-  {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 18
-  },
-  {
-   "name": "A1",
-   "type": "USB-A",
-   "max_w": 12
-  },
-  {
-   "name": "A2",
-   "type": "USB-A",
-   "max_w": 12
+   "scheme": "brand_model",
+   "value": "ST-TC108WM",
+   "issuer": "Satechi",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "C 90W + C 18W + 2x USB-A total 12W (no sharing claimed)",
- "usb_pd_version": null,
- "pd_fixed_pdos": null,
- "pps": null,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [],
- "gan": null,
- "foldable_plug": false,
- "plug_region": null,
- "display": false,
- "weight_g": 417,
- "dimensions_mm": "120.7 x 30.2 x 79.5",
- "safety_certs": [
-  "CE",
-  "ETL",
-  "USB-IF",
-  "FCC"
- ],
- "cable_included": "4 ft AC cable",
- "msrp_usd": 79.99,
- "typical_price_usd": 55.99,
- "official_url": "https://satechi.com/products/108w-pro-usb-c-pd-desktop-charger",
- "sources": [
-  "https://satechi.com/products/108w-pro-usb-c-pd-desktop-charger"
- ],
- "field_sources": {
-  "ports": 0,
-  "typical_price_usd": 0,
-  "safety_certs": 0,
-  "weight_g": 0,
-  "dimensions_mm": 0
+ "specs": {
+  "max_total_w": {
+   "value": 108,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 90,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 4,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 90
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 18
+    },
+    {
+     "name": "A1",
+     "type": "USB-A",
+     "max_w": 12
+    },
+    {
+     "name": "A2",
+     "type": "USB-A",
+     "max_w": 12
+    }
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "port_sharing": {
+   "value": "C 90W + C 18W + 2x USB-A total 12W (no sharing claimed)",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "gan": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "foldable_plug": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 417,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "120.7 x 30.2 x 79.5",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": [
+    "CE",
+    "ETL",
+    "USB-IF",
+    "FCC"
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "cable_included": {
+   "value": "4 ft AC cable",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": 2020,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 79.99,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "typical_price_usd": {
+   "value": 55.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
  },
- "confidence": "low",
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [
+  {
+   "id": "s0",
+   "url": "https://satechi.com/products/108w-pro-usb-c-pd-desktop-charger",
+   "label": "satechi.com",
+   "kind": "manufacturer"
+  }
+ ],
+ "confidence": {
+  "level": "low",
+  "scope": "legacy_record"
+ },
  "notes": "GaN NOT stated on page (2019-era design; likely silicon); gan left null. Included for completeness. Desktop; PPS unknown.",
- "id": "satechi-st-tc108wm"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

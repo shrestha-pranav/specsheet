@@ -1,64 +1,248 @@
 {
+ "id": "iniu-a12-e1-2",
+ "category": "gan-chargers",
  "brand": "INIU",
- "product_name": "INIU Cougar A12 30W Charger with USB-C Cable, 2-Pack",
- "model_numbers": [
-  "A12-E1",
-  "D01-A12-E1-2P-L-US-BK"
- ],
- "series": "Cougar",
- "release_year": 2025,
- "status": "current",
- "max_total_w": 30,
- "max_single_port_w": 30,
- "ports": [
+ "name": "INIU Cougar A12 30W Charger with USB-C Cable, 2-Pack",
+ "family": "Cougar",
+ "model": "A12-E1",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C",
-   "type": "USB-C",
-   "max_w": 30
+   "scheme": "brand_model",
+   "value": "A12-E1",
+   "issuer": "INIU",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "A",
-   "type": "USB-A",
-   "max_w": 22.5
+   "scheme": "brand_model",
+   "value": "D01-A12-E1-2P-L-US-BK",
+   "issuer": "INIU",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "C+A together: 15W total",
- "usb_pd_version": "2.0/3.0",
- "pd_fixed_pdos": "C: 5V3A 9V3A 12V2.5A 15V2A 20V1.5A",
- "pps": true,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 30,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "max_single_port_w": {
+   "value": 30,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 2,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C",
+     "type": "USB-C",
+     "max_w": 30
+    },
+    {
+     "name": "A",
+     "type": "USB-A",
+     "max_w": 22.5
+    }
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "port_sharing": {
+   "value": "C+A together: 15W total",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": "2.0/3.0",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "pd_fixed_pdos": {
+   "value": "C: 5V3A 9V3A 12V2.5A 15V2A 20V1.5A",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "AFC",
+    "QC2.0",
+    "QC3.0"
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 63,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "38x48x30",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "60W USB-C cable",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": 2025,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "typical_price_usd": {
+   "value": 17.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "AFC",
   "QC2.0",
   "QC3.0"
  ],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": false,
- "weight_g": 63,
- "dimensions_mm": "38x48x30",
- "safety_certs": [],
- "cable_included": "60W USB-C cable",
- "msrp_usd": null,
- "typical_price_usd": 17.99,
- "official_url": "https://iniushop.com/products/iniu-a12-e1-dual-port-charger-30w-copy",
  "sources": [
-  "https://iniushop.com/products/iniu-a12-e1-dual-port-charger-30w-copy"
+  {
+   "id": "s0",
+   "url": "https://iniushop.com/products/iniu-a12-e1-dual-port-charger-30w-copy",
+   "label": "iniushop.com",
+   "kind": "manufacturer"
+  }
  ],
- "field_sources": {
-  "max_total_w": 0,
-  "ports": 0,
-  "typical_price_usd": 0,
-  "pps": 0,
-  "other_protocols": 0,
-  "weight_g": 0,
-  "dimensions_mm": 0,
-  "port_sharing": 0
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
  },
- "confidence": "medium",
  "notes": "Two chargers in pack; same electronics as the A12 single. PPS in protocol list only.",
- "id": "iniu-a12-e1-2"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

@@ -1,63 +1,245 @@
 {
+ "id": "anker-a121a",
+ "category": "gan-chargers",
  "brand": "Anker",
- "product_name": "Anker Nano Charger (70W, 3 Ports)",
- "model_numbers": [
-  "A121A",
-  "B121A"
- ],
- "series": "Nano",
- "release_year": null,
- "status": "current",
- "max_total_w": 70,
- "max_single_port_w": 70,
- "ports": [
+ "name": "Anker Nano Charger (70W, 3 Ports)",
+ "family": "Nano",
+ "model": "A121A",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 70
+   "scheme": "brand_model",
+   "value": "A121A",
+   "issuer": "Anker",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 70
-  },
-  {
-   "name": "A1",
-   "type": "USB-A",
-   "max_w": 33
+   "scheme": "brand_model",
+   "value": "B121A",
+   "issuer": "Anker",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "C1+C2 or C+A: 45+22.5 or 60+5; C1+C2+A: 45+7.5+7.5",
- "usb_pd_version": null,
- "pd_fixed_pdos": "C1: 5V3A 9V3A 15V3A 20V3.5A; C2 also 10V2.25A",
- "pps": null,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": false,
- "weight_g": 120,
- "dimensions_mm": "53 x 42.6 x 31.5",
- "safety_certs": [],
- "cable_included": "ambiguous - title says 'with USB-C Cable'",
- "msrp_usd": 39.99,
- "typical_price_usd": 32.99,
- "official_url": "https://www.anker.com/products/a121a-70w-3-ports-charger",
- "sources": [
-  "https://www.anker.com/products/a121a-70w-3-ports-charger",
-  "https://www.anker.com/collections/fast-wall-charger"
- ],
- "field_sources": {
-  "port_sharing": 0,
-  "pd_fixed_pdos": 0,
-  "weight_g": 0,
-  "dimensions_mm": 0,
-  "typical_price_usd": 1
+ "specs": {
+  "max_total_w": {
+   "value": 70,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 70,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 3,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 70
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 70
+    },
+    {
+     "name": "A1",
+     "type": "USB-A",
+     "max_w": 33
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "C1+C2 or C+A: 45+22.5 or 60+5; C1+C2+A: 45+7.5+7.5",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": "C1: 5V3A 9V3A 15V3A 20V3.5A; C2 also 10V2.25A",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 120,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "53 x 42.6 x 31.5",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "ambiguous - title says 'with USB-C Cable'",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 39.99,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "typical_price_usd": {
+   "value": 32.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
  },
- "confidence": "medium",
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [
+  {
+   "id": "s0",
+   "url": "https://www.anker.com/products/a121a-70w-3-ports-charger",
+   "label": "anker.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://www.anker.com/collections/fast-wall-charger",
+   "label": "anker.com",
+   "kind": "manufacturer"
+  }
+ ],
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
+ },
  "notes": "PPS not stated (10V/11V rows appear but are not labelled PPS). Do not infer false.",
- "id": "anker-a121a"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

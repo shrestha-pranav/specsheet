@@ -1,61 +1,250 @@
 {
+ "id": "spigen-pe2007",
+ "category": "gan-chargers",
  "brand": "Spigen",
- "product_name": "ArcStation Pro GaN 70W Dual Port Wall Charger",
- "model_numbers": [
-  "PE2007",
-  "ACH02081"
- ],
- "series": "ArcStation Pro",
- "release_year": null,
- "status": "unknown",
- "max_total_w": 70,
- "max_single_port_w": 60,
- "ports": [
+ "name": "ArcStation Pro GaN 70W Dual Port Wall Charger",
+ "family": "ArcStation Pro",
+ "model": "PE2007",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 50
+   "scheme": "brand_model",
+   "value": "PE2007",
+   "issuer": "Spigen",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 20
+   "scheme": "brand_model",
+   "value": "ACH02081",
+   "issuer": "Spigen",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "Single port 60W; dual port 50W + 20W",
- "usb_pd_version": "3.0",
- "pd_fixed_pdos": "Port 2: 5V3A 9V3A 15V3A 20V2.5A (50W); Port 1: 5V3A 9V2.22A (20W) [eBay label transcript]",
- "pps": null,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": false,
- "weight_g": 145,
- "dimensions_mm": "62.0 x 62.0 x 31.0",
- "safety_certs": [],
- "cable_included": null,
- "msrp_usd": 69.99,
- "typical_price_usd": null,
- "official_url": "https://partners.spigen.com/products/arcstation-pro-70w-wall-charger",
- "sources": [
-  "https://partners.spigen.com/products/arcstation-pro-70w-wall-charger",
-  "https://www.ebay.com/itm/203580811235",
-  "https://www.amazon.com/Spigen-ArcStation-Pro-GaN-Charger/dp/B08PS5B2H8"
- ],
- "field_sources": {
-  "port_sharing": 0,
-  "usb_pd_version": 0,
-  "pd_fixed_pdos": 1,
-  "weight_g": 0,
-  "dimensions_mm": 0,
-  "msrp_usd": 0,
-  "foldable_plug": 0
+ "specs": {
+  "max_total_w": {
+   "value": 70,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 60,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 2,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 50
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 20
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "Single port 60W; dual port 50W + 20W",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": "3.0",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pd_fixed_pdos": {
+   "value": "Port 2: 5V3A 9V3A 15V3A 20V2.5A (50W); Port 1: 5V3A 9V2.22A (20W) [eBay label transcript]",
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 145,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "62.0 x 62.0 x 31.0",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "unknown",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 69.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "typical_price_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  }
  },
- "confidence": "medium",
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [
+  {
+   "id": "s0",
+   "url": "https://partners.spigen.com/products/arcstation-pro-70w-wall-charger",
+   "label": "partners.spigen.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://www.ebay.com/itm/203580811235",
+   "label": "ebay.com",
+   "kind": "other"
+  },
+  {
+   "id": "s2",
+   "url": "https://www.amazon.com/Spigen-ArcStation-Pro-GaN-Charger/dp/B08PS5B2H8",
+   "label": "amazon.com",
+   "kind": "other"
+  }
+ ],
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
+ },
  "notes": "Listed PDOs have no PPS entry but PPS is not explicitly denied, so pps left null. Contradiction: Spigen page says single-port 60W (total 70W is only reachable if both ports used: 50+20); an EU retailer lists 65W/60W for the EU variant PE2007EU. Single-port max 60W (<65W). spigen.com (consumer store) and partners.spigen.com pages 404 or delisted for most ArcStation chargers as of 2026-11-22; status 'unknown/discontinued on Spigen's own storefront' - still sold via Amazon. partners.spigen.com price is the B2B storefront list price, not street price.",
- "id": "spigen-pe2007"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

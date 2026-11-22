@@ -1,67 +1,244 @@
 {
+ "id": "anker-a2697",
+ "category": "gan-chargers",
  "brand": "Anker",
- "product_name": "Anker Charger (140W, 4-Port, PD 3.1) with USB-C Cable",
- "model_numbers": [
-  "A2697",
-  "B2697"
- ],
- "series": "Prime",
- "release_year": 2025,
- "status": "current",
- "max_total_w": 140,
- "max_single_port_w": 140,
- "ports": [
+ "name": "Anker Charger (140W, 4-Port, PD 3.1) with USB-C Cable",
+ "family": "Prime",
+ "model": "A2697",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 140
+   "scheme": "brand_model",
+   "value": "A2697",
+   "issuer": "Anker",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 140
-  },
-  {
-   "name": "C3",
-   "type": "USB-C",
-   "max_w": 40
-  },
-  {
-   "name": "A1",
-   "type": "USB-A",
-   "max_w": 33
+   "scheme": "brand_model",
+   "value": "B2697",
+   "issuer": "Anker",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "C1+C2: 70+70; C1/C2+C3: 100+40; C1/C2+A: 100+33; C3+A: 24 total; C1+C2+C3 or +A: 65+45+30; 4 ports: 134W total",
- "usb_pd_version": "3.1",
- "pd_fixed_pdos": "C1/C2: 9V3A 15V3A 20V5A 28V5A; C3: 5V3A 9V3A 15V2.65A 20V2A",
- "pps": null,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": true,
- "other_protocols": [],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": true,
- "weight_g": 395,
- "dimensions_mm": "69 x 69 x 36",
- "safety_certs": [],
- "cable_included": "yes - USB-C cable (E-marker not stated)",
- "msrp_usd": 89.99,
- "typical_price_usd": 59.99,
- "official_url": "https://www.anker.com/products/a2697-anker-charger-140w-4-port",
- "sources": [
-  "https://www.anker.com/products/a2697-anker-charger-140w-4-port"
- ],
- "field_sources": {
-  "port_sharing": 0,
-  "pd_fixed_pdos": 0,
-  "epr_avs": 0,
-  "weight_g": 0,
-  "typical_price_usd": 0
+ "specs": {
+  "max_total_w": {
+   "value": 140,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 140,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 4,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 140
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 140
+    },
+    {
+     "name": "C3",
+     "type": "USB-C",
+     "max_w": 40
+    },
+    {
+     "name": "A1",
+     "type": "USB-A",
+     "max_w": 33
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "C1+C2: 70+70; C1/C2+C3: 100+40; C1/C2+A: 100+33; C3+A: 24 total; C1+C2+C3 or +A: 65+45+30; 4 ports: 134W total",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": "3.1",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "pd_fixed_pdos": {
+   "value": "C1/C2: 9V3A 15V3A 20V5A 28V5A; C3: 5V3A 9V3A 15V2.65A 20V2A",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "other_protocols": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 395,
+   "status": "conflicted",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "69 x 69 x 36",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "yes - USB-C cable (E-marker not stated)",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": 2025,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 89.99,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "typical_price_usd": {
+   "value": 59.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
  },
- "confidence": "medium",
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [
+  {
+   "id": "s0",
+   "url": "https://www.anker.com/products/a2697-anker-charger-140w-4-port",
+   "label": "anker.com",
+   "kind": "manufacturer"
+  }
+ ],
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
+ },
  "notes": "Weight conflict: spec 395 g vs marketing '9.7 oz'. PPS not stated (A1 shows 10V/11V rows, unlabelled). C1/C2 28V5A=140W. Release year inferred.",
- "id": "anker-a2697"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

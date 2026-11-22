@@ -1,37 +1,216 @@
 {
+ "id": "ecoflow-ecoflow-rapid-pro-charger-100w-3-ports-gan",
+ "category": "gan-chargers",
  "brand": "EcoFlow",
- "product_name": "EcoFlow RAPID Pro Charger (100W, 3 Ports, GaN)",
- "model_numbers": [],
- "series": "RAPID Pro",
- "release_year": 2025,
- "status": "unknown",
- "max_total_w": 100,
- "max_single_port_w": 100,
- "ports": [
-  {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 100
+ "name": "EcoFlow RAPID Pro Charger (100W, 3 Ports, GaN)",
+ "family": "RAPID Pro",
+ "model": null,
+ "variant": null,
+ "identifiers": [],
+ "specs": {
+  "max_total_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
   },
-  {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 100
+  "max_single_port_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
   },
-  {
-   "name": "A",
-   "type": "USB-A",
-   "max_w": null
+  "port_count": {
+   "value": 3,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 100
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 100
+    },
+    {
+     "name": "A",
+     "type": "USB-A",
+     "max_w": null
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "Reported example: 70W USB-C + 22.5W USB-A (retailer, unverified)",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "usb_pd_version": {
+   "value": "3.1",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "QC2.0",
+    "QC3.0",
+    "SCP",
+    "FCP",
+    "Apple 2.4A",
+    "BC1.2"
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 185,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "dimensions_mm": {
+   "value": "55.5x40.6x46.6",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "none",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": 2025,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "status": {
+   "value": "unknown",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "typical_price_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
   }
- ],
- "port_sharing": "Reported example: 70W USB-C + 22.5W USB-A (retailer, unverified)",
- "usb_pd_version": "3.1",
- "pd_fixed_pdos": null,
- "pps": true,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "QC2.0",
   "QC3.0",
   "SCP",
@@ -39,28 +218,25 @@
   "Apple 2.4A",
   "BC1.2"
  ],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": false,
- "weight_g": 185,
- "dimensions_mm": "55.5x40.6x46.6",
- "safety_certs": [],
- "cable_included": "none",
- "msrp_usd": null,
- "typical_price_usd": null,
- "official_url": "https://us.ecoflow.com/products/ecoflow-rapid-pro-charger-100w-3-ports-gan",
  "sources": [
-  "https://us.ecoflow.com/products/ecoflow-rapid-pro-charger-100w-3-ports-gan",
-  "https://powerstationinfo.com/ef-ecoflow-rapid-pro-charger-100w-review/"
+  {
+   "id": "s0",
+   "url": "https://us.ecoflow.com/products/ecoflow-rapid-pro-charger-100w-3-ports-gan",
+   "label": "us.ecoflow.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://powerstationinfo.com/ef-ecoflow-rapid-pro-charger-100w-review/",
+   "label": "powerstationinfo.com",
+   "kind": "other"
+  }
  ],
- "field_sources": {
-  "max_total_w": 0,
-  "dimensions_mm": 0,
-  "pps": 0,
-  "other_protocols": 0
+ "confidence": {
+  "level": "low",
+  "scope": "legacy_record"
  },
- "confidence": "low",
  "notes": "Only search-result summaries read; the US page was not fetched (429 rate limit) and the product is absent from the US store product feed on 2026-11-22. PPS from official/retailer protocol list, ranges unknown. Japan Amazon lists PDOs up to 28V5A on C1/C2, contradicting 100W rating - unresolved. Weight 185g from one retailer. No ChargerLAB test found.",
- "id": "ecoflow-ecoflow-rapid-pro-charger-100w-3-ports-gan"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

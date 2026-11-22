@@ -1,42 +1,247 @@
 {
+ "id": "cuktech-ad653n",
+ "category": "gan-chargers",
  "brand": "CUKTECH",
- "product_name": "CUKTECH Multi-ports GaN Charger 65W (2C1A, foldable)",
- "model_numbers": [
-  "AD653N",
-  "AD653-US (Slickdeals)",
-  "A15CEU (EU variant)",
-  "AD653CUS (Taiwan variant)"
- ],
- "series": "GaN3",
- "release_year": null,
- "status": "current",
- "max_total_w": 65,
- "max_single_port_w": 65,
- "ports": [
+ "name": "CUKTECH Multi-ports GaN Charger 65W (2C1A, foldable)",
+ "family": "GaN3",
+ "model": "AD653N",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 65
+   "scheme": "brand_model",
+   "value": "AD653N",
+   "issuer": "CUKTECH",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 65
+   "scheme": "brand_model",
+   "value": "AD653-US (Slickdeals)",
+   "issuer": "CUKTECH",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "A",
-   "type": "USB-A",
-   "max_w": 18
+   "scheme": "brand_model",
+   "value": "A15CEU (EU variant)",
+   "issuer": "CUKTECH",
+   "market": null,
+   "package_level": "unverified"
+  },
+  {
+   "scheme": "brand_model",
+   "value": "AD653CUS (Taiwan variant)",
+   "issuer": "CUKTECH",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "C1+C2: 20V2.25A (45W) + 5V2.4A/9V2A/12V1.5A (18W); C1+A: same split; C2+A: 5V3A max; C1+(C2+A): 45W + 5V2.4A (per official spec table)",
- "usb_pd_version": "3.0",
- "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V3.25A; A: 5V3A 9V2.5A 10V2.25A 12V1.87A",
- "pps": true,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 3,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 65
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 65
+    },
+    {
+     "name": "A",
+     "type": "USB-A",
+     "max_w": 18
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "C1+C2: 20V2.25A (45W) + 5V2.4A/9V2A/12V1.5A (18W); C1+A: same split; C2+A: 5V3A max; C1+(C2+A): 45W + 5V2.4A (per official spec table)",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": "3.0",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "pd_fixed_pdos": {
+   "value": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V3.25A; A: 5V3A 9V2.5A 10V2.25A 12V1.87A",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "QC3.5 (US page)",
+    "QC4+/3.0 (EU page)",
+    "Super Fast Charging 2.0",
+    "AFC",
+    "FCP",
+    "SCP"
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "dimensions_mm": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "typical_price_usd": {
+   "value": 29,
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "QC3.5 (US page)",
   "QC4+/3.0 (EU page)",
   "Super Fast Charging 2.0",
@@ -44,33 +249,43 @@
   "FCP",
   "SCP"
  ],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": false,
- "weight_g": null,
- "dimensions_mm": null,
- "safety_certs": [],
- "cable_included": null,
- "msrp_usd": null,
- "typical_price_usd": 29,
- "official_url": "https://cuktech.com/products/ad653n-cuktech-65w-gan-charger-2c1a",
  "sources": [
-  "https://cuktech.com/products/ad653n-cuktech-65w-gan-charger-2c1a",
-  "https://cuktech.com/products/a15c-cuktech-65w-gan-charger-2c1a",
-  "https://www.dealnews.com/products/Cuktech-65-W-USB-C-Ga-N-III-Fast-Charger/463086.html",
-  "https://dealsfinders.com/cuktech-65w-gan-charger-amazon/",
-  "https://slickdeals.net/f/20210988-cuktech-65w-3-port-foldable-gan-wall-charger-w-usb-c-cable-15-10-free-shipping-w-prime-or-on-35"
+  {
+   "id": "s0",
+   "url": "https://cuktech.com/products/ad653n-cuktech-65w-gan-charger-2c1a",
+   "label": "cuktech.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://cuktech.com/products/a15c-cuktech-65w-gan-charger-2c1a",
+   "label": "cuktech.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s2",
+   "url": "https://www.dealnews.com/products/Cuktech-65-W-USB-C-Ga-N-III-Fast-Charger/463086.html",
+   "label": "dealnews.com",
+   "kind": "other"
+  },
+  {
+   "id": "s3",
+   "url": "https://dealsfinders.com/cuktech-65w-gan-charger-amazon/",
+   "label": "dealsfinders.com",
+   "kind": "other"
+  },
+  {
+   "id": "s4",
+   "url": "https://slickdeals.net/f/20210988-cuktech-65w-3-port-foldable-gan-wall-charger-w-usb-c-cable-15-10-free-shipping-w-prime-or-on-35",
+   "label": "slickdeals.net",
+   "kind": "other"
+  }
  ],
- "field_sources": {
-  "model_numbers": 0,
-  "port_sharing": 0,
-  "pd_fixed_pdos": 0,
-  "pps": 0,
-  "other_protocols": 0,
-  "typical_price_usd": 2
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
  },
- "confidence": "medium",
  "notes": "PPS stated on official page ('Samsung PPS') but no ranges; Chinese teardown (chongdiantou, AD653C) reportedly shows PPS 5-11V 3A on one port, unverified/port ambiguous. Price: ~$28-33 regular, promo deals $11.99-$15.10 (promo codes). Variant mapping (AD653-US/AD653CUS) is inferred from deal/retailer titles. Multiple Amazon listings (grey/silver, with/without cable).",
- "id": "cuktech-ad653n"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

@@ -1,59 +1,257 @@
 {
+ "id": "spigen-pe2201",
+ "category": "gan-chargers",
  "brand": "Spigen",
- "product_name": "ArcStation Pro GaN 651 Wall Charger (65W PPS, single port)",
- "model_numbers": [
-  "PE2201",
-  "PE2201UJ",
-  "ACH05474 (white)",
-  "ACH05473 (black)"
- ],
- "series": "ArcStation Pro",
- "release_year": null,
- "status": "unknown",
- "max_total_w": 65,
- "max_single_port_w": 65,
- "ports": [
+ "name": "ArcStation Pro GaN 651 Wall Charger (65W PPS, single port)",
+ "family": "ArcStation Pro",
+ "model": "PE2201",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 65
+   "scheme": "brand_model",
+   "value": "PE2201",
+   "issuer": "Spigen",
+   "market": null,
+   "package_level": "unverified"
+  },
+  {
+   "scheme": "brand_model",
+   "value": "PE2201UJ",
+   "issuer": "Spigen",
+   "market": null,
+   "package_level": "unverified"
+  },
+  {
+   "scheme": "brand_model",
+   "value": "ACH05474 (white)",
+   "issuer": "Spigen",
+   "market": null,
+   "package_level": "unverified"
+  },
+  {
+   "scheme": "brand_model",
+   "value": "ACH05473 (black)",
+   "issuer": "Spigen",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "Single port",
- "usb_pd_version": "3.0",
- "pd_fixed_pdos": null,
- "pps": true,
- "pps_ranges": null,
- "pps_max_w": 65,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "max_single_port_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 1,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 65
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "Single port",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "usb_pd_version": {
+   "value": "3.0",
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "Samsung Super Fast Charging 2.0"
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 96,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "40.4 x 28.4 x 50.3",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "unknown",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 64.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "typical_price_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "Samsung Super Fast Charging 2.0"
  ],
- "gan": true,
- "foldable_plug": null,
- "plug_region": "US",
- "display": false,
- "weight_g": 96,
- "dimensions_mm": "40.4 x 28.4 x 50.3",
- "safety_certs": [],
- "cable_included": null,
- "msrp_usd": 64.99,
- "typical_price_usd": null,
- "official_url": "https://partners.spigen.com/products/arcstation-pro-gan-651-wall-charger-pe2201",
  "sources": [
-  "https://partners.spigen.com/products/arcstation-pro-gan-651-wall-charger-pe2201",
-  "https://forcetop.com/en/products/spigen-arcstation-pro-gan-651-usb-c-pd-3-0-pps-65w-power-charger-usb-c-cable-black-21782"
+  {
+   "id": "s0",
+   "url": "https://partners.spigen.com/products/arcstation-pro-gan-651-wall-charger-pe2201",
+   "label": "partners.spigen.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://forcetop.com/en/products/spigen-arcstation-pro-gan-651-usb-c-pd-3-0-pps-65w-power-charger-usb-c-cable-black-21782",
+   "label": "forcetop.com",
+   "kind": "other"
+  }
  ],
- "field_sources": {
-  "pps": 0,
-  "usb_pd_version": 1,
-  "max_total_w": 0,
-  "weight_g": 0,
-  "dimensions_mm": 0,
-  "msrp_usd": 0,
-  "other_protocols": 0
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
  },
- "confidence": "medium",
  "notes": "Spigen page: 'provides PPS 65W' + SFC 2.0. PPS V/A ranges not published; no ChargerLAB test found. Cable not included on page; a retailer sells it with cable. No US street price captured (Amazon not fetched); $64.99 is partner-site list. CANDIDATE: >=65W single-port PPS, price on Amazon unverified. spigen.com (consumer store) and partners.spigen.com pages 404 or delisted for most ArcStation chargers as of 2026-11-22; status 'unknown/discontinued on Spigen's own storefront' - still sold via Amazon. partners.spigen.com price is the B2B storefront list price, not street price.",
- "id": "spigen-pe2201"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

@@ -1,54 +1,227 @@
 {
+ "id": "iniu-i622",
+ "category": "gan-chargers",
  "brand": "INIU",
- "product_name": "INIU I622 45W Dual USB-C GaN Charger",
- "model_numbers": [
-  "I622"
- ],
- "series": "I-series",
- "release_year": null,
- "status": "discontinued",
- "max_total_w": 45,
- "max_single_port_w": 45,
- "ports": [
+ "name": "INIU I622 45W Dual USB-C GaN Charger",
+ "family": "I-series",
+ "model": "I622",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 45
-  },
-  {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": null
+   "scheme": "brand_model",
+   "value": "I622",
+   "issuer": "INIU",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": null,
- "usb_pd_version": null,
- "pd_fixed_pdos": null,
- "pps": true,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": false,
- "weight_g": null,
- "dimensions_mm": null,
- "safety_certs": [],
- "cable_included": null,
- "msrp_usd": null,
- "typical_price_usd": null,
- "official_url": "https://iniushop.com/products/iniu-i622-usb-c-charger-45w-gan-pd-dual-port-type-c-charger-fast-charging-block-foldable-usb-c-wall-charger-power-adapter",
- "sources": [
-  "https://iniushop.com/collections/gan-charger",
-  "https://www.amazon.com/Charger-INIU-Foldable-Adapter-Samsung/dp/B0BRQKZSBB"
- ],
- "field_sources": {
-  "max_total_w": 0,
-  "pps": 1
+ "specs": {
+  "max_total_w": {
+   "value": 45,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "max_single_port_w": {
+   "value": 45,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 2,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 45
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": null
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "dimensions_mm": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "discontinued",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "typical_price_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  }
  },
- "confidence": "low",
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [
+  {
+   "id": "s0",
+   "url": "https://iniushop.com/collections/gan-charger",
+   "label": "iniushop.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://www.amazon.com/Charger-INIU-Foldable-Adapter-Samsung/dp/B0BRQKZSBB",
+   "label": "amazon.com",
+   "kind": "other"
+  }
+ ],
+ "confidence": {
+  "level": "low",
+  "scope": "legacy_record"
+ },
  "notes": "Old official product page no longer in iniushop catalog (products.json) so marked discontinued on official store; still appears in search and Amazon listings. Amazon title for 2-port 45W (B0BRQKZSBB) says 'PD PPS' - seller claim, ranges unknown, page fetch blocked (503). Per-port split unknown. Model mapping of Amazon listing to I622 not confirmed.",
- "id": "iniu-i622"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

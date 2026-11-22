@@ -1,61 +1,250 @@
 {
+ "id": "spigen-pe2109",
+ "category": "gan-chargers",
  "brand": "Spigen",
- "product_name": "ArcStation Pro GaN 1402 (GaN III 140W) Dual Port Wall Charger",
- "model_numbers": [
-  "PE2109",
-  "PE2109UJ"
- ],
- "series": "ArcStation Pro (GaN III)",
- "release_year": null,
- "status": "unknown",
- "max_total_w": 140,
- "max_single_port_w": 140,
- "ports": [
+ "name": "ArcStation Pro GaN 1402 (GaN III 140W) Dual Port Wall Charger",
+ "family": "ArcStation Pro (GaN III)",
+ "model": "PE2109",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 140
+   "scheme": "brand_model",
+   "value": "PE2109",
+   "issuer": "Spigen",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 140
+   "scheme": "brand_model",
+   "value": "PE2109UJ",
+   "issuer": "Spigen",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "Single port 140W; two devices ~67W + 60W (Amazon bullet)",
- "usb_pd_version": "3.1",
- "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V5A 28V5A (retailer listing)",
- "pps": true,
- "pps_ranges": null,
- "pps_max_w": 100,
- "epr_avs": null,
- "other_protocols": [],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": false,
- "weight_g": 326,
- "dimensions_mm": "73.4 x 30.0 x 72.9",
- "safety_certs": [],
- "cable_included": "No",
- "msrp_usd": 54.99,
- "typical_price_usd": 54.99,
- "official_url": "https://www.amazon.com/clp/B0C1S8FRGW",
- "sources": [
-  "https://www.amazon.com/clp/B0C1S8FRGW",
-  "https://www.androidauthority.com/spigen-gan-iii-wall-charger-deal-3557371/",
-  "https://www.howtogeek.com/spigens-blazing-fast-140w-wall-charger-is-45-off-today/"
- ],
- "field_sources": {
-  "pps": 0,
-  "port_sharing": 0,
-  "usb_pd_version": 0,
-  "msrp_usd": 1,
-  "pd_fixed_pdos": 0,
-  "weight_g": 0,
-  "dimensions_mm": 0
+ "specs": {
+  "max_total_w": {
+   "value": 140,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 140,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 2,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 140
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 140
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "Single port 140W; two devices ~67W + 60W (Amazon bullet)",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": "3.1",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pd_fixed_pdos": {
+   "value": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V5A 28V5A (retailer listing)",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 326,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "73.4 x 30.0 x 72.9",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "No",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "unknown",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 54.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "typical_price_usd": {
+   "value": 54.99,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  }
  },
- "confidence": "low",
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [
+  {
+   "id": "s0",
+   "url": "https://www.amazon.com/clp/B0C1S8FRGW",
+   "label": "amazon.com",
+   "kind": "other"
+  },
+  {
+   "id": "s1",
+   "url": "https://www.androidauthority.com/spigen-gan-iii-wall-charger-deal-3557371/",
+   "label": "androidauthority.com",
+   "kind": "other"
+  },
+  {
+   "id": "s2",
+   "url": "https://www.howtogeek.com/spigens-blazing-fast-140w-wall-charger-is-45-off-today/",
+   "label": "howtogeek.com",
+   "kind": "other"
+  }
+ ],
+ "confidence": {
+  "level": "low",
+  "scope": "legacy_record"
+ },
  "notes": "All from Amazon US title/bullets via search snippets (Amazon page fetch blocked) and a retailer listing: title says 'PD3.1 140W 100W ... PPS', so PPS limited to 100W; ranges unpublished. Price: Amazon list ~$54.99; deals at $29.99 (May 2025 per Android Authority, Dec 2023 $41). Amazon seller-authenticity concern raised on Slickdeals ('SpigenTech' vs 'SpigenInc'). Spigen partner page delisted (404). Not <=$25 at any observed price. spigen.com (consumer store) and partners.spigen.com pages 404 or delisted for most ArcStation chargers as of 2026-11-22; status 'unknown/discontinued on Spigen's own storefront' - still sold via Amazon. partners.spigen.com price is the B2B storefront list price, not street price.",
- "id": "spigen-pe2109"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

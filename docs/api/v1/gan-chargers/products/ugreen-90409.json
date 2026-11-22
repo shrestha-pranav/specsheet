@@ -1,49 +1,228 @@
 {
+ "id": "ugreen-90409",
+ "category": "gan-chargers",
  "brand": "UGREEN",
- "product_name": "UGREEN Nexode 65W 3-Port Travel Charger with US/UK/EU Plug",
- "model_numbers": [
-  "90409"
+ "name": "UGREEN Nexode 65W 3-Port Travel Charger with US/UK/EU Plug",
+ "family": "Nexode",
+ "model": "90409",
+ "variant": null,
+ "identifiers": [
+  {
+   "scheme": "brand_model",
+   "value": "90409",
+   "issuer": "UGREEN",
+   "market": null,
+   "package_level": "unverified"
+  }
  ],
- "series": "Nexode",
- "release_year": null,
- "status": "current",
- "max_total_w": 65,
- "max_single_port_w": null,
- "ports": [],
- "port_sharing": "2 USB-C: 45+20; all three ports: 45+8.5+8.5 (SmartGadgetKit review; may refer to this travel variant)",
- "usb_pd_version": null,
- "pd_fixed_pdos": null,
- "pps": null,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [],
- "gan": true,
- "foldable_plug": null,
- "plug_region": "multi",
- "display": null,
- "weight_g": null,
- "dimensions_mm": null,
- "safety_certs": [],
- "cable_included": null,
- "msrp_usd": 49.99,
- "typical_price_usd": 49.99,
- "official_url": "https://us.ugreen.com/products/ugreen-65w-nexode-gan-usb-c-3-port-charger-with-us-uk-eu-plug-for-travel",
- "sources": [
-  "https://us.ugreen.com/products/ugreen-65w-nexode-gan-usb-c-3-port-charger-with-us-uk-eu-plug-for-travel",
-  "https://us.ugreen.com/collections/charger",
-  "https://smartgadgetkit.com/ugreen-nexode-65w-travel-charger-review/"
- ],
- "field_sources": {
-  "product_name": 0,
-  "model_numbers": 0,
-  "max_total_w": 0,
-  "typical_price_usd": 1,
-  "msrp_usd": 1,
-  "status": 1,
-  "port_sharing": 2
+ "specs": {
+  "max_total_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "max_single_port_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "port_count": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "ports": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "port_sharing": {
+   "value": "2 USB-C: 45+20; all three ports: 45+8.5+8.5 (SmartGadgetKit review; may refer to this travel variant)",
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "plug_region": {
+   "value": "multi",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "weight_g": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "dimensions_mm": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "msrp_usd": {
+   "value": 49.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "typical_price_usd": {
+   "value": 49.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
  },
- "confidence": "low",
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [
+  {
+   "id": "s0",
+   "url": "https://us.ugreen.com/products/ugreen-65w-nexode-gan-usb-c-3-port-charger-with-us-uk-eu-plug-for-travel",
+   "label": "us.ugreen.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://us.ugreen.com/collections/charger",
+   "label": "us.ugreen.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s2",
+   "url": "https://smartgadgetkit.com/ugreen-nexode-65w-travel-charger-review/",
+   "label": "smartgadgetkit.com",
+   "kind": "other"
+  }
+ ],
+ "confidence": {
+  "level": "low",
+  "scope": "legacy_record"
+ },
  "notes": "Split from third-party review of a 'travel charger with 3 plug heads'; mapping unverified. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise.",
- "id": "ugreen-90409"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

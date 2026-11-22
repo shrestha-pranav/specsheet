@@ -1,0 +1,107 @@
+{
+ "id": "demo-strip-4",
+ "category": "power-strips-demo",
+ "brand": "Demo Lab",
+ "name": "Desk strip — four outlet",
+ "family": "Fictional demonstration",
+ "model": "DS-04",
+ "variant": null,
+ "identifiers": [
+  {
+   "scheme": "demo_model",
+   "value": "DS-04",
+   "issuer": "Demo Lab",
+   "market": null,
+   "package_level": "single"
+  }
+ ],
+ "specs": {
+  "outlet_count": {
+   "value": 4,
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "usb_port_count": {
+   "value": 2,
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "max_load_w": {
+   "value": 1800,
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "cord_length_m": {
+   "value": 1.5,
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "mounting": {
+   "value": "desk",
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "surge_protection": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "joule_rating": {
+   "value": 600,
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "clamping_range": {
+   "value": {
+    "min": 330,
+    "max": 400
+   },
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "indicator_lights": {
+   "value": [
+    "grounded",
+    "protected"
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "notes_on_layout": {
+   "value": "Wide-spaced outer outlets",
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [],
+ "confidence": {
+  "level": "illustrative",
+  "scope": "demo"
+ },
+ "notes": "Fictional values for interface testing only. No product or source is claimed.",
+ "identity_caveat": "Fictional demo product; not a purchasable catalogue entry.",
+ "demo": true
+}

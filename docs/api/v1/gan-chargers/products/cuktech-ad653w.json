@@ -1,39 +1,236 @@
 {
+ "id": "cuktech-ad653w",
+ "category": "gan-chargers",
  "brand": "CUKTECH",
- "product_name": "CUKTECH 67W CP6 GaN Charger with Retractable Cable",
- "model_numbers": [
-  "AD653W"
- ],
- "series": "CP6",
- "release_year": 2025,
- "status": "unknown",
- "max_total_w": 67,
- "max_single_port_w": 67,
- "ports": [
+ "name": "CUKTECH 67W CP6 GaN Charger with Retractable Cable",
+ "family": "CP6",
+ "model": "AD653W",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 65
-  },
-  {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 67
-  },
-  {
-   "name": "A",
-   "type": "USB-A",
-   "max_w": 22.5
+   "scheme": "brand_model",
+   "value": "AD653W",
+   "issuer": "CUKTECH",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "C1+C2: 45+20; C1+A: 45+18; C2+A: 20 (5V4A); C1+(C2+A): 45+15",
- "usb_pd_version": "3.0",
- "pd_fixed_pdos": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V3.35A (measured); label says 20V3.25A",
- "pps": true,
- "pps_ranges": "C1: 5-11V 5A (measured); proprietary Xiaomi ranges on C2",
- "pps_max_w": 55,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 67,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "max_single_port_w": {
+   "value": 67,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 3,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 65
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 67
+    },
+    {
+     "name": "A",
+     "type": "USB-A",
+     "max_w": 22.5
+    }
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "port_sharing": {
+   "value": "C1+C2: 45+20; C1+A: 45+18; C2+A: 20 (5V4A); C1+(C2+A): 45+15",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": "3.0",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "pd_fixed_pdos": {
+   "value": "C1/C2: 5V3A 9V3A 12V3A 15V3A 20V3.35A (measured); label says 20V3.25A",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": "C1: 5-11V 5A (measured); proprietary Xiaomi ranges on C2",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_max_w": {
+   "value": 55,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "Xiaomi 65W/67W",
+    "QC3.0",
+    "QC3+",
+    "DCP",
+    "FCP",
+    "SCP",
+    "AFC",
+    "Apple 2.4A"
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 166,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "51.07x51.01x53.63",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "release_year": {
+   "value": 2025,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "status": {
+   "value": "unknown",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "typical_price_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "Xiaomi 65W/67W",
   "QC3.0",
   "QC3+",
@@ -43,33 +240,19 @@
   "AFC",
   "Apple 2.4A"
  ],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": false,
- "weight_g": 166,
- "dimensions_mm": "51.07x51.01x53.63",
- "safety_certs": [],
- "cable_included": null,
- "msrp_usd": null,
- "typical_price_usd": null,
- "official_url": null,
  "sources": [
-  "https://www.chargerlab.com/teardown-of-cuktech-67w-cp6-gan-charger-ad653w"
+  {
+   "id": "s0",
+   "url": "https://www.chargerlab.com/teardown-of-cuktech-67w-cp6-gan-charger-ad653w",
+   "label": "chargerlab.com",
+   "kind": "other"
+  }
  ],
- "field_sources": {
-  "model_numbers": 0,
-  "max_total_w": 0,
-  "ports": 0,
-  "port_sharing": 0,
-  "pd_fixed_pdos": 0,
-  "pps": 0,
-  "pps_ranges": 0,
-  "other_protocols": 0,
-  "weight_g": 0,
-  "dimensions_mm": 0
+ "confidence": {
+  "level": "low",
+  "scope": "legacy_record"
  },
- "confidence": "low",
  "notes": "ChargerLAB teardown (China-market). US availability, price and US model suffix NOT confirmed; status unknown. Spec label vs measured 20V: 3.25A vs 3.35A. C2 shows no standard PPS. pps_max_w=5*11 approx.",
- "id": "cuktech-ad653w"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

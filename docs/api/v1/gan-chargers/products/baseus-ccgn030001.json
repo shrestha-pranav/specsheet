@@ -1,69 +1,243 @@
 {
+ "id": "baseus-ccgn030001",
+ "category": "gan-chargers",
  "brand": "Baseus",
- "product_name": "Baseus GaN3 Pro 4 Ports Desktop Charger 65W (desktop station)",
- "model_numbers": [
-  "CCGN030001"
- ],
- "series": "GaN3 Pro",
- "release_year": null,
- "status": "current",
- "max_total_w": 65,
- "max_single_port_w": 65,
- "ports": [
+ "name": "Baseus GaN3 Pro 4 Ports Desktop Charger 65W (desktop station)",
+ "family": "GaN3 Pro",
+ "model": "CCGN030001",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 65
-  },
-  {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": null
-  },
-  {
-   "name": "A1",
-   "type": "USB-A",
-   "max_w": null
-  },
-  {
-   "name": "A2",
-   "type": "USB-A",
-   "max_w": null
+   "scheme": "brand_model",
+   "value": "CCGN030001",
+   "issuer": "Baseus",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": null,
- "usb_pd_version": null,
- "pd_fixed_pdos": null,
- "pps": null,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "max_single_port_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 4,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 65
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": null
+    },
+    {
+     "name": "A1",
+     "type": "USB-A",
+     "max_w": null
+    },
+    {
+     "name": "A2",
+     "type": "USB-A",
+     "max_w": null
+    }
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "port_sharing": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "QC",
+    "Samsung AFC 45W"
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "weight_g": {
+   "value": 238,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "typical_price_usd": {
+   "value": 49.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "QC",
   "Samsung AFC 45W"
  ],
- "gan": true,
- "foldable_plug": false,
- "plug_region": "US",
- "display": null,
- "weight_g": 238,
- "dimensions_mm": null,
- "safety_certs": [],
- "cable_included": null,
- "msrp_usd": null,
- "typical_price_usd": 49.99,
- "official_url": "https://www.baseus.com/products/gan3-pro-4-ports-desktop-charger-65w",
  "sources": [
-  "https://www.baseus.com/products/gan3-pro-4-ports-desktop-charger-65w"
+  {
+   "id": "s0",
+   "url": "https://www.baseus.com/products/gan3-pro-4-ports-desktop-charger-65w",
+   "label": "baseus.com",
+   "kind": "manufacturer"
+  }
  ],
- "field_sources": {
-  "max_total_w": 0,
-  "ports": 0,
-  "typical_price_usd": 0,
-  "other_protocols": 0,
-  "weight_g": 0
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
  },
- "confidence": "medium",
  "notes": "Desktop (corded, 5ft AC cable). PPS not stated; page lists PD 20W iPhone, QC, Samsung 45W.",
- "id": "baseus-ccgn030001"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

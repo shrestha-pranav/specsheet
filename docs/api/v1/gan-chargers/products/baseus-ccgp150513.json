@@ -1,59 +1,233 @@
 {
+ "id": "baseus-ccgp150513",
+ "category": "gan-chargers",
  "brand": "Baseus",
- "product_name": "Baseus GaN5 Pro Flat USB-C Wall Charger 65W",
- "model_numbers": [
-  "CCGP150513"
- ],
- "series": "GaN5 Pro",
- "release_year": null,
- "status": "current",
- "max_total_w": 65,
- "max_single_port_w": 65,
- "ports": [
+ "name": "Baseus GaN5 Pro Flat USB-C Wall Charger 65W",
+ "family": "GaN5 Pro",
+ "model": "CCGP150513",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 65
-  },
-  {
-   "name": "A1",
-   "type": "USB-A",
-   "max_w": 60
+   "scheme": "brand_model",
+   "value": "CCGP150513",
+   "issuer": "Baseus",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "Page text contradictory: single C 65W; C+A 45W+20W (spec text) vs 25W+20W (marketing line); single A 60W",
- "usb_pd_version": null,
- "pd_fixed_pdos": null,
- "pps": true,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": null,
- "weight_g": 97,
- "dimensions_mm": "92x51x17 (3.62x2.01x0.67 in)",
- "safety_certs": [],
- "cable_included": "3.3ft USB-C cable",
- "msrp_usd": null,
- "typical_price_usd": 40.99,
- "official_url": "https://www.baseus.com/products/gan5-pro-flat-wall-charger-65w",
- "sources": [
-  "https://www.baseus.com/products/gan5-pro-flat-wall-charger-65w"
- ],
- "field_sources": {
-  "max_total_w": 0,
-  "ports": 0,
-  "typical_price_usd": 0,
-  "pps": 0,
-  "port_sharing": 0,
-  "weight_g": 0,
-  "dimensions_mm": 0,
-  "cable_included": 0
+ "specs": {
+  "max_total_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "max_single_port_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 2,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 65
+    },
+    {
+     "name": "A1",
+     "type": "USB-A",
+     "max_w": 60
+    }
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "port_sharing": {
+   "value": "Page text contradictory: single C 65W; C+A 45W+20W (spec text) vs 25W+20W (marketing line); single A 60W",
+   "status": "conflicted",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "weight_g": {
+   "value": 97,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "92x51x17 (3.62x2.01x0.67 in)",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "3.3ft USB-C cable",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "typical_price_usd": {
+   "value": 40.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
  },
- "confidence": "medium",
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [
+  {
+   "id": "s0",
+   "url": "https://www.baseus.com/products/gan5-pro-flat-wall-charger-65w",
+   "label": "baseus.com",
+   "kind": "manufacturer"
+  }
+ ],
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
+ },
  "notes": "PPS stated in marketing copy only; no ranges published. Dual-port split contradicts within the same page (25+20 vs 45+20). Typical price = baseus.com list price during Black Friday period; MSRP not captured.",
- "id": "baseus-ccgp150513"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

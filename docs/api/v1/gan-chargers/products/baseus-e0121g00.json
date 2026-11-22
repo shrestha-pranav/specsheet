@@ -1,60 +1,235 @@
 {
+ "id": "baseus-e0121g00",
+ "category": "gan-chargers",
  "brand": "Baseus",
- "product_name": "Baseus PicoGo AN13 Fast Charger 2C 45W",
- "model_numbers": [
-  "E0121G00"
- ],
- "series": "PicoGo",
- "release_year": null,
- "status": "current",
- "max_total_w": 45,
- "max_single_port_w": 45,
- "ports": [
+ "name": "Baseus PicoGo AN13 Fast Charger 2C 45W",
+ "family": "PicoGo",
+ "model": "E0121G00",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 45
-  },
-  {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": null
+   "scheme": "brand_model",
+   "value": "E0121G00",
+   "issuer": "Baseus",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": null,
- "usb_pd_version": null,
- "pd_fixed_pdos": null,
- "pps": true,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [],
- "gan": true,
- "foldable_plug": null,
- "plug_region": "US",
- "display": null,
- "weight_g": null,
- "dimensions_mm": null,
- "safety_certs": [
-  "CE",
-  "FCC",
-  "TUV"
- ],
- "cable_included": null,
- "msrp_usd": null,
- "typical_price_usd": 39.99,
- "official_url": "https://www.baseus.com/products/picogo-an13-fast-charger-2c-45w",
- "sources": [
-  "https://www.baseus.com/products/picogo-an13-fast-charger-2c-45w",
-  "https://www.gizmochina.com/2025/10/18/baseus-picogo-ae11-and-an13-gan-chargers-full-review/"
- ],
- "field_sources": {
-  "max_total_w": 0,
-  "ports": 0,
-  "typical_price_usd": 0,
-  "pps": 1
+ "specs": {
+  "max_total_w": {
+   "value": 45,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "max_single_port_w": {
+   "value": 45,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 2,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 45
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": null
+    }
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "port_sharing": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "weight_g": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "dimensions_mm": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "safety_certs": {
+   "value": [
+    "CE",
+    "FCC",
+    "TUV"
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "cable_included": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "typical_price_usd": {
+   "value": 39.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
  },
- "confidence": "low",
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [
+  {
+   "id": "s0",
+   "url": "https://www.baseus.com/products/picogo-an13-fast-charger-2c-45w",
+   "label": "baseus.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://www.gizmochina.com/2025/10/18/baseus-picogo-ae11-and-an13-gan-chargers-full-review/",
+   "label": "gizmochina.com",
+   "kind": "other"
+  }
+ ],
+ "confidence": {
+  "level": "low",
+  "scope": "legacy_record"
+ },
  "notes": "PPS per Gizmochina review text (secondary source, not Baseus page nor ChargerLAB); no ranges. Per-port split not on Baseus page.",
- "id": "baseus-e0121g00"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

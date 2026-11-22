@@ -1,60 +1,244 @@
 {
+ "id": "belkin-wch003dq2mwh-b6",
+ "category": "gan-chargers",
  "brand": "Belkin",
- "product_name": "BoostCharge Pro Dual USB-C PD GaN Wall Charger 68W (+ USB-C cable)",
- "model_numbers": [
-  "WCH003dq2MWH-B6",
-  "WCH003"
- ],
- "series": "BoostCharge Pro",
- "release_year": null,
- "status": "current",
- "max_total_w": 68,
- "max_single_port_w": 60,
- "ports": [
+ "name": "BoostCharge Pro Dual USB-C PD GaN Wall Charger 68W (+ USB-C cable)",
+ "family": "BoostCharge Pro",
+ "model": "WCH003dq2MWH-B6",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 60
+   "scheme": "brand_model",
+   "value": "WCH003dq2MWH-B6",
+   "issuer": "Belkin",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 18
+   "scheme": "brand_model",
+   "value": "WCH003",
+   "issuer": "Belkin",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "Single port up to 60W; dual: 50W + 18W",
- "usb_pd_version": null,
- "pd_fixed_pdos": null,
- "pps": null,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [],
- "gan": true,
- "foldable_plug": true,
- "plug_region": null,
- "display": false,
- "weight_g": null,
- "dimensions_mm": "62.3 x 30 x 66",
- "safety_certs": [],
- "cable_included": "Yes, 2 m USB-C to USB-C",
- "msrp_usd": 54.99,
- "typical_price_usd": 68.99,
- "official_url": "https://www.belkin.com/p/dual-usb-c-gan-wall-charger-68w-plus-usb-c-cable/WCH003dq2MWH-B6.html",
- "sources": [
-  "https://www.belkin.com/p/dual-usb-c-gan-wall-charger-68w-plus-usb-c-cable/WCH003dq2MWH-B6.html",
-  "https://www.belkin.com/support-article/?articleNum=335922"
- ],
- "field_sources": {
-  "port_sharing": 0,
-  "max_total_w": 0,
-  "typical_price_usd": 0,
-  "cable_included": 0,
-  "dimensions_mm": 0,
-  "gan": 1,
-  "msrp_usd": 1
+ "specs": {
+  "max_total_w": {
+   "value": 68,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "max_single_port_w": {
+   "value": 60,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 2,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 60
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 18
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "Single port up to 60W; dual: 50W + 18W",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "dimensions_mm": {
+   "value": "62.3 x 30 x 66",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "Yes, 2 m USB-C to USB-C",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 54.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "typical_price_usd": {
+   "value": 68.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
  },
- "confidence": "medium",
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [
+  {
+   "id": "s0",
+   "url": "https://www.belkin.com/p/dual-usb-c-gan-wall-charger-68w-plus-usb-c-cable/WCH003dq2MWH-B6.html",
+   "label": "belkin.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://www.belkin.com/support-article/?articleNum=335922",
+   "label": "belkin.com",
+   "kind": "manufacturer"
+  }
+ ],
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
+ },
  "notes": "CONTRADICTION: Belkin chart says PPS=Yes and 68W shared; product page does not mention PPS (pps left null). Chart MSRP $54.99 is for charger alone; $68.99 is bundle with cable. Out of stock at fetch time. 'WCH003dq2MWH-B6' sold with 2m cable.",
- "id": "belkin-wch003dq2mwh-b6"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

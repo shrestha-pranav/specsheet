@@ -1,61 +1,232 @@
 {
+ "id": "anker-a2688",
+ "category": "gan-chargers",
  "brand": "Anker",
- "product_name": "Anker Prime Charger (100W, 3 Ports, GaN)",
- "model_numbers": [
-  "A2688"
- ],
- "series": "Prime",
- "release_year": 2026,
- "status": "current",
- "max_total_w": 100,
- "max_single_port_w": 100,
- "ports": [
+ "name": "Anker Prime Charger (100W, 3 Ports, GaN)",
+ "family": "Prime",
+ "model": "A2688",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 100
-  },
-  {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 100
-  },
-  {
-   "name": "A1",
-   "type": "USB-A",
-   "max_w": 22.5
+   "scheme": "brand_model",
+   "value": "A2688",
+   "issuer": "Anker",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "1 port: 100W; 2 ports: 100W total; 3 ports: 89W total",
- "usb_pd_version": null,
- "pd_fixed_pdos": "5V3A 9V3A 15V3A 20V5A",
- "pps": null,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [],
- "gan": true,
- "foldable_plug": null,
- "plug_region": "US",
- "display": false,
- "weight_g": 170,
- "dimensions_mm": "43.5 x 29 x 67.8",
- "safety_certs": [],
- "cable_included": "no",
- "msrp_usd": 69.99,
- "typical_price_usd": 45.99,
- "official_url": "https://www.anker.com/products/a2688-anker-prime-charger-100w-3-ports-gan",
- "sources": [
-  "https://www.anker.com/products/a2688-anker-prime-charger-100w-3-ports-gan"
- ],
- "field_sources": {
-  "port_sharing": 0,
-  "pd_fixed_pdos": 0,
-  "weight_g": 0,
-  "dimensions_mm": 0,
-  "typical_price_usd": 0
+ "specs": {
+  "max_total_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 3,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 100
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 100
+    },
+    {
+     "name": "A1",
+     "type": "USB-A",
+     "max_w": 22.5
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "1 port: 100W; 2 ports: 100W total; 3 ports: 89W total",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": "5V3A 9V3A 15V3A 20V5A",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 170,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "43.5 x 29 x 67.8",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "no",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": 2026,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 69.99,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "typical_price_usd": {
+   "value": 45.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
  },
- "confidence": "medium",
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [
+  {
+   "id": "s0",
+   "url": "https://www.anker.com/products/a2688-anker-prime-charger-100w-3-ports-gan",
+   "label": "anker.com",
+   "kind": "manufacturer"
+  }
+ ],
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
+ },
  "notes": "Page showed pre-order shipping Nov 25-Dec 5 2026 so release_year 2026 is inferred. PPS not stated. A2343 (another 100W Prime 3-port) is referenced in an Anker FAQ but its page returned no specs - not catalogued.",
- "id": "anker-a2688"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

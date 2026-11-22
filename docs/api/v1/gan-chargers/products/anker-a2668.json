@@ -1,61 +1,236 @@
 {
+ "id": "anker-a2668",
+ "category": "gan-chargers",
  "brand": "Anker",
- "product_name": "Anker GaNPrime 65W Charger (3-port)",
- "model_numbers": [
-  "A2668"
- ],
- "series": "Prime",
- "release_year": null,
- "status": "unknown",
- "max_total_w": 65,
- "max_single_port_w": null,
- "ports": [
+ "name": "Anker GaNPrime 65W Charger (3-port)",
+ "family": "Prime",
+ "model": "A2668",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": null
-  },
-  {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": null
-  },
-  {
-   "name": "A1",
-   "type": "USB-A",
-   "max_w": null
+   "scheme": "brand_model",
+   "value": "A2668",
+   "issuer": "Anker",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "Middle USB-C and USB-A share max 24W when both used",
- "usb_pd_version": null,
- "pd_fixed_pdos": null,
- "pps": true,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "port_count": {
+   "value": 3,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": null
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": null
+    },
+    {
+     "name": "A1",
+     "type": "USB-A",
+     "max_w": null
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "Middle USB-C and USB-A share max 24W when both used",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "PowerIQ 4.0"
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "plug_region": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "dimensions_mm": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "unknown",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "typical_price_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "PowerIQ 4.0"
  ],
- "gan": true,
- "foldable_plug": null,
- "plug_region": null,
- "display": false,
- "weight_g": null,
- "dimensions_mm": null,
- "safety_certs": [],
- "cable_included": null,
- "msrp_usd": null,
- "typical_price_usd": null,
- "official_url": null,
  "sources": [
-  "https://support.anker.com/s/article/What-are-the-differences-between-Anker-Prime-67W-Charger-and-Anker-GaNPrime-65W-Charger",
-  "https://support.anker.com/s/article/What-are-the-differences-between-GaN-II-and-GaNPrime"
+  {
+   "id": "s0",
+   "url": "https://support.anker.com/s/article/What-are-the-differences-between-Anker-Prime-67W-Charger-and-Anker-GaNPrime-65W-Charger",
+   "label": "support.anker.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://support.anker.com/s/article/What-are-the-differences-between-GaN-II-and-GaNPrime",
+   "label": "support.anker.com",
+   "kind": "manufacturer"
+  }
  ],
- "field_sources": {
-  "port_sharing": 0,
-  "pps": 1
+ "confidence": {
+  "level": "low",
+  "scope": "legacy_record"
  },
- "confidence": "low",
  "notes": "Predecessor to A2669 Prime 67W; legacy, probably discontinued. Only search-snippet data (PPS listed in Anker compatibility list). Per-port wattage not retrieved.",
- "id": "anker-a2668"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

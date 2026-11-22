@@ -1,69 +1,253 @@
 {
+ "id": "iniu-a21-e1",
+ "category": "gan-chargers",
  "brand": "INIU",
- "product_name": "INIU Cougar A21 65W GaN Charger",
- "model_numbers": [
-  "A21-E1",
-  "D01-A21-E1-US-BK"
- ],
- "series": "Cougar",
- "release_year": 2026,
- "status": "current",
- "max_total_w": 65,
- "max_single_port_w": 65,
- "ports": [
+ "name": "INIU Cougar A21 65W GaN Charger",
+ "family": "Cougar",
+ "model": "A21-E1",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 65
+   "scheme": "brand_model",
+   "value": "A21-E1",
+   "issuer": "INIU",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 20
-  },
-  {
-   "name": "A",
-   "type": "USB-A",
-   "max_w": 18
+   "scheme": "brand_model",
+   "value": "D01-A21-E1-US-BK",
+   "issuer": "INIU",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "C1+C2: 45W+20W (65W max); C1+C2+A: 45W+15W (60W max); other combos truncated in fetch",
- "usb_pd_version": "2.0/3.0",
- "pd_fixed_pdos": "C1: 5V3A 9V3A 12V3A 15V3A 20V3.25A; C2: 5V3A 9V2.22A 12V1.67A (20W); A: 5V3A 9V2A 12V1.5A",
- "pps": true,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "max_single_port_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 3,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 65
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 20
+    },
+    {
+     "name": "A",
+     "type": "USB-A",
+     "max_w": 18
+    }
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "port_sharing": {
+   "value": "C1+C2: 45W+20W (65W max); C1+C2+A: 45W+15W (60W max); other combos truncated in fetch",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": "2.0/3.0",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "pd_fixed_pdos": {
+   "value": "C1: 5V3A 9V3A 12V3A 15V3A 20V3.25A; C2: 5V3A 9V2.22A 12V1.67A (20W); A: 5V3A 9V2A 12V1.5A",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "AFC",
+    "QC2.0",
+    "QC3.0"
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 125,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "53x31x53 (2.1x1.2x2.1 in)",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "100W nylon-braided USB-C cable",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": 2026,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "typical_price_usd": {
+   "value": 26.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "AFC",
   "QC2.0",
   "QC3.0"
  ],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": false,
- "weight_g": 125,
- "dimensions_mm": "53x31x53 (2.1x1.2x2.1 in)",
- "safety_certs": [],
- "cable_included": "100W nylon-braided USB-C cable",
- "msrp_usd": null,
- "typical_price_usd": 26.99,
- "official_url": "https://iniushop.com/products/iniu-a21-e1-65w-3-port-gan-charger",
  "sources": [
-  "https://iniushop.com/products/iniu-a21-e1-65w-3-port-gan-charger"
+  {
+   "id": "s0",
+   "url": "https://iniushop.com/products/iniu-a21-e1-65w-3-port-gan-charger",
+   "label": "iniushop.com",
+   "kind": "manufacturer"
+  }
  ],
- "field_sources": {
-  "max_total_w": 0,
-  "ports": 0,
-  "typical_price_usd": 0,
-  "pps": 0,
-  "other_protocols": 0,
-  "weight_g": 0,
-  "dimensions_mm": 0,
-  "port_sharing": 0
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
  },
- "confidence": "medium",
  "notes": "PPS is listed under 'Supported Protocol' but ranges not published; the Output list on the page shows only fixed profiles. Only C1 does 65W; C2 is a 20W port. Unverified by ChargerLAB.",
- "id": "iniu-a21-e1"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

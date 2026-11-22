@@ -1,65 +1,245 @@
 {
+ "id": "anker-a121b",
+ "category": "gan-chargers",
  "brand": "Anker",
- "product_name": "Anker Charger (100W, 3 Ports, Smart Display)",
- "model_numbers": [
-  "A121B",
-  "B121B"
- ],
- "series": "Nano",
- "release_year": 2026,
- "status": "current",
- "max_total_w": 100,
- "max_single_port_w": 100,
- "ports": [
+ "name": "Anker Charger (100W, 3 Ports, Smart Display)",
+ "family": "Nano",
+ "model": "A121B",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 100
+   "scheme": "brand_model",
+   "value": "A121B",
+   "issuer": "Anker",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 100
-  },
-  {
-   "name": "A1",
-   "type": "USB-A",
-   "max_w": 33
+   "scheme": "brand_model",
+   "value": "B121B",
+   "issuer": "Anker",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "C1+C2: 70+30 or 95+5; C+A: 67+33 or 95+5; all three: 80+12+7.5",
- "usb_pd_version": null,
- "pd_fixed_pdos": "5V3A 9V3A 15V3A 20V5A",
- "pps": null,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 3,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 100
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 100
+    },
+    {
+     "name": "A1",
+     "type": "USB-A",
+     "max_w": 33
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "C1+C2: 70+30 or 95+5; C+A: 67+33 or 95+5; all three: 80+12+7.5",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": "5V3A 9V3A 15V3A 20V5A",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "ActiveShield 4.0"
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "weight_g": {
+   "value": 212,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "69 x 55.1 x 34 (2.72 x 2.17 x 1.34 in)",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "yes (USB-C cable per title)",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": 2026,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 69.99,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "typical_price_usd": {
+   "value": 45.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "ActiveShield 4.0"
  ],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": true,
- "weight_g": 212,
- "dimensions_mm": "69 x 55.1 x 34 (2.72 x 2.17 x 1.34 in)",
- "safety_certs": [],
- "cable_included": "yes (USB-C cable per title)",
- "msrp_usd": 69.99,
- "typical_price_usd": 45.99,
- "official_url": "https://www.anker.com/products/a121b-100w-3-ports-gan-charger",
  "sources": [
-  "https://www.anker.com/products/a121b-100w-3-ports-gan-charger"
+  {
+   "id": "s0",
+   "url": "https://www.anker.com/products/a121b-100w-3-ports-gan-charger",
+   "label": "anker.com",
+   "kind": "manufacturer"
+  }
  ],
- "field_sources": {
-  "port_sharing": 0,
-  "pd_fixed_pdos": 0,
-  "weight_g": 0,
-  "dimensions_mm": 0,
-  "display": 0,
-  "typical_price_usd": 0
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
  },
- "confidence": "medium",
  "notes": "Page shows pre-order ship Dec 2026 (release_year inferred). Weight 7.47 oz converted. PPS not stated.",
- "id": "anker-a121b"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

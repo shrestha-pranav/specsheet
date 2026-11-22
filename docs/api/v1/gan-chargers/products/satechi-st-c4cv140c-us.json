@@ -1,74 +1,273 @@
 {
+ "id": "satechi-st-c4cv140c-us",
+ "category": "gan-chargers",
  "brand": "Satechi",
- "product_name": "ChargeView 140W Desktop Charger",
- "model_numbers": [
-  "ST-C4CV140C-US",
-  "ST-C4CV140C-EU",
-  "ST-C4CV140C-UK",
-  "ST-C4CV140C-AU",
-  "ST-C4CV140C-KR"
- ],
- "series": "ChargeView",
- "release_year": 2026,
- "status": "current",
- "max_total_w": 140,
- "max_single_port_w": 140,
- "ports": [
+ "name": "ChargeView 140W Desktop Charger",
+ "family": "ChargeView",
+ "model": "ST-C4CV140C-US",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 140
+   "scheme": "brand_model",
+   "value": "ST-C4CV140C-US",
+   "issuer": "Satechi",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 140
+   "scheme": "brand_model",
+   "value": "ST-C4CV140C-EU",
+   "issuer": "Satechi",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C3",
-   "type": "USB-C",
-   "max_w": 40
+   "scheme": "brand_model",
+   "value": "ST-C4CV140C-UK",
+   "issuer": "Satechi",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C4",
-   "type": "USB-C",
-   "max_w": 40
+   "scheme": "brand_model",
+   "value": "ST-C4CV140C-AU",
+   "issuer": "Satechi",
+   "market": null,
+   "package_level": "unverified"
+  },
+  {
+   "scheme": "brand_model",
+   "value": "ST-C4CV140C-KR",
+   "issuer": "Satechi",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "C1 and C2 each up to 140W (total 140W shared); C3/C4 up to 40W each; per-port LCD display",
- "usb_pd_version": "3.2 (C1, AVS); 3.1 (C2-C4)",
- "pd_fixed_pdos": null,
- "pps": true,
- "pps_ranges": "not published (C2-C4 PPS; C1 AVS)",
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 140,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 140,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 4,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 140
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 140
+    },
+    {
+     "name": "C3",
+     "type": "USB-C",
+     "max_w": 40
+    },
+    {
+     "name": "C4",
+     "type": "USB-C",
+     "max_w": 40
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "C1 and C2 each up to 140W (total 140W shared); C3/C4 up to 40W each; per-port LCD display",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": "3.2 (C1, AVS); 3.1 (C2-C4)",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": "not published (C2-C4 PPS; C1 AVS)",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "PD 3.2 SPR AVS (C1)"
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "display": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "weight_g": {
+   "value": 465,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "76 x 77 x 38",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "Stand; AC cord (US)",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": 2026,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 99.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "typical_price_usd": {
+   "value": 74.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "PD 3.2 SPR AVS (C1)"
  ],
- "gan": true,
- "foldable_plug": false,
- "plug_region": null,
- "display": true,
- "weight_g": 465,
- "dimensions_mm": "76 x 77 x 38",
- "safety_certs": [],
- "cable_included": "Stand; AC cord (US)",
- "msrp_usd": 99.99,
- "typical_price_usd": 74.99,
- "official_url": "https://satechi.com/products/chargeview-140w-desktop-charger",
  "sources": [
-  "https://satechi.com/products/chargeview-140w-desktop-charger"
+  {
+   "id": "s0",
+   "url": "https://satechi.com/products/chargeview-140w-desktop-charger",
+   "label": "satechi.com",
+   "kind": "manufacturer"
+  }
  ],
- "field_sources": {
-  "port_sharing": 0,
-  "usb_pd_version": 0,
-  "pps": 0,
-  "display": 0,
-  "weight_g": 0,
-  "typical_price_usd": 0,
-  "msrp_usd": 0
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
  },
- "confidence": "medium",
  "notes": "Per-port: C1 PD3.2 AVS (SPR), C2-C4 PD3.1 PPS; page text also says 'four USB-C ports with PPS' - slight inconsistency (C1 is AVS). Unclear whether C1 supports PPS. Satechi note: iPhone 18 Pro AVS 'not currently supported'. List $99.99, sale $74.99. Other regions $99.99. Specific 28V / EPR not documented.",
- "id": "satechi-st-c4cv140c-us"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

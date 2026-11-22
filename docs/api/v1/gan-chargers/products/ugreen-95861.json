@@ -1,47 +1,220 @@
 {
+ "id": "ugreen-95861",
+ "category": "gan-chargers",
  "brand": "UGREEN",
- "product_name": "UGREEN Nexode Air Slim Charger (65W, 3-Port, Foldable Plug)",
- "model_numbers": [
-  "95861"
+ "name": "UGREEN Nexode Air Slim Charger (65W, 3-Port, Foldable Plug)",
+ "family": "Nexode Air",
+ "model": "95861",
+ "variant": null,
+ "identifiers": [
+  {
+   "scheme": "brand_model",
+   "value": "95861",
+   "issuer": "UGREEN",
+   "market": null,
+   "package_level": "unverified"
+  }
  ],
- "series": "Nexode Air",
- "release_year": null,
- "status": "current",
- "max_total_w": 65,
- "max_single_port_w": null,
- "ports": [],
- "port_sharing": null,
- "usb_pd_version": null,
- "pd_fixed_pdos": null,
- "pps": null,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": null,
- "weight_g": null,
- "dimensions_mm": null,
- "safety_certs": [],
- "cable_included": null,
- "msrp_usd": 49.99,
- "typical_price_usd": 49.99,
- "official_url": "https://us.ugreen.com/products/nexode-air-slim-charger-65w-3-port-foldable-plug",
- "sources": [
-  "https://us.ugreen.com/products/nexode-air-slim-charger-65w-3-port-foldable-plug",
-  "https://us.ugreen.com/collections/charger"
- ],
- "field_sources": {
-  "product_name": 0,
-  "model_numbers": 0,
-  "max_total_w": 0,
-  "typical_price_usd": 1,
-  "msrp_usd": 1,
-  "status": 1
+ "specs": {
+  "max_total_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "max_single_port_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "port_count": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "ports": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "port_sharing": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "weight_g": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "dimensions_mm": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "msrp_usd": {
+   "value": 49.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "typical_price_usd": {
+   "value": 49.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
  },
- "confidence": "low",
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [
+  {
+   "id": "s0",
+   "url": "https://us.ugreen.com/products/nexode-air-slim-charger-65w-3-port-foldable-plug",
+   "label": "us.ugreen.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://us.ugreen.com/collections/charger",
+   "label": "us.ugreen.com",
+   "kind": "manufacturer"
+  }
+ ],
+ "confidence": {
+  "level": "low",
+  "scope": "legacy_record"
+ },
  "notes": "Port types/split/PPS not found; UAE site lists the same product as ae-95960. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise.",
- "id": "ugreen-95861"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

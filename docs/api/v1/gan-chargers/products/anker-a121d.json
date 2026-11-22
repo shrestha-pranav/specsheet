@@ -1,58 +1,243 @@
 {
+ "id": "anker-a121d",
+ "category": "gan-chargers",
  "brand": "Anker",
- "product_name": "Anker Nano Charger (45W, Smart Display, 180 degree Foldable)",
- "model_numbers": [
-  "A121D",
-  "B121D"
- ],
- "series": "Nano",
- "release_year": null,
- "status": "current",
- "max_total_w": 45,
- "max_single_port_w": 45,
- "ports": [
+ "name": "Anker Nano Charger (45W, Smart Display, 180 degree Foldable)",
+ "family": "Nano",
+ "model": "A121D",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 45
+   "scheme": "brand_model",
+   "value": "A121D",
+   "issuer": "Anker",
+   "market": null,
+   "package_level": "unverified"
+  },
+  {
+   "scheme": "brand_model",
+   "value": "B121D",
+   "issuer": "Anker",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": null,
- "usb_pd_version": null,
- "pd_fixed_pdos": "5V3A 9V3A 15V3A 20V2.25A",
- "pps": true,
- "pps_ranges": "up to 3A (explicitly no 5A PPS); voltage window not published",
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 45,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 45,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 1,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 45
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": "5V3A 9V3A 15V3A 20V2.25A",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": "up to 3A (explicitly no 5A PPS); voltage window not published",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "Samsung Super Fast Charging (some S23/S24 limited to 27W)"
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "gan": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "weight_g": {
+   "value": 75,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "34 x 35.5 x 40 (page also lists 34 x 35 x 40)",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "safety_certs": {
+   "value": [
+    "TUV (Care Mode)"
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "cable_included": {
+   "value": "no (bundles with 3ft/6ft cable sold as variants)",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 39.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "typical_price_usd": {
+   "value": 25.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "Samsung Super Fast Charging (some S23/S24 limited to 27W)"
  ],
- "gan": null,
- "foldable_plug": true,
- "plug_region": "US",
- "display": true,
- "weight_g": 75,
- "dimensions_mm": "34 x 35.5 x 40 (page also lists 34 x 35 x 40)",
- "safety_certs": [
-  "TUV (Care Mode)"
- ],
- "cable_included": "no (bundles with 3ft/6ft cable sold as variants)",
- "msrp_usd": 39.99,
- "typical_price_usd": 25.99,
- "official_url": "https://www.anker.com/products/a121d-45w-usb-c-fast-charger-foldable-plug-compact",
  "sources": [
-  "https://www.anker.com/products/a121d-45w-usb-c-fast-charger-foldable-plug-compact",
-  "https://www.anker.com/collections/fast-wall-charger"
+  {
+   "id": "s0",
+   "url": "https://www.anker.com/products/a121d-45w-usb-c-fast-charger-foldable-plug-compact",
+   "label": "anker.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://www.anker.com/collections/fast-wall-charger",
+   "label": "anker.com",
+   "kind": "manufacturer"
+  }
  ],
- "field_sources": {
-  "pd_fixed_pdos": 0,
-  "pps": 0,
-  "weight_g": 0,
-  "display": 0,
-  "typical_price_usd": 1,
-  "msrp_usd": 1
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
  },
- "confidence": "medium",
  "notes": "Page showed 'Sold Out' at fetch time; price from collection listing. Also sold as 2-pack ($51.98) and 3-pack ($119.97) and with cable bundles.",
- "id": "anker-a121d"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

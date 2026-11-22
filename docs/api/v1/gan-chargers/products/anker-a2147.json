@@ -1,58 +1,244 @@
 {
+ "id": "anker-a2147",
+ "category": "gan-chargers",
  "brand": "Anker",
- "product_name": "Anker Nano Charger (30W) [511 Charger (Nano 3) 30W]",
- "model_numbers": [
-  "A2147"
- ],
- "series": "Nano",
- "release_year": null,
- "status": "current",
- "max_total_w": 30,
- "max_single_port_w": 30,
- "ports": [
+ "name": "Anker Nano Charger (30W) [511 Charger (Nano 3) 30W]",
+ "family": "Nano",
+ "model": "A2147",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 30
+   "scheme": "brand_model",
+   "value": "A2147",
+   "issuer": "Anker",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": null,
- "usb_pd_version": "3.0",
- "pd_fixed_pdos": "5V3A 9V3A 15V2A 20V1.5A",
- "pps": true,
- "pps_ranges": "3.3-11V 3A; 3.3-16V 2A",
- "pps_max_w": 30,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 30,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 30,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 1,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 30
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "usb_pd_version": {
+   "value": "3.0",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "pd_fixed_pdos": {
+   "value": "5V3A 9V3A 15V2A 20V1.5A",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "pps_ranges": {
+   "value": "3.3-11V 3A; 3.3-16V 2A",
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_max_w": {
+   "value": 30,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "PowerIQ 3.0",
+    "QC3.0",
+    "Samsung Super Fast Charging 25W"
+   ],
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "dimensions_mm": {
+   "value": "28.4 x 28.4 x 35.3 (1.12 x 1.12 x 1.39 in)",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "no",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 15.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "typical_price_usd": {
+   "value": 12.99,
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "PowerIQ 3.0",
   "QC3.0",
   "Samsung Super Fast Charging 25W"
  ],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": false,
- "weight_g": null,
- "dimensions_mm": "28.4 x 28.4 x 35.3 (1.12 x 1.12 x 1.39 in)",
- "safety_certs": [],
- "cable_included": "no",
- "msrp_usd": 15.99,
- "typical_price_usd": 12.99,
- "official_url": "https://www.anker.com/products/a2147",
  "sources": [
-  "https://www.anker.com/products/a2147",
-  "https://service.anker.com/product-description/a085g000004zRHdAAM/anker-511-charger-nano-3-30w",
-  "https://www.anker.com/collections/fast-wall-charger"
+  {
+   "id": "s0",
+   "url": "https://www.anker.com/products/a2147",
+   "label": "anker.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://service.anker.com/product-description/a085g000004zRHdAAM/anker-511-charger-nano-3-30w",
+   "label": "service.anker.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s2",
+   "url": "https://www.anker.com/collections/fast-wall-charger",
+   "label": "anker.com",
+   "kind": "manufacturer"
+  }
  ],
- "field_sources": {
-  "pd_fixed_pdos": 0,
-  "pps_ranges": 1,
-  "other_protocols": 1,
-  "dimensions_mm": 0,
-  "typical_price_usd": 2,
-  "msrp_usd": 0
+ "confidence": {
+  "level": "high",
+  "scope": "legacy_record"
  },
- "confidence": "high",
  "notes": "PPS ranges quoted from Anker support search snippet of the Nano 3 30W product page (identical to Nano II 30W) and consistent with the US store page. Foldable plug from image caption/support article (A2147 US has foldable pins). Weight not stated. PD version inferred from Anker article ('PD 3.0'). A2147 also surfaced as '30W foldable PPS' on device.report.",
- "id": "anker-a2147"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

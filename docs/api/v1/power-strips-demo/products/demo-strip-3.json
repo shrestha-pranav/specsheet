@@ -1,0 +1,101 @@
+{
+ "id": "demo-strip-3",
+ "category": "power-strips-demo",
+ "brand": "Demo Lab",
+ "name": "Travel strip — three outlet",
+ "family": "Fictional demonstration",
+ "model": "TV-03",
+ "variant": null,
+ "identifiers": [
+  {
+   "scheme": "demo_model",
+   "value": "TV-03",
+   "issuer": "Demo Lab",
+   "market": null,
+   "package_level": "single"
+  }
+ ],
+ "specs": {
+  "outlet_count": {
+   "value": 3,
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "usb_port_count": {
+   "value": 2,
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "max_load_w": {
+   "value": 1500,
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "cord_length_m": {
+   "value": 1,
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "mounting": {
+   "value": "none",
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "surge_protection": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "joule_rating": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "clamping_range": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "indicator_lights": {
+   "value": null,
+   "status": "not_yet_extracted",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "notes_on_layout": {
+   "value": "Compact layout",
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [],
+ "confidence": {
+  "level": "illustrative",
+  "scope": "demo"
+ },
+ "notes": "Fictional values for interface testing only. No product or source is claimed.",
+ "identity_caveat": "Fictional demo product; not a purchasable catalogue entry.",
+ "demo": true
+}

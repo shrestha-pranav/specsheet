@@ -1,67 +1,239 @@
 {
+ "id": "satechi-ct-w145c2",
+ "category": "gan-chargers",
  "brand": "Satechi",
- "product_name": "145W USB-C 4-Port GaN Travel Charger",
- "model_numbers": [
-  "CT-W145C2"
- ],
- "series": null,
- "release_year": 2023,
- "status": "current",
- "max_total_w": 145,
- "max_single_port_w": 140,
- "ports": [
+ "name": "145W USB-C 4-Port GaN Travel Charger",
+ "family": null,
+ "model": "CT-W145C2",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 140
-  },
-  {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 140
-  },
-  {
-   "name": "C3",
-   "type": "USB-C",
-   "max_w": null
-  },
-  {
-   "name": "C4",
-   "type": "USB-C",
-   "max_w": null
+   "scheme": "brand_model",
+   "value": "CT-W145C2",
+   "issuer": "Satechi",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "1x: 140W; 2x: 100W each; 3x: 65/30/45 or 100/25/20; 4x: 65/30/25/20 (145W total). Only PD1 and PD2 reach 140W",
- "usb_pd_version": "3.1",
- "pd_fixed_pdos": null,
- "pps": null,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [],
- "gan": true,
- "foldable_plug": false,
- "plug_region": "multi (interchangeable US/UK/EU/AU adapters)",
- "display": false,
- "weight_g": 346.5,
- "dimensions_mm": "97 x 77 x 31",
- "safety_certs": [],
- "cable_included": "No; includes UK/EU/AU adapters and mesh bag",
- "msrp_usd": 119.99,
- "typical_price_usd": 83.99,
- "official_url": "https://satechi.com/products/145w-usb-c-4-port-gan-travel-charger",
- "sources": [
-  "https://satechi.com/products/145w-usb-c-4-port-gan-travel-charger"
- ],
- "field_sources": {
-  "port_sharing": 0,
-  "usb_pd_version": 0,
-  "typical_price_usd": 0,
-  "weight_g": 0,
-  "dimensions_mm": 0,
-  "gan": 0
+ "specs": {
+  "max_total_w": {
+   "value": 145,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 140,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 4,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 140
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 140
+    },
+    {
+     "name": "C3",
+     "type": "USB-C",
+     "max_w": null
+    },
+    {
+     "name": "C4",
+     "type": "USB-C",
+     "max_w": null
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "1x: 140W; 2x: 100W each; 3x: 65/30/45 or 100/25/20; 4x: 65/30/25/20 (145W total). Only PD1 and PD2 reach 140W",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": "3.1",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "foldable_plug": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "multi (interchangeable US/UK/EU/AU adapters)",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 346.5,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "97 x 77 x 31",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "No; includes UK/EU/AU adapters and mesh bag",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": 2023,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 119.99,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "typical_price_usd": {
+   "value": 83.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
  },
- "confidence": "medium",
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [
+  {
+   "id": "s0",
+   "url": "https://satechi.com/products/145w-usb-c-4-port-gan-travel-charger",
+   "label": "satechi.com",
+   "kind": "manufacturer"
+  }
+ ],
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
+ },
  "notes": "PPS/PDO not published and no teardown found; PPS null. 140W on PD1/PD2 implies a 28V PDO but not documented. Needs eMark cable and MagSafe 3 cable on MacBook Pro for 140W.",
- "id": "satechi-ct-w145c2"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

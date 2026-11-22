@@ -1,57 +1,249 @@
 {
+ "id": "satechi-st-cotg45s-us",
+ "category": "gan-chargers",
  "brand": "Satechi",
- "product_name": "OntheGo 45W Charger with 60W Max",
- "model_numbers": [
-  "ST-COTG45S-US",
-  "ST-COTG45B-US",
-  "ST-COTG45P-US",
-  "ST-COTG45Y-US"
- ],
- "series": "OntheGo",
- "release_year": 2026,
- "status": "current",
- "max_total_w": 60,
- "max_single_port_w": 60,
- "ports": [
+ "name": "OntheGo 45W Charger with 60W Max",
+ "family": "OntheGo",
+ "model": "ST-COTG45S-US",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 60
+   "scheme": "brand_model",
+   "value": "ST-COTG45S-US",
+   "issuer": "Satechi",
+   "market": null,
+   "package_level": "unverified"
+  },
+  {
+   "scheme": "brand_model",
+   "value": "ST-COTG45B-US",
+   "issuer": "Satechi",
+   "market": null,
+   "package_level": "unverified"
+  },
+  {
+   "scheme": "brand_model",
+   "value": "ST-COTG45P-US",
+   "issuer": "Satechi",
+   "market": null,
+   "package_level": "unverified"
+  },
+  {
+   "scheme": "brand_model",
+   "value": "ST-COTG45Y-US",
+   "issuer": "Satechi",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "Single port; 60W peak at plug-in then 45W sustained",
- "usb_pd_version": null,
- "pd_fixed_pdos": null,
- "pps": true,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 60,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 60,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 1,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 60
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "Single port; 60W peak at plug-in then 45W sustained",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "AVS (SPR)"
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "gan": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 64.9,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "34.5 x 41 x 36",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "release_year": {
+   "value": 2026,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 29.99,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "typical_price_usd": {
+   "value": 29.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "AVS (SPR)"
  ],
- "gan": null,
- "foldable_plug": true,
- "plug_region": "US",
- "display": false,
- "weight_g": 64.9,
- "dimensions_mm": "34.5 x 41 x 36",
- "safety_certs": [],
- "cable_included": null,
- "msrp_usd": 29.99,
- "typical_price_usd": 29.99,
- "official_url": "https://satechi.com/products/onthego-45w-charger-with-60w-max",
  "sources": [
-  "https://satechi.com/products/onthego-45w-charger-with-60w-max"
+  {
+   "id": "s0",
+   "url": "https://satechi.com/products/onthego-45w-charger-with-60w-max",
+   "label": "satechi.com",
+   "kind": "manufacturer"
+  }
  ],
- "field_sources": {
-  "pps": 0,
-  "weight_g": 0,
-  "dimensions_mm": 0,
-  "typical_price_usd": 0,
-  "foldable_plug": 0,
-  "other_protocols": 0
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
  },
- "confidence": "medium",
  "notes": "Satechi lists 'USB-C PD, PPS, AVS'; PPS ranges not published. GaN not stated on page. Max 60W transient / 45W sustained (title says 45W). New (Oct 2026). epr_avs left null: AVS here is SPR AVS (not 28V EPR).",
- "id": "satechi-st-cotg45s-us"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

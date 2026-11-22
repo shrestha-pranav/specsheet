@@ -1,42 +1,253 @@
 {
+ "id": "belkin-wch016dqwh",
+ "category": "gan-chargers",
  "brand": "Belkin",
- "product_name": "BoostCharge Pro 3-Port GaN Wall Charger 100W",
- "model_numbers": [
-  "WCH016dqWH",
-  "WCH016fqWH (travel kit)",
-  "WCH016yz",
-  "WCH016thWH"
- ],
- "series": "BoostCharge Pro",
- "release_year": null,
- "status": "current",
- "max_total_w": 100,
- "max_single_port_w": 100,
- "ports": [
+ "name": "BoostCharge Pro 3-Port GaN Wall Charger 100W",
+ "family": "BoostCharge Pro",
+ "model": "WCH016dqWH",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 100
+   "scheme": "brand_model",
+   "value": "WCH016dqWH",
+   "issuer": "Belkin",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 100
+   "scheme": "brand_model",
+   "value": "WCH016fqWH (travel kit)",
+   "issuer": "Belkin",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "A1",
-   "type": "USB-A",
-   "max_w": 22.5
+   "scheme": "brand_model",
+   "value": "WCH016yz",
+   "issuer": "Belkin",
+   "market": null,
+   "package_level": "unverified"
+  },
+  {
+   "scheme": "brand_model",
+   "value": "WCH016thWH",
+   "issuer": "Belkin",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "C1+C2: 70+30; C+A: 70+22.5; C1+C2+A: 60+22+18 (ChargerLAB label)",
- "usb_pd_version": "3.1",
- "pd_fixed_pdos": "5V3A 9V3A 15V3A 20V5A (both C ports)",
- "pps": true,
- "pps_ranges": "5-21V 5A (ChargerLAB text) / 5-21V 4.75A (label)",
- "pps_max_w": 100,
- "epr_avs": false,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 3,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 100
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 100
+    },
+    {
+     "name": "A1",
+     "type": "USB-A",
+     "max_w": 22.5
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "C1+C2: 70+30; C+A: 70+22.5; C1+C2+A: 60+22+18 (ChargerLAB label)",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": "3.1",
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pd_fixed_pdos": {
+   "value": "5V3A 9V3A 15V3A 20V5A (both C ports)",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "pps_ranges": {
+   "value": "5-21V 5A (ChargerLAB text) / 5-21V 4.75A (label)",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_max_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "epr_avs": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "other_protocols": {
+   "value": [
+    "UFCS",
+    "QC3.0/5",
+    "FCP",
+    "SCP",
+    "AFC",
+    "Apple 2.4A"
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US/CN/JP foldable",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 178,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "64.95 x 42.97 x 42.78",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "No",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 82.99,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "typical_price_usd": {
+   "value": 82.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "UFCS",
   "QC3.0/5",
   "FCP",
@@ -44,32 +255,25 @@
   "AFC",
   "Apple 2.4A"
  ],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US/CN/JP foldable",
- "display": false,
- "weight_g": 178,
- "dimensions_mm": "64.95 x 42.97 x 42.78",
- "safety_certs": [],
- "cable_included": "No",
- "msrp_usd": 82.99,
- "typical_price_usd": 82.99,
- "official_url": "https://www.belkin.com/p/3-port-gan-wall-charger-100w/WCH016dqWH.html",
  "sources": [
-  "https://www.chargerlab.com/teardown-of-belkin-boostcharge-pro-100w-3-port-gan-wall-charger-wch016yz",
-  "https://www.belkin.com/p/3-port-gan-wall-charger-100w/WCH016dqWH.html"
+  {
+   "id": "s0",
+   "url": "https://www.chargerlab.com/teardown-of-belkin-boostcharge-pro-100w-3-port-gan-wall-charger-wch016yz",
+   "label": "chargerlab.com",
+   "kind": "other"
+  },
+  {
+   "id": "s1",
+   "url": "https://www.belkin.com/p/3-port-gan-wall-charger-100w/WCH016dqWH.html",
+   "label": "belkin.com",
+   "kind": "manufacturer"
+  }
  ],
- "field_sources": {
-  "pd_fixed_pdos": 0,
-  "pps_ranges": 0,
-  "port_sharing": 0,
-  "weight_g": 0,
-  "dimensions_mm": 0,
-  "typical_price_usd": 1,
-  "usb_pd_version": 1,
-  "other_protocols": 0
+ "confidence": {
+  "level": "high",
+  "scope": "legacy_record"
  },
- "confidence": "high",
  "notes": "Belkin US page says 176 g, ChargerLAB 178 g. ChargerLAB summary lists 70+30 for C+C but 60/22/18 for three ports. epr_avs false: no 28V PDO (max 20V5A). US page out of stock at fetch, 'coming soon by Dec 24, 2026'. Dimensions Belkin 65x43x43.",
- "id": "belkin-wch016dqwh"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

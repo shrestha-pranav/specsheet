@@ -5,3 +5,6 @@ __pycache__/
 data/gan-chargers/all.json
 state/
 reviews/*.log
+raw/
+.agents/
+.codex/hooks.json

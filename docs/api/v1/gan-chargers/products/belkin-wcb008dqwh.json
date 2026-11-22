@@ -1,59 +1,247 @@
 {
+ "id": "belkin-wcb008dqwh",
+ "category": "gan-chargers",
  "brand": "Belkin",
- "product_name": "BoostCharge USB-C PD + USB-A Wall Charger 32W",
- "model_numbers": [
-  "WCB008dqWH",
-  "WCB008vfWH",
-  "WCB008dq04WH"
- ],
- "series": "BoostCharge",
- "release_year": null,
- "status": "unknown",
- "max_total_w": 32,
- "max_single_port_w": 20,
- "ports": [
+ "name": "BoostCharge USB-C PD + USB-A Wall Charger 32W",
+ "family": "BoostCharge",
+ "model": "WCB008dqWH",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 20
+   "scheme": "brand_model",
+   "value": "WCB008dqWH",
+   "issuer": "Belkin",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "A1",
-   "type": "USB-A",
-   "max_w": 12
+   "scheme": "brand_model",
+   "value": "WCB008vfWH",
+   "issuer": "Belkin",
+   "market": null,
+   "package_level": "unverified"
+  },
+  {
+   "scheme": "brand_model",
+   "value": "WCB008dq04WH",
+   "issuer": "Belkin",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "USB-C 20W + USB-A 12W",
- "usb_pd_version": null,
- "pd_fixed_pdos": null,
- "pps": false,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [],
- "gan": true,
- "foldable_plug": true,
- "plug_region": null,
- "display": false,
- "weight_g": null,
- "dimensions_mm": null,
- "safety_certs": [],
- "cable_included": null,
- "msrp_usd": 24.99,
- "typical_price_usd": null,
- "official_url": null,
- "sources": [
-  "https://www.belkin.com/support-article/?articleNum=335922",
-  "https://www.belkin.com/id/p/usb-c-pd-usb-a-wall-charger-32w/WCB008dqWH.html"
- ],
- "field_sources": {
-  "max_total_w": 0,
-  "ports": 1,
-  "gan": 0,
-  "pps": 0,
-  "msrp_usd": 0
+ "specs": {
+  "max_total_w": {
+   "value": 32,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "max_single_port_w": {
+   "value": 20,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 2,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 20
+    },
+    {
+     "name": "A1",
+     "type": "USB-A",
+     "max_w": 12
+    }
+   ],
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "port_sharing": {
+   "value": "USB-C 20W + USB-A 12W",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": false,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "dimensions_mm": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "unknown",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 24.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "typical_price_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  }
  },
- "confidence": "low",
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [
+  {
+   "id": "s0",
+   "url": "https://www.belkin.com/support-article/?articleNum=335922",
+   "label": "belkin.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://www.belkin.com/id/p/usb-c-pd-usb-a-wall-charger-32w/WCB008dqWH.html",
+   "label": "belkin.com",
+   "kind": "manufacturer"
+  }
+ ],
+ "confidence": {
+  "level": "low",
+  "scope": "legacy_record"
+ },
  "notes": "Belkin chart lists GaN=Yes, PPS=No; a web search found no listing describing it as GaN. Below 30W-65W focus. Status unknown (only regional pages found).",
- "id": "belkin-wcb008dqwh"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

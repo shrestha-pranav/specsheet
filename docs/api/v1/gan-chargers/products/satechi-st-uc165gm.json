@@ -1,47 +1,259 @@
 {
+ "id": "satechi-st-uc165gm",
+ "category": "gan-chargers",
  "brand": "Satechi",
- "product_name": "165W USB-C 4-Port PD GaN Charger",
- "model_numbers": [
-  "ST-UC165GM",
-  "ST-UC165GM-EU",
-  "ST-UC165GM-UK",
-  "ST-UC165GM-AU"
- ],
- "series": null,
- "release_year": 2022,
- "status": "current",
- "max_total_w": 165,
- "max_single_port_w": 100,
- "ports": [
+ "name": "165W USB-C 4-Port PD GaN Charger",
+ "family": null,
+ "model": "ST-UC165GM",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 100
+   "scheme": "brand_model",
+   "value": "ST-UC165GM",
+   "issuer": "Satechi",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 100
+   "scheme": "brand_model",
+   "value": "ST-UC165GM-EU",
+   "issuer": "Satechi",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C3",
-   "type": "USB-C",
-   "max_w": 100
+   "scheme": "brand_model",
+   "value": "ST-UC165GM-UK",
+   "issuer": "Satechi",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C4",
-   "type": "USB-C",
-   "max_w": 100
+   "scheme": "brand_model",
+   "value": "ST-UC165GM-AU",
+   "issuer": "Satechi",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "1x: 100W; 2x: 100/60; 3x: 60/60/45 or 100/30/30; 4x: 60/45/30/30 (165W total)",
- "usb_pd_version": "3.0",
- "pd_fixed_pdos": "5V3A 9V3A 12V3A 15V3A 20V5A (all four ports)",
- "pps": true,
- "pps_ranges": "3.3-21V 5A (per Chinese ChargerLAB sister site Chongdiantou summary; ChargerLAB EN article gives no range)",
- "pps_max_w": 100,
- "epr_avs": false,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 165,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 4,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 100
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 100
+    },
+    {
+     "name": "C3",
+     "type": "USB-C",
+     "max_w": 100
+    },
+    {
+     "name": "C4",
+     "type": "USB-C",
+     "max_w": 100
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "1x: 100W; 2x: 100/60; 3x: 60/60/45 or 100/30/30; 4x: 60/45/30/30 (165W total)",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": "3.0",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "pd_fixed_pdos": {
+   "value": "5V3A 9V3A 12V3A 15V3A 20V5A (all four ports)",
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": "3.3-21V 5A (per Chinese ChargerLAB sister site Chongdiantou summary; ChargerLAB EN article gives no range)",
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_max_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "epr_avs": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "other_protocols": {
+   "value": [
+    "QC5",
+    "QC3.0",
+    "FCP",
+    "SCP",
+    "AFC",
+    "SFCP",
+    "Apple 2.4A"
+   ],
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 336,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "100 x 72 x 32",
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "1.2 m AC power cord",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": 2022,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 119.99,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "typical_price_usd": {
+   "value": 119.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "QC5",
   "QC3.0",
   "FCP",
@@ -50,33 +262,31 @@
   "SFCP",
   "Apple 2.4A"
  ],
- "gan": true,
- "foldable_plug": false,
- "plug_region": null,
- "display": false,
- "weight_g": 336,
- "dimensions_mm": "100 x 72 x 32",
- "safety_certs": [],
- "cable_included": "1.2 m AC power cord",
- "msrp_usd": 119.99,
- "typical_price_usd": 119.99,
- "official_url": "https://satechi.com/products/165w-usb-c-4-port-pd-gan-charger",
  "sources": [
-  "https://satechi.com/products/165w-usb-c-4-port-pd-gan-charger",
-  "https://www.chargerlab.com/teardown-of-satechi-165w-gan-desktop-charger-st-uc165gm",
-  "https://www.chongdiantou.com/archives/204043.html"
+  {
+   "id": "s0",
+   "url": "https://satechi.com/products/165w-usb-c-4-port-pd-gan-charger",
+   "label": "satechi.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://www.chargerlab.com/teardown-of-satechi-165w-gan-desktop-charger-st-uc165gm",
+   "label": "chargerlab.com",
+   "kind": "other"
+  },
+  {
+   "id": "s2",
+   "url": "https://www.chongdiantou.com/archives/204043.html",
+   "label": "chongdiantou.com",
+   "kind": "other"
+  }
  ],
- "field_sources": {
-  "pd_fixed_pdos": 1,
-  "pps": 1,
-  "pps_ranges": 2,
-  "port_sharing": 0,
-  "weight_g": 1,
-  "dimensions_mm": 1,
-  "typical_price_usd": 0,
-  "other_protocols": 1
+ "confidence": {
+  "level": "high",
+  "scope": "legacy_record"
  },
- "confidence": "high",
  "notes": "Satechi page lists 12 oz / 3.94x1.2x2.8 in (different orientation) vs ChargerLAB 336 g / 100x72x32. PPS range 3.3-21V 5A comes from a search-result summary of the Chongdiantou article (not fetched directly); verify. Page UK price listed 83.99 vs US 119.99.",
- "id": "satechi-st-uc165gm"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

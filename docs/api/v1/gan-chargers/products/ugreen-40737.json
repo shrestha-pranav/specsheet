@@ -1,79 +1,276 @@
 {
+ "id": "ugreen-40737",
+ "category": "gan-chargers",
  "brand": "UGREEN",
- "product_name": "UGREEN Nexode 100W 4-Port Charger",
- "model_numbers": [
-  "40737",
-  "CD226"
- ],
- "series": "Nexode",
- "release_year": null,
- "status": "current",
- "max_total_w": 100,
- "max_single_port_w": 100,
- "ports": [
+ "name": "UGREEN Nexode 100W 4-Port Charger",
+ "family": "Nexode",
+ "model": "40737",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": 100,
-   "max_w": null
+   "scheme": "brand_model",
+   "value": "40737",
+   "issuer": "UGREEN",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C2",
-   "type": 100,
-   "max_w": null
-  },
-  {
-   "name": "C3",
-   "type": null,
-   "max_w": null
-  },
-  {
-   "name": "A1",
-   "type": 22.5,
-   "max_w": null
+   "scheme": "brand_model",
+   "value": "CD226",
+   "issuer": "UGREEN",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": null,
- "usb_pd_version": null,
- "pd_fixed_pdos": null,
- "pps": true,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "max_single_port_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 4,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": 100,
+     "max_w": null
+    },
+    {
+     "name": "C2",
+     "type": 100,
+     "max_w": null
+    },
+    {
+     "name": "C3",
+     "type": null,
+     "max_w": null
+    },
+    {
+     "name": "A1",
+     "type": 22.5,
+     "max_w": null
+    }
+   ],
+   "status": "known",
+   "sources": [
+    "s3"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "port_sharing": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "PD",
+    "QC",
+    "SCP",
+    "FCP"
+   ],
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "weight_g": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "dimensions_mm": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "msrp_usd": {
+   "value": 54.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "typical_price_usd": {
+   "value": 54.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "PD",
   "QC",
   "SCP",
   "FCP"
  ],
- "gan": true,
- "foldable_plug": null,
- "plug_region": "US",
- "display": null,
- "weight_g": null,
- "dimensions_mm": null,
- "safety_certs": [],
- "cable_included": null,
- "msrp_usd": 54.99,
- "typical_price_usd": 54.99,
- "official_url": "https://us.ugreen.com/products/100w-3c1a-gan-fast-charger",
  "sources": [
-  "https://us.ugreen.com/products/100w-3c1a-gan-fast-charger",
-  "https://us.ugreen.com/collections/charger",
-  "https://www.bhphotovideo.com/c/product/1784001-REG/ugreen_40737_nexode_100w_usb_c_gan.html",
-  "https://mychooz.com/en/reviews/ugreen-cd226-150927"
+  {
+   "id": "s0",
+   "url": "https://us.ugreen.com/products/100w-3c1a-gan-fast-charger",
+   "label": "us.ugreen.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://us.ugreen.com/collections/charger",
+   "label": "us.ugreen.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s2",
+   "url": "https://www.bhphotovideo.com/c/product/1784001-REG/ugreen_40737_nexode_100w_usb_c_gan.html",
+   "label": "bhphotovideo.com",
+   "kind": "other"
+  },
+  {
+   "id": "s3",
+   "url": "https://mychooz.com/en/reviews/ugreen-cd226-150927",
+   "label": "mychooz.com",
+   "kind": "other"
+  }
  ],
- "field_sources": {
-  "product_name": 0,
-  "model_numbers": 0,
-  "max_total_w": 0,
-  "typical_price_usd": 1,
-  "msrp_usd": 1,
-  "status": 1,
-  "pps": 2,
-  "other_protocols": 2,
-  "ports": 3
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
  },
- "confidence": "medium",
  "notes": "B&H lists PD, QC, PPS, SCP, FCP. Split conflicts: sources say each USB-C 65W independently / total 96W / laptop held ~65W with 3 others. PPS ranges not found. Layout 3C1A from handle '100w-3c1a'. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise.",
- "id": "ugreen-40737"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

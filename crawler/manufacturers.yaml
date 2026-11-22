@@ -1,0 +1,55 @@
+# Manufacturer-first crawl list. One entry per brand storefront.
+# discovery:
+#   shopify  - {base}/products.json?limit=250&page=N : every product + variants/SKUs/images/body
+#   sitemap  - product URLs from sitemap(s), filtered by `product_url_regex`
+# Everything the brand sells is captured (not just chargers); categorisation happens later.
+# Raw output: raw/<slug>/ (gitignored, local only).
+
+defaults:
+  delay_s: 1.0          # per-host politeness delay for pages
+  cdn_delay_s: 0.25     # per-host delay for images/PDFs on CDNs
+  max_images: 12        # per product (gallery), deduped by content hash
+  image_width: 1600     # Shopify CDN resize, keeps disk use sane
+  max_doc_mb: 60
+
+manufacturers:
+  - slug: ugreen
+    name: UGREEN
+    base: https://us.ugreen.com
+    discovery: shopify
+  - slug: baseus
+    name: Baseus
+    base: https://www.baseus.com
+    discovery: shopify
+  - slug: iniu
+    name: INIU
+    base: https://iniushop.com
+    discovery: shopify
+  - slug: cuktech
+    name: CUKTECH
+    base: https://www.cuktech.com
+    discovery: shopify
+  - slug: ecoflow
+    name: EcoFlow
+    base: https://us.ecoflow.com
+    discovery: shopify
+  - slug: satechi
+    name: Satechi
+    base: https://satechi.net
+    discovery: shopify
+  - slug: spigen
+    name: Spigen
+    base: https://www.spigen.com
+    discovery: shopify
+  - slug: anker
+    name: Anker
+    base: https://www.anker.com
+    discovery: sitemap
+    sitemaps: [https://www.anker.com/server-sitemap-index-products.xml]
+    product_url_regex: '^https://www\.anker\.com/products/[^/?#]+$'
+  - slug: belkin
+    name: Belkin
+    base: https://www.belkin.com
+    discovery: sitemap
+    sitemaps: [https://www.belkin.com/sitemap_index.xml]
+    product_url_regex: '^https://www\.belkin\.com/p/[^?#]+\.html$'

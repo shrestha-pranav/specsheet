@@ -1,46 +1,263 @@
 {
+ "id": "ugreen-65585",
+ "category": "gan-chargers",
  "brand": "UGREEN",
- "product_name": "UGREEN Nexode 100W Charger with Retractable USB-C Cable",
- "model_numbers": [
-  "65585",
-  "X606",
-  "65591"
- ],
- "series": "Nexode",
- "release_year": null,
- "status": "current",
- "max_total_w": 100,
- "max_single_port_w": 100,
- "ports": [
+ "name": "UGREEN Nexode 100W Charger with Retractable USB-C Cable",
+ "family": "Nexode",
+ "model": "65585",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "Cable",
-   "type": 100,
-   "max_w": null
+   "scheme": "brand_model",
+   "value": "65585",
+   "issuer": "UGREEN",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C1",
-   "type": 100,
-   "max_w": null
+   "scheme": "brand_model",
+   "value": "X606",
+   "issuer": "UGREEN",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C2",
-   "type": 30,
-   "max_w": null
-  },
-  {
-   "name": "A1",
-   "type": 22.5,
-   "max_w": null
+   "scheme": "brand_model",
+   "value": "65591",
+   "issuer": "UGREEN",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": null,
- "usb_pd_version": "3.0",
- "pd_fixed_pdos": "Cable & C1: 5V3A 9V3A 12V3A 15V3A 20V5A; C2: 5V3A 9V3A 12V2.5A 15V2A 20V1.5A",
- "pps": true,
- "pps_ranges": "Cable & C1: 5-21V 5A; C2: 5-11V 2.75A",
- "pps_max_w": 100,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "max_single_port_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 4,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "Cable",
+     "type": 100,
+     "max_w": null
+    },
+    {
+     "name": "C1",
+     "type": 100,
+     "max_w": null
+    },
+    {
+     "name": "C2",
+     "type": 30,
+     "max_w": null
+    },
+    {
+     "name": "A1",
+     "type": 22.5,
+     "max_w": null
+    }
+   ],
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "port_sharing": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "usb_pd_version": {
+   "value": "3.0",
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pd_fixed_pdos": {
+   "value": "Cable & C1: 5V3A 9V3A 12V3A 15V3A 20V5A; C2: 5V3A 9V3A 12V2.5A 15V2A 20V1.5A",
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": "Cable & C1: 5-21V 5A; C2: 5-11V 2.75A",
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_max_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "QC3.0",
+    "FCP",
+    "SCP",
+    "AFC",
+    "SFCP",
+    "UFCS",
+    "Apple 2.4A",
+    "Samsung 5V2A"
+   ],
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "weight_g": {
+   "value": 303.8,
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "57.02 x 50.53 x 69.08",
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "built-in retractable USB-C ~72.5cm",
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "msrp_usd": {
+   "value": 59.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "typical_price_usd": {
+   "value": 49.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "QC3.0",
   "FCP",
   "SCP",
@@ -50,40 +267,31 @@
   "Apple 2.4A",
   "Samsung 5V2A"
  ],
- "gan": true,
- "foldable_plug": null,
- "plug_region": "US",
- "display": null,
- "weight_g": 303.8,
- "dimensions_mm": "57.02 x 50.53 x 69.08",
- "safety_certs": [],
- "cable_included": "built-in retractable USB-C ~72.5cm",
- "msrp_usd": 59.99,
- "typical_price_usd": 49.99,
- "official_url": "https://us.ugreen.com/products/ugreen-100w-retractable-gan-charger",
  "sources": [
-  "https://us.ugreen.com/products/ugreen-100w-retractable-gan-charger",
-  "https://us.ugreen.com/collections/charger",
-  "https://www.chargerlab.com/teardown-of-the-ugreen-nexode-100w-charger-with-retractable-usb-c-cable"
+  {
+   "id": "s0",
+   "url": "https://us.ugreen.com/products/ugreen-100w-retractable-gan-charger",
+   "label": "us.ugreen.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://us.ugreen.com/collections/charger",
+   "label": "us.ugreen.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s2",
+   "url": "https://www.chargerlab.com/teardown-of-the-ugreen-nexode-100w-charger-with-retractable-usb-c-cable",
+   "label": "chargerlab.com",
+   "kind": "other"
+  }
  ],
- "field_sources": {
-  "product_name": 0,
-  "model_numbers": 0,
-  "max_total_w": 0,
-  "typical_price_usd": 1,
-  "msrp_usd": 1,
-  "status": 1,
-  "ports": 2,
-  "pd_fixed_pdos": 2,
-  "pps": 2,
-  "pps_ranges": 2,
-  "usb_pd_version": 2,
-  "other_protocols": 2,
-  "weight_g": 2,
-  "dimensions_mm": 2,
-  "cable_included": 2
+ "confidence": {
+  "level": "high",
+  "scope": "legacy_record"
  },
- "confidence": "high",
  "notes": "ChargerLAB model X606 / part 65591 mapped to US item 65585 by name (unverified). Article intro claims every port 100W, spec sheet says C2 30W, A 22.5W; used spec sheet. No port-sharing table. pps_max_w=21Vx5A=105 capped by 100W total. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise.",
- "id": "ugreen-65585"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

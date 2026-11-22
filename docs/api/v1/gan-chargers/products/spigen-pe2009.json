@@ -1,55 +1,244 @@
 {
+ "id": "spigen-pe2009",
+ "category": "gan-chargers",
  "brand": "Spigen",
- "product_name": "ArcStation Pro GaN 20W Wall Charger",
- "model_numbers": [
-  "PE2009",
-  "ACH02021 (black)",
-  "ACH02022 (white)"
- ],
- "series": "ArcStation Pro",
- "release_year": null,
- "status": "unknown",
- "max_total_w": 20,
- "max_single_port_w": 20,
- "ports": [
+ "name": "ArcStation Pro GaN 20W Wall Charger",
+ "family": "ArcStation Pro",
+ "model": "PE2009",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 20
+   "scheme": "brand_model",
+   "value": "PE2009",
+   "issuer": "Spigen",
+   "market": null,
+   "package_level": "unverified"
+  },
+  {
+   "scheme": "brand_model",
+   "value": "ACH02021 (black)",
+   "issuer": "Spigen",
+   "market": null,
+   "package_level": "unverified"
+  },
+  {
+   "scheme": "brand_model",
+   "value": "ACH02022 (white)",
+   "issuer": "Spigen",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": null,
- "usb_pd_version": "3.0",
- "pd_fixed_pdos": "5V3A 9V2.22A",
- "pps": false,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": false,
- "weight_g": 42,
- "dimensions_mm": "34.3 x 39.4 x 27.7",
- "safety_certs": [],
- "cable_included": null,
- "msrp_usd": 29.99,
- "typical_price_usd": 29.99,
- "official_url": "https://partners.spigen.com/products/arcstation-pro-20w-wall-charger",
- "sources": [
-  "https://partners.spigen.com/products/arcstation-pro-20w-wall-charger",
-  "https://www.androidauthority.com/spigen-powerarc-arcstation-pro-review-1208645/"
- ],
- "field_sources": {
-  "pd_fixed_pdos": 0,
-  "usb_pd_version": 0,
-  "pps": 1,
-  "weight_g": 0,
-  "dimensions_mm": 0,
-  "msrp_usd": 0
+ "specs": {
+  "max_total_w": {
+   "value": 20,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 20,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 1,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 20
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "usb_pd_version": {
+   "value": "3.0",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pd_fixed_pdos": {
+   "value": "5V3A 9V2.22A",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": false,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 42,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "34.3 x 39.4 x 27.7",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "unknown",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 29.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "typical_price_usd": {
+   "value": 29.99,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  }
  },
- "confidence": "medium",
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [
+  {
+   "id": "s0",
+   "url": "https://partners.spigen.com/products/arcstation-pro-20w-wall-charger",
+   "label": "partners.spigen.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://www.androidauthority.com/spigen-powerarc-arcstation-pro-review-1208645/",
+   "label": "androidauthority.com",
+   "kind": "other"
+  }
+ ],
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
+ },
  "notes": "20W is below the 30W floor; included for completeness. PPS=false per Android Authority review of the 20W ArcStation Pro (page itself lists only two PDOs). spigen.com (consumer store) and partners.spigen.com pages 404 or delisted for most ArcStation chargers as of 2026-11-22; status 'unknown/discontinued on Spigen's own storefront' - still sold via Amazon. partners.spigen.com price is the B2B storefront list price, not street price.",
- "id": "spigen-pe2009"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

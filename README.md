@@ -41,5 +41,5 @@ Not self-hosted (no ports, no Caddy route); public prototype on GitHub Pages, se
 - Static site + static JSON dataset, built by `python3 -I scripts/build.py` into `docs/`, served by
   GitHub Pages from `main:/docs`. Rebuild + commit after data changes.
 - Merge/quality report: `python3 -I scripts/merge.py --find`.
-- Design: `DESIGN.md` (v0.2; section 0 = accepted review changes). Review: `reviews/2026-11-22-astra.md`.
+- Design: `ARCHITECTURE.md` (v0.2; section 0 = accepted review changes). Review: `reviews/2026-11-22-astra.md`.
 - Corrections: GitHub issues.

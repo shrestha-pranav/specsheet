@@ -1,57 +1,229 @@
 {
+ "id": "anker-a2658",
+ "category": "gan-chargers",
  "brand": "Anker",
- "product_name": "Anker Nano Charger (35W, Built-In Retractable USB-C Cable)",
- "model_numbers": [
-  "A2658"
- ],
- "series": "Nano",
- "release_year": null,
- "status": "current",
- "max_total_w": 35,
- "max_single_port_w": 35,
- "ports": [
+ "name": "Anker Nano Charger (35W, Built-In Retractable USB-C Cable)",
+ "family": "Nano",
+ "model": "A2658",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 35
-  },
-  {
-   "name": "C2 (built-in retractable cable)",
-   "type": "USB-C",
-   "max_w": 35
+   "scheme": "brand_model",
+   "value": "A2658",
+   "issuer": "Anker",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "Two ports in use: 35W max total (no per-port split published)",
- "usb_pd_version": null,
- "pd_fixed_pdos": "5V3A 9V3A 15V2.33A 20V1.75A",
- "pps": null,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 35,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 35,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 2,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 35
+    },
+    {
+     "name": "C2 (built-in retractable cable)",
+     "type": "USB-C",
+     "max_w": 35
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "Two ports in use: 35W max total (no per-port split published)",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": "5V3A 9V3A 15V2.33A 20V1.75A",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "PowerIQ 3.0"
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "gan": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "foldable_plug": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 110,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "47.5 x 63.5 x 30 (incl. connector)",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "yes - built-in retractable USB-C cable, 2.3 ft",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 29.99,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "typical_price_usd": {
+   "value": 19.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "PowerIQ 3.0"
  ],
- "gan": null,
- "foldable_plug": null,
- "plug_region": "US",
- "display": false,
- "weight_g": 110,
- "dimensions_mm": "47.5 x 63.5 x 30 (incl. connector)",
- "safety_certs": [],
- "cable_included": "yes - built-in retractable USB-C cable, 2.3 ft",
- "msrp_usd": 29.99,
- "typical_price_usd": 19.99,
- "official_url": "https://www.anker.com/products/a2658-35w-retractable-usb-c-charger",
  "sources": [
-  "https://www.anker.com/products/a2658-35w-retractable-usb-c-charger"
+  {
+   "id": "s0",
+   "url": "https://www.anker.com/products/a2658-35w-retractable-usb-c-charger",
+   "label": "anker.com",
+   "kind": "manufacturer"
+  }
  ],
- "field_sources": {
-  "pd_fixed_pdos": 0,
-  "weight_g": 0,
-  "dimensions_mm": 0,
-  "typical_price_usd": 0
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
  },
- "confidence": "medium",
  "notes": "PPS and GaN not stated on the page. Not verified whether the built-in cable counts as a second port in Anker's spec (page lists USB-C1 and USB-C2 each 35W).",
- "id": "anker-a2658"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

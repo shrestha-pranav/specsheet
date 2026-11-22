@@ -1,57 +1,234 @@
 {
+ "id": "spigen-pe2104",
+ "category": "gan-chargers",
  "brand": "Spigen",
- "product_name": "ArcStation Pro GaN 352 Dual Port Wall Charger (USB-A + USB-C PPS)",
- "model_numbers": [
-  "PE2104",
-  "ACH03713"
- ],
- "series": "ArcStation Pro",
- "release_year": null,
- "status": "unknown",
- "max_total_w": 35,
- "max_single_port_w": 30,
- "ports": [
+ "name": "ArcStation Pro GaN 352 Dual Port Wall Charger (USB-A + USB-C PPS)",
+ "family": "ArcStation Pro",
+ "model": "PE2104",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "A1",
-   "type": "USB-A",
-   "max_w": null
+   "scheme": "brand_model",
+   "value": "PE2104",
+   "issuer": "Spigen",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 30
+   "scheme": "brand_model",
+   "value": "ACH03713",
+   "issuer": "Spigen",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "Not published; page title says 35W total, USB-C 'PPS and PD 30W'",
- "usb_pd_version": null,
- "pd_fixed_pdos": null,
- "pps": true,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [],
- "gan": true,
- "foldable_plug": null,
- "plug_region": "US",
- "display": false,
- "weight_g": 74,
- "dimensions_mm": "40.4 x 37.8 x 34.3",
- "safety_certs": [],
- "cable_included": null,
- "msrp_usd": 54.99,
- "typical_price_usd": null,
- "official_url": "https://partners.spigen.com/products/arcstation-pro-gan-352-dual-usb-c-wall-charger",
- "sources": [
-  "https://partners.spigen.com/products/arcstation-pro-gan-352-dual-usb-c-wall-charger"
- ],
- "field_sources": {
-  "pps": 0,
-  "ports": 0,
-  "weight_g": 0,
-  "dimensions_mm": 0,
-  "msrp_usd": 0
+ "specs": {
+  "max_total_w": {
+   "value": 35,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 30,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 2,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "A1",
+     "type": "USB-A",
+     "max_w": null
+    },
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 30
+    }
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "port_sharing": {
+   "value": "Not published; page title says 35W total, USB-C 'PPS and PD 30W'",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "usb_pd_version": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 74,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "40.4 x 37.8 x 34.3",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "unknown",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 54.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "typical_price_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  }
  },
- "confidence": "medium",
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [
+  {
+   "id": "s0",
+   "url": "https://partners.spigen.com/products/arcstation-pro-gan-352-dual-usb-c-wall-charger",
+   "label": "partners.spigen.com",
+   "kind": "manufacturer"
+  }
+ ],
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
+ },
  "notes": "Slug says 'dual-usb-c' but page output lists Port 1: USB (A) and Port 2: USB-C PPS+PD 30W; page says incompatible with Google Pixel (USB-C*). PPS V/A ranges not published. spigen.com (consumer store) and partners.spigen.com pages 404 or delisted for most ArcStation chargers as of 2026-11-22; status 'unknown/discontinued on Spigen's own storefront' - still sold via Amazon. partners.spigen.com price is the B2B storefront list price, not street price.",
- "id": "spigen-pe2104"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

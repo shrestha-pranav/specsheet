@@ -1,78 +1,289 @@
 {
+ "id": "belkin-wch014zbwh-in",
+ "category": "gan-chargers",
  "brand": "Belkin",
- "product_name": "BoostCharge Pro 140W 4-Port GaN Wall Charger",
- "model_numbers": [
-  "WCH014zbWH (IN)",
-  "WCH014dqWH (PH)",
-  "WCH014btWH (UK)",
-  "WCH014myWH (SG)",
-  "WCH014"
- ],
- "series": "BoostCharge Pro",
- "release_year": null,
- "status": "current",
- "max_total_w": 140,
- "max_single_port_w": 140,
- "ports": [
+ "name": "BoostCharge Pro 140W 4-Port GaN Wall Charger",
+ "family": "BoostCharge Pro",
+ "model": "WCH014zbWH (IN)",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 140
+   "scheme": "brand_model",
+   "value": "WCH014zbWH (IN)",
+   "issuer": "Belkin",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 65
+   "scheme": "brand_model",
+   "value": "WCH014dqWH (PH)",
+   "issuer": "Belkin",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C3",
-   "type": "USB-C",
-   "max_w": 65
+   "scheme": "brand_model",
+   "value": "WCH014btWH (UK)",
+   "issuer": "Belkin",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "A1",
-   "type": "USB-A",
-   "max_w": 12
+   "scheme": "brand_model",
+   "value": "WCH014myWH (SG)",
+   "issuer": "Belkin",
+   "market": null,
+   "package_level": "unverified"
+  },
+  {
+   "scheme": "brand_model",
+   "value": "WCH014",
+   "issuer": "Belkin",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "C2+C3 share 65W max; combos cited: 65W+65W and 65W+45W+20W; total 140W",
- "usb_pd_version": "3.1",
- "pd_fixed_pdos": "C1: 5V3A 9V3A 15V3A 20V5A 28V5A; C2/C3: 5V3A 9V3A 15V3A 20V3.25A",
- "pps": true,
- "pps_ranges": "C1: 5-21V 5A (KM003C) / 4.75A (label); C2/C3: 3.3-21V 3.25A (KM003C) / 3.05A (label)",
- "pps_max_w": 100,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 140,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "max_single_port_w": {
+   "value": 140,
+   "status": "conflicted",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 4,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 140
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 65
+    },
+    {
+     "name": "C3",
+     "type": "USB-C",
+     "max_w": 65
+    },
+    {
+     "name": "A1",
+     "type": "USB-A",
+     "max_w": 12
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "C2+C3 share 65W max; combos cited: 65W+65W and 65W+45W+20W; total 140W",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": "3.1",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "pd_fixed_pdos": {
+   "value": "C1: 5V3A 9V3A 15V3A 20V5A 28V5A; C2/C3: 5V3A 9V3A 15V3A 20V3.25A",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "pps_ranges": {
+   "value": "C1: 5-21V 5A (KM003C) / 4.75A (label); C2/C3: 3.3-21V 3.25A (KM003C) / 3.05A (label)",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_max_w": {
+   "value": 100,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "QC",
+    "DCP",
+    "Apple 2.4A (USB-A)"
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 327,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "95.97 x 77.26 x 30.92",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "Yes, ~2 m dual USB-C cable (per ChargerLAB)",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 129.99,
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "typical_price_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "QC",
   "DCP",
   "Apple 2.4A (USB-A)"
  ],
- "gan": true,
- "foldable_plug": false,
- "plug_region": null,
- "display": false,
- "weight_g": 327,
- "dimensions_mm": "95.97 x 77.26 x 30.92",
- "safety_certs": [],
- "cable_included": "Yes, ~2 m dual USB-C cable (per ChargerLAB)",
- "msrp_usd": 129.99,
- "typical_price_usd": null,
- "official_url": null,
  "sources": [
-  "https://www.chargerlab.com/teardown-of-belkin-boostcharge-pro-140w-4-port-gan-wall-charger-wch014",
-  "https://www.belkin.com/support-article/?articleNum=335917",
-  "https://www.belkin.com/support-article/?articleNum=335922"
+  {
+   "id": "s0",
+   "url": "https://www.chargerlab.com/teardown-of-belkin-boostcharge-pro-140w-4-port-gan-wall-charger-wch014",
+   "label": "chargerlab.com",
+   "kind": "other"
+  },
+  {
+   "id": "s1",
+   "url": "https://www.belkin.com/support-article/?articleNum=335917",
+   "label": "belkin.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s2",
+   "url": "https://www.belkin.com/support-article/?articleNum=335922",
+   "label": "belkin.com",
+   "kind": "manufacturer"
+  }
  ],
- "field_sources": {
-  "pd_fixed_pdos": 0,
-  "pps_ranges": 0,
-  "weight_g": 0,
-  "dimensions_mm": 0,
-  "port_sharing": 0,
-  "max_total_w": 1,
-  "msrp_usd": 2
+ "confidence": {
+  "level": "high",
+  "scope": "legacy_record"
  },
- "confidence": "high",
  "notes": "Belkin US product page URL 404'd at fetch time, so current US price/stock unverified (chart MSRP $129.99). CONTRADICTION: Belkin chart says C1 single-port reaches 20V/4.8A/96W while ChargerLAB/label show a 28V5A (140W) PDO on C1. epr_avs left null: 28V5A fixed PDO is present (ChargerLAB) but AVS not confirmed. pps_max_w = ~100W (21V x 4.75A) assumes PPS C1 limit. Has removable AC cord, not foldable-plug.",
- "id": "belkin-wch014zbwh-in"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

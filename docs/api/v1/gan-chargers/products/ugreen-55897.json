@@ -1,40 +1,252 @@
 {
+ "id": "ugreen-55897",
+ "category": "gan-chargers",
  "brand": "UGREEN",
- "product_name": "UGREEN Nexode 65W Charger with Retractable USB-C Cable",
- "model_numbers": [
-  "55897",
-  "X605"
- ],
- "series": "Nexode",
- "release_year": null,
- "status": "current",
- "max_total_w": 65,
- "max_single_port_w": 65,
- "ports": [
+ "name": "UGREEN Nexode 65W Charger with Retractable USB-C Cable",
+ "family": "Nexode",
+ "model": "55897",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "Cable",
-   "type": 60,
-   "max_w": null
+   "scheme": "brand_model",
+   "value": "55897",
+   "issuer": "UGREEN",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C1",
-   "type": 65,
-   "max_w": null
-  },
-  {
-   "name": "A1",
-   "type": 22.5,
-   "max_w": null
+   "scheme": "brand_model",
+   "value": "X605",
+   "issuer": "UGREEN",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": null,
- "usb_pd_version": "3.0",
- "pd_fixed_pdos": "Cable: 5V3A 9V3A 12V3A 15V3A 20V3A; C1: 5V3A 9V3A 12V3A 15V3A 20V3.25A",
- "pps": true,
- "pps_ranges": "Cable: 5-21V 3A; C1: 5-11V 4.5A",
- "pps_max_w": 63,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "max_single_port_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 3,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "Cable",
+     "type": 60,
+     "max_w": null
+    },
+    {
+     "name": "C1",
+     "type": 65,
+     "max_w": null
+    },
+    {
+     "name": "A1",
+     "type": 22.5,
+     "max_w": null
+    }
+   ],
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "port_sharing": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "usb_pd_version": {
+   "value": "3.0",
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pd_fixed_pdos": {
+   "value": "Cable: 5V3A 9V3A 12V3A 15V3A 20V3A; C1: 5V3A 9V3A 12V3A 15V3A 20V3.25A",
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": "Cable: 5-21V 3A; C1: 5-11V 4.5A",
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_max_w": {
+   "value": 63,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "UFCS",
+    "FCP",
+    "SCP",
+    "AFC",
+    "SFCP",
+    "QC3+/4+",
+    "Apple 2.4A"
+   ],
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "weight_g": {
+   "value": 197,
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "58.41 x 48.98 x 52.68",
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "built-in retractable USB-C ~68cm",
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "msrp_usd": {
+   "value": 49.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "typical_price_usd": {
+   "value": 38.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "UFCS",
   "FCP",
   "SCP",
@@ -43,41 +255,31 @@
   "QC3+/4+",
   "Apple 2.4A"
  ],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": null,
- "weight_g": 197,
- "dimensions_mm": "58.41 x 48.98 x 52.68",
- "safety_certs": [],
- "cable_included": "built-in retractable USB-C ~68cm",
- "msrp_usd": 49.99,
- "typical_price_usd": 38.99,
- "official_url": "https://us.ugreen.com/products/ugreen-65w-retractable-cable-gan-charger-3port",
  "sources": [
-  "https://us.ugreen.com/products/ugreen-65w-retractable-cable-gan-charger-3port",
-  "https://us.ugreen.com/collections/charger",
-  "https://www.chargerlab.com/teardown-of-ugreen-nexode-65w-charger-with-retractable-usb-c-cable-x605"
+  {
+   "id": "s0",
+   "url": "https://us.ugreen.com/products/ugreen-65w-retractable-cable-gan-charger-3port",
+   "label": "us.ugreen.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://us.ugreen.com/collections/charger",
+   "label": "us.ugreen.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s2",
+   "url": "https://www.chargerlab.com/teardown-of-ugreen-nexode-65w-charger-with-retractable-usb-c-cable-x605",
+   "label": "chargerlab.com",
+   "kind": "other"
+  }
  ],
- "field_sources": {
-  "product_name": 0,
-  "model_numbers": 0,
-  "max_total_w": 0,
-  "typical_price_usd": 1,
-  "msrp_usd": 1,
-  "status": 1,
-  "ports": 2,
-  "pd_fixed_pdos": 2,
-  "pps": 2,
-  "pps_ranges": 2,
-  "usb_pd_version": 2,
-  "other_protocols": 2,
-  "weight_g": 2,
-  "dimensions_mm": 2,
-  "cable_included": 2,
-  "foldable_plug": 2
+ "confidence": {
+  "level": "high",
+  "scope": "legacy_record"
  },
- "confidence": "high",
  "notes": "X605->55897 mapping by name. Single-port-class model (cable+C1 share 65W). pps_max_w = 21V3A=63W (cable). Foldable plug taken from ChargerLAB text via search snippet. Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise.",
- "id": "ugreen-55897"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

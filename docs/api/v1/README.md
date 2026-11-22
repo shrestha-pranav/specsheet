@@ -1,0 +1,3 @@
+# Static dataset v1
+
+`categories.json` contains category schemas and counts. Each category has an index `products.json`, detail records under `products/<id>.json`, and `schema.json`. These are versioned static JSON files, not a dynamic API. Every specification has `{value,status,sources,confidence,source_scope}`. `status` is known, unknown, conflicted, not_yet_extracted, or not_applicable. Only known values are established for filtering. Source IDs refer to the detail record's `sources`; `record_context` means no direct field citation was supplied. Legacy charger records are unreviewed. The power-strip entries are fictional demo data.

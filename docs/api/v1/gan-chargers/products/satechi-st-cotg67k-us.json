@@ -1,63 +1,259 @@
 {
+ "id": "satechi-st-cotg67k-us",
+ "category": "gan-chargers",
  "brand": "Satechi",
- "product_name": "OntheGo 67W Slim Wall Charger",
- "model_numbers": [
-  "ST-COTG67K-US",
-  "ST-COTG67W-US",
-  "ST-COTG67R-US"
- ],
- "series": "OntheGo",
- "release_year": 2025,
- "status": "current",
- "max_total_w": 67,
- "max_single_port_w": 67,
- "ports": [
+ "name": "OntheGo 67W Slim Wall Charger",
+ "family": "OntheGo",
+ "model": "ST-COTG67K-US",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": "USB-C",
-   "max_w": 67
+   "scheme": "brand_model",
+   "value": "ST-COTG67K-US",
+   "issuer": "Satechi",
+   "market": null,
+   "package_level": "unverified"
   },
   {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 67
+   "scheme": "brand_model",
+   "value": "ST-COTG67W-US",
+   "issuer": "Satechi",
+   "market": null,
+   "package_level": "unverified"
+  },
+  {
+   "scheme": "brand_model",
+   "value": "ST-COTG67R-US",
+   "issuer": "Satechi",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": "One device: 67W on either port; two devices: 45W + 20W",
- "usb_pd_version": "3.0",
- "pd_fixed_pdos": null,
- "pps": true,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": false,
- "weight_g": 96.4,
- "dimensions_mm": "81.3 x 52.1 x 17.3",
- "safety_certs": [],
- "cable_included": "No",
- "msrp_usd": 59.99,
- "typical_price_usd": 41.99,
- "official_url": "https://satechi.com/products/onthego-67w-slim-wall-charger",
- "sources": [
-  "https://satechi.com/products/onthego-67w-slim-wall-charger",
-  "https://www.amazon.com/Satechi-OntheGo-Charger-Travel-MacBook/dp/B0FG9TRBL6",
-  "https://www.cultofmac.com/reviews/satechi-onthego-67w-slim-wall-charger-review"
- ],
- "field_sources": {
-  "port_sharing": 0,
-  "pps": 0,
-  "usb_pd_version": 1,
-  "gan": 0,
-  "weight_g": 0,
-  "dimensions_mm": 0,
-  "typical_price_usd": 0,
-  "msrp_usd": 0
+ "specs": {
+  "max_total_w": {
+   "value": 67,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "max_single_port_w": {
+   "value": 67,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 2,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": "USB-C",
+     "max_w": 67
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 67
+    }
+   ],
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_sharing": {
+   "value": "One device: 67W on either port; two devices: 45W + 20W",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": "3.0",
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 96.4,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "81.3 x 52.1 x 17.3",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "No",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": 2025,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": 59.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "typical_price_usd": {
+   "value": 41.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
  },
- "confidence": "medium",
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [
+  {
+   "id": "s0",
+   "url": "https://satechi.com/products/onthego-67w-slim-wall-charger",
+   "label": "satechi.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://www.amazon.com/Satechi-OntheGo-Charger-Travel-MacBook/dp/B0FG9TRBL6",
+   "label": "amazon.com",
+   "kind": "other"
+  },
+  {
+   "id": "s2",
+   "url": "https://www.cultofmac.com/reviews/satechi-onthego-67w-slim-wall-charger-review",
+   "label": "cultofmac.com",
+   "kind": "other"
+  }
+ ],
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
+ },
  "notes": "PPS claimed by Satechi (page FAQ + Amazon '(PD 3.0+PPS)'); no exact V/A ranges and no independent PDO test found. Cult of Mac measured throttling from 66W to 43W after ~10 min. Sale price $41.99 (regular $59.99). Dimensions in page FAQ: 8.1x5.2x1.7 cm.",
- "id": "satechi-st-cotg67k-us"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

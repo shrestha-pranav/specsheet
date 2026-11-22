@@ -1,66 +1,270 @@
 {
+ "id": "ugreen-35478",
+ "category": "gan-chargers",
  "brand": "UGREEN",
- "product_name": "UGREEN Nexode Air USB-C Charger (65W, GaN, Foldable Plug)",
- "model_numbers": [
-  "35478",
-  "75813",
-  "X860 (ChargerLAB/Cubed3 name)"
- ],
- "series": "Nexode Air",
- "release_year": null,
- "status": "current",
- "max_total_w": 65,
- "max_single_port_w": 65,
- "ports": [
+ "name": "UGREEN Nexode Air USB-C Charger (65W, GaN, Foldable Plug)",
+ "family": "Nexode Air",
+ "model": "35478",
+ "variant": null,
+ "identifiers": [
   {
-   "name": "C1",
-   "type": 65,
-   "max_w": null
+   "scheme": "brand_model",
+   "value": "35478",
+   "issuer": "UGREEN",
+   "market": null,
+   "package_level": "unverified"
+  },
+  {
+   "scheme": "brand_model",
+   "value": "75813",
+   "issuer": "UGREEN",
+   "market": null,
+   "package_level": "unverified"
+  },
+  {
+   "scheme": "brand_model",
+   "value": "X860 (ChargerLAB/Cubed3 name)",
+   "issuer": "UGREEN",
+   "market": null,
+   "package_level": "unverified"
   }
  ],
- "port_sharing": null,
- "usb_pd_version": "3.2",
- "pd_fixed_pdos": null,
- "pps": true,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [
+ "specs": {
+  "max_total_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "max_single_port_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "port_count": {
+   "value": 1,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1",
+     "type": 65,
+     "max_w": null
+    }
+   ],
+   "status": "known",
+   "sources": [
+    "s3"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "port_sharing": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "usb_pd_version": {
+   "value": "3.2",
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pd_fixed_pdos": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "QC",
+    "AFC",
+    "FCP"
+   ],
+   "status": "known",
+   "sources": [
+    "s2"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "weight_g": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "dimensions_mm": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "release_year": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "msrp_usd": {
+   "value": 39.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "typical_price_usd": {
+   "value": 39.99,
+   "status": "known",
+   "sources": [
+    "s1"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "QC",
   "AFC",
   "FCP"
  ],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": null,
- "weight_g": null,
- "dimensions_mm": null,
- "safety_certs": [],
- "cable_included": null,
- "msrp_usd": 39.99,
- "typical_price_usd": 39.99,
- "official_url": "https://us.ugreen.com/products/nexode-air-usb-c-charger-65w-gan-foldable-plug",
  "sources": [
-  "https://us.ugreen.com/products/nexode-air-usb-c-charger-65w-gan-foldable-plug",
-  "https://us.ugreen.com/collections/charger",
-  "https://www.notebookcheck.net/Compact-powerful-and-efficient-Ugreen-Nexode-Air-65W-USB-C-GaN-charger-review.1343228.0.html",
-  "https://www.cubed3.com/tech/reviews/accessories/ugreen-65w-usb-c-gan-fast-charger-set-x860"
+  {
+   "id": "s0",
+   "url": "https://us.ugreen.com/products/nexode-air-usb-c-charger-65w-gan-foldable-plug",
+   "label": "us.ugreen.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s1",
+   "url": "https://us.ugreen.com/collections/charger",
+   "label": "us.ugreen.com",
+   "kind": "manufacturer"
+  },
+  {
+   "id": "s2",
+   "url": "https://www.notebookcheck.net/Compact-powerful-and-efficient-Ugreen-Nexode-Air-65W-USB-C-GaN-charger-review.1343228.0.html",
+   "label": "notebookcheck.net",
+   "kind": "other"
+  },
+  {
+   "id": "s3",
+   "url": "https://www.cubed3.com/tech/reviews/accessories/ugreen-65w-usb-c-gan-fast-charger-set-x860",
+   "label": "cubed3.com",
+   "kind": "other"
+  }
  ],
- "field_sources": {
-  "product_name": 0,
-  "model_numbers": 0,
-  "max_total_w": 0,
-  "typical_price_usd": 1,
-  "msrp_usd": 1,
-  "status": 1,
-  "ports": 3,
-  "pps": 2,
-  "usb_pd_version": 2,
-  "other_protocols": 2,
-  "foldable_plug": 0
+ "confidence": {
+  "level": "low",
+  "scope": "legacy_record"
  },
- "confidence": "low",
  "notes": "Item numbers 35478 (collection) and 75813 (older Shopify handle) both seen for the 65W Air; X860 mapping unverified. Notebookcheck says PD3.2 with AVS and PPS; AVS present suggests PD3.2 but ranges not found. Sale price at 24.99 on the pages fetched vs 39.99 in JSON feed (promo). Prices are us.ugreen.com sale prices on 2026-11-22 (Black Friday promo tags present), so typical_price_usd may sit below normal street price; msrp_usd = compare-at/list. UGREEN US spec tables are images/generic marketplace attributes; port wattages and PPS ranges not on the page text unless a source index says otherwise.",
- "id": "ugreen-35478"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }

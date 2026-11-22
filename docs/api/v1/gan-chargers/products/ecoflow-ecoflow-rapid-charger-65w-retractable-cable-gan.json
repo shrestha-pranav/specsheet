@@ -1,37 +1,230 @@
 {
+ "id": "ecoflow-ecoflow-rapid-charger-65w-retractable-cable-gan",
+ "category": "gan-chargers",
  "brand": "EcoFlow",
- "product_name": "EcoFlow RAPID Charger (65W, Retractable Cable, GaN)",
- "model_numbers": [],
- "series": "RAPID",
- "release_year": 2025,
- "status": "current",
- "max_total_w": 65,
- "max_single_port_w": 65,
- "ports": [
-  {
-   "name": "C1 (retractable cable, 70cm)",
-   "type": "USB-C",
-   "max_w": 65
+ "name": "EcoFlow RAPID Charger (65W, Retractable Cable, GaN)",
+ "family": "RAPID",
+ "model": null,
+ "variant": null,
+ "identifiers": [],
+ "specs": {
+  "max_total_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
   },
-  {
-   "name": "C2",
-   "type": "USB-C",
-   "max_w": 65
+  "max_single_port_w": {
+   "value": 65,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
   },
-  {
-   "name": "A",
-   "type": "USB-A",
-   "max_w": 18
+  "port_count": {
+   "value": 3,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "ports": {
+   "value": [
+    {
+     "name": "C1 (retractable cable, 70cm)",
+     "type": "USB-C",
+     "max_w": 65
+    },
+    {
+     "name": "C2",
+     "type": "USB-C",
+     "max_w": 65
+    },
+    {
+     "name": "A",
+     "type": "USB-A",
+     "max_w": 18
+    }
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "port_sharing": {
+   "value": "C1+C2: 65W max total; C1+A: 45+18; C2+A: 20 (5V2A+5V2A); C1+(C2+A): 45+15+15",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "usb_pd_version": {
+   "value": "3.2",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pd_fixed_pdos": {
+   "value": "5V3A 9V3A 12V3A 15V3A 20V3.25A (C1/C2); A: 5V3A 9V2A 12V1.5A",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps": {
+   "value": true,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "pps_ranges": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "pps_max_w": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "epr_avs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "other_protocols": {
+   "value": [
+    "PD2.0",
+    "QC4+",
+    "QC4.0",
+    "QC3.0",
+    "QC2.0",
+    "Apple 2.4A",
+    "BC1.2",
+    "DCP 1.5A"
+   ],
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "gan": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "foldable_plug": {
+   "value": true,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "plug_region": {
+   "value": "US",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "display": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "weight_g": {
+   "value": 171.5,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "dimensions_mm": {
+   "value": "52.5x51x50.71 (page FAQ says 52.5x51x51.3)",
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
+  },
+  "safety_certs": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "cable_included": {
+   "value": "built-in 70cm retractable USB-C",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "release_year": {
+   "value": 2025,
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "status": {
+   "value": "current",
+   "status": "known",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "record_context"
+  },
+  "msrp_usd": {
+   "value": null,
+   "status": "unknown",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "typical_price_usd": {
+   "value": 31.99,
+   "status": "known",
+   "sources": [
+    "s0"
+   ],
+   "confidence": null,
+   "source_scope": "field"
   }
- ],
- "port_sharing": "C1+C2: 65W max total; C1+A: 45+18; C2+A: 20 (5V2A+5V2A); C1+(C2+A): 45+15+15",
- "usb_pd_version": "3.2",
- "pd_fixed_pdos": "5V3A 9V3A 12V3A 15V3A 20V3.25A (C1/C2); A: 5V3A 9V2A 12V1.5A",
- "pps": true,
- "pps_ranges": null,
- "pps_max_w": null,
- "epr_avs": null,
- "other_protocols": [
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [
   "PD2.0",
   "QC4+",
   "QC4.0",
@@ -41,33 +234,19 @@
   "BC1.2",
   "DCP 1.5A"
  ],
- "gan": true,
- "foldable_plug": true,
- "plug_region": "US",
- "display": false,
- "weight_g": 171.5,
- "dimensions_mm": "52.5x51x50.71 (page FAQ says 52.5x51x51.3)",
- "safety_certs": [],
- "cable_included": "built-in 70cm retractable USB-C",
- "msrp_usd": null,
- "typical_price_usd": 31.99,
- "official_url": "https://us.ecoflow.com/products/ecoflow-rapid-charger-65w-retractable-calble-gan",
  "sources": [
-  "https://us.ecoflow.com/products/ecoflow-rapid-charger-65w-retractable-calble-gan"
+  {
+   "id": "s0",
+   "url": "https://us.ecoflow.com/products/ecoflow-rapid-charger-65w-retractable-calble-gan",
+   "label": "us.ecoflow.com",
+   "kind": "manufacturer"
+  }
  ],
- "field_sources": {
-  "max_total_w": 0,
-  "ports": 0,
-  "port_sharing": 0,
-  "pd_fixed_pdos": 0,
-  "pps": 0,
-  "other_protocols": 0,
-  "weight_g": 0,
-  "dimensions_mm": 0,
-  "typical_price_usd": 0,
-  "usb_pd_version": 0
+ "confidence": {
+  "level": "medium",
+  "scope": "legacy_record"
  },
- "confidence": "medium",
  "notes": "PPS listed in protocol FAQ but no PPS voltage/current ranges published (null). No model number or safety certs published on page. Dimension discrepancy 50.71 vs 51.3 mm on same page. Spec text has typo '20V-3.25A'.",
- "id": "ecoflow-ecoflow-rapid-charger-65w-retractable-cable-gan"
+ "identity_caveat": "Pilot identity and package/configuration have not been independently resolved.",
+ "demo": false
 }
