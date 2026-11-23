@@ -11,4 +11,8 @@ identical (research/tvs/identity.md); a retailer saying "same as" is not corrobo
 - B&H / Crutchfield: clean MPN + UPC in schema.org JSON-LD, tolerant of plain fetch (verify robots before use); good for Sony (sony.com
   blocked: manufacturers.yaml).
 - RTINGS (reviews, not a merchant): panel subtype per size, measured zones/brightness/input lag; JS-rendered, ToS; curated claims only.
-- Blocked/unprobed this round: sony.com (403). No retailer was fetched.
+- Blocked/unprobed: sony.com (403). No retailer was fetched.
+- Round 2 (A2, 2026-11-23): DOE CCMS (regulations.doe.gov certification data, cross-brand TV power, the best source for non-ENERGY-STAR sets) is
+  BLOCKED: robots.txt and the certification-data page both return 403 to the crawler UA. Recorded, no workaround. A DOE bulk export downloaded by a
+  human, or another DOE-hosted open-data route, would be the way in. Hisense: server HTML has no spec table (client-side AEM API, 504/refused) ->
+  not built. Vizio built from its own pages (manufacturers.yaml).

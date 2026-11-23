@@ -1765,6 +1765,71 @@ claim_policies:
          phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, pwr.annual_kwh, pwr.on_mode_w, pwr.standby_w,
          refresh.dlg_hz, refresh.marketing, refresh.native_hz, res.class, res.height_px, res.native, res.width_px, sup.warranty, vrr.formats,
          vrr.supported]
+- id: claim/tvs-structured@2
+  since: '2026-11-23'
+  supersedes: claim/tvs-structured@1
+  rationale: '@1 plus one source: Vizio US product pages (vizio-us-tvs, vizio_tvs@1), the maker''s own server-rendered labelled spec table, keyed by the
+    model number printed in the page''s Energy Guide (equal to the canonical URL; a page where they disagree, or that has no spec rows, yields nothing).
+    Every @1 rule is carried over unchanged for the four sources it already covered; the Vizio key list is explicit and follows the same review-3
+    rules: refresh.native_hz only from the "Refresh Rate" row (a cell naming two rates is skipped, "Dynamic Motion Rate" goes to refresh.marketing);
+    vrr.supported only when the row is a bare affirmative feature name (HDMI VRR / FreeSync tiers); HDR formats only from the list the row prints,
+    a format not listed stays unknown; hdr.dimming_zones only from an explicit "x<N>" zone count; hdmi.ports_4k120 never (Vizio prints no per-port 4K
+    rate); no power figures (the Energy Guide prints a cost, not watts); never refresh.max_hz or hdr.peak_nits. Hisense was not built (spec data sits
+    behind an undocumented API that timed out; the one alternative origin was refused), DOE CCMS answers 403.'
+  audit:
+    by: A2 tvs r2
+    at: '2026-11-23'
+    evidence: Parsed all 179 Vizio snapshots (79 model numbers, 74 legacy pages without spec rows yield an absence); per-key value histograms checked;
+      fixtures in tests/test_tvs_vizio.py (6 tests). The four @1 parsers are byte-identical to the @1 audit.
+    parsers:
+      energystar_tvs@1: sha256:35b90bbed61b2720ad7c
+      samsung_tvs@1: sha256:6671f4bf6d2b8ecdac67
+      lg_tvs@1: sha256:8381b9a9945f5471873e
+      tcl_tvs@1: sha256:2710e28e9980fbe72ab2
+      vizio_tvs@1: sha256:55121e0b1ed6942efc45
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors: [energystar_tvs@1, samsung_tvs@1, lg_tvs@1, tcl_tvs@1, vizio_tvs@1]
+    source_ids: [energystar-tvs, samsung-us-tvs, lg-us-tvs, tcl-us-tvs, vizio-us-tvs]
+    kinds: [official]
+    tiers: [manufacturer, regulatory]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      energystar-tvs:
+        [gen.viewable_diag, panel.display_tech, panel.quantum_dot, pic.auto_brightness, pwr.annual_kwh, pwr.energy_star, pwr.on_mode_doe_w,
+         pwr.on_mode_w, pwr.standby_w, res.height_px, res.native, res.width_px]
+      samsung-us-tvs:
+        [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.size_class,
+         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.max_input, hdmi.ports_4k120, hdr.dolby_vision, hdr.formats, hdr.hdr10plus, os.platform,
+         panel.display_tech, panel.marketing_class, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand,
+         phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, pwr.annual_kwh, pwr.max_w,
+         pwr.on_mode_w, pwr.standby_w, refresh.marketing, refresh.native_hz, res.class, res.height_px, res.native, res.width_px, vrr.formats,
+         vrr.supported]
+      lg-us-tvs:
+        [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.series, gen.size_class,
+         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.ports_4k120, hdr.dolby_vision, hdr.formats, hdr.hdr10plus, os.platform, os.version,
+         panel.backlight, panel.display_tech, panel.lcd_type, panel.marketing_class, phys.depth_no_stand, phys.depth_with_stand,
+         phys.height_no_stand, phys.height_with_stand, phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand,
+         phys.width_with_stand, pwr.annual_kwh, pwr.on_mode_w, pwr.standby_w, refresh.marketing, refresh.native_hz, res.class, res.height_px,
+         res.native, res.width_px, sup.warranty, vrr.formats, vrr.supported]
+      tcl-us-tvs:
+        [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.size_class,
+         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.ports_4k120, hdr.dimming_zones, hdr.dolby_vision, hdr.formats, hdr.hdr10plus,
+         hdr.local_dimming, os.platform, panel.backlight, panel.bit_depth, panel.display_tech, panel.lcd_type, panel.marketing_class,
+         panel.quantum_dot, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand, phys.vesa,
+         phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, pwr.annual_kwh, pwr.on_mode_w, pwr.standby_w,
+         refresh.dlg_hz, refresh.marketing, refresh.native_hz, res.class, res.height_px, res.native, res.width_px, sup.warranty, vrr.formats,
+         vrr.supported]
+      vizio-us-tvs:
+        [conn.ethernet, conn.usb_count, conn.wifi, gen.size_class, gen.viewable_diag, hdmi.count, hdr.dimming_zones, hdr.dolby_vision, hdr.formats,
+         hdr.hdr10plus, hdr.local_dimming, panel.backlight, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand,
+         phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, refresh.marketing, refresh.native_hz,
+         res.class, res.height_px, res.native, res.width_px, sup.warranty, vrr.supported]
 relation_policies:
 - id: rel/source-stated-hierarchy@2
   since: '2026-11-23'

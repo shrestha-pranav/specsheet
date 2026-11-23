@@ -36,3 +36,4 @@
 {"at": "2026-11-23T18:58:18Z", "id": "claim/mfr-power-stations-structured@2", "sha256": "sha256:2f61b688965e3427aff345639bc0592462d4566201712f71335ba104ad0933d3"}
 {"at": "2026-11-23T18:58:18Z", "id": "rel/bundle-contents@1", "sha256": "sha256:d572dbac00d5d26d4d20e68d9e85aa8da772333f98c1b0c82bb77560d4659f50"}
 {"at": "2026-11-23T19:14:38Z", "id": "claim/tvs-structured@1", "sha256": "sha256:28edabd11a61f6ce310be517e6e83cd1704ec206a3395d6abd6d274708d0b10c"}
+{"at": "2026-11-23T19:43:48Z", "id": "claim/tvs-structured@2", "sha256": "sha256:28da0443ffc3fbce58849b3fb20c567a8e87c5bd456582fba4e5bc2f3c8ce6f6"}
