@@ -84,6 +84,19 @@ units:
   display:
     mm: in
     kg: lb
+  custom:
+  - unit: ppi
+    base: ppi
+    factor: 1
+  - unit: year
+    base: year
+    factor: 1
+  - unit: deg
+    base: deg
+    factor: 1
+  - unit: ms
+    base: ms
+    factor: 1
 conditions:
 - id: overdrive
   label: Overdrive setting

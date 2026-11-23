@@ -194,6 +194,57 @@
     },
     "demo": {
       "const": false
+    },
+    "revisions": {
+      "type": "array",
+      "description": "Model detail only: hardware revisions (kind=revision children). Each entry carries the revision's OWN specs (not inherited ones), the sources they cite, and `differs` = own spec keys whose value differs from (or is absent on) the model. Full record: products/<id>.json.",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "name",
+          "specs",
+          "sources",
+          "differs"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "https://specsheet.invalid/schemas/record/1#/$defs/entityId"
+          },
+          "label": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "lifecycle": {
+            "type": "object"
+          },
+          "specs": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "https://specsheet.invalid/schemas/record/1#/$defs/resolved"
+            }
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "url"
+              ]
+            }
+          },
+          "differs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
     }
   }
 }

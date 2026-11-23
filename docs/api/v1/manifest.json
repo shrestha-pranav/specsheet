@@ -1,7 +1,7 @@
 {
  "dataset_version": "1.0.0",
- "build": "8ebdcb2c5810",
- "generated_at": "2026-11-23T09:11:11Z",
+ "build": "4d7caa39644d",
+ "generated_at": "2026-11-23T09:51:45Z",
  "record_format": "specsheet.record/1",
  "categories": [
   {
@@ -83,6 +83,25 @@
    }
   },
   {
+   "id": "routers",
+   "schema_version": "0.1.0",
+   "count": 247,
+   "index": [
+    "routers/index.json"
+   ],
+   "facets": "routers/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/routers/index.json"
+    ],
+    "count": 162,
+    "products": "preview/routers/products/",
+    "only_preview": 0
+   }
+  },
+  {
    "id": "ssds",
    "schema_version": "0.1.0",
    "count": 547,
@@ -103,7 +122,7 @@
   }
  ],
  "release": {
-  "accepted_digest": "832d68fa26762fad9f620cb37a05e0970ab782135b3096f5be97122a21b6c849",
+  "accepted_digest": "707f0510760b0b66d9348513751beeeb79843632447c5e3b89f48a33feda485c",
   "policies": [
    "claim/mfr-structured-datasheet@1",
    "claim/asus-techspec-typed@1",
@@ -113,6 +132,8 @@
    "claim/displayhdr-certified-tier@1",
    "claim/mfr-ssd-structured@1",
    "claim/mfr-ssd-samsung@1",
+   "claim/mfr-routers-structured@1",
+   "claim/mfr-routers-class@1",
    "rel/source-stated-hierarchy@1"
   ],
   "ledger_lines": 0,
@@ -120,6 +141,7 @@
    "laptops": "0.2",
    "monitors": "0.1.0",
    "power-strips": "0.1",
+   "routers": "0.1.0",
    "ssds": "0.1.0"
   },
   "coverage": {
@@ -189,6 +211,18 @@
    },
    "teamgroup-us-ssd": {
     "observations": "61",
+    "discovery_complete": "1"
+   },
+   "tplink-us-routers": {
+    "observations": "106",
+    "discovery_complete": "1"
+   },
+   "netgear-us-routers": {
+    "observations": "60",
+    "discovery_complete": "1"
+   },
+   "asus-us-routers": {
+    "observations": "82",
     "discovery_complete": "1"
    },
    "tripplite": {

@@ -37,7 +37,9 @@ DISPLAY_SCALES = {"GB": [("TB", 1000)], "MB": [("GB", 1000)], "g": [("kg", 1000)
 def units(profile=None):
     u = dict(_BUILTIN)
     for c in ((profile or {}).get("units") or {}).get("custom") or []:
-        u[c["id"]] = {"base": c.get("base", c["id"]), "factor": c.get("factor", 1), "offset": c.get("offset", 0)}
+        cid = c.get("unit") or c.get("id")      # schema: `unit`; `id` is the legacy spelling
+        if cid:
+            u[cid] = {"base": c.get("base", cid), "factor": c.get("factor", 1), "offset": c.get("offset", 0)}
     # profile unit ids used but unregistered (nits, AWG): identity units, convertible only to themselves
     for s in (profile or {}).get("specs", []):
         if s.get("unit") and s["unit"] not in u:

@@ -1,0 +1,1433 @@
+profile_format: specsheet.category-profile/1
+category: routers
+version: 0.1.0
+label: Wi-Fi routers & mesh systems
+market: US
+status: draft
+scope: Consumer and prosumer Wi-Fi routers and whole-home mesh systems sold in the US (TP-Link, NETGEAR, ASUS, eero, Google Nest Wifi, Linksys,
+  Ubiquiti, GL.iNet, Synology, Amazon). Excludes ISP-leased gateways, range extenders, access points (listed as device_type access_point only
+  for mesh nodes), enterprise Wi-Fi.
+identity:
+  levels:
+  - level: family
+    label: Product line
+    meaning: Archer AX / Deco / Orbi / ROG Rapture / eero Pro
+    key_schemes:
+    - mfr_family
+    inherits: false
+  - level: model
+    label: Model
+    meaning: 'Model number independent of pack size and region: Archer AX55, RAX54S, RT-AX86U Pro, Deco BE25'
+    key_schemes:
+    - mfr_model
+    inherits: true
+  - level: revision
+    label: Hardware version
+    meaning: 'V1/V2/V4.60: same model name, different SoC/RAM/radio; FCC ID may change or not'
+    key_schemes:
+    - hw_version
+    inherits: true
+  - level: configuration
+    label: Pack / region SKU
+    meaning: 1-pack vs 3-pack, regional part number (RAX54S-2AZNAS)
+    key_schemes:
+    - mfr_sku
+    inherits: true
+  - level: package
+    label: Colour / bundle
+    meaning: White vs black, GTIN
+    key_schemes:
+    - gtin
+    inherits: true
+  primary_key: Manufacturer model number plus hardware version (revision) plus pack-specific orderable SKU. Retail titles and marketing class
+    (AX5400) are aliases; FCC ID is an alias that cross-checks revisions.
+  per_brand:
+    tp_link: Archer AX55 (model), hw version V1/V4.60 (revision), Deco BE25(2-pack)
+    netgear: RAX54S (model), RAX54S-2AZNAS (SKU), RBK763 kit = router+2 satellites
+    asus: RT-AX86U Pro (model); ASUS prints model per hardware version rarely
+    eero: eero Pro 7 (J010011), model code on label
+    google_nest: Nest Wifi Pro (GWBNQ), 3-pack (GA...)
+    linksys: MR7350, MX4200 (pack suffix)
+    ubiquiti: UniFi Express, UDR7 SKU
+    gl_inet: GL-MT6000 (Flint 2)
+    synology: WRX560, RT6600ax
+    amazon: eero Max 7 (J020011)
+  schemes:
+  - scheme: mfr_family
+    level: family
+  - scheme: mfr_model
+    level: model
+    normalize: upper_strip_spaces
+  - scheme: mfr_sku
+    level: configuration
+    normalize: upper_keep_slash
+  - scheme: hw_version
+    level: revision
+    alias_only: false
+  - scheme: fcc_id
+    issuer: FCC
+    level: model
+    alias_only: true
+    pattern: ^[A-Z0-9]{3,5}[A-Z0-9-]{1,14}$
+  - scheme: gtin
+    issuer: GS1
+    level: package
+  variant_axes:
+  - gen.pack_count
+  - sup.hardware_version
+  - hw.soc_model
+  - hw.ram_mb
+  - hw.flash_mb
+  - wifi.radio_chipset
+  model_defining:
+  - gen.device_type
+  - wifi.generation
+  - wifi.band_count
+  - port.wan_speed_mbps
+  note: 'Hardware revisions are a real level: TP-Link Archer/Deco models ship under several versions with different chipsets and RAM (V1/V2/V4.60).
+    The US download page lists versions but spec pages show the current version only; revision claims need a label or FCC ID/teardown. Unknown
+    stays unknown.'
+units:
+  system: us_customary
+  display:
+    mm: in
+    g: oz
+  custom:
+  - unit: MB
+    base: B
+    factor: 1000000.0
+  - unit: sqft
+    base: sqft
+    factor: 1
+  - unit: month
+    base: month
+    factor: 1
+groups:
+- id: general
+  label: General & identity
+  order: 0
+- id: wifi
+  label: Wi-Fi radios
+  order: 1
+- id: silicon
+  label: SoC, memory & flash
+  order: 2
+- id: ports
+  label: Ports & wired
+  order: 3
+- id: mesh
+  label: Mesh & backhaul
+  order: 4
+- id: software
+  label: Features, VPN & software
+  order: 5
+- id: support
+  label: Firmware support & lifecycle
+  order: 6
+- id: compat
+  label: ISP & compatibility
+  order: 7
+- id: phys
+  label: Power & physical
+  order: 8
+- id: identity
+  label: Identifiers & provenance
+  order: 9
+specs:
+- key: gen.brand
+  label: Brand
+  group: general
+  type: enum
+  unit: null
+  tier: core
+  why: Filter
+  level: family
+  enum:
+  - tp_link
+  - netgear
+  - asus
+  - eero
+  - google_nest
+  - linksys
+  - ubiquiti
+  - gl_inet
+  - synology
+  - amazon
+  enum_open: true
+  facet:
+    kind: enum
+    column: true
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: netgear
+- key: gen.product_line
+  label: Product line
+  group: general
+  type: text
+  unit: null
+  tier: core
+  why: Lines group routers and generations (Archer AX, Deco, Orbi, RT-AX, eero Pro)
+  level: family
+  facet: false
+  traps:
+  - Brands reuse names across generations and sizes (Orbi 970 vs 960 vs 760; Deco X20 vs X20 v2)
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: Orbi 970
+- key: gen.device_type
+  label: Device type
+  group: general
+  type: enum
+  unit: null
+  tier: core
+  why: A router, a mesh kit and a single node are different purchases
+  level: model
+  enum:
+  - router
+  - mesh_system
+  - mesh_node
+  - gateway_modem_router
+  - travel_router
+  - access_point
+  facet:
+    kind: enum
+    column: true
+  traps:
+  - Extenders and access points are not routers; DOCSIS/DSL gateways bundle a modem (ISP-lease models are out of scope)
+  - '''Mesh system'' kits are priced per pack: judge per node and per kit'
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: mesh_system
+- key: gen.pack_count
+  label: Nodes in pack
+  group: general
+  type: integer
+  unit: null
+  tier: core
+  why: 1-pack vs 3-pack is a different price and coverage; specs are per node
+  level: configuration
+  facet:
+    kind: range
+    bins:
+    - 1
+    - 2
+    - 3
+    - 4
+  traps:
+  - Listings show the same model name for 1/2/3 packs with different part numbers (RBE972 vs RBE973 vs RBE974)
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  - Retailer title as alias only
+  example: 3
+- key: gen.release_year
+  label: Release year
+  group: general
+  type: integer
+  unit: null
+  tier: important
+  why: Age drives remaining firmware support
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 2018
+    - 2020
+    - 2022
+    - 2024
+    - 2026
+  traps:
+  - FCC grant date lags launch by months; 'Latest application date' on fccid.io is the newest filing, not the first
+  sources:
+  - Manufacturer press / FCC grant date / product page
+  example: 2023
+- key: wifi.generation
+  label: Wi-Fi generation (highest)
+  group: wifi
+  type: enum
+  unit: null
+  tier: core
+  why: Wi-Fi 6 vs 6E vs 7 decides band and feature support
+  level: model
+  enum:
+  - wifi4
+  - wifi5
+  - wifi6
+  - wifi6e
+  - wifi7
+  facet:
+    kind: enum
+    column: true
+    default_visible: true
+  traps:
+  - '''Wi-Fi 6'' printed on a box can be a dual-band AX1800 with 2x2; ''Wi-Fi 6E'' = 6 GHz band, plain ''Wi-Fi 6'' has none'
+  - Wi-Fi 7 SKUs can omit 320 MHz, MLO or 6 GHz (Wi-Fi 7 'lite' BE3600)
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: wifi7
+- key: wifi.marketing_class
+  label: Marketing class (AX5400, BE19000)
+  group: wifi
+  type: text
+  unit: null
+  tier: important
+  why: Shown on the box; search term only
+  level: model
+  facet: false
+  traps:
+  - 'AX5400 = 574+4800 Mbps summed over bands: no single device ever gets that speed'
+  - Class numbers are sums of PHY rates under best case; compare per-band rows and streams instead
+  - Tri-band BE19000 counts three radios; a client uses one
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: AX5400
+- key: wifi.band_count
+  label: Number of radios (bands)
+  group: wifi
+  type: integer
+  unit: null
+  tier: core
+  why: Tri-band/quad-band routers add a second 5 GHz or a 6 GHz radio (and often the mesh backhaul)
+  level: model
+  facet:
+    kind: enum
+  traps:
+  - '''Tri-band'' may mean 2.4+5+5 GHz or 2.4+5+6 GHz: check bands row'
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 3
+- key: wifi.has_6ghz
+  label: Has 6 GHz band
+  group: wifi
+  type: bool
+  unit: null
+  tier: core
+  why: Required for Wi-Fi 6E/7 6 GHz clients
+  level: model
+  facet: &id002
+    kind: bool
+  traps:
+  - Wi-Fi 7 does not imply 6 GHz in every region/SKU
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: true
+- key: wifi.rate_24_mbps
+  label: PHY rate 2.4 GHz
+  group: wifi
+  type: number
+  unit: Mbps
+  tier: core
+  why: Per-band link rate is the figure the class number sums
+  level: model
+  facet: false
+  traps:
+  - Theoretical PHY rate at max streams x max width; real client rates are ~50% and limited by the client's own streams (phones are 2x2)
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 4804
+- key: wifi.rate_5_mbps
+  label: PHY rate 5 GHz (first 5 GHz radio)
+  group: wifi
+  type: number
+  unit: Mbps
+  tier: core
+  why: Per-band link rate is the figure the class number sums
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 600
+    - 1200
+    - 2400
+    - 4800
+    - 5800
+    - 11500
+  traps:
+  - Theoretical PHY rate at max streams x max width; real client rates are ~50% and limited by the client's own streams (phones are 2x2)
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 4804
+- key: wifi.rate_5_2_mbps
+  label: PHY rate Second 5 GHz radio
+  group: wifi
+  type: number
+  unit: Mbps
+  tier: important
+  why: Per-band link rate is the figure the class number sums
+  level: model
+  facet: false
+  traps:
+  - Theoretical PHY rate at max streams x max width; real client rates are ~50% and limited by the client's own streams (phones are 2x2)
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 4804
+- key: wifi.rate_6_mbps
+  label: PHY rate 6 GHz
+  group: wifi
+  type: number
+  unit: Mbps
+  tier: core
+  why: Per-band link rate is the figure the class number sums
+  level: model
+  facet: false
+  traps:
+  - Theoretical PHY rate at max streams x max width; real client rates are ~50% and limited by the client's own streams (phones are 2x2)
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 4804
+- key: wifi.streams_24
+  label: Spatial streams 2.4 GHz
+  group: wifi
+  type: integer
+  unit: null
+  tier: important
+  why: 2x2 vs 4x4 changes real throughput with multi-stream clients
+  level: model
+  facet: false
+  traps:
+  - '''4 streams'' on a page may be the total across bands (2+2), not a 4x4 radio'
+  - Printed as 'Tx/Rx' or 'NxN' or only as 'antennas' (external antenna count is not streams)
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 4
+- key: wifi.streams_5
+  label: Spatial streams 5 GHz
+  group: wifi
+  type: integer
+  unit: null
+  tier: core
+  why: 2x2 vs 4x4 changes real throughput with multi-stream clients
+  level: model
+  facet: &id001
+    kind: enum
+  traps:
+  - '''4 streams'' on a page may be the total across bands (2+2), not a 4x4 radio'
+  - Printed as 'Tx/Rx' or 'NxN' or only as 'antennas' (external antenna count is not streams)
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 4
+- key: wifi.streams_5_2
+  label: Spatial streams second 5 GHz radio
+  group: wifi
+  type: integer
+  unit: null
+  tier: important
+  why: 2x2 vs 4x4 changes real throughput with multi-stream clients
+  level: model
+  facet: false
+  traps:
+  - '''4 streams'' on a page may be the total across bands (2+2), not a 4x4 radio'
+  - Printed as 'Tx/Rx' or 'NxN' or only as 'antennas' (external antenna count is not streams)
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 4
+- key: wifi.streams_6
+  label: Spatial streams 6 GHz
+  group: wifi
+  type: integer
+  unit: null
+  tier: important
+  why: 2x2 vs 4x4 changes real throughput with multi-stream clients
+  level: model
+  facet: false
+  traps:
+  - '''4 streams'' on a page may be the total across bands (2+2), not a 4x4 radio'
+  - Printed as 'Tx/Rx' or 'NxN' or only as 'antennas' (external antenna count is not streams)
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 4
+- key: wifi.max_width_5_mhz
+  label: Max channel width 5 GHz
+  group: wifi
+  type: enum
+  unit: null
+  tier: core
+  why: 160 MHz doubles the 5 GHz rate but is often DFS-only and narrower in practice
+  level: model
+  enum:
+  - '20'
+  - '40'
+  - '80'
+  - '160'
+  facet: *id001
+  traps:
+  - Many Wi-Fi 6 routers claim 160 MHz but needs DFS channels; some units (budget AX1800) stop at 80
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: '160'
+- key: wifi.max_width_6_mhz
+  label: Max channel width 6 GHz
+  group: wifi
+  type: enum
+  unit: null
+  tier: important
+  why: 320 MHz is the Wi-Fi 7 headline feature
+  level: model
+  enum:
+  - '80'
+  - '160'
+  - '320'
+  facet: *id001
+  traps:
+  - BE5000/BE6500 class often 160 MHz max on 6 GHz or 5 GHz only
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: '320'
+- key: wifi.qam_max
+  label: Max modulation (QAM)
+  group: wifi
+  type: enum
+  unit: null
+  tier: detail
+  why: 4096-QAM (Wi-Fi 7) adds ~20% over 1024-QAM
+  level: model
+  enum:
+  - '256'
+  - '1024'
+  - '4096'
+  facet: *id001
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: '4096'
+- key: wifi.mlo
+  label: Multi-Link Operation (MLO)
+  group: wifi
+  type: bool
+  unit: null
+  tier: important
+  why: Wi-Fi 7 feature for latency; needs MLO-capable clients
+  level: model
+  facet: *id002
+  traps:
+  - Listed as 'Wi-Fi 7' but MLO added only via later firmware or not at all; STR vs EMLSR modes not stated
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: true
+- key: wifi.mu_mimo
+  label: MU-MIMO
+  group: wifi
+  type: bool
+  unit: null
+  tier: detail
+  why: Serves several clients at once
+  level: model
+  facet: *id002
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: true
+- key: wifi.ofdma
+  label: OFDMA
+  group: wifi
+  type: bool
+  unit: null
+  tier: detail
+  why: Wi-Fi 6+ efficiency feature
+  level: model
+  facet: *id002
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: true
+- key: wifi.wpa3
+  label: WPA3 support
+  group: wifi
+  type: bool
+  unit: null
+  tier: important
+  why: Security baseline; mandatory on Wi-Fi 7 6 GHz
+  level: model
+  facet: *id002
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: true
+- key: wifi.antennas
+  label: Antennas
+  group: wifi
+  type: text
+  unit: null
+  tier: detail
+  why: External vs internal antennas, replaceable?
+  level: model
+  facet: false
+  traps:
+  - Antenna count is not stream count
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 4 external
+- key: wifi.radio_chipset
+  label: Wi-Fi radio chipset
+  group: wifi
+  type: text
+  unit: null
+  tier: important
+  why: Offloaded radio (Qualcomm IPQ, Broadcom BCM, MediaTek MT76) decides driver, OpenWrt support and quality
+  level: revision
+  facet: false
+  traps:
+  - Often a separate chip from the SoC; hardware revisions switch vendors
+  sources:
+  - FCC ID exhibits (internal photos, test reports) via fccid.io / fcc.gov EAS
+  - OpenWrt Table of Hardware / DeviWiki
+  - Teardown (SmallNetBuilder, Tom's Hardware, Wikidevi/DeviWiki)
+  example: Qualcomm QCN5024 + QCN5054
+- key: hw.soc_vendor
+  label: SoC vendor
+  group: silicon
+  type: enum
+  unit: null
+  tier: core
+  why: 'Who makes the main chip: drives performance, security patch cadence, OpenWrt support'
+  level: revision
+  enum:
+  - qualcomm
+  - broadcom
+  - mediatek
+  - realtek
+  - intel
+  - marvell
+  - amlogic
+  - annapurna
+  - other
+  enum_open: true
+  facet:
+    kind: multi
+    column: false
+  traps:
+  - Manufacturer pages say 'Dual-Core CPU' (TP-Link) or 'triple-core 1.5GHz' (NETGEAR) without a vendor
+  - Same model number, new hardware version, different vendor (Archer C7 v1 Atheros vs v5 MediaTek)
+  sources:
+  - FCC ID exhibits (internal photos, test reports) via fccid.io / fcc.gov EAS
+  - OpenWrt Table of Hardware / DeviWiki
+  - Teardown / reviewer / firmware GPL source tarball
+  example: broadcom
+- key: hw.soc_model
+  label: SoC model
+  group: silicon
+  type: text
+  unit: null
+  tier: core
+  why: Exact part (BCM6750, IPQ5018, MT7988) tells capability and support
+  level: revision
+  facet: false
+  traps:
+  - Marketing 'quad-core 2.0GHz' maps to many SoCs
+  - Not on the spec sheet; found on internal photos or boot logs
+  sources:
+  - FCC ID exhibits (internal photos, test reports) via fccid.io / fcc.gov EAS
+  - OpenWrt Table of Hardware / DeviWiki
+  example: BCM6756
+- key: hw.cpu_cores
+  label: CPU cores
+  group: silicon
+  type: integer
+  unit: null
+  tier: important
+  why: Core count as printed
+  level: revision
+  facet:
+    kind: range
+    bins:
+    - 1
+    - 2
+    - 4
+  traps:
+  - Marketing 'Dual-Core CPU' may count the network processor; 64-bit cores differ
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 4
+- key: hw.cpu_ghz
+  label: CPU clock
+  group: silicon
+  type: number
+  unit: GHz
+  tier: detail
+  why: Headline CPU speed
+  level: revision
+  facet: false
+  traps:
+  - Clock without architecture says little (A53 vs A73)
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 2.0
+- key: hw.ram_mb
+  label: RAM (MB)
+  group: silicon
+  type: number
+  unit: MB
+  tier: core
+  why: Hardware RAM limits VPN, QoS/inspection and mesh node counts
+  level: revision
+  facet:
+    kind: range
+    bins:
+    - 128
+    - 256
+    - 512
+    - 1024
+    - 2048
+  traps:
+  - Rarely printed by TP-Link/NETGEAR; ASUS prints '256 MB Flash and 1 GB RAM'
+  - Hardware revisions halve RAM (128->64 MB)
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  - FCC ID exhibits (internal photos, test reports) via fccid.io / fcc.gov EAS
+  - OpenWrt Table of Hardware / DeviWiki
+  example: 1024
+- key: hw.flash_mb
+  label: Flash (MB)
+  group: silicon
+  type: number
+  unit: MB
+  tier: important
+  why: 'Storage for firmware: dual-image, packages (OpenWrt)'
+  level: revision
+  facet:
+    kind: range
+    bins:
+    - 16
+    - 128
+    - 256
+    - 512
+  traps:
+  - Flash can be NAND vs NOR; revisions change size
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  - FCC ID exhibits (internal photos, test reports) via fccid.io / fcc.gov EAS
+  - OpenWrt Table of Hardware / DeviWiki
+  example: 256
+- key: port.wan_speed_mbps
+  label: WAN port max speed
+  group: ports
+  type: number
+  unit: Mbps
+  tier: core
+  why: 1G WAN caps a gigabit+ ISP plan; 2.5G/10G needed for multi-gig plans
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 1000
+    - 2500
+    - 5000
+    - 10000
+    column: true
+  traps:
+  - '''2.5G WAN'' may be a WAN/LAN configurable port, only one'
+  - '''Multi-Gig'' marketing may mean 2.5G, not 10G'
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 2500
+- key: port.wan_type
+  label: WAN port type
+  group: ports
+  type: enum
+  unit: null
+  tier: important
+  why: SFP+ needs a transceiver for fiber ONTs
+  level: model
+  enum:
+  - rj45
+  - sfp
+  - sfp_plus
+  - rj45_sfp_combo
+  facet: *id001
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: rj45
+- key: port.lan_count
+  label: LAN ports
+  group: ports
+  type: integer
+  unit: null
+  tier: important
+  why: How many wired devices without a switch
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 1
+    - 2
+    - 4
+    - 8
+  traps:
+  - '''4 ports'' may include the WAN; WAN/LAN configurable ports counted twice'
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 4
+- key: port.lan_max_mbps
+  label: Fastest LAN port
+  group: ports
+  type: number
+  unit: Mbps
+  tier: important
+  why: Fastest wired client speed
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 1000
+    - 2500
+    - 5000
+    - 10000
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 2500
+- key: port.multigig_count
+  label: Ports >= 2.5 Gbps (all)
+  group: ports
+  type: integer
+  unit: null
+  tier: important
+  why: WAN+LAN ports at 2.5G or faster; which one is the WAN matters
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+  traps:
+  - 'Two 2.5G ports: one may be the WAN, only one usable for LAN'
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 2
+- key: port.wan_lan_configurable
+  label: Configurable WAN/LAN port
+  group: ports
+  type: bool
+  unit: null
+  tier: detail
+  why: Needed to use the 2.5G port as LAN
+  level: model
+  facet: *id002
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: true
+- key: port.link_aggregation
+  label: Link aggregation (LACP)
+  group: ports
+  type: bool
+  unit: null
+  tier: detail
+  why: For NAS/switch uplinks
+  level: model
+  facet: *id002
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: true
+- key: port.usb_count
+  label: USB ports
+  group: ports
+  type: integer
+  unit: null
+  tier: important
+  why: Storage/printer/cellular modem
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 0
+    - 1
+    - 2
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 1
+- key: port.usb_standard
+  label: USB standard
+  group: ports
+  type: enum
+  unit: null
+  tier: detail
+  why: USB 2.0 is slow for NAS use
+  level: model
+  enum:
+  - usb_2_0
+  - usb_3_0
+  - usb_3_2_gen1
+  - usb_3_2_gen2
+  facet: *id001
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: usb_3_0
+- key: port.poe
+  label: PoE input/output
+  group: ports
+  type: text
+  unit: null
+  tier: detail
+  why: Powered over Ethernet (APs)
+  level: model
+  facet: false
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: PoE+ in
+- key: mesh.supported
+  label: Mesh capable
+  group: mesh
+  type: bool
+  unit: null
+  tier: core
+  why: Can nodes be added?
+  level: model
+  facet: *id002
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: true
+- key: mesh.systems
+  label: Mesh protocols
+  group: mesh
+  type: list
+  unit: null
+  tier: important
+  why: Mixed-brand mesh needs EasyMesh; vendor meshes (OneMesh, AiMesh) only mix their own brand
+  level: model
+  enum:
+  - easymesh
+  - aimesh
+  - onemesh
+  - orbi
+  - deco
+  - eero
+  - google
+  - unifi
+  - other
+  enum_open: true
+  items: enum
+  facet: &id003
+    kind: multi
+  traps:
+  - '''EasyMesh'' may be firmware-added later; compatibility varies; OneMesh/AiMesh work only with the same vendor'
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example:
+  - easymesh
+  - aimesh
+- key: mesh.backhaul_types
+  label: Backhaul types
+  group: mesh
+  type: list
+  unit: null
+  tier: core
+  why: Dedicated radio vs shared with clients vs Ethernet decides mesh speed
+  level: model
+  enum:
+  - dedicated_wifi
+  - shared_wifi
+  - ethernet
+  - moca
+  - powerline
+  items: enum
+  facet: *id003
+  traps:
+  - Tri-band marketing implies dedicated backhaul but many tri-band kits share the second 5 GHz band with clients
+  - Wired backhaul needs a free LAN port per node
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example:
+  - dedicated_wifi
+  - ethernet
+- key: mesh.dedicated_backhaul_mbps
+  label: Dedicated backhaul band rate
+  group: mesh
+  type: number
+  unit: Mbps
+  tier: important
+  why: The band reserved for node-to-node traffic
+  level: model
+  facet: false
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 5760
+- key: mesh.max_nodes
+  label: Max nodes supported
+  group: mesh
+  type: integer
+  unit: null
+  tier: detail
+  why: Scale limit
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 2
+    - 3
+    - 5
+    - 10
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 10
+- key: mesh.coverage_sqft
+  label: Rated coverage (sqft)
+  group: mesh
+  type: number
+  unit: sqft
+  tier: detail
+  why: Marketing coverage claim; compare within brand only
+  level: model
+  facet: false
+  traps:
+  - Rated for ideal conditions, per pack, homes not floor area measured
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 6000
+- key: mesh.node_lan_ports
+  label: Satellite LAN ports
+  group: mesh
+  type: integer
+  unit: null
+  tier: important
+  why: Satellite nodes with no ports waste wired backhaul
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 0
+    - 1
+    - 2
+    - 4
+  traps:
+  - Some nodes have only 1 port (the uplink); eero 6 nodes 2 ports
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 2
+- key: sw.vpn_server
+  label: VPN server protocols
+  group: software
+  type: list
+  unit: null
+  tier: important
+  why: Remote access to home network
+  level: model
+  enum:
+  - openvpn
+  - wireguard
+  - pptp
+  - l2tp_ipsec
+  - ipsec
+  - tailscale
+  - instant_guard
+  - other
+  enum_open: true
+  items: enum
+  facet: *id003
+  traps:
+  - WireGuard often absent or via add-on app; 'VPN' on a box may mean passthrough
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example:
+  - openvpn
+  - wireguard
+- key: sw.vpn_client
+  label: VPN client protocols
+  group: software
+  type: list
+  unit: null
+  tier: detail
+  why: Router-level VPN to a provider
+  level: model
+  enum:
+  - openvpn
+  - wireguard
+  - pptp
+  - l2tp_ipsec
+  - ipsec
+  - other
+  enum_open: true
+  items: enum
+  facet: *id003
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example:
+  - openvpn
+- key: sw.wireguard
+  label: WireGuard support
+  group: software
+  type: bool
+  unit: null
+  tier: important
+  why: Fast modern VPN
+  level: model
+  facet: *id002
+  traps:
+  - Firmware-version dependent; check date added
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: true
+- key: sw.openwrt
+  label: OpenWrt support
+  group: software
+  type: enum
+  unit: null
+  tier: important
+  why: Supported hardware ends vendor lock-in
+  level: revision
+  enum:
+  - none
+  - snapshot
+  - stable
+  - stable_notes
+  facet: *id001
+  traps:
+  - Support is per hardware revision (Archer C7 v2 yes, v5 mostly)
+  sources:
+  - OpenWrt Table of Hardware / DeviWiki
+  example: stable
+- key: sw.app_required
+  label: Setup requires mobile app
+  group: software
+  type: bool
+  unit: null
+  tier: important
+  why: 'eero/Google/Orbi: app-only setup, account login'
+  level: model
+  facet: *id002
+  traps:
+  - Web UI absent or limited; account/cloud login needed
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: true
+- key: sw.web_ui
+  label: Local web admin UI
+  group: software
+  type: bool
+  unit: null
+  tier: important
+  why: Local control without cloud
+  level: model
+  facet: *id002
+  traps:
+  - eero has none; Google Nest Wifi none; features may be app-only
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: true
+- key: sw.subscription
+  label: Subscription-gated features
+  group: software
+  type: text
+  unit: null
+  tier: important
+  why: Which features need a paid plan (eero Plus, HomeShield Pro, Armor, Smart Parental)
+  level: model
+  facet: false
+  traps:
+  - Security/QoS shown on spec pages may require subscription after trial
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: HomeShield Pro, eero Plus
+- key: sw.operating_modes
+  label: Operating modes
+  group: software
+  type: list
+  unit: null
+  tier: detail
+  why: Router/AP/bridge/repeater modes
+  level: model
+  enum:
+  - router
+  - access_point
+  - bridge
+  - repeater
+  - media_bridge
+  - mesh_node
+  enum_open: true
+  items: enum
+  facet: *id003
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example:
+  - router
+  - access_point
+- key: sw.qos
+  label: QoS
+  group: software
+  type: text
+  unit: null
+  tier: detail
+  why: Traffic prioritisation / gaming acceleration
+  level: model
+  facet: false
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: Adaptive QoS
+- key: sw.parental_controls
+  label: Parental controls
+  group: software
+  type: bool
+  unit: null
+  tier: detail
+  why: Present vs subscription
+  level: model
+  facet: *id002
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: true
+- key: sup.eol_policy
+  label: Firmware / end-of-life policy
+  group: support
+  type: text
+  unit: null
+  tier: core
+  why: How long the maker commits to security updates
+  level: model
+  facet: false
+  traps:
+  - Most brands publish no committed window; Google/eero publish a support-until date
+  - 'Absence is the finding: record not_published, never infer'
+  sources:
+  - Manufacturer support policy page / End-of-Life notices
+  - Product support page (firmware history)
+  example: Security updates for 5 years from launch
+- key: sup.security_updates_until
+  label: Security updates until
+  group: support
+  type: date
+  unit: null
+  tier: core
+  why: The date a buyer can rely on patches
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 2025
+    - 2027
+    - 2029
+    - 2031
+  traps:
+  - Only some vendors state it; derive from firmware release history only as a 'last_release' fact, not a promise
+  sources:
+  - Manufacturer EOL / support-until page
+  example: '2031-06-30'
+- key: sup.latest_firmware_date
+  label: Latest firmware release date
+  group: support
+  type: date
+  unit: null
+  tier: important
+  why: Staleness signal; fetch date matters
+  level: revision
+  facet: false
+  traps:
+  - Per hardware version and region (US vs EU); V1 may be dead while V4 updates
+  - 'Value changes on every fetch: always store fetched_at'
+  sources:
+  - TP-Link support download page; NETGEAR/ASUS download center
+  example: '2026-05-27'
+- key: sup.firmware_age_months
+  label: Months since latest firmware (months)
+  group: support
+  type: number
+  unit: month
+  tier: detail
+  why: Derived from latest release date at fetch
+  level: revision
+  facet: false
+  sources:
+  - Derived
+  example: 6
+- key: sup.warranty_years
+  label: Warranty (years)
+  group: support
+  type: number
+  unit: null
+  tier: important
+  why: Coverage length
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 1
+    - 2
+    - 3
+    - 5
+  traps:
+  - Region and registration dependent (NETGEAR requires registration/authorized reseller)
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 1
+- key: sup.hardware_versions
+  label: Hardware versions (US)
+  group: support
+  type: list
+  unit: null
+  tier: core
+  why: Which revisions exist for this model number; specs may differ
+  level: model
+  items: text
+  facet: false
+  traps:
+  - V1/V2/V3 under one model name can have different SoC, RAM, bands (TP-Link V4.60 = 'V4' variant); region versions differ (US vs EU)
+  - 'Version list on the download page is dynamic: not per-version specs'
+  sources:
+  - TP-Link support download version selector
+  - Label on device
+  example:
+  - V1
+  - V4
+  - V4.60
+- key: sup.hardware_version
+  label: Hardware version
+  group: support
+  type: text
+  unit: null
+  tier: core
+  why: 'The revision of this unit (label ''Ver: 4.0'')'
+  level: revision
+  facet: false
+  traps:
+  - Retail listings rarely name the version; the box/label does
+  sources:
+  - Device label
+  - Manufacturer download page
+  example: V4.60
+- key: isp.compat
+  label: ISP compatibility
+  group: compat
+  type: text
+  unit: null
+  tier: important
+  why: Works with the ISP's modem/ONT; ISP-locked kits excluded
+  level: model
+  facet: false
+  traps:
+  - 'Router vs gateway: ISP-leased gateways (Xfinity xFi, Spectrum) are distinct from retail routers'
+  - Some ISPs (Verizon FiOS) require coax/MoCA bridging
+  sources:
+  - Manufacturer compatibility page; ISP support pages
+  example: Works with any ISP; needs modem
+- key: isp.modem_builtin
+  label: Built-in modem
+  group: compat
+  type: enum
+  unit: null
+  tier: important
+  why: DOCSIS/DSL gateways replace the modem
+  level: model
+  enum:
+  - none
+  - docsis
+  - vdsl
+  - cellular_5g
+  facet: *id001
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: none
+- key: isp.ipv6
+  label: IPv6
+  group: compat
+  type: bool
+  unit: null
+  tier: detail
+  why: Dual-stack support
+  level: model
+  facet: *id002
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: true
+- key: pwr.input
+  label: Power input
+  group: phys
+  type: text
+  unit: null
+  tier: detail
+  why: Adapter spec / PoE
+  level: model
+  facet: false
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 12 V 2 A
+- key: pwr.max_w
+  label: Max power consumption
+  group: phys
+  type: number
+  unit: W
+  tier: detail
+  why: Cost of running 24/7 (typical idle often not stated)
+  level: model
+  facet: false
+  traps:
+  - Max, not idle
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 24
+- key: phys.weight
+  label: Weight
+  group: phys
+  type: number
+  unit: g
+  tier: detail
+  why: Shipping/mounting
+  level: model
+  facet: false
+  traps:
+  - With or without antennas; single node vs pack
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 566
+- key: phys.dimensions
+  label: Dimensions
+  group: phys
+  type: object
+  unit: null
+  tier: detail
+  why: Space
+  level: model
+  fields:
+  - key: length
+    type: number
+    unit: mm
+  - key: width
+    type: number
+    unit: mm
+  - key: height
+    type: number
+    unit: mm
+  facet: false
+  traps:
+  - With antennas folded vs deployed
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example:
+    length: 295.8
+    width: 206
+    height: 57.2
+- key: phys.wall_mountable
+  label: Wall mountable
+  group: phys
+  type: bool
+  unit: null
+  tier: detail
+  why: Mounting option
+  level: model
+  facet: *id002
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: true
+- key: id.fcc_id
+  label: FCC ID
+  group: identity
+  type: text
+  unit: null
+  tier: important
+  why: Joins the filing exhibits (internal photos, test reports) to the product; alias scheme only
+  level: model
+  facet: false
+  traps:
+  - Grantee code + product code; the same product code spans hardware revisions and SKUs; one model can carry multiple FCC IDs (Wi-Fi 6E variants)
+  - 'Not an identity key: see identity.md'
+  sources:
+  - Label; fccid.io / fcc.gov EAS
+  example: 2AXJ4AX55
+- key: id.msrp_us
+  label: US list price (at fetch)
+  group: identity
+  type: number
+  unit: USD
+  tier: detail
+  why: Price on the manufacturer page when fetched
+  level: model
+  facet: false
+  traps:
+  - Changes constantly; store with fetched_at
+  sources:
+  - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
+  example: 129.99

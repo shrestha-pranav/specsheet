@@ -655,6 +655,101 @@
   }
  },
  {
+  "id": "routers",
+  "name": "Wi-Fi routers & mesh",
+  "description": "Wi-Fi routers and whole-home mesh systems by manufacturer model number: Wi-Fi generation, per-band rates and streams, WAN/LAN port speeds, mesh backhaul, SoC/RAM/flash (revision-level), VPN, firmware support. Sources: TP-Link, NETGEAR, ASUS product pages; FCC filings and OpenWrt for silicon.",
+  "count": 247,
+  "demo": false,
+  "status": "accepted",
+  "schema": "routers/schema.json",
+  "index": [
+   "routers/index.json"
+  ],
+  "facets": "routers/facets.json",
+  "products": "routers/products.json",
+  "fields": [
+   {
+    "key": "gen.pack_count",
+    "label": "Nodes in pack",
+    "group": "general",
+    "type": "number",
+    "unit": null,
+    "facet": true,
+    "priority": 40,
+    "column": true
+   },
+   {
+    "key": "wifi.generation",
+    "label": "Wi-Fi generation (highest)",
+    "group": "wifi",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "wifi.marketing_class",
+    "label": "Marketing class (AX5400, BE19000)",
+    "group": "wifi",
+    "type": "text",
+    "unit": null,
+    "facet": false,
+    "priority": 20,
+    "column": true
+   },
+   {
+    "key": "wifi.band_count",
+    "label": "Number of radios (bands)",
+    "group": "wifi",
+    "type": "number",
+    "unit": null,
+    "facet": true,
+    "priority": 30,
+    "column": true
+   },
+   {
+    "key": "hw.ram_mb",
+    "label": "RAM (MB)",
+    "group": "silicon",
+    "type": "number",
+    "unit": "MB",
+    "facet": true,
+    "priority": 50,
+    "column": true
+   },
+   {
+    "key": "port.wan_speed_mbps",
+    "label": "WAN port max speed",
+    "group": "ports",
+    "type": "number",
+    "unit": "Mbps",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "port.lan_count",
+    "label": "LAN ports",
+    "group": "ports",
+    "type": "number",
+    "unit": null,
+    "facet": true,
+    "priority": 30,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/routers/index.json"
+   ],
+   "count": 162,
+   "products": "preview/routers/products/",
+   "only_preview": 0
+  }
+ },
+ {
   "id": "ssds",
   "name": "SSDs",
   "description": "Consumer SSDs by manufacturer part number: capacity, interface, controller/NAND/DRAM (revision-level), endurance, form factor. Sources: Samsung/WD/Crucial/Kingston datasheets, review teardowns.",

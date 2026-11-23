@@ -1,0 +1,36 @@
+name: Wi-Fi routers & mesh
+description: 'Wi-Fi routers and whole-home mesh systems by manufacturer model number: Wi-Fi generation, per-band rates and streams, WAN/LAN port speeds,
+  mesh backhaul, SoC/RAM/flash (revision-level), VPN, firmware support. Sources: TP-Link, NETGEAR, ASUS product pages; FCC filings and OpenWrt for silicon.'
+columns:
+- wifi.generation
+- wifi.marketing_class
+- wifi.band_count
+- port.wan_speed_mbps
+- port.lan_count
+- hw.ram_mb
+- gen.pack_count
+features:
+- stem_links
+stem:
+  cut_at:
+  - /
+  strip_market_suffix: false
+brand_aliases:
+  tplink: tp_link
+  tp-link: tp_link
+  google: google_nest
+  nest: google_nest
+  gl.inet: gl_inet
+  glinet: gl_inet
+brand_names:
+  tp_link: TP-Link
+  netgear: NETGEAR
+  asus: ASUS
+  eero: eero
+  google_nest: Google Nest Wifi
+  linksys: Linksys
+  ubiquiti: Ubiquiti
+  gl_inet: GL.iNet
+  synology: Synology
+  amazon: Amazon
+skip_alias_pattern: \b(extender|repeater|range extender|powerline|usb adapter|switch|camera|modem only|cable modem)\b

@@ -86,6 +86,23 @@ def variant_label(cfg, specdefs, e, specs):
     return " / ".join(parts) or None
 
 
+def revision_label(ent, idents):
+    """Short hardware-version label: the importer's revision_label (e.g. "V4.60"), else the key identifier of a revision scheme, else the name."""
+    lab = json.loads(ent["extra"]).get("revision_label")
+    return lab or next((i["value_raw"] for i in idents if i["role"] == "key" and i["scheme"] in ("hw_rev", "hw_version", "edid_id")), None) or ent["name"]
+
+
+def revision_entry(rd, ent, idents, model_detail):
+    """Entry of a model detail's `revisions[]` (contract: team/briefs/a4-contract.md). Only the revision's OWN specs (inherited ones equal the model's),
+    with the sources they cite re-listed so the entry resolves on its own; `differs` = keys whose value differs from (or is absent on) the model."""
+    own = {k: v for k, v in rd["specs"].items() if not v.get("inherited_from")}
+    cited = {x for v in own.values() for x in v["sources"]}
+    ms = model_detail["specs"]
+    differs = sorted(k for k, v in own.items() if json.dumps(ms.get(k, {}).get("value"), sort_keys=True) != json.dumps(v.get("value"), sort_keys=True) or ms.get(k, {}).get("status") != v["status"])
+    return {"id": rd["id"], "label": revision_label(ent, idents), "name": rd["name"], "lifecycle": rd["lifecycle"], "specs": own,
+            "sources": [s for s in rd["sources"] if s["id"] in cited], "differs": differs}
+
+
 def load_profile(cat):
     return catmeta.load(cat)["profile"]
 
@@ -178,6 +195,8 @@ def publish(api: Path, build_stats: dict):
         preview, _ = view(ents, claims, absn, specdefs, parent_of, {"accepted", "candidate"})
 
         def selectable(eid, specs):
+            if ents[eid]["kind"] == "revision" and not cfg.get("revision_rows"):
+                return False        # revisions are published inside their model's detail (and as their own detail file); index rows are opt-in
             return ents[eid]["kind"] != "family" and any(r["status"] in ("known", "conflicted") for r in specs.values()) \
                 and catmeta.passes_market_filter(cfg, idents[eid])
 
@@ -190,7 +209,9 @@ def publish(api: Path, build_stats: dict):
             for r in (ents[eid]["parent_id"], ents[eid]["family_id"]):
                 while r and r in ents and r not in pub and r not in anc:
                     anc.add(r); r = ents[r]["parent_id"]
-        files_t = pub | anc
+        # a revision of any published model/ancestor model gets a detail file even when it has no index row (a link target for the model's `revisions[]`)
+        rev_files = {eid for eid, e in ents.items() if e["kind"] == "revision" and e["parent_id"] in (pub | anc) and any(r["status"] in ("known", "conflicted") for r in trusted[eid].values())}
+        files_t = pub | anc | rev_files
         children = collections.defaultdict(list)
         for eid in files_t:
             if ents[eid]["parent_id"] in files_t:
@@ -284,6 +305,11 @@ def publish(api: Path, build_stats: dict):
                 for i in idents[eid]:
                     if i["valid"] and not i["disputed"] and i["scheme"] in ("mtm", "mfr_model", "mfr_sku", "gtin"):
                         lookup[f"{i['scheme']}:{lookup_norm(i['scheme'], i['value'])}"].add(eid)
+        for mid, d in details.items():
+            revs = [c for c in children.get(mid, []) if ents[c]["kind"] == "revision"]
+            if not revs:
+                continue
+            d["revisions"] = [revision_entry(details[c], ents[c], idents[c], d) for c in sorted(revs, key=lambda c: (details[c]["name"], c))]
         for eid in rows_p:
             specs = {k: dict(v) for k, v in preview[eid].items()}
             d = header(eid, specs, "preview")
@@ -305,7 +331,7 @@ def publish(api: Path, build_stats: dict):
         for eid, d in details.items():
             dump(folder / "products" / f"{eid}.json", d, compact=True)
         paths = write_shards(folder, out_rows)
-        dump(folder / "facets.json", build_facets(fields, out_rows), compact=True)
+        dump(folder / "facets.json", build_facets(fields, [r for r in out_rows if r["kind"] != "revision"]), compact=True)
         pfolder = api / "preview" / cat
         (pfolder / "products").mkdir(parents=True, exist_ok=True)
         for eid, d in pdetails.items():

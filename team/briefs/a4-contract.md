@@ -92,3 +92,20 @@ PRODUCT.md forbids remote services and analytics, so nothing is logged passively
 - Sources may carry `via: <ancestor id>` when an inherited spec cites the ancestor's page.
 - New laptop fields: `cpu.cores`, `cpu.threads`, `cpu.base_clock`, `cpu.cache` (split out of the PSREF/ASUS/Apple processor cell;
   `cpu.model` is now the bare model name).
+
+## Revisions (A3-impl, 2026-11-23)
+A `revision` is a hardware version of ONE model (TP-Link Archer AX55 V1 / V1.60 / V4 / V4.60 with different SoC/RAM; later SSD controller/NAND or monitor panel swaps). It is a child of its model
+(`parent_id` = model, relation `variant_of`) and inherits every model spec; it states only what differs or is version-specific.
+- **Model detail** gets `revisions[]` (absent when none; never on a revision): `[{id, label, name, lifecycle, specs{key: resolved}, sources[], differs[]}]`, sorted by name.
+  `label` = short version string ("V4.60"); `specs` = the revision's OWN specs only (no `inherited_from`; render the model's table and overlay these);
+  `sources` = only the sources those specs cite (ids local to the entry, like a detail record); `differs` = own spec keys whose value or status differs from (or is absent on) the model.
+  Also listed in `children` (ids). Render a "Hardware versions" selector/tabs on the model page: default view = model; picking a version overlays its `specs`, falls back to the
+  model's value elsewhere ("from model"), and links to the revision's own page. An empty `specs` (e.g. V1 on most TP-Link models) means "nothing known beyond the model": say so, don't imply identical hardware.
+- **Revision detail** `products/<rev-id>.json`: normal record, `kind: "revision"`, relations `variant_of -> model`, specs = own + inherited (`inherited_from` = model). Published for every revision of a published model.
+- **Index rows**: revisions are NOT rows by default (they'd double-count every model in facets and the count). A category opts in with `revision_rows: true` in `research/<cat>/category.yaml`; rows then
+  have `kind: "revision"`, `parent_id`, `name` like "Archer AX55 (rev V4)" and `variant_label` per category.yaml. Facets (`facets.json`) are always computed over non-revision rows.
+  UI: treat `kind=revision` rows as children (group under `parent_id`, or hide by default), never as separate products in counts.
+- Trusted only: preview details of a model do not list revisions yet.
+- Identity: scheme `hw_version`, value `"<model> <version>"` (model-scoped; the bare version is not unique), adapter extra `revision_label`. Unknown stays unknown: a source that shows one version's table
+  (TP-Link) attributes revision-level specs (chipset, RAM, flash, firmware date) to that default revision only.
+- **A4 to do** (docs/app.js, styles.css untouched by this round): model-page version selector as above; optional revision row handling if a category enables `revision_rows`; search results for revision rows.

@@ -122,6 +122,39 @@ claim_policies:
       statuses: [known, not_applicable]
       keys: [gen.device_class, gen.form_factor, gen.weight, if.pcie_gen, if.pcie_lanes, if.protocol, if.nvme_version, if.usb_standard, if.usb_connector, hw.controller, hw.controller_vendor, hw.dram_type, hw.dram_size, hw.dram_gen, hw.nand_type, hw.nand_vendor, perf.seq_read, perf.seq_write, perf.rand_read_iops_qd1, perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption, therm.temp_operating, port.drop]
       require_normalized: true
+  - id: claim/mfr-routers-structured@1
+    since: "2026-11-23"
+    rationale: >-
+      Wi-Fi routers/mesh, manufacturer-owned spec tables: TP-Link US product + support pages (tplink_routers@1), NETGEAR US product pages (netgear_routers@1),
+      ASUS US techspec tables (asus_routers@1). Per field: only the listed keys, only values that normalise to the profile type. Per-band rates and
+      streams come from text segments that start at a band marker, never from the class number (AX5400); widths 320 MHz only with a 6 GHz radio; stream counts
+      only from an explicit NxN. Fetch-time facts (id.msrp_us, sup.latest_firmware_date), the free-text fields (antennas, QoS, power input) and anything the
+      pages do not state (SoC vendor/model, FCC ID, support end date) are NOT accepted: preview candidates or absent.
+      gen.device_type / gen.product_line are accepted only for TP-Link and ASUS (URL section), see claim/mfr-routers-class@1.
+    audit: "A2 routers report: 106 TP-Link, 60 NETGEAR, 82 ASUS pages parsed; spot check of deco-be25, archer-be800, rbe972sb, rt-ax86u-pro, xt8 (raw vs normalised), 2026-11-23"
+    match:
+      extractors: [tplink_routers@1, netgear_routers@1, asus_routers@1]
+      source_ids: [tplink-us-routers, netgear-us-routers, asus-us-routers]
+      kinds: [official]
+      tiers: [manufacturer]
+      statuses: [known, not_applicable]
+      keys: [gen.pack_count, wifi.generation, wifi.marketing_class, wifi.band_count, wifi.has_6ghz, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_5_2_mbps, wifi.rate_6_mbps, wifi.streams_24, wifi.streams_5, wifi.streams_5_2, wifi.streams_6, wifi.max_width_5_mhz, wifi.max_width_6_mhz, wifi.qam_max, wifi.mlo, wifi.mu_mimo, wifi.ofdma, wifi.wpa3, hw.cpu_cores, hw.cpu_ghz, hw.ram_mb, hw.flash_mb, port.wan_speed_mbps, port.wan_type, port.lan_count, port.lan_max_mbps, port.multigig_count, port.wan_lan_configurable, port.usb_count, port.usb_standard, mesh.supported, mesh.systems, mesh.coverage_sqft, sw.vpn_server, sw.vpn_client, sw.wireguard, sw.operating_modes, sw.parental_controls, isp.ipv6, phys.weight, phys.dimensions, sup.hardware_version]
+      require_normalized: true
+  - id: claim/mfr-routers-class@1
+    since: "2026-11-23"
+    rationale: >-
+      Device class and product line derived from the manufacturer's own URL section (TP-Link wifi-router vs deco-mesh-wifi, ASUS wifi-routers vs
+      whole-home-mesh-systems and the asus-zenwifi / asus-gaming-routers group). NETGEAR is excluded: its class comes from a model-prefix heuristic
+      (rbs = satellite) and stays a preview candidate.
+    audit: "A2 routers report, URL sections listed in the adapters' discover docstrings, 2026-11-23"
+    match:
+      extractors: [tplink_routers@1, asus_routers@1]
+      source_ids: [tplink-us-routers, asus-us-routers]
+      kinds: [official]
+      tiers: [manufacturer]
+      statuses: [known]
+      keys: [gen.device_type, gen.product_line]
+      require_normalized: true
 relation_policies:
   - id: rel/source-stated-hierarchy@1
     since: "2026-11-22"

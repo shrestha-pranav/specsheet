@@ -95,6 +95,22 @@ units:
   display:
     mm: in
     g: oz
+  custom:
+  - unit: MB/s
+    base: B/s
+    factor: 1000000.0
+  - unit: IOPS
+    base: IOPS
+    factor: 1
+  - unit: h
+    base: h
+    factor: 1
+  - unit: year
+    base: year
+    factor: 1
+  - unit: mW
+    base: W
+    factor: 0.001
 conditions:
 - id: cache_state
   label: SLC cache state

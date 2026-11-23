@@ -12,6 +12,7 @@ category.yaml keys (all optional; defaults in DEFAULTS):
   stem                     {cut_at: ["/", "#"], strip_market_suffix: true}   model-string stem used by stem_links (proposals only)
   brand_aliases / brand_names   issuer string -> canonical brand id / display name (certifier sources spell brands their own way)
   skip_alias_pattern       regex; a certifier row whose listing text matches is out of category (e.g. laptops in the DisplayHDR table)
+  revision_rows            true = publish kind=revision entities as index rows too (default: only in the model detail's revisions[] and as detail files)
   package_markets          {mtm: {suffix: US}}  package entities are minted only for these identifiers (others counted as regional)
 """
 import os, re
@@ -21,7 +22,7 @@ import yaml
 
 ROOT = Path(os.environ.get("SPECSHEET_ROOT") or Path(__file__).resolve().parent.parent)
 DEFAULTS = {"columns": [], "market_filter": None, "variant_label": None, "features": [], "stem": None, "brand_aliases": {}, "brand_names": {},
-            "skip_alias_pattern": None, "package_markets": None}
+            "skip_alias_pattern": None, "package_markets": None, "revision_rows": False}
 
 
 def load(cat, root=None):

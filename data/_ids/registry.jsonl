@@ -11294,3 +11294,495 @@
 {"anchors": ["ssds|mfr_sku|western digital|WDS500G5B0A-00LMP0|"], "at": "2026-11-23T09:03:44Z", "category": "ssds", "id": "western-digital-wds500g5b0a-00lmp0", "kind": "configuration"}
 {"anchors": ["ssds|mfr_sku|western digital|WDS500G5B0E-00CPE0|"], "at": "2026-11-23T09:03:44Z", "category": "ssds", "id": "western-digital-wds500g5b0e-00cpe0", "kind": "configuration"}
 {"anchors": ["ssds|mfr_sku|western digital|WDS500G5G0E-00VNF0|"], "at": "2026-11-23T09:03:44Z", "category": "ssds", "id": "western-digital-wds500g5g0e-00vnf0", "kind": "configuration"}
+{"anchors": ["routers|mfr_model|asus|CT8|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-ct8", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|XC5|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-xc5", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|XD4|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-xd4", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|XP4|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-xp4", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|XT8|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-xt8", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AC65|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ac65", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX55|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax55", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX57|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax57", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-BE50|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-be50", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-BE55|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-be55", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-BE59|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-be59", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|MK6W|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-mk6w", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|MK72|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-mk72", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|MK73|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-mk73", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|MS70|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-ms70", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|MS90|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-ms90", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RAX5|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rax5", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RAX9|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rax9", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AC67P|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ac67p", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AC68U|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ac68u", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AC86U|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ac86u", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AC88U|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ac88u", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX56U|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax56u", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX58U|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax58u", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX68U|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax68u", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX82U|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax82u", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX88U|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax88u", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX89X|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax89x", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX92U|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax92u", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-BE58U|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-be58u", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-BE86U|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-be86u", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-BE88U|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-be88u", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-BE90U|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-be90u", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-BE92U|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-be92u", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-BE96U|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-be96u", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|MK73S|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-mk73s", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|MK93S|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-mk93s", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RAX36|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rax36", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RAX41|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rax41", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RAX43|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rax43", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RAX70|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rax70", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBK13|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbk13", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RS100|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rs100", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RS150|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rs150", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RS200|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rs200", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RS300|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rs300", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RS500|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rs500", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RS600|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rs600", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|BLUE CAVE|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-blue-cave", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AC3100|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ac3100", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AC5300|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ac5300", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-ACRH13|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-acrh13", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-ACRH17|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-acrh17", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX3000|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax3000", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX5400|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax5400", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-BE9700|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-be9700", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|CBK753|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-cbk753", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RAX120|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rax120", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RAX54S|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rax54s", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE370|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe370", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE372|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe372", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE373|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe373", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE374|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe374", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE770|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe770", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE772|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe772", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE773|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe773", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE870|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe870", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE872|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe872", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE873|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe873", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE970|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe970", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBK764|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbk764", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBK852|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbk852", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBK854|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbk854", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBS760|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbs760", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RS280S|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rs280s", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RS700S|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rs700s", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|LYRA VOICE|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-lyra-voice", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AC1900P|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ac1900p", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX1800S|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax1800s", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX3000S|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax3000s", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX50 GO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax50-go", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX57 GO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax57-go", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AXE7800|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-axe7800", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-BE58 GO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-be58-go", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-N300 B1|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-n300-b1", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RAX40V2|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rax40v2", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE870B|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe870b", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE873B|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe873b", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE970B|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe970b", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE971S|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe971s", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE972S|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe972s", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE973S|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe973s", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBK753P|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbk753p", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBK763S|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbk763s", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBK862S|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbk862s", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBK863S|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbk863s", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBR860S|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbr860s", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBS860B|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbs860b", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBSE960|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbse960", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AC1200GE|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ac1200ge", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AC66U B1|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ac66u-b1", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI BD4|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-bd4", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI BD5|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-bd5", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI BT6|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-bt6", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI BT8|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-bt8", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI ET8|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-et8", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI ET9|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-et9", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI XD5|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-xd5", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI XD6|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-xd6", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI XT9|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-xt9", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE971SB|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe971sb", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE972SB|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe972sb", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBE973SB|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbe973sb", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBK862SB|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbk862sb", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBK863SB|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbk863sb", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO X10|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-x10", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO X15|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-x15", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO X20|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-x20", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO X25|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-x25", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO X50|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-x50", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO X55|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-x55", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO X60|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-x60", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO X68|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-x68", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO X90|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-x90", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO X95|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-x95", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AC1200 V2|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ac1200-v2", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX86U PRO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax86u-pro", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX88U PRO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax88u-pro", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI BN12|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-bn12", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI BT10|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-bt10", "kind": "model"}
+{"anchors": ["routers|mfr_model|netgear|RBK652SV2|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "netgear-rbk652sv2", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER A7|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-a7", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER C6|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-c6", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER C7|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-c7", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE23|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be23", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE25|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be25", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE63|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be63", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE65|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be65", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE67|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be67", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE68|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be68", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE75|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be75", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE77|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be77", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE85|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be85", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE95|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be95", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO XE75|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-xe75", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER C80|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-c80", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO W7200|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-w7200", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO X1500|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-x1500", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO X5000|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-x5000", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO X5700|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-x5700", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO XE200|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-xe200", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI BE3600|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-be3600", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI BE5000|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-be5000", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX10|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax10", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX20|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax20", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX21|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax21", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX50|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax50", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX55|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax55", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX73|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax73", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX75|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax75", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX80|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax80", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX90|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax90", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER GX90|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-gx90", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE3600|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be3600", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE4600|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be4600", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE5000|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be5000", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO XE5300|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-xe5300", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX92U 2 PACK|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax92u-2-pack", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI AXE7800|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-axe7800", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI BE30000|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-be30000", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AXE75|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-axe75", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AXE95|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-axe95", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE230|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be230", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE260|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be260", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE400|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be400", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE550|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be550", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE600|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be600", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE670|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be670", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE700|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be700", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE770|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be770", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE800|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be800", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE805|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be805", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE900|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be900", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER GE400|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ge400", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER GE650|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ge650", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER GE800|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ge800", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE11000|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be11000", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE13000|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be13000", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE16000|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be16000", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE65-5G|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be65-5g", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO X50-POE|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-x50-poe", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO X55-PRO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-x55-pro", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI BQ16 PRO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-bq16-pro", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI PRO ET12|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-pro-et12", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI PRO XT12|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-pro-xt12", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI XD4 PLUS|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-xd4-plus", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX1450|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax1450", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX1500|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax1500", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX1800|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax1800", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX3000|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax3000", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX3200|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax3200", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX4400|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax4400", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX6000|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax6000", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AXE300|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-axe300", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE3200|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be3200", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE3500|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be3500", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE3600|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be3600", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE4600|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be4600", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE4800|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be4800", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE5000|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be5000", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE6100|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be6100", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE6500|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be6500", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE9300|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be9300", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE9500|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be9500", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE9700|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be9700", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE65 PRO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be65-pro", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE65-POE|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be65-poe", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO XE70 PRO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-xe70-pro", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO XE75 PRO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-xe75-pro", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|TUF GAMING AX5400|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-tuf-gaming-ax5400", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|TUF GAMING AX6000|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-tuf-gaming-ax6000", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|TUF GAMING BE3600|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-tuf-gaming-be3600", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|TUF GAMING BE6500|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-tuf-gaming-be6500", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX10000|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax10000", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX11000|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax11000", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AXE5400|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-axe5400", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO X4300 PRO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-x4300-pro", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO X5400 PRO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-x5400-pro", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI BE5000 PRO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-be5000-pro", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX55 PRO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax55-pro", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX72 PRO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax72-pro", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|ZENWIFI BD5 OUTDOOR|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-zenwifi-bd5-outdoor", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE550 PRO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be550-pro", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE700 PRO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be700-pro", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO X20-OUTDOOR|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-x20-outdoor", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO X50-OUTDOOR|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-x50-outdoor", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX3000 PRO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax3000-pro", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER AX5400 PRO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-ax5400-pro", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE3600 PRO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be3600-pro", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE25-OUTDOOR|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be25-outdoor", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|DECO BE65-OUTDOOR|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-deco-be65-outdoor", "kind": "model"}
+{"anchors": ["routers|mfr_model|tp_link|ARCHER BE11000 PRO|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "tp-link-archer-be11000-pro", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX82U GUNDAM EDITION|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax82u-gundam-edition", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX86U ZAKU II EDITION|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax86u-zaku-ii-edition", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-BE82U | NETWORKING | USA|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-be82u-networking-usa", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|TUF GAMING BE9400 | WIFI 7 | USA|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-tuf-gaming-be9400-wifi-7-usa", "kind": "model"}
+{"anchors": ["routers|mfr_model|asus|RT-AX86 SERIES(RT-AX86U/RT-AX86S)|"], "at": "2026-11-23T09:32:42Z", "category": "routers", "id": "asus-rt-ax86-series-rt-ax86u-rt-ax86s", "kind": "model"}
+{"anchors": ["routers|hw_version|tp_link|DECO X10 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x10-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X20 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x20-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X20 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x20-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X20 V3|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x20-v3", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X20 V4|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x20-v4", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X20 V5|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x20-v5", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X25 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x25-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X25 V3|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x25-v3", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X50 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x50-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X55 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x55-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X60 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x60-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X60 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x60-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X60 V3|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x60-v3", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X60 V4|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x60-v4", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X68 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x68-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X68 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x68-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X90 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x90-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X95 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x95-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER C6 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-c6-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER C7 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-c7-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER C7 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-c7-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER C7 V3|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-c7-v3", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER C7 V4|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-c7-v4", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER C7 V5|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-c7-v5", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE25 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be25-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE65 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be65-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE65 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be65-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE65 V3|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be65-v3", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE75 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be75-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE85 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be85-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE95 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be95-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO XE75 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-xe75-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO XE75 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-xe75-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER C80 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-c80-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER C80 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-c80-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO W7200 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-w7200-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO XE200 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-xe200-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX10 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax10-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX10 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax10-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX10 V3|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax10-v3", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX20 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax20-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX21 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax21-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX21 V3|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax21-v3", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX50 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax50-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX55 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax55-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX55 V4|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax55-v4", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX73 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax73-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX73 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax73-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX75 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax75-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX80 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax80-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX90 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax90-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER GX90 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-gx90-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X10 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x10-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X20 V1.20|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x20-v1-20", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X20 V1.26|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x20-v1-26", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X20 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x20-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X20 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x20-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X20 V3.26|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x20-v3-26", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X20 V3.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x20-v3-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X20 V4.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x20-v4-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X20 V5.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x20-v5-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X25 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x25-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X25 V3.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x25-v3-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X25 V4.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x25-v4-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X50 V1.30|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x50-v1-30", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X50 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x50-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X55 V1.26|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x55-v1-26", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X55 V1.32|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x55-v1-32", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X55 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x55-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X60 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x60-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X60 V3.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x60-v3-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X60 V4.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x60-v4-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X68 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x68-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X68 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x68-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X90 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x90-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X95 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x95-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AXE75 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-axe75-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AXE75 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-axe75-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AXE95 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-axe95-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE230 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be230-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE230 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be230-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE550 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be550-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE550 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be550-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE600 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be600-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE700 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be700-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE800 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be800-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE805 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be805-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE900 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be900-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE900 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be900-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER C6 V2.80|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-c6-v2-80", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER C7 V5.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-c7-v5-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER C7 V5.80|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-c7-v5-80", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER GE400 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ge400-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER GE650 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ge650-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER GE800 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ge800-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE16000 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be16000-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE25 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be25-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE63 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be63-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE63 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be63-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE63 V3.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be63-v3-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE65 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be65-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE75 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be75-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE85 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be85-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE95 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be95-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X50-POE V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x50-poe-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X50-POE V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x50-poe-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X55-PRO V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x55-pro-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO XE75 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-xe75-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO XE75 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-xe75-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO XE75 V3.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-xe75-v3-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX1500 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax1500-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX3000 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax3000-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX3200 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax3200-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX4400 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax4400-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX6000 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax6000-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX6000 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax6000-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AXE300 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-axe300-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE9700 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be9700-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER C80 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-c80-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER C80 V2.20|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-c80-v2-20", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER C80 V2.26|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-c80-v2-26", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER C80 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-c80-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE65 PRO V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be65-pro-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO W7200 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-w7200-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO XE200 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-xe200-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO XE75 PRO V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-xe75-pro-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO XE75 PRO V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-xe75-pro-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX10 V1.20|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax10-v1-20", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX10 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax10-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX10 V3.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax10-v3-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX11000 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax11000-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX11000 V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax11000-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX20 V1.20|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax20-v1-20", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX20 V4.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax20-v4-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX20 V5.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax20-v5-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX21 V1.20|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax21-v1-20", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX21 V1.26|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax21-v1-26", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX21 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax21-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX21 V3.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax21-v3-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX21 V4.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax21-v4-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX21 V5.46|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax21-v5-46", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX21 V5.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax21-v5-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX50 V1.80|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax50-v1-80", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX55 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax55-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX55 V4.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax55-v4-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX73 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax73-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX73 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax73-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX75 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax75-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX80 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax80-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX90 V1.20|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax90-v1-20", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX90 V1.26|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax90-v1-26", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AXE5400 V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-axe5400-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER GX90 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-gx90-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X4300 PRO V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x4300-pro-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X5400 PRO V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x5400-pro-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO XE5300 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-xe5300-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO XE5300 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-xe5300-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO XE5300 V3.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-xe5300-v3-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX55 PRO V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax55-pro-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX55 PRO V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax55-pro-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX72 PRO V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax72-pro-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AXE75 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-axe75-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AXE75 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-axe75-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AXE95 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-axe95-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE230 V1.20|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be230-v1-20", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE230 V1.26|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be230-v1-26", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE230 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be230-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE230 V2.20|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be230-v2-20", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE230 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be230-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE550 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be550-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE550 V2.26|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be550-v2-26", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE550 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be550-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE600 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be600-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE700 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be700-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE800 V1.20|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be800-v1-20", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE800 V1.26|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be800-v1-26", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE800 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be800-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE805 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be805-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE900 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be900-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE900 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be900-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER GE400 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ge400-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER GE650 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ge650-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER GE650 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ge650-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER GE800 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ge800-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE13000 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be13000-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE13000 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be13000-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE16000 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be16000-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X50-POE V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x50-poe-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X50-POE V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x50-poe-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X55-PRO V1.26|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x55-pro-v1-26", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X55-PRO V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x55-pro-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX1450 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax1450-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX1450 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax1450-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX1500 V1.20|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax1500-v1-20", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX1500 V1.26|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax1500-v1-26", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX1500 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax1500-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX1500 V1.80|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax1500-v1-80", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX1500 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax1500-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX1500 V3.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax1500-v3-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX1800 V1.20|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax1800-v1-20", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX1800 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax1800-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX1800 V3.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax1800-v3-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX1800 V4.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax1800-v4-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX1800 V5.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax1800-v5-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX3000 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax3000-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX3000 V2.46|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax3000-v2-46", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX3000 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax3000-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX3200 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax3200-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX4400 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax4400-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX4400 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax4400-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX4400 V3.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax4400-v3-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX6000 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax6000-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX6000 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax6000-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AXE300 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-axe300-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE3600 V1.26|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be3600-v1-26", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE3600 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be3600-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE3600 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be3600-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE550 PRO V2|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be550-pro-v2", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE9300 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be9300-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE9300 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be9300-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE9700 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be9700-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE65 PRO V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be65-pro-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X50-OUTDOOR V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x50-outdoor-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO XE75 PRO V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-xe75-pro-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO XE75 PRO V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-xe75-pro-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO XE75 PRO V3.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-xe75-pro-v3-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX10000 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax10000-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX10000 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax10000-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX11000 V1.26|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax11000-v1-26", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX11000 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax11000-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX11000 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax11000-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX3000 PRO V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax3000-pro-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AXE5400 V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-axe5400-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AXE5400 V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-axe5400-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE25-OUTDOOR V1|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be25-outdoor-v1", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X4300 PRO V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x4300-pro-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X5400 PRO V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x5400-pro-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX55 PRO V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax55-pro-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX55 PRO V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax55-pro-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX72 PRO V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax72-pro-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE550 PRO V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be550-pro-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER BE550 PRO V2.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-be550-pro-v2-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO X50-OUTDOOR V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x50-outdoor-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|ARCHER AX3000 PRO V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax3000-pro-v1-60", "kind": "revision"}
+{"anchors": ["routers|hw_version|tp_link|DECO BE25-OUTDOOR V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be25-outdoor-v1-60", "kind": "revision"}

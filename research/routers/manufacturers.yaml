@@ -1,0 +1,42 @@
+# A2 discovery, Wi-Fi routers & mesh (US). Probed 2026-11-23 with the shared crawler client UA (Mozilla-compatible "specsheet-crawler/0.1" + repo URL),
+# robots honoured, <=1 req/s, no spoofing/Bright Data. status: adapter = built+run; viable = probed OK, adapter not built;
+# viable_unverified = sitemap/robots OK, page structure not inspected; blocked = stopped at 403/WAF, no workaround; unprobed = not reached.
+manufacturers:
+  tp_link:
+    status: adapter            # crawler/adapters/tplink_routers.py  raw/tplink-us-routers  (106 models, all 200; 2 req/model)
+    how: "https://www.tp-link.com/us/sitemap.xml (1 MB, one request; robots Allow, only tracking/search params disallowed) -> /us/home-networking/wifi-router/<model>/ (128 incl. TL-WR, 5G hotspots dropped) and /us/deco-mesh-wifi/product-family/<model>/ (~60). Product page SSR: <th>label</th><td>value</td> spec rows (WiFi Speeds, Standards, Ethernet Ports, USB, VPN, Processor...). Support page /us/support/download/<model>/ SSR: hardware-version selector + Firmware list with Published Date."
+    gives: [Wi-Fi generation, class (AX3000), per-band PHY rate, port counts+speeds, USB, VPN, mesh (OneMesh/EasyMesh), hardware-version list (V1/V4/V4.60), latest US firmware publish date, dimensions]
+    lacks: [SoC vendor/model (prints 'Dual-Core CPU'), RAM, flash, spatial streams (only '4 Streams' total), per-version specs, FCC ID, support end date]
+    note: "Hardware-version URLs (/v1/, /v4.60/) serve the SAME HTML (version switch is client-side), so per-revision chipset/RAM differences are not reachable by plain HTTP. Region matters: US firmware list differs from EU."
+  netgear:
+    status: adapter            # crawler/adapters/netgear_routers.py  raw/netgear-us-routers  (60 models, all 200)
+    how: "https://www.netgear.com/sitemap.xml (400 KB; robots Allow for product pages) -> /home/wifi/{routers,mesh}/<model>/ (92 incl. landing/campaign pages; 60 model-coded slugs kept). React SSR ~0.7 MB page with Product JSON-LD (sku, gtin, additionalProperty, offers.price) and 'Technical Specs' td label ':' / value rows."
+    gives: [SKU RAX54S-2AZNAS + GTIN, class, per-band rate+streams (4x4)+width+QAM on router pages, port counts, USB, CPU cores/GHz, weight, dimensions, Orbi kit composition (1 router + N satellites), coverage sqft]
+    lacks: [SoC vendor, RAM/flash (a few Orbi pages only), backhaul details, most Orbi/Nighthawk Wi-Fi 7 pages carry only 6 headline properties]
+    note: "Kit codes (RBE972 vs RBE973) are pack-size model numbers. Pages without per-band rows give no streams/widths."
+  asus:
+    status: adapter            # crawler/adapters/asus_routers.py  raw/asus-us-routers  (82 techspec pages, all 200)
+    how: "https://www.asus.com/sitemap.xml (index) -> /us/sitemap/usN.xml (~10 requests) -> /us/networking-iot-servers/{wifi-routers,whole-home-mesh-systems,wifi-6,wifi-7}/<group>/<model>/techspec/. Same rowTable markup as asus.py (laptops); parse_table reused."
+    gives: [class, per-band rate, per-band streams (5GHz 4x4 / 2.4GHz 3x3), flash+RAM ('256 MB Flash and 1 GB RAM', the only maker printing them), CPU cores+GHz, WAN/LAN port speeds, 2.5G multi-gig/WAN-LAN configurable, USB, VPN server/client incl. WireGuard, AiMesh, operating modes, weight]
+    lacks: [SoC vendor/model, support end date, exact per-unit variants (ZenWiFi page lists several pack codes)]
+    note: "Dimensions row mixes with/without antenna, so not mapped. 160 MHz line has a regulatory footnote."
+  eero:
+    status: viable_unverified  # https://eero.com/sitemap.xml 200 (340 KB, robots Allow /), product pages /shop/eero-7 etc. 200 (350 KB); spec table not inspected. App/cloud-managed, no web UI (trap for sw.web_ui).
+  google_nest:
+    status: viable_unverified  # store.google.com robots+sitemap index 200 (sitemap_us.xml). Nest Wifi/Wifi Pro product spec page not inspected; product line is largely discontinued.
+  linksys:
+    status: viable_unverified  # robots+sitemap index 200 (Shopify: sitemap_collections/pages). /products.json returned 15 bytes (empty); product pages not inspected.
+  ubiquiti:
+    status: viable_unverified  # ui.com robots+sitemap 200 (no product URLs in sitemap: SPA, /wifi 200 561 KB); store.ui.com robots redirects to /404. Needs an API probe; not done.
+  gl_inet:
+    status: viable             # not built. https://www.gl-inet.com/products.json 200 (1.9 MB, Shopify: 29 products, ~6 routers: Flint 2 GL-MT6000, Beryl 7, Flint 3e/4, Slate 7 Pro). body_html carries specs incl. OpenWrt (hence sw.openwrt). Small but clean; good 4th adapter.
+  synology:
+    status: viable_unverified  # robots+sitemap index 200; https://www.synology.com/en-us/products/routers 200 (157 KB, WRX560/RT6600ax); not parsed.
+  amazon:
+    status: unprobed           # eero is Amazon-owned (covered by the eero entry). www.amazon.com robots 200 but retail listings are NOT a source (team rule: retail titles are aliases only; no product-page scraping).
+evidence_sources:
+  fcc:
+    fccid_io:   "robots.txt 200 (bots like Semrush/Ahrefs disallowed, generic UA allowed except /ViewExhibitReport.cfm). Device page https://fccid.io/<grantee><product> 200 (HTML): FCC ID, applicant, equipment class text, frequency list, test firm, latest application date, exhibit index (External/Internal-Photos, Test-Report, User-Manual). 3 samples fetched: 2AXJ4AX55 (Archer AX55), TE7A8 (Archer C7-era), TE7AX55 (guess: 300 'Possible Matches' page). No chipset is printed as text; the chipset sits in internal-photo images or test-report PDFs. /terms returned 404: terms of use not located, so no bulk crawl and no redistribution of exhibit images; a few lookups per category only."
+    fcc_gov_eas: "apps.fcc.gov/oetcf/eas and www.fcc.gov/robots.txt return 403 Access Denied (Akamai) to the honest UA. Stopped."
+    fcc_report: "fcc.report returns the Cloudflare 'Just a moment' challenge (403). Stopped."
+  openwrt_toh: "unprobed here; the intended source for hw.soc_model/ram/flash per revision (CC-BY-SA data dump). Needs a licence decision before use; vault-style note only."

@@ -56,10 +56,11 @@ async function checkV1(category) {
   const productDir = join(root, category.id, 'products');
   const files = new Set((await listJson(productDir)).map(f => f.slice(0, -5)));
   const ids = new Set();
+  const rowKinds = new Map(rows.map(r => [r.id, r.kind]));
   const stripped = ['snapshot', 'locator'];
   for (const row of rows) {
     assert(!ids.has(row.id), `dup id ${row.id}`); ids.add(row.id);
-    assert(row.brand && row.name && row.brand_id && ['family','model','configuration','package'].includes(row.kind), `${row.id}: bad row`);
+    assert(row.brand && row.name && row.brand_id && ['family','model','configuration','package','revision'].includes(row.kind), `${row.id}: bad row`);
     assert(Array.isArray(row.ids) && Array.isArray(row.search) && row.v && row.s && Array.isArray(row.completeness.core), `${row.id}: row shape`);
     for (const k of Object.keys(row.v)) assert(fields.has(k), `${row.id}: v key ${k} not in schema`);
     for (const [k, st] of Object.entries(row.s)) { assert(fields.has(k), `${row.id}: s key ${k}`); assert(v1Statuses.has(st) && st !== 'known', `${row.id}/${k}: s status ${st}`); assert(!(k in row.v), `${row.id}/${k}: in both v and s`); }
@@ -86,6 +87,7 @@ async function checkV1(category) {
       } else if (sp.status !== 'not_yet_extracted' && (k in row.s)) assert.equal(row.s[k], sp.status, `${row.id}/${k}: index/detail status`);
       if (sp.status === 'conflicted') assert(Array.isArray(sp.alternatives) && sp.alternatives.length > 1, `${row.id}/${k}: conflicted needs alternatives`);
     }
+    if (row.kind === 'revision') assert(row.parent_id, `${row.id}: revision row needs parent_id`);
     allPublished.add(row.id);
   }
   // trusted vs preview separation (review P0-1): trusted details carry review_scope=trusted and only approved relations;
@@ -111,6 +113,33 @@ async function checkV1(category) {
     for (const r of d.relations) assert.equal(r.status, 'approved', `${id}: non-approved relation in trusted record`);
     for (const r of d.relations) assert(files.has(r.target), `${id}: relation target ${r.target} not published`);
     for (const c of d.children || []) assert(files.has(c), `${id}: child ${c} not published`);
+    if (d.kind === 'revision') {
+      const par = d.relations.find(r => r.type === 'variant_of');
+      assert(par, `${id}: revision without variant_of relation`);
+      const pd = await parse(join(productDir, `${par.target}.json`));
+      assert((pd.revisions || []).some(r => r.id === id), `${id}: not listed in ${par.target}.revisions`);
+      assert(!rowKinds.has(id) || rowKinds.get(id) === 'revision', `${id}: revision row kind`);
+    }
+    if (d.revisions) {
+      assert(d.kind !== 'revision' && d.revisions.length > 0, `${id}: revisions[] on a ${d.kind}`);
+      const seen = new Set();
+      for (const rv of d.revisions) {
+        assert(!seen.has(rv.id) && files.has(rv.id), `${id}: revision ${rv.id} dup or unpublished`); seen.add(rv.id);
+        assert(rv.label && rv.name && Array.isArray(rv.differs) && Array.isArray(rv.sources), `${id}/${rv.id}: revision entry shape`);
+        const rd = await parse(join(productDir, `${rv.id}.json`));
+        assert.equal(rd.kind, 'revision', `${rv.id}: kind`);
+        assert(d.children.includes(rv.id), `${id}: revision ${rv.id} not in children`);
+        assert(rd.relations.some(r => r.type === 'variant_of' && r.target === id), `${rv.id}: no variant_of ${id}`);
+        const rsids = new Set(rv.sources.map(s => s.id));
+        for (const [k, sp] of Object.entries(rv.specs)) {
+          assert(fields.has(k), `${rv.id}: revision spec ${k}`);
+          assert(!sp.inherited_from, `${rv.id}/${k}: inherited spec in revisions[]`);
+          assert(sp.sources.every(x => rsids.has(x)), `${rv.id}/${k}: revision entry dangling source`);
+          assert.deepEqual(rd.specs[k]?.value, sp.value, `${rv.id}/${k}: entry/detail value`);
+        }
+        for (const k of rv.differs) assert(k in rv.specs, `${rv.id}: differs key ${k} not an own spec`);
+      }
+    }
   }
   console.log(`${category.id}: ${rows.length} trusted rows + ${prows.length} preview rows (${files.size} detail files, ${schema.fields.length} fields, ${Object.keys(facets).length} facets, ${category.index.length} index shard(s))`);
   total += rows.length;

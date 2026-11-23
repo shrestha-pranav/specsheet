@@ -425,15 +425,21 @@ def do_model(world, meta, sid, rec, pr, extra, stats):
         elif sch in ("hw_rev", "edid_id") or i.get("package_level") == "revision":
             rv = world.get("revision", brand, [K(sch, i["value"], brand, "revision")], ob)
             if rv is not None:
-                rv.idhint = rv.idhint or f"{brand}-{slug(mi['value'])}-{slug(i['value'])}"; rv.name = rv.name or f"{title} (rev {i['value']})"
+                # `revision_label` (adapter extra, e.g. "V4.60"): the identifier value is then model-scoped ("Archer AX55 V4.60") so versions of
+                # different models never collide; the label names the entity and is what claim locators {"hw_rev": label} refer to.
+                lab = i.get("revision_label") or i["value"]
+                rv.idhint = rv.idhint or (f"{brand}-{slug(mi['value'])}-{slug(lab)}" if i.get("revision_label") else f"{brand}-{slug(mi['value'])}-{slug(i['value'])}")
+                rv.name = rv.name or f"{title} (rev {lab})"; rv.extra["revision_label"] = lab
                 add_ident(rv, dict(i, market=i.get("market") or mi.get("market")), role="key", level="revision"); add_src(rv, pr, rec)   # a revision is sold where its model is
-                link(rv, "variant_of", e, f"adapter:{sid}"); owners[i["value"]] = rv
+                link(rv, "variant_of", e, f"adapter:{sid}"); owners[lab] = rv
         elif sch == "gtin" and last_pkg is not None:
             add_ident(last_pkg, i, role="alias")
         else:
             add_ident(e, i, role="alias")
     by_code = {mi["value"]: e}
-    stats["claims_adapter"] += attach_claims(pr, rec, sid, lambda loc: by_code.get(loc.get("model_code")) or by_code.get(loc.get("hw_rev")) or e, e)
+    by_rev = {k: v for k, v in owners.items() if v is not e}
+    stats["revisions"] += len(by_rev)
+    stats["claims_adapter"] += attach_claims(pr, rec, sid, lambda loc: by_rev.get(loc.get("hw_rev")) or by_code.get(loc.get("model_code")) or e, e)
     e.absences += [(a, ob) for a in pr["absences"]]
     stats["models"] += 1
     for lab in (fp.get("unmapped") or {}):

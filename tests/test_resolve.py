@@ -36,6 +36,16 @@ class NormaliseTest(unittest.TestCase):
         self.assertEqual(N.normalise(num("cpu.boost_clock", "GHz", label="Max boost clock"), known("up to 4.8 GHz"), U)[2], {})
         self.assertEqual(N.normalise(num("disp.nits", "nits"), known("up to 500 nits"), U)[2].get("qualifier"), "up_to")
 
+    def test_custom_units_follow_schema(self):
+        """profile units.custom items use `unit` (schema); legacy `id` still accepted. MB/sqft/month specs get real, convertible units."""
+        for key in ("unit", "id"):
+            Uc = N.units({"units": {"custom": [{key: "MB", "base": "B", "factor": 1e6}, {key: "sqft", "base": "sqft", "factor": 1}]}, "specs": []})
+            self.assertEqual(Uc["MB"], {"base": "B", "factor": 1e6, "offset": 0})
+            self.assertEqual(N.normalise(num("hw.flash_mb", "MB"), known("1 GB"), Uc)[:2], (True, 1000))
+            self.assertEqual(N.normalise(num("hw.ram_mb", "MB"), known(512), Uc)[:2], (True, 512))
+            self.assertEqual(N.normalise(num("mesh.coverage_sqft", "sqft", t="integer"), known("2,500 sq. ft."), Uc)[0], False)   # unknown token stays unnormalised
+            self.assertEqual(N.normalise(num("mesh.coverage_sqft", "sqft", t="integer"), known(2500), Uc)[:2], (True, 2500))
+
     def test_range_validation(self):
         self.assertFalse(N.normalise({"key": "r", "type": "range", "unit": "W"}, known({"min": 30, "max": 10}), U)[0])
         self.assertTrue(N.normalise({"key": "r", "type": "range", "unit": "W"}, known({"min": 10, "max": 30}), U)[0])

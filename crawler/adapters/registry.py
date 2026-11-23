@@ -31,6 +31,9 @@ SOURCES = {
     "samsung-us-ssd": {"brand": "samsung", "brand_name": "Samsung", "category": "ssds", "module": "samsung_ssd", "importer": "generic"},
     "sandisk-us-ssd": {"brand": "western digital", "brand_name": "WD / SanDisk", "category": "ssds", "module": "sandisk_ssd", "importer": "generic"},
     "teamgroup-us-ssd": {"brand": "team", "brand_name": "TEAMGROUP", "category": "ssds", "module": "teamgroup_ssd", "importer": "generic"},
+    "tplink-us-routers": {"brand": "tp_link", "brand_name": "TP-Link", "category": "routers", "module": "tplink_routers", "importer": "model"},
+    "netgear-us-routers": {"brand": "netgear", "brand_name": "NETGEAR", "category": "routers", "module": "netgear_routers", "importer": "model"},
+    "asus-us-routers": {"brand": "asus", "brand_name": "ASUS", "category": "routers", "module": "asus_routers", "importer": "model"},
     "tripplite": {"brand": "tripplite", "brand_name": "Tripp Lite", "category": "power-strips", "module": "tripplite", "importer": "strip"},
     "cyberpower": {"brand": "cyberpower", "brand_name": "CyberPower", "category": "power-strips", "module": "cyberpower", "importer": "strip"},
     # crawl.py v0 stores (raw/<slug>/products/<key>/{extract,feed}.json, no snapshot log): read through crawlpy_strips, never written
