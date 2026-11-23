@@ -48,6 +48,14 @@ def validate_details(cat, details):
         raise SystemExit(f"{cat}: {len(bad)} published details violate public-detail.schema.json, e.g. " + "; ".join(bad[:3]))
 
 
+def cert_out(ex, states):
+    """r7 (scripts/tvcert.py): directed covered_by_certification edges of a model to ENERGY STAR wildcard records. Coverage only (no identity);
+    `power` is the record's own figures, shown here unless power_transferred (applicability evidence)."""
+    keep = ("record", "pattern", "matched_pattern", "role", "market", "declaration", "date_qualified", "method", "status", "decision",
+            "power_transferred", "power")
+    return [{k: c.get(k) for k in keep} for c in ex.get("certifications") or [] if c.get("status") in states]
+
+
 def lookup_norm(scheme, v):
     return v if scheme == "gtin" else re.sub(r"[\s.\-]", "", v.upper())
 
@@ -326,8 +334,16 @@ def publish(api: Path, build_stats: dict):
             d["specs"] = {k: specs[k] for k in sorted(specs)}
             if ents[eid]["kind"] == "package" and ex.get("contents"):
                 d["contents"] = ex["contents"]
+                bx = ex.get("bundle") or {}
+                d["bundle_evidence"] = {k: bx.get(k) for k in ("evidence", "observations", "complete", "unparsed", "promotions", "market",
+                                                               "observed_from", "observed_to")}     # r7 (bundles@2)
                 d["notes"] = ("Bundle sold under one manufacturer SKU. It has no specifications of its own and inherits none: see each contained "
-                              "model for its specifications. Contents are as listed by the manufacturer's store; free promotional items are not listed.")
+                              "model for its specifications. Contents are as itemised by the manufacturer's store listing"
+                              + ("" if bx.get("complete", True) else " (incomplete: part of the listing is not itemised, see bundle_evidence.unparsed)")
+                              + "; promotional items are listed separately with their dates and are not contents.")
+            certs = cert_out(ex, ("approved",))
+            if certs:
+                d["certifications"] = certs
             if children.get(eid):
                 d["children"] = sorted(children[eid])
             details[eid] = d
@@ -362,6 +378,9 @@ def publish(api: Path, build_stats: dict):
                 continue
             d.update({"specs": delta, "sources": srcs_out, "trusted": eid in pub, "demo": False,
                       "notes": "PREVIEW: includes unreviewed candidate claims and proposed links. Not part of the trusted catalogue, facets or lookup."})
+            certs = cert_out(json.loads(ents[eid]["extra"] or "{}"), ("approved", "proposed"))
+            if certs:
+                d["certifications"] = certs
             pdetails[eid] = d
             prev_rows.append(row_of(eid, d, specs, "preview"))
             stats["preview_specs_delta"] += len(delta)

@@ -106,7 +106,16 @@ class Governance(unittest.TestCase):
     def test_repo_policies_pass_their_own_governance(self):
         dec = D.Decisions(ROOT / "data")
         self.assertEqual(dec.check_lock(write=False)[0], [], "every active/retired policy is locked")
-        self.assertTrue(all(p["id"].endswith("@1") for p in dec.retired_policies))
+        # Retired policies (any version) must be locked (checked above), not also active, and either
+        # superseded by a higher active version of the same family or explicitly marked `retired:`.
+        # (Was `all retired are @1`, an r4 snapshot; user approved retiring @2+ on 2026-11-23.)
+        fam = lambda pid: (pid.rsplit("@", 1)[0], int(pid.rsplit("@", 1)[1]))
+        active = [p["id"] for p in dec.claim_policies + dec.relation_policies]
+        for p in dec.retired_policies:
+            self.assertNotIn(p["id"], active, f"{p['id']} is both active and retired")
+            f, v = fam(p["id"])
+            newer = [a for a in active if fam(a)[0] == f and fam(a)[1] > v]
+            self.assertTrue(newer or p.get("retired"), f"{p['id']} retired without successor or reason")
         self.assertIn("claim/mfr-routers-structured@2", [p["id"] for p in dec.claim_policies], "edited router policy re-issued")
         import registry
         cur = {v["parser"]: v["fingerprint"] for v in (registry.parser_info(s) for s in registry.SOURCES) if v["parser"]}

@@ -398,6 +398,7 @@
             "same_configuration",
             "same_package",
             "possible_match",
+            "same_model",
             "different",
             "insufficient_evidence",
             "replaced_by"

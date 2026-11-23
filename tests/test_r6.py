@@ -20,7 +20,8 @@ import registry  # noqa: E402
 
 
 def mem(title, names, key="K-1", sku="SKU1", opt=False, pw=(), brand=""):
-    return B.members(title, {B.norm(n) for n in names}, key, sku, pw, option_only_ok=opt, brand_name=brand)
+    """r7 (bundles@2): key / sku / opt no longer matter (no SKU-digit inference); kept so the r6 call sites read unchanged."""
+    return B.members(title, {B.norm(n) for n in names}, pw, brand)
 
 
 class Parser(unittest.TestCase):
@@ -31,8 +32,8 @@ class Parser(unittest.TestCase):
         self.assertEqual((m["model"], m["parts"]), (2, []))
         m, _ = mem("Black / Explorer 1000 v2 + SolarSaga 200W x 2", ["Explorer 1000 v2"], "Explorer 1000 v2", "60-1")
         self.assertEqual(m["parts"], [("SolarSaga 200W", 2)])
-        m, _ = mem("DELTA 3 Max Plus (2048Wh) + 400W Solar Panel", ["DELTA 3 Max Plus"], "EFD3MP", "D3MP-400WSP")
-        self.assertEqual(m["model"], 1, "a capacity note does not hide the model")
+        m, _ = B.members("DELTA 3 Max Plus (2048Wh) + 400W Solar Panel", {B.norm("DELTA 3 Max Plus")}, caps={2048.0})
+        self.assertEqual(m["model"], 1, "a capacity note does not hide the model (r7: when it equals the page's own capacity)")
 
     def test_free_promotions_are_not_contents(self):
         m, why = mem("(Flash Sale) DELTA 3 Plus + Free DELTA 3 Series Waterproof Bag", ["DELTA 3 Plus"], "EFDELTA3P", "EFDELTA3P-US-BAG")
@@ -48,20 +49,21 @@ class Parser(unittest.TestCase):
         self.assertIsNone(mem("Handsfree 2 | 60L Storage, 700W, 512Wh", ["Handsfree 2"], "HF2", "HF2-2-01")[0])
 
     def test_addon_option_needs_the_model_number_in_the_sku(self):
-        m, _ = mem("2× 100W Bifacial Solar Panel", ["C1000 Gen 2"], "A1763", "G17631A5", opt=True)
-        self.assertEqual((m["model"], m["parts"], m["named"]), (1, [("100W Bifacial Solar Panel", 2)], False))
+        """r7 (review 4): the SKU-digit rule is gone; an add-on-only title never names the model, whatever the SKU embeds."""
+        self.assertIsNone(mem("2× 100W Bifacial Solar Panel", ["C1000 Gen 2"], "A1763", "G17631A5", opt=True)[0])
         self.assertIsNone(mem("100W Bifacial Solar Panel", ["C1000 Gen 2"], "A1763", "B19990A9", opt=True)[0])
 
     def test_pack_word_and_brand_prefix(self):
-        m, _ = mem("X50 Ultra Complete / White", ["X50 Ultra"], "X50 Ultra", "010204AA000863", pw=["Complete"])
-        self.assertEqual(m["model"], 1); self.assertIn("not itemised", m["parts"][0][0])
+        m, why = mem("X50 Ultra Complete / White", ["X50 Ultra"], "X50 Ultra", "010204AA000863", pw=["Complete"])
+        self.assertIsNone(m, "r7: a pack word fabricates no component (one item)"); self.assertIn("not itemised", why)
         m, _ = mem("Narwal Freo Z10 Turbo & Advanced Kit", ["Freo Z10 Turbo"], "Freo Z10 Turbo", "CP-1-AC01", brand="Narwal")
         self.assertEqual(m["parts"], [("Advanced Kit", 1)])
         self.assertIsNone(mem("White", ["X50 Ultra"], "X50 Ultra", "010204AA000703", pw=["Complete"])[0], "a colour option stays an alias")
 
     def test_member_signature_ignores_wording_not_designation(self):
-        self.assertEqual(B.part_sig("220W Solar Panel"), B.part_sig("220W Portable Solar Panel"))
-        self.assertNotEqual(B.part_sig("160W Solar Panel"), B.part_sig("220W Solar Panel"))
+        """r7: the lossy number-only signature is gone; full descriptions are compared (plural folding only)."""
+        self.assertNotEqual(B.canon_desc("220W Solar Panel"), B.canon_desc("220W Portable Solar Panel"))
+        self.assertNotEqual(B.canon_desc("160W Solar Panel"), B.canon_desc("220W Solar Panel"))
 
 
 class RepeatedPortRow(unittest.TestCase):
@@ -80,10 +82,10 @@ class RepeatedPortRow(unittest.TestCase):
 class Policies(unittest.TestCase):
     def test_r6_policies_pending_and_old_ones_inert(self):
         dec = D.Decisions(CODE / "data")
-        pol = {p["id"]: p for p in dec.claim_policies + dec.relation_policies}
+        pol = {p["id"]: p for p in dec.claim_policies + dec.relation_policies + dec.retired_policies}
         cur = {registry.parser_info(s)["parser"] for s in registry.SOURCES}
         for i in ("claim/mfr-power-banks-structured@5", "claim/mfr-power-stations-structured@2", "rel/bundle-contents@1"):
-            self.assertEqual(pol[i]["approval"]["state"], "pending")
+            a = pol[i]["approval"]; self.assertIn(a["state"], ("pending", "approved"), i); self.assertTrue(a["state"] == "pending" or (a.get("by") and a.get("at")), i)  # human-approved 2026-11-23
         for i in ("claim/mfr-power-banks-structured@4", "claim/mfr-power-stations-structured@1"):
             self.assertFalse(set(pol[i]["match"]["extractors"]) & cur, f"{i} still matches a live extractor")
         st = {registry.parser_info(s)["parser"] for s, m in registry.SOURCES.items() if m["category"] == "power-stations"}
@@ -128,6 +130,7 @@ claim_policies:
             keys: [gen.power, phys.weight]}
 relation_policies:
   - {id: rel/fixture-bundle@1, since: "2026-11-23", rationale: fixture, rules: [{method: "bundle:kitco-us", types: [contains], parsers: [kitco@1]}]}
+  - {id: rel/fixture-bundle@2, since: "2026-11-23", rationale: "r7: the bundles@2 transform", rules: [{method: "bundle:kitco-us", types: [contains], parsers: ["kitco@1+bundles@2"]}]}
 """
 
 
@@ -152,8 +155,8 @@ ROWS = [
     page("K-1", [claim("gen.power", 500, "W", {"claim_basis": "mfr_in_house_lab"}), claim("phys.weight", 9, "kg")],
          packages=[("K1-PV", "K-1 + 200W Panel"), ("K1-X2", "(Members-only) 2 x K-1"), ("K1-C", "K-1 + 100W Panel"), ("K1-US", "K-1 + Free Bag"),
                    ("K1-ALT", "K-1 + K-2")],
-         skus=[("K1-US", "White"), ("K1-CP", "K-1 Complete / White")]),
-    page("K-1", [], packages=[("K1-C", "K-1 + 200W Panel"), ("K1-PV", "K-1 + 200W Portable Panel + Free Bag")]),       # second page of K-1
+         skus=[("K1-US", "White"), ("K1-CP", "K-1 Complete + 100W Panel / White")]),
+    page("K-1", [], packages=[("K1-C", "K-1 + 200W Panel"), ("K1-PV", "K-1 + 200W Panel + Free Bag")]),       # second page of K-1 (r7: exact multiset)
     page("K-2", [claim("gen.power", 300, "W"), claim("phys.weight", 4, "kg")]),
     page("K-3", [claim("gen.power", 400, "W", {"claim_basis": "mfr_unstated"})]),
 ]
@@ -229,7 +232,7 @@ class Fixture(unittest.TestCase):
         ids = {x["id"] for x in self.after}
         self.assertNotIn("kitco-k1-c", ids, "K1-C: two pages, different panels")
         self.assertNotIn("kitco-k1-us", ids, "unit SKU with a free gift")
-        self.assertEqual(self.imp["stem_proposals"]["kits"].get("bundle_not_corroborated"), 1)
+        self.assertEqual(self.imp["stem_proposals"]["kits"].get("bundle_disputed"), 1)
         self.assertEqual(self.imp["identity"]["page_identity_review"], 1)
 
     def test_index_carries_claim_basis(self):

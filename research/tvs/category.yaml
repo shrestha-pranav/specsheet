@@ -3,7 +3,10 @@ description: "Televisions by manufacturer model number, one size per model (Sams
   (LCD VA/IPS, OLED, Mini-LED), native vs marketing refresh, HDMI ports with 4K 120 Hz, HDR formats, VRR, platform, ENERGY STAR on-mode power with
   its basis, size and weight with/without stand. Sources: ENERGY STAR Certified Televisions, Samsung, LG and TCL US spec data."
 columns: [gen.size_class, panel.display_tech, res.class, refresh.native_hz, hdmi.ports_4k120, os.platform, pwr.on_mode_w]
-features: [stem_links]
+features: [stem_links, es_cert_scopes]
+# r7 (scripts/tvcert.py): ENERGY STAR wildcard records become certification scopes (covered_by_certification edges to exact models, never
+# merges); ES declared aliases are re-audited; reviewed ES/site pairs come only from data/decisions/tv-crosswalks.yaml.
+es_cert: {source: energystar-tvs}
 # Stem = PROPOSALS only (possible_match), never a merge (research/tvs/identity.md). strip_regex removes (a) Samsung's US tail XZA, so the site code
 # QN65S90FAFXZA meets the ENERGY STAR certified string QN65S90FAF, and (b) the LG OLED channel/stand tail (OLED65B5PUA / OLED65B5AUA -> OLED65B5),
 # so retailer-channel siblings on lg.com are proposed for review. same_source: LG channel siblings come from one source (lg-us-tvs), so the

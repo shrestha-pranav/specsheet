@@ -1,0 +1,13 @@
+format: specsheet.tv-crosswalks/1
+# Reviewed ES <-> maker-site exact-pair crosswalks and power-applicability evidence (A3-impl r7, review 4 fixes 2 + 3; read by scripts/tvcert.py).
+# A decision file: only a HUMAN reviewer handle may appear in `by`. Entries are never inferred from a suffix regex, a stem or equal spec tables.
+#
+# suffix_rules: a brand-scoped, exact market suffix. It is a GUARD, not evidence: a pair still needs its own entry below.
+# pairs: {brand, site, certified, market, evidence: {url, quote naming BOTH exact strings}, by, at}. A pair that passes the guards yields an
+#   approvable `same_model` link (rel/tvs-crosswalk@1); nothing merges and both public ids stay.
+# power_applicability: {record: energystar-tvs:<pd_id>, model: <exact model key>, evidence: {url, quote}, by, at}: the record's measured power
+#   applies to that exact model (claim/tvs-es-power-applicability@1).
+suffix_rules:
+  - {brand: samsung, suffix: XZA, market: US, why: "Samsung US market tail (research/tvs/identity.md); scoped to Samsung + exact suffix XZA + US"}
+pairs: []
+power_applicability: []

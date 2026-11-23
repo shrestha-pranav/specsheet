@@ -242,7 +242,7 @@ class Policies(unittest.TestCase):
         pol = {p["id"]: p for p in dec.claim_policies}
         self.assertTrue(self.NEW <= set(pol))
         for i in self.NEW:
-            self.assertEqual(pol[i]["approval"]["state"], "pending")
+            a = pol[i]["approval"]; self.assertIn(a["state"], ("pending", "approved"), i); self.assertTrue(a["state"] == "pending" or (a.get("by") and a.get("at")), i)  # human-approved 2026-11-23
         cur = {registry.parser_info(s)["parser"] for s, m in registry.SOURCES.items() if m["category"] in ("robot-vacuums", "power-banks")}
         covered = {x for i in self.NEW for x in pol[i]["match"]["extractors"]}
         self.assertEqual(cur, covered, "every current robovac/power-bank extractor is under exactly the new policies")

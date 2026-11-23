@@ -320,6 +320,143 @@
           }
         }
       }
+    },
+    "bundle_evidence": {
+      "type": "object",
+      "description": "Package kind only (r7, scripts/bundles.py bundles@2): evidence level of the contents. evidence = manufacturer_store_listing (one listing) | consistent_manufacturer_store_listings (several agree: consistency, not independent corroboration); complete=false when part of the listing is not itemised (unparsed); promotions = free items seen with the SKU, dated, never contents.",
+      "properties": {
+        "evidence": {
+          "enum": [
+            "manufacturer_store_listing",
+            "consistent_manufacturer_store_listings"
+          ]
+        },
+        "observations": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "unparsed": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "promotions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "text"
+            ],
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "observed_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "market": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "observed_from": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "observed_to": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "certifications": {
+      "type": "array",
+      "description": "Model detail (r7, scripts/tvcert.py): directed covered_by_certification edges to ENERGY STAR wildcard family records. Coverage, not identity: no merge, no inheritance. Only certification (pwr.energy_star, dated) transfers over an approved edge; `power` is the record's own figures and transfers only when power_transferred. Trusted details list approved edges; previews also list proposals.",
+      "items": {
+        "type": "object",
+        "required": [
+          "record",
+          "pattern",
+          "method",
+          "status"
+        ],
+        "properties": {
+          "record": {
+            "type": "string"
+          },
+          "pattern": {
+            "type": "string"
+          },
+          "matched_pattern": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "role": {
+            "enum": [
+              "basic",
+              "declared",
+              "listed",
+              "declaration_not_exact"
+            ]
+          },
+          "market": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "declaration": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "date_qualified": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "method": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "approved",
+              "proposed"
+            ]
+          },
+          "decision": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "power_transferred": {
+            "type": "boolean"
+          },
+          "power": {
+            "type": "array"
+          }
+        }
+      }
     }
   }
 }

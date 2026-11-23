@@ -26,9 +26,13 @@ Adapters emit observations; the importer (`model` importer, exact normalised key
   OLED65B5AUA; `same_source: true` because both come from lg-us-tvs). Proposals are never merges; no policy approves them.
 - Not proposed on purpose: Samsung's production letter (`QN65S90FAFXZA` vs `QN42S90FAEXZA`, F vs E: differs between sizes and is a candidate
   panel-source marker), LG QNED/UHD tails (`80AUA` vs `80URA` vs `80UQA` encode model YEAR as well as channel: a stem would pair 2022 with 2023).
-- Open (A3): the LG wildcard declarations ("OLED65C4AU* is the same as OLED65C4PU*") are the corroboration for LG channel pairs, but the
-  importer cannot match a wildcard row to maker models; today they are skipped. A pattern-to-model relation (`declared_same_hardware`,
-  method `energystar-declaration`) would let a policy group them.
+- r7 (A3, review 4; scripts/tvcert.py): wildcard rows are **certification scopes**, not models and not `declared_same_hardware`. An
+  existing exact model gets a directed `covered_by_certification` edge only for a whole-string match under the filing's documented
+  wildcard ('*' = one alphanumeric), basic or exactly declared pattern, US record + US model key, agreeing sizes, dated record; it receives
+  only a dated `pwr.energy_star` (power only with applicability evidence; nothing physical/panel). Undocumented wildcards, undeclared
+  listings, non-exact declarations and disagreeing overlapping records stay proposals. Declared aliases are re-audited (exact clause, size,
+  Samsung year/production letter, one base) and demoted to `proposed_same_hardware` on failure. ES vs site pairs link (`same_model`, no
+  merge) only from a reviewed exact pair in `data/decisions/tv-crosswalks.yaml`; without one, `possible_match` stays.
 
 ## Panel lottery (size-dependent and within a model)
 - Across sizes: one line uses different panels by size (Samsung S90 series WOLED at 42/48/83" and QD-OLED at 55/65/77"; LCD lines VA at

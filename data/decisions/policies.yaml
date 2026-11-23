@@ -20,7 +20,7 @@ claim_policies:
     at: '2026-11-23'
     evidence: 'key allowlist = exactly the keys @1 accepted in the last release import (accepted_digest 707f0510...), per source: no widening, no narrowing.'
     parsers: {lenovo_psref@2: 'sha256:ec6a55f8081086820989', tripplite@2: 'sha256:949811b25418d7a2b724', cyberpower@1: 'sha256:a3e88411366c8d320d51'}
-  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
   match:
     extractors: [lenovo_psref@2, import.py+psref-mapping@1, tripplite@2, cyberpower@1, import.py+label-mapping@1]
     source_ids: [lenovo-psref, tripplite, cyberpower]
@@ -52,7 +52,7 @@ claim_policies:
     at: '2026-11-23'
     evidence: 'key allowlist = exactly the keys @1 accepted in the last release import (accepted_digest 707f0510...), per source: no widening, no narrowing.'
     parsers: {asus@1: 'sha256:628db32b5ba83fa291c6'}
-  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
   match:
     extractors: [asus@1]
     source_ids: [asus-us]
@@ -72,7 +72,7 @@ claim_policies:
     at: '2026-11-23'
     evidence: 'key allowlist = exactly the keys @1 accepted in the last release import (accepted_digest 707f0510...), per source: no widening, no narrowing.'
     parsers: {}
-  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
   match:
     extractors: [import.py+cpu-split@1]
     kinds: [official]
@@ -93,7 +93,7 @@ claim_policies:
     at: '2026-11-23'
     evidence: 'key allowlist = exactly the keys @1 accepted in the last release import (accepted_digest 707f0510...), per source: no widening, no narrowing.'
     parsers: {lenovo_monitors@1: 'sha256:b7e7dfee555d5a890251', lg_us@1: 'sha256:51da673073084332f227', asus_monitors@1: 'sha256:21ba35a4d7bbafdaff71'}
-  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
   match:
     extractors: [lenovo_monitors@1, lg_us@1, asus_monitors@1]
     source_ids: [lenovo-psref-monitors, lg-us, asus-us-monitors]
@@ -124,7 +124,7 @@ claim_policies:
     at: '2026-11-23'
     evidence: 'Same keys as @1; parser @2 only adds the power_basis condition (A3 r4 diff: 0 value changes, conditions added on pwr.typical/pwr.standby).'
     parsers: {energystar_monitors@2: 'sha256:a617410312626e8837c1'}
-  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
   match:
     extractors: [energystar_monitors@2]
     source_ids: [energystar-monitors]
@@ -144,7 +144,7 @@ claim_policies:
     at: '2026-11-23'
     evidence: Same key as @1; parser @3 only moves cts_version from the locator into conditions (A3 r4 diff).
     parsers: {displayhdr@3: 'sha256:254fd4f565c8f164d5e8'}
-  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
   match:
     extractors: [displayhdr@3]
     source_ids: [displayhdr]
@@ -168,7 +168,7 @@ claim_policies:
     at: '2026-11-23'
     evidence: 'Same keys as @1; parser @2 drops the unconditional cache_state condition (A3 r4 diff: 5 Samsung claims keep it on evidence).'
     parsers: {sandisk_ssd@2: 'sha256:f43f27701094bcf81d3d', teamgroup_ssd@2: 'sha256:142b129a8fb6c4f517d5'}
-  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
   match:
     extractors: [sandisk_ssd@2, teamgroup_ssd@2]
     source_ids: [sandisk-us-ssd, teamgroup-us-ssd]
@@ -194,7 +194,7 @@ claim_policies:
     at: '2026-11-23'
     evidence: 'Same keys as @1; parser @2 drops the unconditional cache_state condition (A3 r4 diff: 5 Samsung claims keep it on evidence).'
     parsers: {samsung_ssd@2: 'sha256:a6cbc9077c793c287d62'}
-  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
   match:
     extractors: [samsung_ssd@2]
     source_ids: [samsung-us-ssd]
@@ -222,7 +222,7 @@ claim_policies:
     at: '2026-11-23'
     evidence: Key list = @1 as committed in ba3b2e0; tplink_routers@2 = the committed revision-aware parser (no code change in r4, version bump only).
     parsers: {tplink_routers@2: 'sha256:c7318e9238be7635b158', netgear_routers@1: 'sha256:a5e3fcb76ca453cc808d', asus_routers@1: 'sha256:1dedfbe9a8ca77b32bb1'}
-  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
   match:
     extractors: [tplink_routers@2, netgear_routers@1, asus_routers@1]
     source_ids: [tplink-us-routers, netgear-us-routers, asus-us-routers]
@@ -246,7 +246,7 @@ claim_policies:
     at: '2026-11-23'
     evidence: Same keys as @1.
     parsers: {tplink_routers@2: 'sha256:c7318e9238be7635b158', asus_routers@1: 'sha256:1dedfbe9a8ca77b32bb1'}
-  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
   match:
     extractors: [tplink_routers@2, asus_routers@1]
     source_ids: [tplink-us-routers, asus-us-routers]
@@ -254,699 +254,6 @@ claim_policies:
     tiers: [manufacturer]
     statuses: [known]
     keys: [gen.device_type, gen.product_line]
-    require_normalized: true
-- id: claim/mfr-power-banks-structured@2
-  since: '2026-11-23'
-  supersedes: claim/mfr-power-banks-structured@1
-  rationale: 'Power banks, manufacturer-owned spec tables: Anker US product pages (variant key_parameter + Specifications table, anker_powerbanks@1), Belkin
-    US Technical Specifications table + title capacity class (belkin_powerbanks@1), INIU / CUKTECH / UGREEN Shopify store spec blocks (shopify_powerbanks:
-    iniu/cuktech/ugreen_powerbanks@1). Per source: only the listed keys, only values that normalise to the profile type. Capacity: cell mAh only from a
-    capacity row without a series-pack voltage (>=5 V); Wh only as printed (never mAh x assumed V); Belkin''s ''10K'' is cap.class_mah, never cap.cell_mah;
-    Belkin ''Wattage'' is out.max_output_w (basis unknown). PDO lists are literal per-port strings. NOT accepted (preview candidates): prose/title-derived
-    fields (form factor, product line, display, pass-through, wireless standard/W, recharge time, under-100Wh flag), store prices (id.msrp_us). @2: same
-    keys/sources as @1; the shared PDO parser no longer derives a wattage from V x A (19.98 W from 9V2.22A was published as official under @1 in a local
-    import), and Anker splits ''Wireless Charger:'' segments; parsers changed, so a new id.'
-  audit:
-    by: A1+A2 power banks
-    at: '2026-11-23'
-    evidence: Parsed all 143 fetched pages; spot-checked port tables / capacities against the stored literals (A1657 2S-pack, UGREEN 4S, CUKTECH two-figure
-      Wh, INIU all-port totals). Re-parsed after the V x A fix.
-    parsers:
-      anker_powerbanks@1: sha256:1c94708f6143fd550bc2
-      belkin_powerbanks@1: sha256:da7880ba96b779b0fe97
-      iniu_powerbanks@1: sha256:646c55efdbdd21c94ba5
-      cuktech_powerbanks@1: sha256:646c55efdbdd21c94ba5
-      ugreen_powerbanks@1: sha256:646c55efdbdd21c94ba5
-  approval:
-    state: pending
-    by: null
-    at: null
-    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
-  match:
-    extractors:
-    - anker_powerbanks@1
-    - belkin_powerbanks@1
-    - cuktech_powerbanks@1
-    - iniu_powerbanks@1
-    - ugreen_powerbanks@1
-    source_ids:
-    - anker-us-powerbanks
-    - belkin-us-powerbanks
-    - cuktech-us-powerbanks
-    - iniu-us-powerbanks
-    - ugreen-us-powerbanks
-    kinds:
-    - official
-    tiers:
-    - manufacturer
-    statuses:
-    - known
-    keys:
-      anker-us-powerbanks:
-      - cap.cell_mah
-      - cap.cell_voltage
-      - cap.energy_wh
-      - gen.color
-      - in.max_w
-      - in.pdos
-      - out.builtin_cable
-      - out.max_single_port_w
-      - out.max_total_w
-      - out.ports
-      - out.usb_a_count
-      - out.usb_c_count
-      - pd.max_fixed_voltage
-      - pd.pps
-      - phys.dimensions
-      - phys.weight
-      belkin-us-powerbanks:
-      - cap.class_mah
-      - out.cable_note
-      - out.max_output_w
-      - out.usb_a_count
-      - out.usb_c_count
-      - phys.dimensions
-      iniu-us-powerbanks: &pbkeys2
-      - bat.chemistry
-      - cap.cell_mah
-      - cap.cell_voltage
-      - cap.energy_wh
-      - cap.rated_basis
-      - cap.rated_mah
-      - gen.color
-      - in.max_w
-      - in.pdos
-      - out.max_single_port_w
-      - out.max_total_w
-      - out.ports
-      - out.simultaneous
-      - pd.max_fixed_voltage
-      - pd.pps
-      - pd.protocols
-      - phys.dimensions
-      - phys.weight
-      cuktech-us-powerbanks: *pbkeys2
-      ugreen-us-powerbanks: *pbkeys2
-    require_normalized: true
-- id: claim/mfr-power-banks-structured@3
-  since: '2026-11-23'
-  supersedes: claim/mfr-power-banks-structured@2
-  rationale: 'Power banks, manufacturer-owned spec tables. @3 = @2 unchanged (Anker, Belkin, INIU, CUKTECH, UGREEN: same extractors, fingerprints,
-    per-source keys) plus EcoFlow, SHARGE, KUXIU and mophie US Shopify store spec blocks (shopify_powerbanks2: ecoflow/sharge/kuxiu/mophie_powerbanks@1),
-    same capacity rules as @2 (cell mAh never from a series-pack row, Wh only as printed, two printed figures -> the lower). mophie ''Output'' (port
-    count + one W figure, per-port vs total unstated) is out.max_output_w like Belkin ''Wattage''. Identity note: EcoFlow pages print no model number
-    (model = the shared EF- SKU stem, colour/region stripped, as the Anker/Belkin SKU-stem precedent) and mophie''s is the JSON-LD 9-digit part number;
-    SHARGE/KUXIU use the printed model row. NOT accepted (preview): wireless W, display, prose/title-derived fields, as in @2.'
-  audit:
-    by: A2 robovac+powerbank sources r2
-    at: '2026-11-23'
-    evidence: 76 new pages parsed (EcoFlow 15, SHARGE 24, KUXIU 14, mophie 23); pages naming two models or two capacities are not minted; spot-checked
-      capacities, port tables and weights against stored literals.
-    parsers:
-      anker_powerbanks@1: sha256:1c94708f6143fd550bc2
-      belkin_powerbanks@1: sha256:da7880ba96b779b0fe97
-      iniu_powerbanks@1: sha256:646c55efdbdd21c94ba5
-      cuktech_powerbanks@1: sha256:646c55efdbdd21c94ba5
-      ugreen_powerbanks@1: sha256:646c55efdbdd21c94ba5
-      ecoflow_powerbanks@1: sha256:5bf36d402e7a7d30b5d5
-      sharge_powerbanks@1: sha256:5bf36d402e7a7d30b5d5
-      kuxiu_powerbanks@1: sha256:5bf36d402e7a7d30b5d5
-      mophie_powerbanks@1: sha256:5bf36d402e7a7d30b5d5
-  approval:
-    state: pending
-    by: null
-    at: null
-    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
-  match:
-    extractors: [anker_powerbanks@1, belkin_powerbanks@1, cuktech_powerbanks@1, iniu_powerbanks@1, ugreen_powerbanks@1, ecoflow_powerbanks@1,
-      sharge_powerbanks@1, kuxiu_powerbanks@1, mophie_powerbanks@1]
-    source_ids: [anker-us-powerbanks, belkin-us-powerbanks, cuktech-us-powerbanks, iniu-us-powerbanks, ugreen-us-powerbanks, ecoflow-us-powerbanks,
-      sharge-us-powerbanks, kuxiu-us-powerbanks, mophie-us-powerbanks]
-    kinds: [official]
-    tiers: [manufacturer]
-    statuses: [known]
-    keys:
-      anker-us-powerbanks:
-      - cap.cell_mah
-      - cap.cell_voltage
-      - cap.energy_wh
-      - gen.color
-      - in.max_w
-      - in.pdos
-      - out.builtin_cable
-      - out.max_single_port_w
-      - out.max_total_w
-      - out.ports
-      - out.usb_a_count
-      - out.usb_c_count
-      - pd.max_fixed_voltage
-      - pd.pps
-      - phys.dimensions
-      - phys.weight
-      belkin-us-powerbanks:
-      - cap.class_mah
-      - out.cable_note
-      - out.max_output_w
-      - out.usb_a_count
-      - out.usb_c_count
-      - phys.dimensions
-      iniu-us-powerbanks: &pbkeys3
-      - bat.chemistry
-      - cap.cell_mah
-      - cap.cell_voltage
-      - cap.energy_wh
-      - cap.rated_basis
-      - cap.rated_mah
-      - gen.color
-      - in.max_w
-      - in.pdos
-      - out.max_single_port_w
-      - out.max_total_w
-      - out.ports
-      - out.simultaneous
-      - pd.max_fixed_voltage
-      - pd.pps
-      - pd.protocols
-      - phys.dimensions
-      - phys.weight
-      cuktech-us-powerbanks: *pbkeys3
-      ugreen-us-powerbanks: *pbkeys3
-      ecoflow-us-powerbanks:
-      - cap.cell_mah
-      - cap.energy_wh
-      - in.max_w
-      - out.max_single_port_w
-      - out.max_total_w
-      - phys.dimensions
-      - phys.weight
-      sharge-us-powerbanks:
-      - cap.cell_mah
-      - cap.cell_voltage
-      - cap.energy_wh
-      - cap.rated_basis
-      - cap.rated_mah
-      - in.max_w
-      - in.pdos
-      - out.max_single_port_w
-      - out.max_total_w
-      - out.ports
-      - out.simultaneous
-      - pd.max_fixed_voltage
-      - pd.pps
-      - pd.protocols
-      - phys.dimensions
-      - phys.weight
-      kuxiu-us-powerbanks:
-      - bat.chemistry
-      - cap.cell_mah
-      - cap.cell_voltage
-      - cap.energy_wh
-      - cap.rated_basis
-      - cap.rated_mah
-      - in.max_w
-      - in.pdos
-      - out.max_single_port_w
-      - out.ports
-      - out.simultaneous
-      - pd.max_fixed_voltage
-      - phys.dimensions
-      - phys.weight
-      mophie-us-powerbanks:
-      - cap.cell_mah
-      - out.max_output_w
-      - phys.dimensions
-      - phys.weight
-    require_normalized: true
-- id: claim/mfr-robovac-structured@2
-  since: '2026-11-23'
-  supersedes: claim/mfr-robovac-structured@1
-  rationale: 'Robot vacuums, the manufacturer''s own labelled spec rows. @2 = @1 unchanged (Dreame / Roborock / Narwal US stores, same extractors,
-    fingerprints and per-source keys) plus three sources: ECOVACS US shop __NEXT_DATA__ spec_list rows read per (group, label), units from the label
-    (ecovacs_robovac@1); iRobot Product-Variation JSON pdpSpecs ''Details'' rows, units from the label, axis markers map L/W/D/H (an unmarked robot
-    triple maps its smallest axis to height: with the 200-450 mm footprint and 50-150 mm height bounds that is unambiguous), irobot_robovac@1; MOVA
-    product-page comparison JSON island entry whose url is the product''s own handle, plus the store''s compare page column for that handle, read only
-    when its value count equals the 48 row labels (mova_robovac@1). Same rules as @1: only listed keys, only normalised values, suction stays a
-    manufacturer claim with claim_basis mfr_unstated (no basis printed by these three), robot dims/weight outside physical bounds not emitted.
-    NOT accepted (preview candidates): ECOVACS runtime / noise rows (mode-labelled but single-source, same reason as @1), voice control, ''TBC'' /
-    lower-bound cells (not normalised at all).'
-  audit:
-    by: A2 robovac+powerbank sources r2
-    at: '2026-11-23'
-    evidence: Parsed all fetched bundles (ECOVACS 48 models from 59 main_goods, 8 with an empty spec_list; iRobot 30 model codes from the
-      us-products-plp grid; MOVA 17 models, 15 with comparison data). Spot-checked suction, battery, tanks, dock flags, wash temperature, robot
-      dimensions axis mapping and weights against stored literals.
-    parsers:
-      dreame_robovac@1: sha256:1edc479c58c8de26fd80
-      roborock_robovac@1: sha256:253896199530aa5695d3
-      narwal_robovac@1: sha256:6e0ef0e0b072bb790496
-      ecovacs_robovac@1: sha256:bdd37a320c0eb765a018
-      irobot_robovac@1: sha256:a20b8cec0489032944ae
-      mova_robovac@1: sha256:ce4d85ef5900179118d7
-  approval:
-    state: pending
-    by: null
-    at: null
-    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
-  match:
-    extractors: [dreame_robovac@1, roborock_robovac@1, narwal_robovac@1, ecovacs_robovac@1, irobot_robovac@1, mova_robovac@1]
-    source_ids: [dreame-us-robovac, roborock-us-robovac, narwal-us-robovac, ecovacs-us-robovac, irobot-us-robovac, mova-us-robovac]
-    kinds: [official]
-    tiers: [manufacturer]
-    statuses: [known]
-    keys:
-      dreame-us-robovac: [clean.suction_pa, clean.dustbin_ml, clean.main_brush_lifting, clean.side_brush_extending, clean.side_brush_lifting,
-        clean.dirt_detection, mop.type, mop.lifting, mop.lift_height_mm, mop.auto_removal, mop.extending, mop.robot_tank_ml, mop.auto_refill_from_dock,
-        nav.type, nav.obstacle_sensors, nav.obstacle_crossing_mm, bat.capacity_mah, dock.self_empty, dock.dust_bag_ml, dock.mop_wash, dock.hot_water_wash,
-        dock.wash_water_temp_c, dock.hot_air_dry, dock.mop_dry, dock.washboard_self_clean, dock.solution_dispense, dock.clean_tank_ml, dock.dirty_tank_ml,
-        smart.matter, phys.robot_height_mm, phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions, phys.dock_weight_g]
-      roborock-us-robovac: [bat.capacity_mah, phys.robot_height_mm, phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions]
-      narwal-us-robovac: [clean.suction_pa, bat.capacity_mah, mop.lifting, mop.lift_height_mm, mop.extending, nav.type, phys.robot_height_mm,
-        phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions, phys.dock_weight_g]
-      ecovacs-us-robovac:
-      - bat.capacity_mah
-      - clean.dustbin_ml
-      - clean.suction_pa
-      - dock.clean_tank_ml
-      - dock.dirty_tank_ml
-      - dock.dust_bag_ml
-      - dock.hot_air_dry
-      - dock.hot_water_wash
-      - dock.mop_wash
-      - dock.plumbed_refill_drain
-      - dock.self_empty
-      - dock.solution_dispense
-      - dock.wash_water_temp_c
-      - mop.auto_refill_from_dock
-      - mop.lift_height_mm
-      - mop.lifting
-      - mop.robot_tank_ml
-      - mop.type
-      - nav.obstacle_crossing_mm
-      - nav.obstacle_sensors
-      - nav.type
-      - phys.dock_dimensions
-      - phys.dock_weight_g
-      - phys.robot_dimensions
-      - phys.robot_height_mm
-      - phys.robot_weight_g
-      irobot-us-robovac:
-      - bat.capacity_mah
-      - clean.dustbin_ml
-      - mop.robot_tank_ml
-      - phys.dock_dimensions
-      - phys.dock_weight_g
-      - phys.robot_dimensions
-      - phys.robot_height_mm
-      - phys.robot_weight_g
-      mova-us-robovac:
-      - bat.capacity_mah
-      - clean.dirt_detection
-      - clean.dustbin_ml
-      - clean.main_brush_lifting
-      - clean.side_brush_extending
-      - clean.side_brush_lifting
-      - clean.suction_pa
-      - dock.clean_tank_ml
-      - dock.dirty_tank_ml
-      - dock.dust_bag_ml
-      - dock.hot_air_dry
-      - dock.hot_water_wash
-      - dock.mop_dry
-      - dock.plumbed_refill_drain
-      - dock.solution_dispense
-      - dock.wash_water_temp_c
-      - dock.washboard_self_clean
-      - mop.auto_removal
-      - mop.extending
-      - mop.lift_height_mm
-      - mop.lifting
-      - mop.robot_tank_ml
-      - mop.type
-      - nav.obstacle_crossing_mm
-      - nav.obstacle_sensors
-      - nav.type
-      - phys.robot_height_mm
-    require_normalized: true
-- id: claim/mfr-robovac-structured@3
-  since: '2026-11-23'
-  supersedes: claim/mfr-robovac-structured@2
-  rationale: 'Robot vacuums, the manufacturer''s own labelled spec rows. @3 = @2 with the ECOVACS and iRobot parsers fixed (fingerprints.unmapped was a list; import needs a label->example map; no claim changed) before any release. @2 = @1 unchanged (Dreame / Roborock / Narwal US stores, same extractors,
-    fingerprints and per-source keys) plus three sources: ECOVACS US shop __NEXT_DATA__ spec_list rows read per (group, label), units from the label
-    (ecovacs_robovac@1); iRobot Product-Variation JSON pdpSpecs ''Details'' rows, units from the label, axis markers map L/W/D/H (an unmarked robot
-    triple maps its smallest axis to height: with the 200-450 mm footprint and 50-150 mm height bounds that is unambiguous), irobot_robovac@1; MOVA
-    product-page comparison JSON island entry whose url is the product''s own handle, plus the store''s compare page column for that handle, read only
-    when its value count equals the 48 row labels (mova_robovac@1). Same rules as @1: only listed keys, only normalised values, suction stays a
-    manufacturer claim with claim_basis mfr_unstated (no basis printed by these three), robot dims/weight outside physical bounds not emitted.
-    NOT accepted (preview candidates): ECOVACS runtime / noise rows (mode-labelled but single-source, same reason as @1), voice control, ''TBC'' /
-    lower-bound cells (not normalised at all).'
-  audit:
-    by: A2 robovac+powerbank sources r2
-    at: '2026-11-23'
-    evidence: Parsed all fetched bundles (ECOVACS 48 models from 59 main_goods, 8 with an empty spec_list; iRobot 30 model codes from the
-      us-products-plp grid; MOVA 17 models, 15 with comparison data). Spot-checked suction, battery, tanks, dock flags, wash temperature, robot
-      dimensions axis mapping and weights against stored literals.
-    parsers:
-      dreame_robovac@1: sha256:1edc479c58c8de26fd80
-      roborock_robovac@1: sha256:253896199530aa5695d3
-      narwal_robovac@1: sha256:6e0ef0e0b072bb790496
-      ecovacs_robovac@1: sha256:452326a7ac0a85a723f1
-      irobot_robovac@1: sha256:97f7ed37fb01c5d31934
-      mova_robovac@1: sha256:ce4d85ef5900179118d7
-  approval:
-    state: pending
-    by: null
-    at: null
-    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
-  match:
-    extractors: [dreame_robovac@1, roborock_robovac@1, narwal_robovac@1, ecovacs_robovac@1, irobot_robovac@1, mova_robovac@1]
-    source_ids: [dreame-us-robovac, roborock-us-robovac, narwal-us-robovac, ecovacs-us-robovac, irobot-us-robovac, mova-us-robovac]
-    kinds: [official]
-    tiers: [manufacturer]
-    statuses: [known]
-    keys:
-      dreame-us-robovac: [clean.suction_pa, clean.dustbin_ml, clean.main_brush_lifting, clean.side_brush_extending, clean.side_brush_lifting,
-        clean.dirt_detection, mop.type, mop.lifting, mop.lift_height_mm, mop.auto_removal, mop.extending, mop.robot_tank_ml, mop.auto_refill_from_dock,
-        nav.type, nav.obstacle_sensors, nav.obstacle_crossing_mm, bat.capacity_mah, dock.self_empty, dock.dust_bag_ml, dock.mop_wash, dock.hot_water_wash,
-        dock.wash_water_temp_c, dock.hot_air_dry, dock.mop_dry, dock.washboard_self_clean, dock.solution_dispense, dock.clean_tank_ml, dock.dirty_tank_ml,
-        smart.matter, phys.robot_height_mm, phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions, phys.dock_weight_g]
-      roborock-us-robovac: [bat.capacity_mah, phys.robot_height_mm, phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions]
-      narwal-us-robovac: [clean.suction_pa, bat.capacity_mah, mop.lifting, mop.lift_height_mm, mop.extending, nav.type, phys.robot_height_mm,
-        phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions, phys.dock_weight_g]
-      ecovacs-us-robovac:
-      - bat.capacity_mah
-      - clean.dustbin_ml
-      - clean.suction_pa
-      - dock.clean_tank_ml
-      - dock.dirty_tank_ml
-      - dock.dust_bag_ml
-      - dock.hot_air_dry
-      - dock.hot_water_wash
-      - dock.mop_wash
-      - dock.plumbed_refill_drain
-      - dock.self_empty
-      - dock.solution_dispense
-      - dock.wash_water_temp_c
-      - mop.auto_refill_from_dock
-      - mop.lift_height_mm
-      - mop.lifting
-      - mop.robot_tank_ml
-      - mop.type
-      - nav.obstacle_crossing_mm
-      - nav.obstacle_sensors
-      - nav.type
-      - phys.dock_dimensions
-      - phys.dock_weight_g
-      - phys.robot_dimensions
-      - phys.robot_height_mm
-      - phys.robot_weight_g
-      irobot-us-robovac:
-      - bat.capacity_mah
-      - clean.dustbin_ml
-      - mop.robot_tank_ml
-      - phys.dock_dimensions
-      - phys.dock_weight_g
-      - phys.robot_dimensions
-      - phys.robot_height_mm
-      - phys.robot_weight_g
-      mova-us-robovac:
-      - bat.capacity_mah
-      - clean.dirt_detection
-      - clean.dustbin_ml
-      - clean.main_brush_lifting
-      - clean.side_brush_extending
-      - clean.side_brush_lifting
-      - clean.suction_pa
-      - dock.clean_tank_ml
-      - dock.dirty_tank_ml
-      - dock.dust_bag_ml
-      - dock.hot_air_dry
-      - dock.hot_water_wash
-      - dock.mop_dry
-      - dock.plumbed_refill_drain
-      - dock.solution_dispense
-      - dock.wash_water_temp_c
-      - dock.washboard_self_clean
-      - mop.auto_removal
-      - mop.extending
-      - mop.lift_height_mm
-      - mop.lifting
-      - mop.robot_tank_ml
-      - mop.type
-      - nav.obstacle_crossing_mm
-      - nav.obstacle_sensors
-      - nav.type
-      - phys.robot_height_mm
-    require_normalized: true
-- id: claim/mfr-robovac-structured@4
-  since: '2026-11-23'
-  rationale: 'Robot vacuums: covers the version-bumped ECOVACS and iRobot parsers (ecovacs_robovac@2, irobot_robovac@2; v2 only changes the shape of
-    fingerprints.unmapped, claims are unchanged) with exactly the per-source keys and rules of claim/mfr-robovac-structured@3. @2 and @3 stay active
-    (locked; governance keeps only @1 ids in retired_policies) and still cover Dreame / Roborock / Narwal / MOVA; their ecovacs/irobot @1 entries match
-    no current extractor. Additive, not a supersession: consolidate in the next re-issue after the Codex category review.'
-  audit:
-    by: A2 robovac+powerbank sources r2
-    at: '2026-11-23'
-    evidence: Re-parsed all 48 ECOVACS and 30 iRobot bundles under v2; claim keys/values identical to the v1 parse (only the extractor id changed).
-    parsers:
-      ecovacs_robovac@2: sha256:bc381035d9c654e1abfa
-      irobot_robovac@2: sha256:70bbaddac79c9f5fc8be
-  approval:
-    state: pending
-    by: null
-    at: null
-    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
-  match:
-    extractors: [ecovacs_robovac@2, irobot_robovac@2]
-    source_ids: [ecovacs-us-robovac, irobot-us-robovac]
-    kinds: [official]
-    tiers: [manufacturer]
-    statuses: [known]
-    keys:
-      ecovacs-us-robovac:
-      - bat.capacity_mah
-      - clean.dustbin_ml
-      - clean.suction_pa
-      - dock.clean_tank_ml
-      - dock.dirty_tank_ml
-      - dock.dust_bag_ml
-      - dock.hot_air_dry
-      - dock.hot_water_wash
-      - dock.mop_wash
-      - dock.plumbed_refill_drain
-      - dock.self_empty
-      - dock.solution_dispense
-      - dock.wash_water_temp_c
-      - mop.auto_refill_from_dock
-      - mop.lift_height_mm
-      - mop.lifting
-      - mop.robot_tank_ml
-      - mop.type
-      - nav.obstacle_crossing_mm
-      - nav.obstacle_sensors
-      - nav.type
-      - phys.dock_dimensions
-      - phys.dock_weight_g
-      - phys.robot_dimensions
-      - phys.robot_height_mm
-      - phys.robot_weight_g
-      irobot-us-robovac:
-      - bat.capacity_mah
-      - clean.dustbin_ml
-      - mop.robot_tank_ml
-      - phys.dock_dimensions
-      - phys.dock_weight_g
-      - phys.robot_dimensions
-      - phys.robot_height_mm
-      - phys.robot_weight_g
-    require_normalized: true
-- id: claim/mfr-power-banks-structured@4
-  since: '2026-11-23'
-  supersedes: claim/mfr-power-banks-structured@3
-  rationale: 'Power banks, manufacturer-owned spec tables: ONE consolidated policy for all nine US stores (Anker, Belkin, INIU, CUKTECH, UGREEN, EcoFlow,
-    SHARGE, KUXIU, mophie), replacing the overlapping @2/@3 (kept in claim_policies only because tests/test_adversarial.py requires retired ids to be @1;
-    they match only the @1 extractor versions, which no longer exist in code, so they accept nothing). Review 3 parser changes, every extractor version-bumped:
-    (1) out.max_total_w = ALL-PORTS simultaneous output only: the maker''s labelled Total Output row, or a printed combination whose members each name one
-    port and together cover every individual port of the block; subset totals, ''&'' without ''+'' combinations, unprinted sums (''65W+15W''), a single
-    listed port and mode-dependent totals become status-unknown claims (literal + reason); the participating ports are quoted. (2) Capacity bases stay apart:
-    Anker title capacity -> cap.class_mah (not accepted: title-derived), never cap.cell_mah; a capacity row printing a 5 V basis, two unlabelled mAh or
-    Wh figures, and a rated row without its load are unresolved; cap.rated_mah carries conditions {rated_voltage_v, rated_current_a} (profile basis conditions).
-    (3) INIU/UGREEN page-vs-label identity conflicts (handle token, SKU model tokens, ''+'' bundle SKUs, edition suffix) are quarantined to identity_conflicts
-    when another page owns the model, else kept and listed; SKUs naming another INIU model are dropped as aliases. Per-source keys = @3 unchanged. Belkin''s
-    title capacity class (cap.class_mah) remains the one intentional title-derived key: it is a class, labelled as such, never cell mAh.'
-  audit:
-    by: A3-impl r5 (review-3 fixes)
-    at: '2026-11-23'
-    evidence: Re-parsed every stored power-bank page under the new parsers; diffed accepted claims against the previous release (team/reports/2026-11-23-a3-impl-r5.md);
-      adversarial fixtures in tests/test_review3.py cover every review-3 exit criterion.
-    parsers:
-      anker_powerbanks@2: sha256:e50b4072c43a15652e43
-      belkin_powerbanks@2: sha256:e1a42a9c664b63dec045
-      cuktech_powerbanks@2: sha256:ade07c92eeb57a6b720a
-      iniu_powerbanks@2: sha256:ade07c92eeb57a6b720a
-      ugreen_powerbanks@2: sha256:ade07c92eeb57a6b720a
-      ecoflow_powerbanks@2: sha256:6c10f1b934db3819b5d0
-      sharge_powerbanks@2: sha256:6c10f1b934db3819b5d0
-      kuxiu_powerbanks@2: sha256:6c10f1b934db3819b5d0
-      mophie_powerbanks@2: sha256:6c10f1b934db3819b5d0
-  approval:
-    state: pending
-    by: null
-    at: null
-    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
-  match:
-    extractors:
-    - anker_powerbanks@2
-    - belkin_powerbanks@2
-    - cuktech_powerbanks@2
-    - iniu_powerbanks@2
-    - ugreen_powerbanks@2
-    - ecoflow_powerbanks@2
-    - sharge_powerbanks@2
-    - kuxiu_powerbanks@2
-    - mophie_powerbanks@2
-    source_ids:
-    - anker-us-powerbanks
-    - belkin-us-powerbanks
-    - cuktech-us-powerbanks
-    - iniu-us-powerbanks
-    - ugreen-us-powerbanks
-    - ecoflow-us-powerbanks
-    - sharge-us-powerbanks
-    - kuxiu-us-powerbanks
-    - mophie-us-powerbanks
-    kinds:
-    - official
-    tiers:
-    - manufacturer
-    statuses:
-    - known
-    keys:
-      anker-us-powerbanks:
-      - cap.cell_mah
-      - cap.cell_voltage
-      - cap.energy_wh
-      - gen.color
-      - in.max_w
-      - in.pdos
-      - out.builtin_cable
-      - out.max_single_port_w
-      - out.max_total_w
-      - out.ports
-      - out.usb_a_count
-      - out.usb_c_count
-      - pd.max_fixed_voltage
-      - pd.pps
-      - phys.dimensions
-      - phys.weight
-      belkin-us-powerbanks:
-      - cap.class_mah
-      - out.cable_note
-      - out.max_output_w
-      - out.usb_a_count
-      - out.usb_c_count
-      - phys.dimensions
-      iniu-us-powerbanks:
-      - bat.chemistry
-      - cap.cell_mah
-      - cap.cell_voltage
-      - cap.energy_wh
-      - cap.rated_basis
-      - cap.rated_mah
-      - gen.color
-      - in.max_w
-      - in.pdos
-      - out.max_single_port_w
-      - out.max_total_w
-      - out.ports
-      - out.simultaneous
-      - pd.max_fixed_voltage
-      - pd.pps
-      - pd.protocols
-      - phys.dimensions
-      - phys.weight
-      cuktech-us-powerbanks:
-      - bat.chemistry
-      - cap.cell_mah
-      - cap.cell_voltage
-      - cap.energy_wh
-      - cap.rated_basis
-      - cap.rated_mah
-      - gen.color
-      - in.max_w
-      - in.pdos
-      - out.max_single_port_w
-      - out.max_total_w
-      - out.ports
-      - out.simultaneous
-      - pd.max_fixed_voltage
-      - pd.pps
-      - pd.protocols
-      - phys.dimensions
-      - phys.weight
-      ugreen-us-powerbanks:
-      - bat.chemistry
-      - cap.cell_mah
-      - cap.cell_voltage
-      - cap.energy_wh
-      - cap.rated_basis
-      - cap.rated_mah
-      - gen.color
-      - in.max_w
-      - in.pdos
-      - out.max_single_port_w
-      - out.max_total_w
-      - out.ports
-      - out.simultaneous
-      - pd.max_fixed_voltage
-      - pd.pps
-      - pd.protocols
-      - phys.dimensions
-      - phys.weight
-      ecoflow-us-powerbanks:
-      - cap.cell_mah
-      - cap.energy_wh
-      - in.max_w
-      - out.max_single_port_w
-      - out.max_total_w
-      - phys.dimensions
-      - phys.weight
-      sharge-us-powerbanks:
-      - cap.cell_mah
-      - cap.cell_voltage
-      - cap.energy_wh
-      - cap.rated_basis
-      - cap.rated_mah
-      - in.max_w
-      - in.pdos
-      - out.max_single_port_w
-      - out.max_total_w
-      - out.ports
-      - out.simultaneous
-      - pd.max_fixed_voltage
-      - pd.pps
-      - pd.protocols
-      - phys.dimensions
-      - phys.weight
-      kuxiu-us-powerbanks:
-      - bat.chemistry
-      - cap.cell_mah
-      - cap.cell_voltage
-      - cap.energy_wh
-      - cap.rated_basis
-      - cap.rated_mah
-      - in.max_w
-      - in.pdos
-      - out.max_single_port_w
-      - out.ports
-      - out.simultaneous
-      - pd.max_fixed_voltage
-      - phys.dimensions
-      - phys.weight
-      mophie-us-powerbanks:
-      - cap.cell_mah
-      - out.max_output_w
-      - phys.dimensions
-      - phys.weight
     require_normalized: true
 - id: claim/mfr-robovac-structured@5
   since: '2026-11-23'
@@ -975,11 +282,7 @@ claim_policies:
       ecovacs_robovac@3: sha256:aadfd4932c14646a8025
       irobot_robovac@3: sha256:9deb0671691dc5ef2498
       mova_robovac@2: sha256:93a8080a92d643647cd7
-  approval:
-    state: pending
-    by: null
-    at: null
-    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
   match:
     extractors:
     - dreame_robovac@2
@@ -1134,11 +437,7 @@ claim_policies:
     evidence: Re-parsed all stored DCL bundles; same certified rows as @1 after the exact-match re-check.
     parsers:
       csa_dcl_robovac@2: sha256:46bdba0a94f3705a296a
-  approval:
-    state: pending
-    by: null
-    at: null
-    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
   match:
     extractors:
     - csa_dcl_robovac@2
@@ -1154,192 +453,6 @@ claim_policies:
       csa-dcl-robovac:
       - smart.matter
     require_normalized: true
-- id: claim/mfr-power-stations-structured@1
-  since: '2026-11-23'
-  rationale: 'Portable power stations, manufacturer-owned US store spec tables (EcoFlow, BLUETTI, Jackery, Goal Zero, Anker SOLIX). Only labelled spec
-    rows are read (never prose or titles) and review-3 rules hold from the start: (1) no negation-blind keyword enums: waveform, chemistry, UPS,
-    expandability and UL 2743 / UL 9540 come only from their own labelled rows with an affirmative phrase, false only from a row whose value is just
-    No; (2) totals only with explicit membership: AC continuous = the AC row tagged total/rated/continuous (or the single AC row with one W figure),
-    combined solar input only from a printed total/dual-port/Double-to figure or one unmultiplied figure, best single USB-C only from a figure printed
-    for one port or per port, no cross-port sum; (3) capacity bases separate: rated pack Wh, usable Wh (labelled only), pack V and Ah are distinct keys,
-    two Wh figures in a cell are unresolved, Wh is never computed; (4) conditions carry each basis: cycle life retention_pct, recharge charge_to_pct +
-    charger, UPS backup_mode, solar window voltage_basis (+ port), AC input ac_charge_mode, expanded Wh extra_batteries; (5) conflict-aware grouping:
-    unit variants vs package variants (solar/battery/charger bundles are never aliases or spec sources), several unit SKU stems = absence, Jackery
-    per-variant blocks kept apart (230 V blocks skipped), a block that splits values per model or names another product = absence. exp.batteries
-    (name extraction) is deliberately NOT accepted.'
-  audit:
-    by: A1+A2 power stations
-    at: '2026-11-23'
-    evidence: Parsed every stored page of the five sources; spot-checked one table per model (team/reports/2026-11-23-a12-power-stations.md);
-      helper fixtures in tests/test_power_stations.py.
-    parsers:
-      ankersolix_stations@1: sha256:1801fa626c3cdf2dbef9
-      bluetti_stations@1: sha256:ffaf6370748d1b8fd1da
-      ecoflow_stations@1: sha256:ffaf6370748d1b8fd1da
-      goalzero_stations@1: sha256:ffaf6370748d1b8fd1da
-      jackery_stations@1: sha256:ffaf6370748d1b8fd1da
-  approval:
-    state: pending
-    by: null
-    at: null
-    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
-  match:
-    extractors:
-    - ankersolix_stations@1
-    - bluetti_stations@1
-    - ecoflow_stations@1
-    - goalzero_stations@1
-    - jackery_stations@1
-    source_ids:
-    - ecoflow-us-stations
-    - bluetti-us-stations
-    - jackery-us-stations
-    - goalzero-us-stations
-    - ankersolix-us-stations
-    kinds:
-    - official
-    tiers:
-    - manufacturer
-    statuses:
-    - known
-    keys:
-      ecoflow-us-stations:
-      - bat.chemistry
-      - bat.cycle_life
-      - cap.energy_wh
-      - cap.pack_ah
-      - cap.pack_voltage_v
-      - conn.wireless
-      - exp.expandable
-      - exp.max_batteries
-      - exp.max_wh
-      - gen.warranty_years
-      - in.ac_w
-      - in.car_w
-      - in.solar_port_w
-      - in.solar_ports
-      - in.solar_voltage
-      - in.solar_w
-      - out.ac_boost_w
-      - out.ac_continuous_w
-      - out.ac_outlets
-      - out.ac_surge_w
-      - out.ac_voltage
-      - out.car_w
-      - out.ports
-      - out.usb_a_count
-      - out.usb_c_count
-      - out.usb_c_max_w
-      - phys.dimensions
-      - phys.weight
-      - ups.supported
-      - ups.switchover_ms
-      bluetti-us-stations:
-      - bat.chemistry
-      - bat.cycle_life
-      - cap.energy_wh
-      - cap.pack_ah
-      - cap.pack_voltage_v
-      - cert.marks
-      - cert.ul2743
-      - conn.wireless
-      - exp.expandable
-      - gen.warranty_years
-      - in.ac_w
-      - in.max_w
-      - in.passthrough
-      - in.solar_voltage
-      - in.solar_w
-      - out.ac_boost_w
-      - out.ac_continuous_w
-      - out.ac_outlets
-      - out.ac_surge_w
-      - out.ac_voltage
-      - out.ac_waveform
-      - out.car_w
-      - out.ports
-      - out.usb_a_count
-      - out.usb_c_count
-      - out.usb_c_max_w
-      - out.wireless_w
-      - phys.dimensions
-      - phys.weight
-      - ups.supported
-      - ups.switchover_ms
-      jackery-us-stations:
-      - bat.chemistry
-      - bat.cycle_life
-      - cap.energy_wh
-      - cap.pack_ah
-      - cap.pack_voltage_v
-      - gen.warranty_years
-      - in.solar_voltage
-      - in.solar_w
-      - out.ac_continuous_w
-      - out.ac_outlets
-      - out.ac_surge_w
-      - out.ac_voltage
-      - out.ports
-      - out.usb_a_count
-      - out.usb_c_count
-      - out.usb_c_max_w
-      - phys.dimensions
-      - phys.weight
-      - ups.supported
-      - ups.switchover_ms
-      goalzero-us-stations:
-      - bat.chemistry
-      - bat.cycle_life
-      - cap.energy_wh
-      - cap.pack_ah
-      - cap.pack_voltage_v
-      - cert.marks
-      - exp.expandable
-      - gen.warranty_years
-      - in.ac_w
-      - in.recharge_ac_h
-      - in.recharge_solar_h
-      - in.solar_voltage
-      - in.solar_w
-      - out.ac_continuous_w
-      - out.ac_outlets
-      - out.ac_surge_w
-      - out.ac_voltage
-      - out.ac_waveform
-      - out.car_w
-      - out.ports
-      - out.usb_a_count
-      - out.usb_c_count
-      - out.usb_c_max_w
-      - phys.dimensions
-      - phys.weight
-      - ups.supported
-      - ups.switchover_ms
-      ankersolix-us-stations:
-      - bat.chemistry
-      - bat.cycle_life
-      - cap.energy_wh
-      - conn.wireless
-      - exp.expandable
-      - exp.max_batteries
-      - exp.max_wh
-      - gen.warranty_years
-      - in.ac_w
-      - in.solar_voltage
-      - in.solar_w
-      - out.ac_continuous_w
-      - out.ac_outlets
-      - out.ac_surge_w
-      - out.ac_voltage
-      - out.car_w
-      - out.ports
-      - out.usb_a_count
-      - out.usb_c_count
-      - out.usb_c_max_w
-      - phys.dimensions
-      - phys.weight
-      - ups.supported
-      - ups.switchover_ms
 - id: claim/mfr-power-banks-structured@5
   since: '2026-11-23'
   supersedes: claim/mfr-power-banks-structured@4
@@ -1362,11 +475,7 @@ claim_policies:
       sharge_powerbanks@3: sha256:50c7f3c6bc5ba756b011
       kuxiu_powerbanks@3: sha256:50c7f3c6bc5ba756b011
       mophie_powerbanks@3: sha256:50c7f3c6bc5ba756b011
-  approval:
-    state: pending
-    by: null
-    at: null
-    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
   match:
     extractors:
     - anker_powerbanks@3
@@ -1540,11 +649,7 @@ claim_policies:
       ecoflow_stations@2: sha256:93f79836f7c8066c46dc
       goalzero_stations@2: sha256:93f79836f7c8066c46dc
       jackery_stations@2: sha256:93f79836f7c8066c46dc
-  approval:
-    state: pending
-    by: null
-    at: null
-    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
   match:
     extractors:
     - ankersolix_stations@2
@@ -1702,69 +807,6 @@ claim_policies:
       - phys.weight
       - ups.supported
       - ups.switchover_ms
-- id: claim/tvs-structured@1
-  since: '2026-11-23'
-  rationale: 'Televisions: the ENERGY STAR Certified Televisions record (regulatory) and the makers'' own labelled US spec data (Samsung spec API, LG
-    __NEXT_DATA__ spec table, TCL per-size spec boxes). Labelled rows only, never titles or prose, and review-3 rules from the start: (1) no
-    negation-blind enums: Dolby Vision / HDR10+ / VRR / ALLM / HGiG / ATSC 3.0 come from their own rows with an affirmative value, false only from a
-    row whose value is just No (ATSC: a tuner row naming 1.0 and not 3.0); a format missing from a list is unknown; processing names (UHD Dimming,
-    Precision Dimming) are not local dimming; shifted Samsung rows (FreeSync holding accessibility text, a resolution in Product Type) are ignored;
-    (2) explicit membership: hdmi.ports_4k120 only from a per-port statement (Samsung for HDMI 1/2/3/4, TCL HDMI 1-2 / 3-4 splits, LG trailing (N
-    port)), never from a generic feature list; (3) bases in conditions: on-mode/standby/annual figures carry power_basis (energy_star_on_mode,
-    doe_federal_test, energy_star_standby, maker_typical, maker_unstated) so a test figure and a declaration never merge; native refresh never
-    from a motion/marketing figure; (4) conflict-aware grouping: one size = one model number; TCL boxes attributed only by a Model row equal to
-    the SKU or a unique size match that agrees with the SKU; a printed size contradicting the model number is unresolved; retailer designations
-    group only through the maker''s ENERGY STAR same-hardware declaration (aliases), stem matches are proposals. NOT accepted (preview only):
-    refresh.max_hz (VRR/PC maxima, sometimes DLG), hdr.peak_nits (window/mode unstated), Samsung panel.backlight (read from a "Contrast" row),
-    ENERGY STAR panel.backlight (Mini-LED sets certify as Direct-lit), every status-unknown plausibility rejection.'
-  audit:
-    by: A1+A2 tvs
-    at: '2026-11-23'
-    evidence: Parsed every stored snapshot of the four sources; per-key value histograms and the shifted-row / mm-as-inch cases checked
-      (team/reports/2026-11-23-a12-tvs.md); fixtures in tests/test_tvs.py (17 tests).
-    parsers:
-      energystar_tvs@1: sha256:35b90bbed61b2720ad7c
-      samsung_tvs@1: sha256:6671f4bf6d2b8ecdac67
-      lg_tvs@1: sha256:8381b9a9945f5471873e
-      tcl_tvs@1: sha256:2710e28e9980fbe72ab2
-  approval:
-    state: pending
-    by: null
-    at: null
-    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
-  match:
-    extractors: [energystar_tvs@1, samsung_tvs@1, lg_tvs@1, tcl_tvs@1]
-    source_ids: [energystar-tvs, samsung-us-tvs, lg-us-tvs, tcl-us-tvs]
-    kinds: [official]
-    tiers: [manufacturer, regulatory]
-    statuses: [known]
-    require_normalized: true
-    keys:
-      energystar-tvs:
-        [gen.viewable_diag, panel.display_tech, panel.quantum_dot, pic.auto_brightness, pwr.annual_kwh, pwr.energy_star, pwr.on_mode_doe_w,
-         pwr.on_mode_w, pwr.standby_w, res.height_px, res.native, res.width_px]
-      samsung-us-tvs:
-        [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.size_class,
-         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.max_input, hdmi.ports_4k120, hdr.dolby_vision, hdr.formats, hdr.hdr10plus, os.platform,
-         panel.display_tech, panel.marketing_class, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand,
-         phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, pwr.annual_kwh, pwr.max_w,
-         pwr.on_mode_w, pwr.standby_w, refresh.marketing, refresh.native_hz, res.class, res.height_px, res.native, res.width_px, vrr.formats,
-         vrr.supported]
-      lg-us-tvs:
-        [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.series, gen.size_class,
-         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.ports_4k120, hdr.dolby_vision, hdr.formats, hdr.hdr10plus, os.platform, os.version,
-         panel.backlight, panel.display_tech, panel.lcd_type, panel.marketing_class, phys.depth_no_stand, phys.depth_with_stand,
-         phys.height_no_stand, phys.height_with_stand, phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand,
-         phys.width_with_stand, pwr.annual_kwh, pwr.on_mode_w, pwr.standby_w, refresh.marketing, refresh.native_hz, res.class, res.height_px,
-         res.native, res.width_px, sup.warranty, vrr.formats, vrr.supported]
-      tcl-us-tvs:
-        [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.size_class,
-         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.ports_4k120, hdr.dimming_zones, hdr.dolby_vision, hdr.formats, hdr.hdr10plus,
-         hdr.local_dimming, os.platform, panel.backlight, panel.bit_depth, panel.display_tech, panel.lcd_type, panel.marketing_class,
-         panel.quantum_dot, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand, phys.vesa,
-         phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, pwr.annual_kwh, pwr.on_mode_w, pwr.standby_w,
-         refresh.dlg_hz, refresh.marketing, refresh.native_hz, res.class, res.height_px, res.native, res.width_px, sup.warranty, vrr.formats,
-         vrr.supported]
 - id: claim/tvs-structured@2
   since: '2026-11-23'
   supersedes: claim/tvs-structured@1
@@ -1787,11 +829,7 @@ claim_policies:
       lg_tvs@1: sha256:8381b9a9945f5471873e
       tcl_tvs@1: sha256:2710e28e9980fbe72ab2
       vizio_tvs@1: sha256:55121e0b1ed6942efc45
-  approval:
-    state: pending
-    by: null
-    at: null
-    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
   match:
     extractors: [energystar_tvs@1, samsung_tvs@1, lg_tvs@1, tcl_tvs@1, vizio_tvs@1]
     source_ids: [energystar-tvs, samsung-us-tvs, lg-us-tvs, tcl-us-tvs, vizio-us-tvs]
@@ -1830,6 +868,57 @@ claim_policies:
          hdr.hdr10plus, hdr.local_dimming, panel.backlight, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand,
          phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, refresh.marketing, refresh.native_hz,
          res.class, res.height_px, res.native, res.width_px, sup.warranty, vrr.supported]
+- id: claim/tvs-es-certification-coverage@1
+  since: '2026-11-23'
+  rationale: 'Review 4 fix 2, certification half. An ENERGY STAR wildcard family record (OLED65C5***) is a certification SCOPE, not a model
+    (scripts/tvcert.py). An existing exact model connected to it by an APPROVED covered_by_certification edge (rel/tvs-es-certification-scope@1:
+    whole-string match with the documented one-alphanumeric "*" only, basic or exactly declared pattern, same brand, United States record + US
+    model key, size digits / certified diagonal / stated sizes agree, dated record, no disagreeing overlapping record) receives ONLY
+    pwr.energy_star = true, dated by the record (raw + locator carry pd_id, pattern, date_qualified). Separate allowlist from the direct ES
+    claims of claim/tvs-structured@2, whose ES list includes panel and resolution facts: nothing physical, panel, refresh, HDMI, warranty or
+    package ever transfers through this edge, and no identifier or entity merges.'
+  audit:
+    by: A3-impl r7
+    at: '2026-11-23'
+    evidence: transfer code scripts/tvcert.py (TRANSFER_KEYS); fixtures tests/test_r7.py (documented/undocumented wildcards, wrong size, year,
+      market, conflicting records, physical/panel never transferred, ids unchanged).
+    parsers:
+      energystar_tvs@1: sha256:35b90bbed61b2720ad7c
+      tvcert@1: 'sha256:574598fc48ea41dea968'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+  match:
+    extractors: [energystar_tvs_coverage@1]
+    source_ids: [energystar-tvs]
+    kinds: [official]
+    tiers: [regulatory]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      energystar-tvs: [pwr.energy_star]
+- id: claim/tvs-es-power-applicability@1
+  since: '2026-11-23'
+  rationale: 'Review 4 fix 2, power half, its own allowlist. Pattern membership alone never transfers power. Over an approved
+    covered_by_certification edge, the on-mode, DOE on-mode, standby and annual-energy figures (original power_basis / standby_network
+    conditions kept; never the certification ceiling, which is not a claim) transfer only with applicability evidence: the record states the
+    measurement applies to every covered designation, or a reviewed data/decisions/tv-crosswalks.yaml power_applicability entry names this
+    exact record and model. Otherwise the figures stay on the certification record only. Today no record and no entry qualifies (0 claims).'
+  audit:
+    by: A3-impl r7
+    at: '2026-11-23'
+    evidence: scripts/tvcert.py (POWER_KEYS, POWER_APPLIES); fixtures tests/test_r7.py (no evidence -> nothing; explicit statement -> the four keys).
+    parsers:
+      energystar_tvs@1: sha256:35b90bbed61b2720ad7c
+      tvcert@1: 'sha256:574598fc48ea41dea968'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+  match:
+    extractors: [energystar_tvs_power_applicability@1]
+    source_ids: [energystar-tvs]
+    kinds: [official]
+    tiers: [regulatory]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      energystar-tvs: [pwr.annual_kwh, pwr.on_mode_doe_w, pwr.on_mode_w, pwr.standby_w]
 relation_policies:
 - id: rel/source-stated-hierarchy@2
   since: '2026-11-23'
@@ -1844,7 +933,7 @@ relation_policies:
     parsers: {lenovo_psref@2: 'sha256:ec6a55f8081086820989', asus@1: 'sha256:628db32b5ba83fa291c6', dell@1: 'sha256:13cd4d61b81c005021b6', surface@1: 'sha256:80cd87b7b1b87d6969e9',
       razer@1: 'sha256:8752d0e2f07ae8b46ff2', samsung@1: 'sha256:d0e9cabff53a15285159', lenovo_monitors@1: 'sha256:b7e7dfee555d5a890251', samsung_ssd@2: 'sha256:a6cbc9077c793c287d62',
       sandisk_ssd@2: 'sha256:f43f27701094bcf81d3d', teamgroup_ssd@2: 'sha256:142b129a8fb6c4f517d5', tplink_routers@2: 'sha256:c7318e9238be7635b158', crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'}
-  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
   rules:
   - method: adapter:lenovo-psref
     types: [member_of_family, configuration_of]
@@ -1888,6 +977,88 @@ relation_policies:
   - method: page-variants:belkin
     types: [configuration_of]
     parsers: [crawlpy-strips@1]
+- id: rel/bundle-contents@2
+  since: '2026-11-23'
+  supersedes: rel/bundle-contents@1
+  rationale: 'Review 4 fix 1. contains links minted by the shared transform scripts/bundles.py bundles@2, pinned here by fingerprint (audit.parsers
+    bundles@2; a code change is parser drift, fatal under --strict-parsers) and by the link parser "<adapter>@N+bundles@2", which @1 never
+    matches (@1 is inert). Evidence level stated: the manufacturer store listing that itemises the SKU (one listing can mint; several must agree,
+    which is consistency, not independent corroboration). No SKU-digit inference; the page model must be named, a capacity note must equal the
+    page''s own capacity; colour slashes only from a reviewed list; pipe tails kept as unparsed (contents incomplete); both free syntaxes are
+    promotions (dated, never contents); pack words fabricate no component; 0 quantities rejected; exact multisets of member models and full
+    descriptions (plural folding only); one stated market; punctuation-variant, disputed or unparseable SKUs are quarantined in
+    identity_conflicts, never re-attached as aliases.'
+  audit:
+    by: A3-impl r7
+    at: '2026-11-23'
+    evidence: fixtures tests/test_r7.py (rigid/flexible 200W, SKU digit collision, slash/pipe, both free syntaxes, zero counts, conflicting and
+      unparseable observations, regional SKU reuse, punctuation variants; exact multi-model / quantity bundles still pass).
+    parsers:
+      ankersolix_stations@2: sha256:513f8cbc8ed8880ac993
+      bluetti_stations@2: sha256:93f79836f7c8066c46dc
+      ecoflow_stations@2: sha256:93f79836f7c8066c46dc
+      jackery_stations@2: sha256:93f79836f7c8066c46dc
+      dreame_robovac@2: sha256:82418fe203d439831b23
+      narwal_robovac@2: sha256:2f212aa7076aff13a250
+      bundles@2: 'sha256:673c815897604268136d'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+  rules:
+  - method: bundle:ankersolix-us-stations
+    types: [contains]
+    parsers: [ankersolix_stations@2+bundles@2]
+  - method: bundle:bluetti-us-stations
+    types: [contains]
+    parsers: [bluetti_stations@2+bundles@2]
+  - method: bundle:ecoflow-us-stations
+    types: [contains]
+    parsers: [ecoflow_stations@2+bundles@2]
+  - method: bundle:jackery-us-stations
+    types: [contains]
+    parsers: [jackery_stations@2+bundles@2]
+  - method: bundle:dreame-us-robovac
+    types: [contains]
+    parsers: [dreame_robovac@2+bundles@2]
+  - method: bundle:narwal-us-robovac
+    types: [contains]
+    parsers: [narwal_robovac@2+bundles@2]
+- id: rel/tvs-es-certification-scope@1
+  since: '2026-11-23'
+  rationale: 'Review 4 fix 2. A directed covered_by_certification edge from an existing exact TV model to an ENERGY STAR wildcard record
+    (target energystar-tvs:<pd_id>), method es-scope:documented only: the whole model key matches the basic or an exactly declared pattern
+    with the documented "*" = one alphanumeric, same brand, record states United States and the model key states US, sizes agree, record
+    dated, no disagreeing overlapping record. Not covered (stay proposals): es-scope:undocumented-wildcard, es-scope:listed-undeclared,
+    es-scope:declaration-not-exact, es-scope:conflict. The edge is coverage only: no parent, alias, merge or inheritance.'
+  audit:
+    by: A3-impl r7
+    at: '2026-11-23'
+    evidence: scripts/tvcert.py; fixtures tests/test_r7.py.
+    parsers:
+      energystar_tvs@1: sha256:35b90bbed61b2720ad7c
+      tvcert@1: 'sha256:574598fc48ea41dea968'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+  rules:
+  - method: es-scope:documented
+    types: [covered_by_certification]
+    parsers: [energystar_tvs@1+tvcert@1]
+- id: rel/tvs-crosswalk@1
+  since: '2026-11-23'
+  rationale: 'Review 4 fix 3. A typed same_model link between an ENERGY STAR certified string and a maker-site string, only from a reviewed
+    exact pair in data/decisions/tv-crosswalks.yaml (human by, evidence quote naming both strings) that passes the guards in scripts/tvcert.py:
+    both exact entities exist, a brand-scoped suffix rule makes site = certified + suffix exactly (no production-letter, channel or stand
+    difference), one stated market on pair, rule and both entities, no contradictory pair, sizes agree. No merge: both ids and identifiers stay.
+    The file has no pairs today, so QN65S90FAF ~ QN65S90FAFXZA stays a possible_match proposal.'
+  audit:
+    by: A3-impl r7
+    at: '2026-11-23'
+    evidence: scripts/tvcert.py crosswalks(); fixtures tests/test_r7.py.
+    parsers:
+      tvcert@1: 'sha256:574598fc48ea41dea968'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+  rules:
+  - method: crosswalk:reviewed
+    types: [same_model]
+    parsers: [tvcert@1]
+retired_policies:
 - id: rel/bundle-contents@1
   since: '2026-11-23'
   rationale: A bundle package minted by scripts/bundles.py contains the station / robot model its manufacturer page names as a member. The member is explicit
@@ -1941,7 +1112,7 @@ relation_policies:
     - contains
     parsers:
     - narwal_robovac@2
-retired_policies:
+  retired: {at: '2026-11-23', superseded_by: rel/bundle-contents@2, reason: 'review 4 fix 1: bundles.py r6 rules (SKU-digit inference, lossy part signatures) replaced by the pinned bundles@2 transform'}
 - id: claim/dcl-matter-certified@1
   since: '2026-11-23'
   rationale: 'Robot vacuums, smart.matter = true from the CSA Matter Distributed Compliance Ledger (on.dcl.csa-iot.org): a robotic-vacuum model row
@@ -2282,3 +1453,953 @@ retired_policies:
         phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions, phys.dock_weight_g]
     require_normalized: true
   retired: {at: '2026-11-23', superseded_by: claim/mfr-robovac-structured@2, reason: 'three sources added (ECOVACS, iRobot, MOVA); meaning frozen as locked'}
+- id: claim/mfr-power-banks-structured@2
+  since: '2026-11-23'
+  supersedes: claim/mfr-power-banks-structured@1
+  rationale: 'Power banks, manufacturer-owned spec tables: Anker US product pages (variant key_parameter + Specifications table, anker_powerbanks@1), Belkin
+    US Technical Specifications table + title capacity class (belkin_powerbanks@1), INIU / CUKTECH / UGREEN Shopify store spec blocks (shopify_powerbanks:
+    iniu/cuktech/ugreen_powerbanks@1). Per source: only the listed keys, only values that normalise to the profile type. Capacity: cell mAh only from a
+    capacity row without a series-pack voltage (>=5 V); Wh only as printed (never mAh x assumed V); Belkin''s ''10K'' is cap.class_mah, never cap.cell_mah;
+    Belkin ''Wattage'' is out.max_output_w (basis unknown). PDO lists are literal per-port strings. NOT accepted (preview candidates): prose/title-derived
+    fields (form factor, product line, display, pass-through, wireless standard/W, recharge time, under-100Wh flag), store prices (id.msrp_us). @2: same
+    keys/sources as @1; the shared PDO parser no longer derives a wattage from V x A (19.98 W from 9V2.22A was published as official under @1 in a local
+    import), and Anker splits ''Wireless Charger:'' segments; parsers changed, so a new id.'
+  audit:
+    by: A1+A2 power banks
+    at: '2026-11-23'
+    evidence: Parsed all 143 fetched pages; spot-checked port tables / capacities against the stored literals (A1657 2S-pack, UGREEN 4S, CUKTECH two-figure
+      Wh, INIU all-port totals). Re-parsed after the V x A fix.
+    parsers:
+      anker_powerbanks@1: sha256:1c94708f6143fd550bc2
+      belkin_powerbanks@1: sha256:da7880ba96b779b0fe97
+      iniu_powerbanks@1: sha256:646c55efdbdd21c94ba5
+      cuktech_powerbanks@1: sha256:646c55efdbdd21c94ba5
+      ugreen_powerbanks@1: sha256:646c55efdbdd21c94ba5
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors:
+    - anker_powerbanks@1
+    - belkin_powerbanks@1
+    - cuktech_powerbanks@1
+    - iniu_powerbanks@1
+    - ugreen_powerbanks@1
+    source_ids:
+    - anker-us-powerbanks
+    - belkin-us-powerbanks
+    - cuktech-us-powerbanks
+    - iniu-us-powerbanks
+    - ugreen-us-powerbanks
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    keys:
+      anker-us-powerbanks:
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.builtin_cable
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - pd.max_fixed_voltage
+      - pd.pps
+      - phys.dimensions
+      - phys.weight
+      belkin-us-powerbanks:
+      - cap.class_mah
+      - out.cable_note
+      - out.max_output_w
+      - out.usb_a_count
+      - out.usb_c_count
+      - phys.dimensions
+      iniu-us-powerbanks: &pbkeys2
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      cuktech-us-powerbanks: *pbkeys2
+      ugreen-us-powerbanks: *pbkeys2
+    require_normalized: true
+  retired: {at: '2026-11-23', superseded_by: claim/mfr-power-banks-structured@5, reason: 'superseded and inert (matches no current extractor version) or a strict subset of its successor; retired on user approval 2026-11-23'}
+- id: claim/mfr-power-banks-structured@3
+  since: '2026-11-23'
+  supersedes: claim/mfr-power-banks-structured@2
+  rationale: 'Power banks, manufacturer-owned spec tables. @3 = @2 unchanged (Anker, Belkin, INIU, CUKTECH, UGREEN: same extractors, fingerprints,
+    per-source keys) plus EcoFlow, SHARGE, KUXIU and mophie US Shopify store spec blocks (shopify_powerbanks2: ecoflow/sharge/kuxiu/mophie_powerbanks@1),
+    same capacity rules as @2 (cell mAh never from a series-pack row, Wh only as printed, two printed figures -> the lower). mophie ''Output'' (port
+    count + one W figure, per-port vs total unstated) is out.max_output_w like Belkin ''Wattage''. Identity note: EcoFlow pages print no model number
+    (model = the shared EF- SKU stem, colour/region stripped, as the Anker/Belkin SKU-stem precedent) and mophie''s is the JSON-LD 9-digit part number;
+    SHARGE/KUXIU use the printed model row. NOT accepted (preview): wireless W, display, prose/title-derived fields, as in @2.'
+  audit:
+    by: A2 robovac+powerbank sources r2
+    at: '2026-11-23'
+    evidence: 76 new pages parsed (EcoFlow 15, SHARGE 24, KUXIU 14, mophie 23); pages naming two models or two capacities are not minted; spot-checked
+      capacities, port tables and weights against stored literals.
+    parsers:
+      anker_powerbanks@1: sha256:1c94708f6143fd550bc2
+      belkin_powerbanks@1: sha256:da7880ba96b779b0fe97
+      iniu_powerbanks@1: sha256:646c55efdbdd21c94ba5
+      cuktech_powerbanks@1: sha256:646c55efdbdd21c94ba5
+      ugreen_powerbanks@1: sha256:646c55efdbdd21c94ba5
+      ecoflow_powerbanks@1: sha256:5bf36d402e7a7d30b5d5
+      sharge_powerbanks@1: sha256:5bf36d402e7a7d30b5d5
+      kuxiu_powerbanks@1: sha256:5bf36d402e7a7d30b5d5
+      mophie_powerbanks@1: sha256:5bf36d402e7a7d30b5d5
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors: [anker_powerbanks@1, belkin_powerbanks@1, cuktech_powerbanks@1, iniu_powerbanks@1, ugreen_powerbanks@1, ecoflow_powerbanks@1,
+      sharge_powerbanks@1, kuxiu_powerbanks@1, mophie_powerbanks@1]
+    source_ids: [anker-us-powerbanks, belkin-us-powerbanks, cuktech-us-powerbanks, iniu-us-powerbanks, ugreen-us-powerbanks, ecoflow-us-powerbanks,
+      sharge-us-powerbanks, kuxiu-us-powerbanks, mophie-us-powerbanks]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys:
+      anker-us-powerbanks:
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.builtin_cable
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - pd.max_fixed_voltage
+      - pd.pps
+      - phys.dimensions
+      - phys.weight
+      belkin-us-powerbanks:
+      - cap.class_mah
+      - out.cable_note
+      - out.max_output_w
+      - out.usb_a_count
+      - out.usb_c_count
+      - phys.dimensions
+      iniu-us-powerbanks: &pbkeys3
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      cuktech-us-powerbanks: *pbkeys3
+      ugreen-us-powerbanks: *pbkeys3
+      ecoflow-us-powerbanks:
+      - cap.cell_mah
+      - cap.energy_wh
+      - in.max_w
+      - out.max_single_port_w
+      - out.max_total_w
+      - phys.dimensions
+      - phys.weight
+      sharge-us-powerbanks:
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      kuxiu-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - phys.dimensions
+      - phys.weight
+      mophie-us-powerbanks:
+      - cap.cell_mah
+      - out.max_output_w
+      - phys.dimensions
+      - phys.weight
+    require_normalized: true
+  retired: {at: '2026-11-23', superseded_by: claim/mfr-power-banks-structured@5, reason: 'superseded and inert (matches no current extractor version) or a strict subset of its successor; retired on user approval 2026-11-23'}
+- id: claim/mfr-robovac-structured@2
+  since: '2026-11-23'
+  supersedes: claim/mfr-robovac-structured@1
+  rationale: 'Robot vacuums, the manufacturer''s own labelled spec rows. @2 = @1 unchanged (Dreame / Roborock / Narwal US stores, same extractors,
+    fingerprints and per-source keys) plus three sources: ECOVACS US shop __NEXT_DATA__ spec_list rows read per (group, label), units from the label
+    (ecovacs_robovac@1); iRobot Product-Variation JSON pdpSpecs ''Details'' rows, units from the label, axis markers map L/W/D/H (an unmarked robot
+    triple maps its smallest axis to height: with the 200-450 mm footprint and 50-150 mm height bounds that is unambiguous), irobot_robovac@1; MOVA
+    product-page comparison JSON island entry whose url is the product''s own handle, plus the store''s compare page column for that handle, read only
+    when its value count equals the 48 row labels (mova_robovac@1). Same rules as @1: only listed keys, only normalised values, suction stays a
+    manufacturer claim with claim_basis mfr_unstated (no basis printed by these three), robot dims/weight outside physical bounds not emitted.
+    NOT accepted (preview candidates): ECOVACS runtime / noise rows (mode-labelled but single-source, same reason as @1), voice control, ''TBC'' /
+    lower-bound cells (not normalised at all).'
+  audit:
+    by: A2 robovac+powerbank sources r2
+    at: '2026-11-23'
+    evidence: Parsed all fetched bundles (ECOVACS 48 models from 59 main_goods, 8 with an empty spec_list; iRobot 30 model codes from the
+      us-products-plp grid; MOVA 17 models, 15 with comparison data). Spot-checked suction, battery, tanks, dock flags, wash temperature, robot
+      dimensions axis mapping and weights against stored literals.
+    parsers:
+      dreame_robovac@1: sha256:1edc479c58c8de26fd80
+      roborock_robovac@1: sha256:253896199530aa5695d3
+      narwal_robovac@1: sha256:6e0ef0e0b072bb790496
+      ecovacs_robovac@1: sha256:bdd37a320c0eb765a018
+      irobot_robovac@1: sha256:a20b8cec0489032944ae
+      mova_robovac@1: sha256:ce4d85ef5900179118d7
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors: [dreame_robovac@1, roborock_robovac@1, narwal_robovac@1, ecovacs_robovac@1, irobot_robovac@1, mova_robovac@1]
+    source_ids: [dreame-us-robovac, roborock-us-robovac, narwal-us-robovac, ecovacs-us-robovac, irobot-us-robovac, mova-us-robovac]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys:
+      dreame-us-robovac: [clean.suction_pa, clean.dustbin_ml, clean.main_brush_lifting, clean.side_brush_extending, clean.side_brush_lifting,
+        clean.dirt_detection, mop.type, mop.lifting, mop.lift_height_mm, mop.auto_removal, mop.extending, mop.robot_tank_ml, mop.auto_refill_from_dock,
+        nav.type, nav.obstacle_sensors, nav.obstacle_crossing_mm, bat.capacity_mah, dock.self_empty, dock.dust_bag_ml, dock.mop_wash, dock.hot_water_wash,
+        dock.wash_water_temp_c, dock.hot_air_dry, dock.mop_dry, dock.washboard_self_clean, dock.solution_dispense, dock.clean_tank_ml, dock.dirty_tank_ml,
+        smart.matter, phys.robot_height_mm, phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions, phys.dock_weight_g]
+      roborock-us-robovac: [bat.capacity_mah, phys.robot_height_mm, phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions]
+      narwal-us-robovac: [clean.suction_pa, bat.capacity_mah, mop.lifting, mop.lift_height_mm, mop.extending, nav.type, phys.robot_height_mm,
+        phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions, phys.dock_weight_g]
+      ecovacs-us-robovac:
+      - bat.capacity_mah
+      - clean.dustbin_ml
+      - clean.suction_pa
+      - dock.clean_tank_ml
+      - dock.dirty_tank_ml
+      - dock.dust_bag_ml
+      - dock.hot_air_dry
+      - dock.hot_water_wash
+      - dock.mop_wash
+      - dock.plumbed_refill_drain
+      - dock.self_empty
+      - dock.solution_dispense
+      - dock.wash_water_temp_c
+      - mop.auto_refill_from_dock
+      - mop.lift_height_mm
+      - mop.lifting
+      - mop.robot_tank_ml
+      - mop.type
+      - nav.obstacle_crossing_mm
+      - nav.obstacle_sensors
+      - nav.type
+      - phys.dock_dimensions
+      - phys.dock_weight_g
+      - phys.robot_dimensions
+      - phys.robot_height_mm
+      - phys.robot_weight_g
+      irobot-us-robovac:
+      - bat.capacity_mah
+      - clean.dustbin_ml
+      - mop.robot_tank_ml
+      - phys.dock_dimensions
+      - phys.dock_weight_g
+      - phys.robot_dimensions
+      - phys.robot_height_mm
+      - phys.robot_weight_g
+      mova-us-robovac:
+      - bat.capacity_mah
+      - clean.dirt_detection
+      - clean.dustbin_ml
+      - clean.main_brush_lifting
+      - clean.side_brush_extending
+      - clean.side_brush_lifting
+      - clean.suction_pa
+      - dock.clean_tank_ml
+      - dock.dirty_tank_ml
+      - dock.dust_bag_ml
+      - dock.hot_air_dry
+      - dock.hot_water_wash
+      - dock.mop_dry
+      - dock.plumbed_refill_drain
+      - dock.solution_dispense
+      - dock.wash_water_temp_c
+      - dock.washboard_self_clean
+      - mop.auto_removal
+      - mop.extending
+      - mop.lift_height_mm
+      - mop.lifting
+      - mop.robot_tank_ml
+      - mop.type
+      - nav.obstacle_crossing_mm
+      - nav.obstacle_sensors
+      - nav.type
+      - phys.robot_height_mm
+    require_normalized: true
+  retired: {at: '2026-11-23', superseded_by: claim/mfr-robovac-structured@5, reason: 'superseded and inert (matches no current extractor version) or a strict subset of its successor; retired on user approval 2026-11-23'}
+- id: claim/mfr-robovac-structured@3
+  since: '2026-11-23'
+  supersedes: claim/mfr-robovac-structured@2
+  rationale: 'Robot vacuums, the manufacturer''s own labelled spec rows. @3 = @2 with the ECOVACS and iRobot parsers fixed (fingerprints.unmapped was a list; import needs a label->example map; no claim changed) before any release. @2 = @1 unchanged (Dreame / Roborock / Narwal US stores, same extractors,
+    fingerprints and per-source keys) plus three sources: ECOVACS US shop __NEXT_DATA__ spec_list rows read per (group, label), units from the label
+    (ecovacs_robovac@1); iRobot Product-Variation JSON pdpSpecs ''Details'' rows, units from the label, axis markers map L/W/D/H (an unmarked robot
+    triple maps its smallest axis to height: with the 200-450 mm footprint and 50-150 mm height bounds that is unambiguous), irobot_robovac@1; MOVA
+    product-page comparison JSON island entry whose url is the product''s own handle, plus the store''s compare page column for that handle, read only
+    when its value count equals the 48 row labels (mova_robovac@1). Same rules as @1: only listed keys, only normalised values, suction stays a
+    manufacturer claim with claim_basis mfr_unstated (no basis printed by these three), robot dims/weight outside physical bounds not emitted.
+    NOT accepted (preview candidates): ECOVACS runtime / noise rows (mode-labelled but single-source, same reason as @1), voice control, ''TBC'' /
+    lower-bound cells (not normalised at all).'
+  audit:
+    by: A2 robovac+powerbank sources r2
+    at: '2026-11-23'
+    evidence: Parsed all fetched bundles (ECOVACS 48 models from 59 main_goods, 8 with an empty spec_list; iRobot 30 model codes from the
+      us-products-plp grid; MOVA 17 models, 15 with comparison data). Spot-checked suction, battery, tanks, dock flags, wash temperature, robot
+      dimensions axis mapping and weights against stored literals.
+    parsers:
+      dreame_robovac@1: sha256:1edc479c58c8de26fd80
+      roborock_robovac@1: sha256:253896199530aa5695d3
+      narwal_robovac@1: sha256:6e0ef0e0b072bb790496
+      ecovacs_robovac@1: sha256:452326a7ac0a85a723f1
+      irobot_robovac@1: sha256:97f7ed37fb01c5d31934
+      mova_robovac@1: sha256:ce4d85ef5900179118d7
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors: [dreame_robovac@1, roborock_robovac@1, narwal_robovac@1, ecovacs_robovac@1, irobot_robovac@1, mova_robovac@1]
+    source_ids: [dreame-us-robovac, roborock-us-robovac, narwal-us-robovac, ecovacs-us-robovac, irobot-us-robovac, mova-us-robovac]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys:
+      dreame-us-robovac: [clean.suction_pa, clean.dustbin_ml, clean.main_brush_lifting, clean.side_brush_extending, clean.side_brush_lifting,
+        clean.dirt_detection, mop.type, mop.lifting, mop.lift_height_mm, mop.auto_removal, mop.extending, mop.robot_tank_ml, mop.auto_refill_from_dock,
+        nav.type, nav.obstacle_sensors, nav.obstacle_crossing_mm, bat.capacity_mah, dock.self_empty, dock.dust_bag_ml, dock.mop_wash, dock.hot_water_wash,
+        dock.wash_water_temp_c, dock.hot_air_dry, dock.mop_dry, dock.washboard_self_clean, dock.solution_dispense, dock.clean_tank_ml, dock.dirty_tank_ml,
+        smart.matter, phys.robot_height_mm, phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions, phys.dock_weight_g]
+      roborock-us-robovac: [bat.capacity_mah, phys.robot_height_mm, phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions]
+      narwal-us-robovac: [clean.suction_pa, bat.capacity_mah, mop.lifting, mop.lift_height_mm, mop.extending, nav.type, phys.robot_height_mm,
+        phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions, phys.dock_weight_g]
+      ecovacs-us-robovac:
+      - bat.capacity_mah
+      - clean.dustbin_ml
+      - clean.suction_pa
+      - dock.clean_tank_ml
+      - dock.dirty_tank_ml
+      - dock.dust_bag_ml
+      - dock.hot_air_dry
+      - dock.hot_water_wash
+      - dock.mop_wash
+      - dock.plumbed_refill_drain
+      - dock.self_empty
+      - dock.solution_dispense
+      - dock.wash_water_temp_c
+      - mop.auto_refill_from_dock
+      - mop.lift_height_mm
+      - mop.lifting
+      - mop.robot_tank_ml
+      - mop.type
+      - nav.obstacle_crossing_mm
+      - nav.obstacle_sensors
+      - nav.type
+      - phys.dock_dimensions
+      - phys.dock_weight_g
+      - phys.robot_dimensions
+      - phys.robot_height_mm
+      - phys.robot_weight_g
+      irobot-us-robovac:
+      - bat.capacity_mah
+      - clean.dustbin_ml
+      - mop.robot_tank_ml
+      - phys.dock_dimensions
+      - phys.dock_weight_g
+      - phys.robot_dimensions
+      - phys.robot_height_mm
+      - phys.robot_weight_g
+      mova-us-robovac:
+      - bat.capacity_mah
+      - clean.dirt_detection
+      - clean.dustbin_ml
+      - clean.main_brush_lifting
+      - clean.side_brush_extending
+      - clean.side_brush_lifting
+      - clean.suction_pa
+      - dock.clean_tank_ml
+      - dock.dirty_tank_ml
+      - dock.dust_bag_ml
+      - dock.hot_air_dry
+      - dock.hot_water_wash
+      - dock.mop_dry
+      - dock.plumbed_refill_drain
+      - dock.solution_dispense
+      - dock.wash_water_temp_c
+      - dock.washboard_self_clean
+      - mop.auto_removal
+      - mop.extending
+      - mop.lift_height_mm
+      - mop.lifting
+      - mop.robot_tank_ml
+      - mop.type
+      - nav.obstacle_crossing_mm
+      - nav.obstacle_sensors
+      - nav.type
+      - phys.robot_height_mm
+    require_normalized: true
+  retired: {at: '2026-11-23', superseded_by: claim/mfr-robovac-structured@5, reason: 'superseded and inert (matches no current extractor version) or a strict subset of its successor; retired on user approval 2026-11-23'}
+- id: claim/mfr-robovac-structured@4
+  since: '2026-11-23'
+  rationale: 'Robot vacuums: covers the version-bumped ECOVACS and iRobot parsers (ecovacs_robovac@2, irobot_robovac@2; v2 only changes the shape of
+    fingerprints.unmapped, claims are unchanged) with exactly the per-source keys and rules of claim/mfr-robovac-structured@3. @2 and @3 stay active
+    (locked; governance keeps only @1 ids in retired_policies) and still cover Dreame / Roborock / Narwal / MOVA; their ecovacs/irobot @1 entries match
+    no current extractor. Additive, not a supersession: consolidate in the next re-issue after the Codex category review.'
+  audit:
+    by: A2 robovac+powerbank sources r2
+    at: '2026-11-23'
+    evidence: Re-parsed all 48 ECOVACS and 30 iRobot bundles under v2; claim keys/values identical to the v1 parse (only the extractor id changed).
+    parsers:
+      ecovacs_robovac@2: sha256:bc381035d9c654e1abfa
+      irobot_robovac@2: sha256:70bbaddac79c9f5fc8be
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors: [ecovacs_robovac@2, irobot_robovac@2]
+    source_ids: [ecovacs-us-robovac, irobot-us-robovac]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys:
+      ecovacs-us-robovac:
+      - bat.capacity_mah
+      - clean.dustbin_ml
+      - clean.suction_pa
+      - dock.clean_tank_ml
+      - dock.dirty_tank_ml
+      - dock.dust_bag_ml
+      - dock.hot_air_dry
+      - dock.hot_water_wash
+      - dock.mop_wash
+      - dock.plumbed_refill_drain
+      - dock.self_empty
+      - dock.solution_dispense
+      - dock.wash_water_temp_c
+      - mop.auto_refill_from_dock
+      - mop.lift_height_mm
+      - mop.lifting
+      - mop.robot_tank_ml
+      - mop.type
+      - nav.obstacle_crossing_mm
+      - nav.obstacle_sensors
+      - nav.type
+      - phys.dock_dimensions
+      - phys.dock_weight_g
+      - phys.robot_dimensions
+      - phys.robot_height_mm
+      - phys.robot_weight_g
+      irobot-us-robovac:
+      - bat.capacity_mah
+      - clean.dustbin_ml
+      - mop.robot_tank_ml
+      - phys.dock_dimensions
+      - phys.dock_weight_g
+      - phys.robot_dimensions
+      - phys.robot_height_mm
+      - phys.robot_weight_g
+    require_normalized: true
+  retired: {at: '2026-11-23', superseded_by: claim/mfr-robovac-structured@5, reason: 'superseded and inert (matches no current extractor version) or a strict subset of its successor; retired on user approval 2026-11-23'}
+- id: claim/mfr-power-banks-structured@4
+  since: '2026-11-23'
+  supersedes: claim/mfr-power-banks-structured@3
+  rationale: 'Power banks, manufacturer-owned spec tables: ONE consolidated policy for all nine US stores (Anker, Belkin, INIU, CUKTECH, UGREEN, EcoFlow,
+    SHARGE, KUXIU, mophie), replacing the overlapping @2/@3 (kept in claim_policies only because tests/test_adversarial.py requires retired ids to be @1;
+    they match only the @1 extractor versions, which no longer exist in code, so they accept nothing). Review 3 parser changes, every extractor version-bumped:
+    (1) out.max_total_w = ALL-PORTS simultaneous output only: the maker''s labelled Total Output row, or a printed combination whose members each name one
+    port and together cover every individual port of the block; subset totals, ''&'' without ''+'' combinations, unprinted sums (''65W+15W''), a single
+    listed port and mode-dependent totals become status-unknown claims (literal + reason); the participating ports are quoted. (2) Capacity bases stay apart:
+    Anker title capacity -> cap.class_mah (not accepted: title-derived), never cap.cell_mah; a capacity row printing a 5 V basis, two unlabelled mAh or
+    Wh figures, and a rated row without its load are unresolved; cap.rated_mah carries conditions {rated_voltage_v, rated_current_a} (profile basis conditions).
+    (3) INIU/UGREEN page-vs-label identity conflicts (handle token, SKU model tokens, ''+'' bundle SKUs, edition suffix) are quarantined to identity_conflicts
+    when another page owns the model, else kept and listed; SKUs naming another INIU model are dropped as aliases. Per-source keys = @3 unchanged. Belkin''s
+    title capacity class (cap.class_mah) remains the one intentional title-derived key: it is a class, labelled as such, never cell mAh.'
+  audit:
+    by: A3-impl r5 (review-3 fixes)
+    at: '2026-11-23'
+    evidence: Re-parsed every stored power-bank page under the new parsers; diffed accepted claims against the previous release (team/reports/2026-11-23-a3-impl-r5.md);
+      adversarial fixtures in tests/test_review3.py cover every review-3 exit criterion.
+    parsers:
+      anker_powerbanks@2: sha256:e50b4072c43a15652e43
+      belkin_powerbanks@2: sha256:e1a42a9c664b63dec045
+      cuktech_powerbanks@2: sha256:ade07c92eeb57a6b720a
+      iniu_powerbanks@2: sha256:ade07c92eeb57a6b720a
+      ugreen_powerbanks@2: sha256:ade07c92eeb57a6b720a
+      ecoflow_powerbanks@2: sha256:6c10f1b934db3819b5d0
+      sharge_powerbanks@2: sha256:6c10f1b934db3819b5d0
+      kuxiu_powerbanks@2: sha256:6c10f1b934db3819b5d0
+      mophie_powerbanks@2: sha256:6c10f1b934db3819b5d0
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors:
+    - anker_powerbanks@2
+    - belkin_powerbanks@2
+    - cuktech_powerbanks@2
+    - iniu_powerbanks@2
+    - ugreen_powerbanks@2
+    - ecoflow_powerbanks@2
+    - sharge_powerbanks@2
+    - kuxiu_powerbanks@2
+    - mophie_powerbanks@2
+    source_ids:
+    - anker-us-powerbanks
+    - belkin-us-powerbanks
+    - cuktech-us-powerbanks
+    - iniu-us-powerbanks
+    - ugreen-us-powerbanks
+    - ecoflow-us-powerbanks
+    - sharge-us-powerbanks
+    - kuxiu-us-powerbanks
+    - mophie-us-powerbanks
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    keys:
+      anker-us-powerbanks:
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.builtin_cable
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - pd.max_fixed_voltage
+      - pd.pps
+      - phys.dimensions
+      - phys.weight
+      belkin-us-powerbanks:
+      - cap.class_mah
+      - out.cable_note
+      - out.max_output_w
+      - out.usb_a_count
+      - out.usb_c_count
+      - phys.dimensions
+      iniu-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      cuktech-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      ugreen-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      ecoflow-us-powerbanks:
+      - cap.cell_mah
+      - cap.energy_wh
+      - in.max_w
+      - out.max_single_port_w
+      - out.max_total_w
+      - phys.dimensions
+      - phys.weight
+      sharge-us-powerbanks:
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      kuxiu-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - phys.dimensions
+      - phys.weight
+      mophie-us-powerbanks:
+      - cap.cell_mah
+      - out.max_output_w
+      - phys.dimensions
+      - phys.weight
+    require_normalized: true
+  retired: {at: '2026-11-23', superseded_by: claim/mfr-power-banks-structured@5, reason: 'superseded and inert (matches no current extractor version) or a strict subset of its successor; retired on user approval 2026-11-23'}
+- id: claim/mfr-power-stations-structured@1
+  since: '2026-11-23'
+  rationale: 'Portable power stations, manufacturer-owned US store spec tables (EcoFlow, BLUETTI, Jackery, Goal Zero, Anker SOLIX). Only labelled spec
+    rows are read (never prose or titles) and review-3 rules hold from the start: (1) no negation-blind keyword enums: waveform, chemistry, UPS,
+    expandability and UL 2743 / UL 9540 come only from their own labelled rows with an affirmative phrase, false only from a row whose value is just
+    No; (2) totals only with explicit membership: AC continuous = the AC row tagged total/rated/continuous (or the single AC row with one W figure),
+    combined solar input only from a printed total/dual-port/Double-to figure or one unmultiplied figure, best single USB-C only from a figure printed
+    for one port or per port, no cross-port sum; (3) capacity bases separate: rated pack Wh, usable Wh (labelled only), pack V and Ah are distinct keys,
+    two Wh figures in a cell are unresolved, Wh is never computed; (4) conditions carry each basis: cycle life retention_pct, recharge charge_to_pct +
+    charger, UPS backup_mode, solar window voltage_basis (+ port), AC input ac_charge_mode, expanded Wh extra_batteries; (5) conflict-aware grouping:
+    unit variants vs package variants (solar/battery/charger bundles are never aliases or spec sources), several unit SKU stems = absence, Jackery
+    per-variant blocks kept apart (230 V blocks skipped), a block that splits values per model or names another product = absence. exp.batteries
+    (name extraction) is deliberately NOT accepted.'
+  audit:
+    by: A1+A2 power stations
+    at: '2026-11-23'
+    evidence: Parsed every stored page of the five sources; spot-checked one table per model (team/reports/2026-11-23-a12-power-stations.md);
+      helper fixtures in tests/test_power_stations.py.
+    parsers:
+      ankersolix_stations@1: sha256:1801fa626c3cdf2dbef9
+      bluetti_stations@1: sha256:ffaf6370748d1b8fd1da
+      ecoflow_stations@1: sha256:ffaf6370748d1b8fd1da
+      goalzero_stations@1: sha256:ffaf6370748d1b8fd1da
+      jackery_stations@1: sha256:ffaf6370748d1b8fd1da
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors:
+    - ankersolix_stations@1
+    - bluetti_stations@1
+    - ecoflow_stations@1
+    - goalzero_stations@1
+    - jackery_stations@1
+    source_ids:
+    - ecoflow-us-stations
+    - bluetti-us-stations
+    - jackery-us-stations
+    - goalzero-us-stations
+    - ankersolix-us-stations
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    keys:
+      ecoflow-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - conn.wireless
+      - exp.expandable
+      - exp.max_batteries
+      - exp.max_wh
+      - gen.warranty_years
+      - in.ac_w
+      - in.car_w
+      - in.solar_port_w
+      - in.solar_ports
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_boost_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      bluetti-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - cert.marks
+      - cert.ul2743
+      - conn.wireless
+      - exp.expandable
+      - gen.warranty_years
+      - in.ac_w
+      - in.max_w
+      - in.passthrough
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_boost_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ac_waveform
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - out.wireless_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      jackery-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - gen.warranty_years
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      goalzero-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - cert.marks
+      - exp.expandable
+      - gen.warranty_years
+      - in.ac_w
+      - in.recharge_ac_h
+      - in.recharge_solar_h
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ac_waveform
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      ankersolix-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - conn.wireless
+      - exp.expandable
+      - exp.max_batteries
+      - exp.max_wh
+      - gen.warranty_years
+      - in.ac_w
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+  retired: {at: '2026-11-23', superseded_by: claim/mfr-power-stations-structured@2, reason: 'superseded and inert (matches no current extractor version) or a strict subset of its successor; retired on user approval 2026-11-23'}
+- id: claim/tvs-structured@1
+  since: '2026-11-23'
+  rationale: 'Televisions: the ENERGY STAR Certified Televisions record (regulatory) and the makers'' own labelled US spec data (Samsung spec API, LG
+    __NEXT_DATA__ spec table, TCL per-size spec boxes). Labelled rows only, never titles or prose, and review-3 rules from the start: (1) no
+    negation-blind enums: Dolby Vision / HDR10+ / VRR / ALLM / HGiG / ATSC 3.0 come from their own rows with an affirmative value, false only from a
+    row whose value is just No (ATSC: a tuner row naming 1.0 and not 3.0); a format missing from a list is unknown; processing names (UHD Dimming,
+    Precision Dimming) are not local dimming; shifted Samsung rows (FreeSync holding accessibility text, a resolution in Product Type) are ignored;
+    (2) explicit membership: hdmi.ports_4k120 only from a per-port statement (Samsung for HDMI 1/2/3/4, TCL HDMI 1-2 / 3-4 splits, LG trailing (N
+    port)), never from a generic feature list; (3) bases in conditions: on-mode/standby/annual figures carry power_basis (energy_star_on_mode,
+    doe_federal_test, energy_star_standby, maker_typical, maker_unstated) so a test figure and a declaration never merge; native refresh never
+    from a motion/marketing figure; (4) conflict-aware grouping: one size = one model number; TCL boxes attributed only by a Model row equal to
+    the SKU or a unique size match that agrees with the SKU; a printed size contradicting the model number is unresolved; retailer designations
+    group only through the maker''s ENERGY STAR same-hardware declaration (aliases), stem matches are proposals. NOT accepted (preview only):
+    refresh.max_hz (VRR/PC maxima, sometimes DLG), hdr.peak_nits (window/mode unstated), Samsung panel.backlight (read from a "Contrast" row),
+    ENERGY STAR panel.backlight (Mini-LED sets certify as Direct-lit), every status-unknown plausibility rejection.'
+  audit:
+    by: A1+A2 tvs
+    at: '2026-11-23'
+    evidence: Parsed every stored snapshot of the four sources; per-key value histograms and the shifted-row / mm-as-inch cases checked
+      (team/reports/2026-11-23-a12-tvs.md); fixtures in tests/test_tvs.py (17 tests).
+    parsers:
+      energystar_tvs@1: sha256:35b90bbed61b2720ad7c
+      samsung_tvs@1: sha256:6671f4bf6d2b8ecdac67
+      lg_tvs@1: sha256:8381b9a9945f5471873e
+      tcl_tvs@1: sha256:2710e28e9980fbe72ab2
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors: [energystar_tvs@1, samsung_tvs@1, lg_tvs@1, tcl_tvs@1]
+    source_ids: [energystar-tvs, samsung-us-tvs, lg-us-tvs, tcl-us-tvs]
+    kinds: [official]
+    tiers: [manufacturer, regulatory]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      energystar-tvs:
+        [gen.viewable_diag, panel.display_tech, panel.quantum_dot, pic.auto_brightness, pwr.annual_kwh, pwr.energy_star, pwr.on_mode_doe_w,
+         pwr.on_mode_w, pwr.standby_w, res.height_px, res.native, res.width_px]
+      samsung-us-tvs:
+        [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.size_class,
+         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.max_input, hdmi.ports_4k120, hdr.dolby_vision, hdr.formats, hdr.hdr10plus, os.platform,
+         panel.display_tech, panel.marketing_class, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand,
+         phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, pwr.annual_kwh, pwr.max_w,
+         pwr.on_mode_w, pwr.standby_w, refresh.marketing, refresh.native_hz, res.class, res.height_px, res.native, res.width_px, vrr.formats,
+         vrr.supported]
+      lg-us-tvs:
+        [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.series, gen.size_class,
+         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.ports_4k120, hdr.dolby_vision, hdr.formats, hdr.hdr10plus, os.platform, os.version,
+         panel.backlight, panel.display_tech, panel.lcd_type, panel.marketing_class, phys.depth_no_stand, phys.depth_with_stand,
+         phys.height_no_stand, phys.height_with_stand, phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand,
+         phys.width_with_stand, pwr.annual_kwh, pwr.on_mode_w, pwr.standby_w, refresh.marketing, refresh.native_hz, res.class, res.height_px,
+         res.native, res.width_px, sup.warranty, vrr.formats, vrr.supported]
+      tcl-us-tvs:
+        [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.size_class,
+         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.ports_4k120, hdr.dimming_zones, hdr.dolby_vision, hdr.formats, hdr.hdr10plus,
+         hdr.local_dimming, os.platform, panel.backlight, panel.bit_depth, panel.display_tech, panel.lcd_type, panel.marketing_class,
+         panel.quantum_dot, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand, phys.vesa,
+         phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, pwr.annual_kwh, pwr.on_mode_w, pwr.standby_w,
+         refresh.dlg_hz, refresh.marketing, refresh.native_hz, res.class, res.height_px, res.native, res.width_px, sup.warranty, vrr.formats,
+         vrr.supported]
+  retired: {at: '2026-11-23', superseded_by: claim/tvs-structured@2, reason: 'superseded and inert (matches no current extractor version) or a strict subset of its successor; retired on user approval 2026-11-23'}

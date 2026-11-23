@@ -38,6 +38,7 @@ import yaml  # noqa: E402
 import _contract as C  # noqa: E402
 import _cpu  # noqa: E402
 import bundles as B  # noqa: E402
+import tvcert as TC  # noqa: E402
 import registry  # noqa: E402
 import identity as I  # noqa: E402
 import normalize as N  # noqa: E402
@@ -418,6 +419,8 @@ def do_model(world, meta, sid, rec, pr, extra, stats):
     tier = next((x.get("tier") for x in pr["sources"]), "manufacturer")
     fp = pr.get("fingerprints") or {}
     if fp.get("wildcard_pattern"):
+        if "es_cert_scopes" in (cm.get("features") or []) and sid == (cm.get("es_cert") or {}).get("source"):
+            TC.collect_scope(world, meta, sid, rec, pr, PARSER["current"])      # r7: a certification scope, never a model (scripts/tvcert.py)
         stats["skipped_wildcard_pattern"] += 1
         return
     ic = fp.get("identity_conflict")
@@ -470,6 +473,8 @@ def do_model(world, meta, sid, rec, pr, extra, stats):
     e.__dict__.setdefault("msrc", set()).add(sid)
     for a in pr["aliases"]:
         e.aliases.setdefault(a["text"], a["kind"])
+    if "es_cert_scopes" in (cm.get("features") or []) and sid == (cm.get("es_cert") or {}).get("source"):
+        TC.collect_exact(world, e, sid, rec, pr)                                  # r7: declared-alias re-audit input
     bsk = B.collect(world, e, brand, mi, pr, sid, rec, ob, PARSER["current"], cm.get("bundles"), world.brand_names.get(brand, "")) \
         if "bundle_packages" in (cm.get("features") or []) else set()       # r6: bundle SKUs -> package candidates (scripts/bundles.py), minted after all sources
     pkg = (cm.get("package_markets") or {}).get("mtm")
@@ -842,6 +847,7 @@ def main():
     locked_new, policy_lock_digest = dec.check_lock(write=not (bool(a.source) or a.no_mint))
     parsers = {sid: registry.parser_info(sid) for sid, m in registry.SOURCES.items()}
     current_fp = {v["parser"]: v["fingerprint"] for v in parsers.values() if v["parser"]}
+    current_fp.update({B.TRANSFORM: B.fingerprint(), TC.TRANSFORM: TC.fingerprint()})     # r7: shared transforms are pinned like parsers
     drift = dec.parser_drift(current_fp)
     for pid, ex, old, new in drift:
         print(f"PARSER DRIFT: {pid} audited {ex} at {old}, code is now {new}: re-audit + new policy id", file=sys.stderr)
@@ -898,6 +904,8 @@ def main():
     for cat, w in worlds.items():   # r6: corroborated bundle SKUs -> package entities (contains -> member models); needs every model of the category
         if "bundle_packages" in metas[cat]["features"]:
             B.mint(w, cat_stats[cat], {"K": K, "add_ident": add_ident, "add_src": add_src, "link": link, "parser": PARSER, "slug": slug})
+        if "es_cert_scopes" in metas[cat]["features"]:      # r7: certification scopes + declared-alias audit + reviewed crosswalks (scripts/tvcert.py)
+            TC.apply(w, cat_stats[cat], {"link": link, "parser": PARSER, "crosswalks": data / "decisions" / "tv-crosswalks.yaml"})
     ignored_rows = []
     rules = {c: load_label_rules(c) for c in worlds}
     for sid, st in stats.items():
@@ -999,6 +1007,7 @@ def main():
 
     for w in worlds.values():
         B.finalize(w)               # package contents (entity ids now exist)
+        TC.finalize(w, dec, {"add_src": add_src, "crosswalks": data / "decisions" / "tv-crosswalks.yaml"})   # r7: decided coverage edges -> allowlisted transfer
     # ------------------------------------------------------------------ write
     dbp = Path(a.db); dbp.parent.mkdir(parents=True, exist_ok=True)
     tmp = dbp.with_suffix(".tmp")
