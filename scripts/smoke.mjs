@@ -29,6 +29,12 @@ for (const category of categories) {
     assert(typeof field.facet === 'boolean' && Number.isFinite(field.priority));
     assert(!fields.has(field.key), `Duplicate field ${field.key}`);
     fields.set(field.key, field);
+    if (field.display?.kind === 'object_table') {
+      assert.equal(field.type, 'list', `${category.id}/${field.key}: object table must be a list`);
+      assert(Array.isArray(field.display.columns) && field.display.columns.length > 0);
+      for (const column of field.display.columns) assert(column.key && column.label, `${category.id}/${field.key}: incomplete object column`);
+    }
+    if (field.display?.kind === 'delimited_list') assert.equal(field.display.separator, 'semicolon_newline');
   }
   const schema = await parse(join(root, category.id, 'schema.json'));
   assert.equal(schema.id, category.id);
@@ -69,6 +75,12 @@ for (const category of categories) {
         if (type === 'bool') assert.equal(typeof spec.value, 'boolean', `${row.id}/${key}: expected boolean`);
         if (type === 'list') assert(Array.isArray(spec.value), `${row.id}/${key}: expected list`);
         if (type === 'range') assert(typeof spec.value.min === 'number' && typeof spec.value.max === 'number', `${row.id}/${key}: expected numeric range`);
+        const display = fields.get(key).display;
+        if (display?.kind === 'object_table') for (const [index, item] of spec.value.entries()) {
+          assert(item && typeof item === 'object' && !Array.isArray(item), `${row.id}/${key}[${index}]: object required`);
+          for (const column of display.columns) assert(Object.hasOwn(item, column.key), `${row.id}/${key}[${index}]: missing ${column.key}`);
+        }
+        if (display?.kind === 'delimited_list') assert.equal(typeof spec.value, 'string', `${row.id}/${key}: delimited text required`);
       }
     }
     assert.equal(Object.keys(detail.specs).length, fields.size, `${row.id}: missing schema fields`);

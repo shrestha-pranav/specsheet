@@ -1,3 +1,5 @@
+name = "sol_implementer"
+description = "GPT-6-Sol implementer: builds UI/code to the coordinator spec"
 model = "gpt-6-sol"
 model_reasoning_effort = "high"
 developer_instructions = """

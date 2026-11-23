@@ -15,11 +15,13 @@ OUT = ROOT / "docs"
 API = OUT / "api" / "v1"
 
 
-def field(key, label, group, kind, unit=None, facet=False, priority=100, options=None, column=False):
+def field(key, label, group, kind, unit=None, facet=False, priority=100, options=None, column=False, display=None):
     result = dict(key=key, label=label, group=group, type=kind, unit=unit,
                   facet=facet, priority=priority, column=column)
     if options:
         result["options"] = options
+    if display:
+        result["display"] = display
     return result
 
 
@@ -27,8 +29,13 @@ CHARGER_FIELDS = [
     field("max_total_w", "Total output", "Power", "number", "W", True, 10, column=True),
     field("max_single_port_w", "Single-port output", "Power", "number", "W", True, 20, column=True),
     field("port_count", "Ports", "Ports & distribution", "number", None, True, 10, column=True),
-    field("ports", "Port details", "Ports & distribution", "list", None, False, 20),
-    field("port_sharing", "Power sharing", "Ports & distribution", "text", None, False, 30),
+    field("ports", "Port details", "Ports & distribution", "list", None, False, 20,
+          display={"kind": "object_table", "columns": [
+              {"key": "name", "label": "Port"},
+              {"key": "type", "label": "Connector"},
+              {"key": "max_w", "label": "Maximum output", "unit": "W"}]}),
+    field("port_sharing", "Power sharing", "Ports & distribution", "text", None, False, 30,
+          display={"kind": "delimited_list", "separator": "semicolon_newline"}),
     field("usb_pd_version", "USB PD version", "Protocols", "enum", None, True, 10, column=True),
     field("pd_fixed_pdos", "Fixed PDOs", "Protocols", "text", None, False, 20),
     field("pps", "USB PD PPS", "Protocols", "bool", None, True, 30, column=True),

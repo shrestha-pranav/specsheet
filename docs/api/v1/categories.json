@@ -45,7 +45,25 @@
     "unit": null,
     "facet": false,
     "priority": 20,
-    "column": false
+    "column": false,
+    "display": {
+     "kind": "object_table",
+     "columns": [
+      {
+       "key": "name",
+       "label": "Port"
+      },
+      {
+       "key": "type",
+       "label": "Connector"
+      },
+      {
+       "key": "max_w",
+       "label": "Maximum output",
+       "unit": "W"
+      }
+     ]
+    }
    },
    {
     "key": "port_sharing",
@@ -55,7 +73,11 @@
     "unit": null,
     "facet": false,
     "priority": 30,
-    "column": false
+    "column": false,
+    "display": {
+     "kind": "delimited_list",
+     "separator": "semicolon_newline"
+    }
    },
    {
     "key": "usb_pd_version",

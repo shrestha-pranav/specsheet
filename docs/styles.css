@@ -8,4 +8,13 @@
 .button-link{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:7px 13px;border-radius:6px;text-decoration:none;font-weight:650}.button-link.primary{background:var(--accent);color:var(--surface)}:root[data-theme=dark] .button-link.primary{color:#132525}.button-link.primary:hover{filter:brightness(.9)}
 
 /* main receives programmatic focus on route change for screen readers; no visible ring for that */
-main:focus:not(:focus-visible){outline:none}
+main[tabindex="-1"]:focus{outline:none}
+
+.compare-shelf{margin:0 0 12px}.compare-shelf .selected-items button{min-height:40px}.compare-shelf small{display:block;flex-basis:100%}
+.nested-spec-table{width:100%;min-width:280px;font-size:13px;line-height:1.4;font-variant-numeric:tabular-nums}
+.nested-spec-table th,.nested-spec-table td,.spec-table .nested-spec-table th,.compare-table .nested-spec-table th{position:static;min-width:0;max-width:none;width:auto;padding:5px 8px;border-bottom:1px solid var(--rule);background:transparent;white-space:normal;text-align:left;vertical-align:top;font-size:13px}
+.nested-spec-table th{font-weight:650;color:var(--muted)}
+.nested-spec-table th:first-child,.nested-spec-table td:first-child,.compare-table .nested-spec-table th:first-child,.compare-table .nested-spec-table td:first-child{position:static;left:auto;min-width:55px;max-width:none;z-index:auto;background:transparent}
+.nested-spec-table td:last-child{white-space:nowrap}
+.spec-table .nested-spec-table td,.compare-table .nested-spec-table td{min-width:0;max-width:none;width:auto}
+.condition-list{margin:0;padding-left:18px}.condition-list li+li{margin-top:4px}.conflict-value{margin-top:4px}

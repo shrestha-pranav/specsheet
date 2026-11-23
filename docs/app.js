@@ -18,8 +18,9 @@
   const encoded = (value) => encodeURIComponent(value);
   const safeUrl = (value) => { try { const u = new URL(value); return ['http:', 'https:'].includes(u.protocol) ? u.href : null; } catch { return null; } };
   const categoryUrl = (id, query = '') => `#/category/${encoded(id)}${query}`;
-  const productUrl = (category, id) => `#/product/${encoded(category)}/${encoded(id)}`;
-  const compareUrl = (category, ids, differences = false) => `#/compare/${encoded(category)}?ids=${encoded(ids.join(','))}${differences ? '&diff=1' : ''}`;
+  const returnParam = (query) => query ? `&return=${encoded(query)}` : '';
+  const productUrl = (category, id, query = '') => `#/product/${encoded(category)}/${encoded(id)}${query ? `?return=${encoded(query)}` : ''}`;
+  const compareUrl = (category, ids, differences = false, query = '') => `#/compare/${encoded(category)}?ids=${encoded(ids.join(','))}${differences ? '&diff=1' : ''}${returnParam(query)}`;
   const BUILD = document.querySelector('meta[name="specsheet-build"]')?.content || '';
   const getJson = async (url) => { const response = await fetch(BUILD ? `${url}${url.includes('?') ? '&' : '?'}v=${BUILD}` : url); if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); };
   const categories = () => categoriesPromise ||= getJson('api/v1/categories.json').then(items => {
@@ -52,14 +53,28 @@
     return {value:raw,status:raw === null ? 'unknown' : 'known',sources:[],confidence:null,source_scope:'none'};
   };
   const isKnown = (spec) => spec?.status === 'known';
+  const displayStructured = (value, field) => {
+    const presentation = field?.display;
+    if (presentation?.kind === 'object_table' && Array.isArray(value)) {
+      const columns = presentation.columns || [];
+      return `<table class="nested-spec-table"><thead><tr>${columns.map(column => `<th scope="col">${escapeHtml(column.label)}</th>`).join('')}</tr></thead><tbody>${value.map(item => `<tr>${columns.map(column => { const part = item && typeof item === 'object' ? item[column.key] : null; return `<td>${part === null || part === undefined || part === '' ? '<span class="val-unknown">Unknown</span>' : escapeHtml(typeof part === 'number' ? `${part}${column.unit ? ` ${column.unit}` : ''}` : String(part))}</td>`; }).join('')}</tr>`).join('')}</tbody></table>`;
+    }
+    if (presentation?.kind === 'delimited_list' && presentation.separator === 'semicolon_newline' && typeof value === 'string') {
+      const parts = value.split(/[;\r\n]+/).map(part => part.trim()).filter(Boolean);
+      return parts.length ? `<ul class="condition-list">${parts.map(part => `<li>${escapeHtml(part)}</li>`).join('')}</ul>` : escapeHtml(value);
+    }
+    return null;
+  };
   const displayValue = (spec, field, compact = false) => {
     if (!isKnown(spec)) {
-      if (spec.status === 'conflicted') return `<span class="val-conflict">Conflicted${spec.value != null ? `: ${escapeHtml(formatRaw(spec.value, field, compact))}` : ''}</span>`;
+      if (spec.status === 'conflicted') return `<span class="val-conflict">Conflicted</span>${spec.value != null ? `<div class="conflict-value">${displayStructured(spec.value, field) ?? escapeHtml(formatRaw(spec.value, field, compact))}</div>` : ''}`;
       return `<span class="val-unknown">${escapeHtml(statusLabel[spec.status] || 'Unknown')}</span>`;
     }
     const value = spec.value;
     if (typeof value === 'boolean') return `<span class="${value ? 'val-true' : 'val-false'}">${value ? 'Yes' : 'No'}</span>`;
     if (Array.isArray(value) && value.length === 0) return '<span class="muted">None documented</span>';
+    const structured = displayStructured(value, field);
+    if (structured !== null) return structured;
     return escapeHtml(formatRaw(value, field, compact));
   };
   const formatRaw = (value, field, compact = false) => {
@@ -94,7 +109,7 @@
       const category = categoryCache.get(route.parts[0]);
       if (!category) { main.innerHTML = errorPanel('Category not found', 'This category is not in the current static dataset.'); return; }
       if (route.kind === 'category' && route.parts.length === 1) { await renderCategory(category, route.params, sequence); if (sequence === routeSequence) main.focus(); return; }
-      if (route.kind === 'product' && route.parts.length === 2) { await renderProduct(category, route.parts[1], sequence); if (sequence === routeSequence) main.focus(); return; }
+      if (route.kind === 'product' && route.parts.length === 2) { await renderProduct(category, route.parts[1], route.params, sequence); if (sequence === routeSequence) main.focus(); return; }
       if (route.kind === 'compare' && route.parts.length === 1) { await renderCompare(category, route.params, sequence); if (sequence === routeSequence) main.focus(); return; }
       main.innerHTML = errorPanel('Page not found', 'This catalogue address is not available.');
     } catch (error) {
@@ -125,7 +140,7 @@
       sort: ['brand','name','model',...category.fields.map(f => f.key)].includes(params.get('sort')) ? params.get('sort') : 'brand',
       dir: params.get('dir') === 'desc' ? 'desc' : 'asc', cols, ids};
   }
-  function persistCategoryState(category, state) {
+  function categoryStateQuery(state) {
     const params = new URLSearchParams();
     if (state.q) params.set('q', state.q);
     if (state.brand) params.set('brand', state.brand);
@@ -134,8 +149,14 @@
     if (state.dir !== 'asc') params.set('dir', state.dir);
     params.set('cols', state.cols.join(','));
     if (state.ids.length) params.set('ids', state.ids.join(','));
-    history.replaceState(null, '', categoryUrl(category.id, `?${params}`));
+    return params.toString();
   }
+  function persistCategoryState(category, state) {
+    history.replaceState(null, '', categoryUrl(category.id, `?${categoryStateQuery(state)}`));
+  }
+  const validatedReturnQuery = (category, params) => params.has('return') ? categoryStateQuery(initialState(category, new URLSearchParams(params.get('return')))) : '';
+  const returnUrl = (category, query) => categoryUrl(category.id, query ? `?${query}` : '');
+  const returnWithIds = (category, query, ids) => { const state = initialState(category, new URLSearchParams(query)); state.ids = ids; return categoryStateQuery(state); };
   const facetKey = (field, suffix = 'value') => `f_${field.key}_${suffix}`;
   const facetControl = (field, rows, state) => {
     const key = facetKey(field);
@@ -203,7 +224,7 @@
     setTitle(category.name);
     const state = initialState(category, params);
     state.ids = state.ids.filter(id => rows.some(row => row.id === id));
-    main.innerHTML = `${crumb([{name:category.name}])}<div class="page-head"><h1>${escapeHtml(category.name)} ${demoBadge(category)}</h1><p class="intro">${escapeHtml(category.description)} ${category.demo ? 'These fictional records test the interface and are not product recommendations.' : 'Pilot records are unreviewed; open a product to inspect evidence and uncertainty.'}</p></div><div class="catalogue-layout"><aside class="filter-rail"><details open><summary>Filters</summary>${filterMarkup(category, rows, state)}</details></aside><section class="catalogue-results" aria-label="Products"><div class="results-head"><label class="search-field" for="product-search">Search name, brand or identifier<input id="product-search" type="search" placeholder="Search products…" value="${escapeHtml(state.q)}" autocomplete="off"></label><div><h2>Compare the facts</h2><p>Choose 2–4 products to compare.</p></div></div><div class="results-tools"><span class="meta" id="result-count" role="status"></span><details class="column-menu"><summary>Choose columns</summary><div class="column-options">${category.fields.map(field => `<label><input type="checkbox" data-column="${escapeHtml(field.key)}" ${state.cols.includes(field.key) ? 'checked' : ''}>${escapeHtml(field.label)}</label>`).join('')}</div></details></div><div id="results-table"></div><div id="compare-shelf"></div></section></div>`;
+    main.innerHTML = `${crumb([{name:category.name}])}<div class="page-head"><h1>${escapeHtml(category.name)} ${demoBadge(category)}</h1><p class="intro">${escapeHtml(category.description)} ${category.demo ? 'These fictional records test the interface and are not product recommendations.' : 'Pilot records are unreviewed; open a product to inspect evidence and uncertainty.'}</p></div><div class="catalogue-layout"><aside class="filter-rail"><details open><summary>Filters</summary>${filterMarkup(category, rows, state)}</details></aside><section class="catalogue-results" aria-label="Products"><div class="results-head"><label class="search-field" for="product-search">Search name, brand or identifier<input id="product-search" type="search" placeholder="Search products…" value="${escapeHtml(state.q)}" autocomplete="off"></label><div><h2>Compare the facts</h2><p>Choose 2–4 products to compare.</p></div></div><div class="results-tools"><span class="meta" id="result-count" role="status"></span><details class="column-menu"><summary>Choose columns</summary><div class="column-options">${category.fields.map(field => `<label><input type="checkbox" data-column="${escapeHtml(field.key)}" ${state.cols.includes(field.key) ? 'checked' : ''}>${escapeHtml(field.label)}</label>`).join('')}</div></details></div><div id="selection-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div><div id="compare-shelf"></div><div id="results-table"></div></section></div>`;
     const mobileQuery = matchMedia('(max-width: 800px)');
     const filterDisclosure = main.querySelector('.filter-rail > details');
     filterDisclosure.open = !mobileQuery.matches;
@@ -248,21 +269,23 @@
     function update() {
       const active = document.activeElement;
       const focus = active?.closest('#results-table') ? {kind: active.dataset.select ? 'select' : 'sort', value: active.dataset.select || active.dataset.sort} :
-        active?.closest('#compare-shelf') ? {kind:'shelf'} : null;
+        active?.closest('#compare-shelf') ? {kind:'shelf', value:active.dataset.remove} : null;
       const q = state.q.trim().toLocaleLowerCase();
       const filtered = rows.filter(row => (!q || [row.name, row.brand, row.family, row.model, ...row.identifiers.map(id => id.value)].some(value => String(value || '').toLocaleLowerCase().includes(q))) && (!state.brand || row.brand === state.brand) && category.fields.filter(f => f.facet).every(field => matchFacet(row, field, state.filters))).sort((a, b) => compareSort(a, b, state));
       main.querySelector('#result-count').textContent = `${filtered.length} of ${rows.length} products`;
-      renderTable(category, filtered, state);
-      renderShelf(category, rows, state);
+      const query = categoryStateQuery(state);
+      renderTable(category, filtered, state, query);
+      renderShelf(category, rows, state, query);
+      main.querySelector('#selection-status').textContent = `${state.ids.length} selected. ${state.ids.length >= 4 ? 'Maximum of 4; remove one to add another.' : state.ids.length >= 2 ? 'Compare products available.' : 'Choose 2 to 4 products to compare.'}`;
       persistCategoryState(category, state);
       if (focus?.kind === 'select') [...main.querySelectorAll('[data-select]')].find(input => input.dataset.select === focus.value)?.focus();
       if (focus?.kind === 'sort') [...main.querySelectorAll('[data-sort]')].find(button => button.dataset.sort === focus.value)?.focus();
-      if (focus?.kind === 'shelf') (main.querySelector('#compare-shelf [data-remove]') || search).focus();
+      if (focus?.kind === 'shelf') ([...main.querySelectorAll('#compare-shelf [data-remove]')].find(button => button.dataset.remove === focus.value) || main.querySelector('#compare-shelf [data-remove]') || search).focus();
     }
     update();
   }
 
-  function renderTable(category, rows, state) {
+  function renderTable(category, rows, state, query) {
     const fields = state.cols.map(key => category.fields.find(field => field.key === key)).filter(Boolean);
     const columnHeader = (key, label) => `<th scope="col" aria-sort="${state.sort === key ? (state.dir === 'asc' ? 'ascending' : 'descending') : 'none'}"><button type="button" data-sort="${escapeHtml(key)}">${escapeHtml(label)} ${state.sort === key ? (state.dir === 'asc' ? '↑' : '↓') : ''}</button></th>`;
     const target = main.querySelector('#results-table');
@@ -270,13 +293,13 @@
       target.innerHTML = '<div class="empty-table"><strong>No matching products</strong>Try a broader search or reset the filters.</div>';
       return;
     }
-    target.innerHTML = `<div class="table-scroll" role="region" aria-label="Product comparison table" tabindex="0"><table><thead><tr><th scope="col">Select</th>${columnHeader('brand','Brand')}${columnHeader('name','Product')}${columnHeader('model','Model')}${fields.map(f => columnHeader(f.key, f.label)).join('')}</tr></thead><tbody>${rows.map(row => `<tr class="${state.ids.includes(row.id) ? 'selected' : ''}"><td class="select-cell"><input type="checkbox" data-select="${escapeHtml(row.id)}" aria-label="Select ${escapeHtml(row.name)} for comparison" ${state.ids.includes(row.id) ? 'checked' : ''} ${state.ids.length >= 4 && !state.ids.includes(row.id) ? 'disabled' : ''}></td><td>${escapeHtml(row.brand)}</td><td class="name-cell"><a href="${productUrl(category.id, row.id)}">${escapeHtml(row.name)}</a> ${demoBadge(row)}</td><td class="code">${escapeHtml(row.model || '—')}</td>${fields.map(f => `<td class="${f.type === 'number' ? 'num' : ''}">${displayValue(specObject(row, f.key), f, true)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+    target.innerHTML = `<div class="table-scroll" role="region" aria-label="Product comparison table" tabindex="0"><table><thead><tr><th scope="col">Select</th>${columnHeader('brand','Brand')}${columnHeader('name','Product')}${columnHeader('model','Model')}${fields.map(f => columnHeader(f.key, f.label)).join('')}</tr></thead><tbody>${rows.map(row => `<tr class="${state.ids.includes(row.id) ? 'selected' : ''}"><td class="select-cell"><input type="checkbox" data-select="${escapeHtml(row.id)}" aria-label="Select ${escapeHtml(row.name)} for comparison" ${state.ids.includes(row.id) ? 'checked' : ''} ${state.ids.length >= 4 && !state.ids.includes(row.id) ? 'disabled' : ''}></td><td>${escapeHtml(row.brand)}</td><td class="name-cell"><a href="${productUrl(category.id, row.id, query)}">${escapeHtml(row.name)}</a> ${demoBadge(row)}</td><td class="code">${escapeHtml(row.model || '—')}</td>${fields.map(f => `<td class="${f.type === 'number' ? 'num' : ''}">${displayValue(specObject(row, f.key), f, true)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
   }
-  function renderShelf(category, rows, state) {
+  function renderShelf(category, rows, state, query) {
     const target = main.querySelector('#compare-shelf');
     if (!state.ids.length) { target.innerHTML = ''; return; }
     const chosen = selectedRows(rows, state);
-    target.innerHTML = `<div class="compare-shelf"><strong>${chosen.length} selected</strong><div class="selected-items">${chosen.map(row => `<button type="button" data-remove="${escapeHtml(row.id)}" aria-label="Remove ${escapeHtml(row.name)}">${escapeHtml(row.brand)} ${escapeHtml(row.model || row.name)} ×</button>`).join('')}</div>${chosen.length >= 2 ? `<a class="button-link primary" href="${compareUrl(category.id, state.ids)}">Compare products</a>` : '<small>Select at least one more product.</small>'}</div>`;
+    target.innerHTML = `<div class="compare-shelf"><strong>${chosen.length} selected</strong><div class="selected-items">${chosen.map(row => `<button type="button" data-remove="${escapeHtml(row.id)}" aria-label="Remove ${escapeHtml(row.name)}">${escapeHtml(row.brand)} ${escapeHtml(row.model || row.name)} ×</button>`).join('')}</div>${chosen.length >= 2 ? `<a class="button-link primary" href="${compareUrl(category.id, state.ids, false, query)}">Compare products</a>` : '<small>Select at least one more product.</small>'}</div>`;
   }
 
   const evidenceMarkup = (record, spec) => {
@@ -288,30 +311,34 @@
     const scopeText = direct.length ? 'These links were attached to this field in the pilot record.' : context.length ? 'These links belong to the record; none was attached to this field.' : 'No source link is available for this field.';
     return `<details><summary><span class="badge ${kind}">${label}</span></summary><p>${scopeText}</p>${sourceList.length ? `<ul>${sourceList.map(source => { const url = safeUrl(source.url); return `<li>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.label)}</a>` : escapeHtml(source.label)}</li>`; }).join('')}</ul>` : ''}<p>Field confidence: ${escapeHtml(spec.confidence || 'not rated')}. ${escapeHtml(statusLabel[spec.status] || 'Unknown')}.</p></details>`;
   };
-  async function renderProduct(category, productId, sequence) {
+  async function renderProduct(category, productId, params, sequence) {
     setLoading('Loading product specifications…');
+    const returnQuery = validatedReturnQuery(category, params);
+    const backUrl = returnUrl(category, returnQuery);
     let record;
     try { record = await detailFor(category.id, productId); }
-    catch (error) { if (sequence === routeSequence) main.innerHTML = errorPanel('Product not found', `This product record could not be loaded (${error.message}).`, `<a href="${categoryUrl(category.id)}">Back to ${escapeHtml(category.name)}</a>`); return; }
+    catch (error) { if (sequence === routeSequence) main.innerHTML = errorPanel('Product not found', `This product record could not be loaded (${error.message}).`, `<a href="${backUrl}">Back to ${escapeHtml(category.name)}</a>`); return; }
     if (sequence !== routeSequence) return;
     setTitle(record.name);
     const groups = [...new Set(category.fields.map(field => field.group))];
-    main.innerHTML = `${crumb([{name:category.name,url:categoryUrl(category.id)},{name:record.name}])}<div class="page-head"><h1>${escapeHtml(record.name)} ${demoBadge(record)}</h1><p class="intro">${escapeHtml(record.brand)}${record.family ? ` · ${escapeHtml(record.family)}` : ''}${record.model ? ` · <span class="code">${escapeHtml(record.model)}</span>` : ''}</p></div>${record.demo ? '<div class="callout">Fictional demo data. Values and identifiers on this page do not describe a real product.</div>' : ''}<div class="detail-grid"><div class="detail-main"><div class="callout">${escapeHtml(record.identity_caveat || 'Identity has not been independently verified.')}</div>${groups.map(group => `<section class="detail-section"><h2>${escapeHtml(group)}</h2><div class="table-scroll"><table class="spec-table"><tbody>${category.fields.filter(field => field.group === group).sort((a,b) => a.priority-b.priority).map(field => { const spec = specObject(record, field.key); return `<tr><th scope="row">${escapeHtml(field.label)}</th><td class="value-cell">${displayValue(spec, field)}</td><td class="evidence-cell">${evidenceMarkup(record, spec)}</td></tr>`; }).join('')}</tbody></table></div></section>`).join('')}<section class="detail-section"><h2>Documents</h2>${record.documents.length ? `<ul class="source-list">${record.documents.map(doc => { const url = safeUrl(doc.url); return `<li>${url ? `<a href="${escapeHtml(url)}">${escapeHtml(doc.label || url)}</a>` : escapeHtml(doc.label || 'Unlinked document')}</li>`; }).join('')}</ul>` : '<p class="muted">No manuals or specification sheets are linked yet.</p>'}</section><section class="detail-section"><h2>Media</h2>${record.media.length ? `<ul class="source-list">${record.media.map(item => { const url = safeUrl(item.url); return `<li>${url ? `<a href="${escapeHtml(url)}">${escapeHtml(item.label || url)}</a>` : escapeHtml(item.label || 'Unlinked media')}</li>`; }).join('')}</ul>` : '<p class="muted">No product images or media are linked yet.</p>'}</section></div><aside class="detail-side"><h2>Record context</h2><dl><dt>Brand</dt><dd>${escapeHtml(record.brand)}</dd><dt>Family hint</dt><dd>${escapeHtml(record.family || 'Not recorded')}</dd><dt>Model hint</dt><dd class="code">${escapeHtml(record.model || 'Not recorded')}</dd><dt>Variant hint</dt><dd>${escapeHtml(record.variant || 'Not resolved')}</dd><dt>Record confidence</dt><dd>${escapeHtml(record.confidence?.level || 'Not rated')} <span class="muted">(${escapeHtml(record.confidence?.scope || 'record')})</span></dd></dl><section class="detail-section"><h2>Identifiers</h2>${record.identifiers.length ? `<ul class="source-list">${record.identifiers.map(id => `<li><span class="code">${escapeHtml(id.value)}</span><br><span class="muted">${escapeHtml(id.scheme)} · ${escapeHtml(id.issuer || 'Issuer unspecified')}${id.market ? ` · ${escapeHtml(id.market)}` : ''} · ${escapeHtml(id.package_level || 'scope unverified')}</span></li>`).join('')}</ul>` : '<p>No identifiers recorded.</p>'}</section><section class="detail-section"><h2>Source links</h2>${record.sources.length ? `<ul class="source-list">${record.sources.map(source => { const url = safeUrl(source.url); return `<li>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.label)}</a>` : escapeHtml(source.label)}</li>`; }).join('')}</ul>` : '<p class="muted">No source links; this is demo data.</p>'}</section>${record.marketing_terms.length ? `<section class="detail-section"><h2>Marketing terms</h2><p>${escapeHtml(record.marketing_terms.join(', '))}</p></section>` : ''}<section class="detail-section"><h2>Record notes</h2><p>${escapeHtml(record.notes || 'No notes recorded.')}</p></section></aside></div>`;
+    main.innerHTML = `${crumb([{name:category.name,url:backUrl},{name:record.name}])}<div class="page-head"><h1>${escapeHtml(record.name)} ${demoBadge(record)}</h1><p class="intro">${escapeHtml(record.brand)}${record.family ? ` · ${escapeHtml(record.family)}` : ''}${record.model ? ` · <span class="code">${escapeHtml(record.model)}</span>` : ''}</p></div>${record.demo ? '<div class="callout">Fictional demo data. Values and identifiers on this page do not describe a real product.</div>' : ''}<div class="detail-grid"><div class="detail-main"><div class="callout">${escapeHtml(record.identity_caveat || 'Identity has not been independently verified.')}</div>${groups.map(group => `<section class="detail-section"><h2>${escapeHtml(group)}</h2><div class="table-scroll"><table class="spec-table"><tbody>${category.fields.filter(field => field.group === group).sort((a,b) => a.priority-b.priority).map(field => { const spec = specObject(record, field.key); return `<tr><th scope="row">${escapeHtml(field.label)}</th><td class="value-cell">${displayValue(spec, field)}</td><td class="evidence-cell">${evidenceMarkup(record, spec)}</td></tr>`; }).join('')}</tbody></table></div></section>`).join('')}<section class="detail-section"><h2>Documents</h2>${record.documents.length ? `<ul class="source-list">${record.documents.map(doc => { const url = safeUrl(doc.url); return `<li>${url ? `<a href="${escapeHtml(url)}">${escapeHtml(doc.label || url)}</a>` : escapeHtml(doc.label || 'Unlinked document')}</li>`; }).join('')}</ul>` : '<p class="muted">No manuals or specification sheets are linked yet.</p>'}</section><section class="detail-section"><h2>Media</h2>${record.media.length ? `<ul class="source-list">${record.media.map(item => { const url = safeUrl(item.url); return `<li>${url ? `<a href="${escapeHtml(url)}">${escapeHtml(item.label || url)}</a>` : escapeHtml(item.label || 'Unlinked media')}</li>`; }).join('')}</ul>` : '<p class="muted">No product images or media are linked yet.</p>'}</section></div><aside class="detail-side"><h2>Record context</h2><dl><dt>Brand</dt><dd>${escapeHtml(record.brand)}</dd><dt>Family hint</dt><dd>${escapeHtml(record.family || 'Not recorded')}</dd><dt>Model hint</dt><dd class="code">${escapeHtml(record.model || 'Not recorded')}</dd><dt>Variant hint</dt><dd>${escapeHtml(record.variant || 'Not resolved')}</dd><dt>Record confidence</dt><dd>${escapeHtml(record.confidence?.level || 'Not rated')} <span class="muted">(${escapeHtml(record.confidence?.scope || 'record')})</span></dd></dl><section class="detail-section"><h2>Identifiers</h2>${record.identifiers.length ? `<ul class="source-list">${record.identifiers.map(id => `<li><span class="code">${escapeHtml(id.value)}</span><br><span class="muted">${escapeHtml(id.scheme)} · ${escapeHtml(id.issuer || 'Issuer unspecified')}${id.market ? ` · ${escapeHtml(id.market)}` : ''} · ${escapeHtml(id.package_level || 'scope unverified')}</span></li>`).join('')}</ul>` : '<p>No identifiers recorded.</p>'}</section><section class="detail-section"><h2>Source links</h2>${record.sources.length ? `<ul class="source-list">${record.sources.map(source => { const url = safeUrl(source.url); return `<li>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.label)}</a>` : escapeHtml(source.label)}</li>`; }).join('')}</ul>` : '<p class="muted">No source links; this is demo data.</p>'}</section>${record.marketing_terms.length ? `<section class="detail-section"><h2>Marketing terms</h2><p>${escapeHtml(record.marketing_terms.join(', '))}</p></section>` : ''}<section class="detail-section"><h2>Record notes</h2><p>${escapeHtml(record.notes || 'No notes recorded.')}</p></section></aside></div>`;
   }
 
   async function renderCompare(category, params, sequence) {
     const ids = [...new Set((params.get('ids') || '').split(',').filter(Boolean))];
-    if (ids.length < 2 || ids.length > 4) { main.innerHTML = errorPanel('Choose 2–4 products', 'Select products from one category before opening comparison.', `<a href="${categoryUrl(category.id)}">Browse ${escapeHtml(category.name)}</a>`); return; }
+    const returnQuery = validatedReturnQuery(category, params);
+    const backUrl = returnUrl(category, returnQuery);
+    if (ids.length < 2 || ids.length > 4) { main.innerHTML = errorPanel('Choose 2–4 products', 'Select products from one category before opening comparison.', `<a href="${backUrl}">Browse ${escapeHtml(category.name)}</a>`); return; }
     setLoading('Loading comparison…');
     let records;
     try { records = await Promise.all(ids.map(id => detailFor(category.id, id))); }
-    catch (error) { if (sequence === routeSequence) main.innerHTML = errorPanel('Comparison unavailable', `One or more products could not be loaded (${error.message}).`, `<a href="${categoryUrl(category.id)}">Back to ${escapeHtml(category.name)}</a>`); return; }
+    catch (error) { if (sequence === routeSequence) main.innerHTML = errorPanel('Comparison unavailable', `One or more products could not be loaded (${error.message}).`, `<a href="${backUrl}">Back to ${escapeHtml(category.name)}</a>`); return; }
     if (sequence !== routeSequence) return;
-    if (records.some(record => record.category !== category.id)) { main.innerHTML = errorPanel('Mixed categories', 'All compared products must belong to the same category.', `<a href="${categoryUrl(category.id)}">Back to ${escapeHtml(category.name)}</a>`); return; }
+    if (records.some(record => record.category !== category.id)) { main.innerHTML = errorPanel('Mixed categories', 'All compared products must belong to the same category.', `<a href="${backUrl}">Back to ${escapeHtml(category.name)}</a>`); return; }
     setTitle(`Compare ${category.name}`);
     let differencesOnly = params.get('diff') === '1';
     const groupedFields = [...new Set(category.fields.map(field => field.group))];
-    main.innerHTML = `${crumb([{name:category.name,url:categoryUrl(category.id)},{name:'Compare'}])}<div class="page-head"><h1>Compare ${category.name.toLowerCase()} ${demoBadge(category)}</h1><p class="intro">Read differences side by side. Unknown and conflicted values remain separate from “No”. ${category.demo ? 'All products here are fictional demo data.' : 'Pilot values have not been independently reviewed.'}</p></div><div class="compare-toolbar"><label><input type="checkbox" id="differences-only" ${differencesOnly ? 'checked' : ''}>Show differences only</label><a href="${categoryUrl(category.id)}">Back to products</a></div><div id="comparison-table"></div>`;
+    main.innerHTML = `${crumb([{name:category.name,url:backUrl},{name:'Compare'}])}<div class="page-head"><h1>Compare ${category.name.toLowerCase()} ${demoBadge(category)}</h1><p class="intro">Read differences side by side. Unknown and conflicted values remain separate from “No”. ${category.demo ? 'All products here are fictional demo data.' : 'Pilot values have not been independently reviewed.'}</p></div><div class="compare-toolbar"><label><input type="checkbox" id="differences-only" ${differencesOnly ? 'checked' : ''}>Show differences only</label><a href="${backUrl}">Back to products</a></div><div id="comparison-table"></div>`;
     const target = main.querySelector('#comparison-table');
     const renderRows = () => {
       let rowCount = 0;
@@ -326,18 +353,19 @@
         }).filter(Boolean).join('');
         return items ? `<tr class="group-row"><th colspan="${records.length + 1}" scope="colgroup">${escapeHtml(group)}</th></tr>${items}` : '';
       }).join('');
-      target.innerHTML = `<div class="table-scroll" role="region" aria-label="Side-by-side product comparison" tabindex="0"><table class="compare-table"><thead><tr><th scope="col">Specification</th>${records.map(record => `<th scope="col"><a href="${productUrl(category.id, record.id)}">${escapeHtml(record.name)}</a> ${demoBadge(record)}<div class="muted code">${escapeHtml(record.model || '')}</div><button type="button" class="remove" data-remove="${escapeHtml(record.id)}">Remove</button></th>`).join('')}</tr></thead><tbody>${body || `<tr><td colspan="${records.length + 1}" class="empty-table">No differences in the recorded schema.</td></tr>`}</tbody></table></div><p class="muted">${rowCount} ${differencesOnly ? 'different' : 'total'} specification rows. Tinted rows contain a recorded difference.</p>`;
+      target.innerHTML = `<div class="table-scroll" role="region" aria-label="Side-by-side product comparison" tabindex="0"><table class="compare-table"><thead><tr><th scope="col">Specification</th>${records.map(record => `<th scope="col"><a href="${productUrl(category.id, record.id, returnWithIds(category, returnQuery, ids))}">${escapeHtml(record.name)}</a> ${demoBadge(record)}<div class="muted code">${escapeHtml(record.model || '')}</div><button type="button" class="remove" data-remove="${escapeHtml(record.id)}">Remove</button></th>`).join('')}</tr></thead><tbody>${body || `<tr><td colspan="${records.length + 1}" class="empty-table">No differences in the recorded schema.</td></tr>`}</tbody></table></div><p class="muted">${rowCount} ${differencesOnly ? 'different' : 'total'} specification rows. Tinted rows contain a recorded difference.</p>`;
     };
     main.querySelector('#differences-only').addEventListener('change', event => {
       differencesOnly = event.target.checked;
-      history.replaceState(null, '', compareUrl(category.id, ids, differencesOnly));
+      history.replaceState(null, '', compareUrl(category.id, ids, differencesOnly, returnQuery));
       renderRows();
     });
     target.addEventListener('click', event => {
       const button = event.target.closest('[data-remove]');
       if (!button) return;
       const remaining = ids.filter(id => id !== button.dataset.remove);
-      location.hash = remaining.length >= 2 ? compareUrl(category.id, remaining, differencesOnly).slice(1) : categoryUrl(category.id, `?ids=${encoded(remaining.join(','))}`).slice(1);
+      const nextQuery = returnWithIds(category, returnQuery, remaining);
+      location.hash = remaining.length >= 2 ? compareUrl(category.id, remaining, differencesOnly, nextQuery).slice(1) : returnUrl(category, nextQuery).slice(1);
     });
     renderRows();
   }
