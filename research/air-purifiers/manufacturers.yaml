@@ -1,0 +1,29 @@
+# A2 discovery, air purifiers (US). Probed 2026-11-23 with the shared crawler client UA (specsheet-crawler/0.1), robots honoured.
+# status: adapter = built+run; viable = probed OK, adapter not built; blocked = stop, no workaround.
+cross_brand_sources:
+  energystar:
+    status: adapter            # crawler/adapters/energystar_airpurifiers.py  raw/energystar-airpurifiers
+    url: https://data.energystar.gov/resource/gaa3-swy6.json   # "ENERGY STAR Certified Room Air Cleaners V3.0", one SoQL GET, robots Crawl-delay 1
+    rows: {cert_rows: 248, refs: 212, wildcard_families: 13, junk_model_cells: 18, models: 196}
+    gives: [CADR smoke/dust/pollen/PM2.5, room size (formula), CADR/W, IEF, annual kWh, ozone ppb, filter types + replacement part numbers, technology, connected, auto mode, Most Efficient, UPC, declared same-hardware aliases]
+    lacks: [watts, noise, dimensions, weight, filter life/price]
+  carb:
+    status: adapter            # crawler/adapters/carb_airpurifiers.py  raw/carb-airpurifiers
+    url: https://ww2.arb.ca.gov/list-carb-certified-air-cleaning-devices   # one HTML table, 13,090 rows; robots Crawl-delay 5, no query strings
+    rows: {groups: 11493, refs: 1102, exact_peer_refs: 95, dropped_not_purifier: 230, dropped_multi_model_cells: 643}
+    gives: [certified model string, Mechanical/Electronic, date notified, EO number]
+    note: CARB-only models are minted for 23 major brands (carb_airpurifiers.MINT_BRANDS) with a 2019+ date; other brands only enrich exact ES/maker strings.
+  aham_verifide:
+    status: blocked            # ahamverifide.org -> www.ahamdir.com (Angular app); data only via an undocumented Intertek TruTesta POST API (gbs.trutesta.io). Calling it was refused by the tool policy; not retried. Needs a sanctioned export (AHAM offers an xlsx "export-model-details" in the UI) downloaded by a human.
+manufacturers:
+  levoit:   {status: adapter, adapter: levoit_airpurifiers, source_id: levoit-us-airpurifiers, run: '22 purifier pages from levoit.com/products.json (Shopify); 13 print a Model row', how: 'Product Specifications <strong>Label</strong>: value list'}
+  winix:    {status: adapter, adapter: winix_airpurifiers, source_id: winix-us-airpurifiers, run: '22 product pages from the Yoast product sitemap (filters/refurb/aroma skipped); 2 x 404; 18 models', how: 'WooCommerce Additional information table + Replacement Filter tab (part number, list/sale price)'}
+  coway:    {status: viable_no_identity, how: 'cowaymega.com (Shopify) pages carry a clean spec table (CADR per pollutant, filter life, noise dB(A), W, weight) but print no model number (only "Airmega 400S" + a Wifi/Non-Wifi selector). Needs a reviewed name->AP-code crosswalk before it can attach to ES/CARB models. coway-usa.com is a second Shopify store (water + few purifiers).'}
+  blueair:  {status: viable_no_identity, how: 'blueair.com Shopify: 61 purifier products, SKUs are 6-digit item numbers, not the 10-digit article numbers ES/CARB use. Spec data not inspected.'}
+  medify:   {status: viable, how: 'medifyair.com Shopify, 6 purifiers; variant SKUs MA-40-W1-V3.0 carry the model; spec table not inspected.'}
+  alen:     {status: viable, how: 'alen.com Shopify, BreatheSmart 25i/35i/45i/75i; SKUs are internal numbers.'}
+  rabbitair: {status: viable, how: 'rabbitair.com Shopify; SKUs SPA-780... = model codes.'}
+  airdoctor: {status: viable, how: 'airdoctorpro.com Shopify, 6 purifiers; SKUs 90AD400AD01-W (internal).'}
+  molekule: {status: viable, how: 'molekule.com Shopify, 2 purifiers.'}
+  dreo:     {status: viable, how: 'dreo.com Shopify; SKUs 10-080091-004 internal; ES has DR-HAP codes.'}
+  honeywell: {status: not_probed_further, how: 'honeywellstore.com is not Shopify (products.json 404); Kaz pages not probed.'}

@@ -919,6 +919,56 @@ claim_policies:
     require_normalized: true
     keys:
       energystar-tvs: [pwr.annual_kwh, pwr.on_mode_doe_w, pwr.on_mode_w, pwr.standby_w]
+- id: claim/air-purifiers-structured@1
+  since: '2026-11-23'
+  rationale: 'Air purifiers: the ENERGY STAR Certified Room Air Cleaners V3.0 record and the CARB certified air cleaning devices list (regulatory),
+    plus the makers'' own labelled US spec rows (Levoit Product Specifications list, Winix WooCommerce attribute table + Replacement Filter tab).
+    Labelled fields only, never titles or prose, with review-3/4 rules from the start: (1) affirmative-only flags: filter.true_hepa only from an ES
+    filter type exactly "HEPA" (the dataset defines it as True HEPA) or a maker row saying "True HEPA", never false; "HEPA-Type" is hepa_class only;
+    ozone.carb_certified only from the CARB list itself, dated by EO number + date notified, absence = unknown; booleans false only from an own
+    field whose value is a bare No; (2) bases in conditions: every CADR carries cadr_basis (energy_star_certified / aham_verified_maker_stated /
+    maker_claimed: AHAM only when the same table says AHAM), room sizes carry room_basis and ach, noise carries fan_speed (printed ranges =
+    range_min/range_max), power carries power_basis; no watts derived from CADR/W; (3) conflict-aware grouping: certifier rows of one exact
+    (brand, model) that disagree leave the field unresolved; multi-model ES cells name each model but attach no UPC; wildcard filings are never
+    models; relabel brands are not folded; (4) certification reaches a model only through its exact normalised model string (no stem, no
+    wildcard expansion, no declared-alias transfer). NOT accepted (preview only): cadr.unspecified_cfm (pollutant not stated), filter.price_usd
+    (dated store price), cert.maker_listed (maker badges), phys.dimensions_text, Levoit pwr.standby_w (printed as a bound), every
+    status-unknown claim.'
+  audit:
+    by: A1+A2 air purifiers
+    at: '2026-11-23'
+    evidence: Parsed every stored snapshot of the four sources (ES 212 refs, CARB 1102, Levoit 22, Winix 20); per-key value checks in
+      team/reports/2026-11-23-a12-air-purifiers.md; fixtures in tests/test_air_purifiers.py (16 tests).
+    parsers:
+      energystar_airpurifiers@1: sha256:9fbfd29f2f1b9475842e
+      carb_airpurifiers@1: sha256:44ddcd770c6ab43e412d
+      levoit_airpurifiers@1: sha256:18b3c2189006ad84c2f8
+      winix_airpurifiers@1: sha256:52bcd9424007c89b002f
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors: [energystar_airpurifiers@1, carb_airpurifiers@1, levoit_airpurifiers@1, winix_airpurifiers@1]
+    source_ids: [energystar-airpurifiers, carb-airpurifiers, levoit-us-airpurifiers, winix-us-airpurifiers]
+    kinds: [official]
+    tiers: [manufacturer, regulatory]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      energystar-airpurifiers:
+        [cadr.dust_cfm, cadr.pm25_cfm, cadr.pollen_cfm, cadr.smoke_cfm, eff.dust_cadr_per_w, eff.energy_star, eff.ief, eff.most_efficient,
+         eff.pollen_cadr_per_w, eff.smoke_cadr_per_w, feat.auto_mode, filter.hepa_class, filter.part_number, filter.true_hepa, filter.types,
+         ozone.es_emissions_ppb, pwr.annual_kwh, room.size_sqft, sensor.air_quality, smart.wifi, tech.technologies]
+      carb-airpurifiers: [ozone.carb_certified, ozone.carb_date, ozone.carb_eo, ozone.carb_type]
+      levoit-us-airpurifiers:
+        [cadr.dust_cfm, cadr.pollen_cfm, cadr.smoke_cfm, feat.auto_mode, feat.filter_indicator, feat.sleep_mode, noise.db, phys.weight_lb,
+         pwr.rated_w, pwr.voltage, room.coverage_sqft, room.size_sqft, smart.wifi]
+      winix-us-airpurifiers:
+        [cadr.dust_cfm, cadr.pollen_cfm, cadr.smoke_cfm, fan.speeds, feat.auto_mode, feat.filter_indicator, feat.sleep_mode, feat.timer,
+         filter.life_months, filter.part_number, filter.true_hepa, filter.types, noise.db, phys.depth_in, phys.height_in, phys.weight_lb,
+         phys.width_in, room.ach_at_size, room.coverage_sqft, room.size_sqft, smart.voice, smart.wifi, sup.warranty_years, tech.technologies]
 relation_policies:
 - id: rel/source-stated-hierarchy@2
   since: '2026-11-23'

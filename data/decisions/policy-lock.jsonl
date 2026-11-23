@@ -42,3 +42,4 @@
 {"at": "2026-11-23T20:49:08Z", "id": "rel/bundle-contents@2", "sha256": "sha256:9eeab6fb2a0eeb68ca5e4e419c1107a061c80f7ce785db936285f38d7121b0c0"}
 {"at": "2026-11-23T20:49:08Z", "id": "rel/tvs-es-certification-scope@1", "sha256": "sha256:8e4635ee2ecd341fc92dcaeee50fb64d71559ffa3d137c3c9c3c44897fae7ad2"}
 {"at": "2026-11-23T20:49:08Z", "id": "rel/tvs-crosswalk@1", "sha256": "sha256:132f25270fcbe6b66c0455b75b6ade3318e5de87039950b210cf65fb300fb502"}
+{"at": "2026-11-23T23:26:40Z", "id": "claim/air-purifiers-structured@1", "sha256": "sha256:8bc0f3d794dd027335b8368742a28380526a1bbca12344ce208dbb1e23cd4a77"}

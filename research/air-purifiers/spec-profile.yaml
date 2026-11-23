@@ -1,0 +1,689 @@
+profile_format: specsheet.category-profile/1
+category: air-purifiers
+version: 0.1.0
+label: Air purifiers
+market: US
+status: draft
+scope: Portable room air cleaners (air purifiers) sold in the US, incl. tower and desktop units and purifier/fan or purifier/humidifier
+  combos certified as room air cleaners. Excludes in-duct / whole-house HVAC cleaners, hand dryers, air conditioners and car units (CARB lists
+  them too; the adapters drop them by model name), and replacement filters as products (they are facts of the purifier here).
+identity:
+  levels:
+  - level: family
+    label: Line
+    meaning: 'Marketing line across colours / channels: Coway Airmega 400, Levoit Core 400S, Winix C545, Blueair Blue Pure 211i Max. Browse
+      only; carries no performance fact.'
+    key_schemes: [mfr_family]
+    inherits: false
+  - level: model
+    label: Model number
+    meaning: 'The maker''s model number as printed by the maker''s US page, its ENERGY STAR filing or its CARB listing: LAP-C401S-WUSR,
+      Core 400S, AP-1512HH, C545, 3232111100 (Blueair article number). A colour or channel suffix (AP-1512N(W), AP-1125G_WT, LAP-C401S-KUSR)
+      is a different model string and a different model unless the maker declares it identical (identity.md).'
+    key_schemes: [mfr_model]
+    inherits: true
+  - level: package
+    label: Trade item / GTIN
+    meaning: UPC of a model (several per model when colour differs). Never a merge key.
+    key_schemes: [gtin]
+    inherits: true
+  primary_key: Manufacturer model number of one sellable unit as printed by the maker, ENERGY STAR or CARB. Retail titles, line names and
+    marketing names are aliases.
+  per_brand:
+    levoit: 'Label code LAP-C401S-WUSR = LAP (air purifier) C401S (Core 400S, S = smart) W (colour) US (market) R (revision). levoit.com
+      prints either the label code or the marketing model ("Core 400S") in its Model row; ENERGY STAR files both kinds as separate records.
+      The two are NOT joined automatically.'
+    coway: 'AP-1512HH (label) = Airmega/Mighty line; colour tails (W)/(BG) or _WT/_GR; ENERGY STAR and CARB list both the AP- code and the
+      "Airmega 400S" name as model numbers. cowaymega.com prints no model number on its pages (not used as an identity source).'
+    winix: 'Short numeric/alpha codes C545, 5500-2, AT40, XQ; retailer variants (AT41, C535 vs C545, T830 vs T810) are separate models.'
+    blueair: '10-digit article numbers (3232111100) in ENERGY STAR / CARB; blueair.com Shopify SKUs are 6-digit item numbers (not used).'
+    honeywell: 'HPA300, HPA5300B (colour letter), HFD-120-Q; Kaz/Helen of Troy files as "Honeywell(TM) by Kaz".'
+  schemes:
+  - {scheme: mfr_family, level: family}
+  - {scheme: mfr_model, level: model, normalize: upper_strip_spaces}
+  - {scheme: gtin, issuer: GS1, level: package}
+  - {scheme: x_energystar_pd_id, level: model}
+  - {scheme: x_levoit_sku, level: model}
+  variant_axes: []
+  model_defining: [cadr.smoke_cfm]
+  note: 'Certifier rows (ENERGY STAR, CARB) and maker pages join ONLY on the exact normalised (brand, model string). Wildcard filings
+    (124746**, HPA120***, LAP-B851S-****) are never products. Brand spellings of one owner are folded (Coway Airmega -> Coway; Honeywell by
+    Kaz -> Honeywell); relabel brands sharing one filing (AROEVE / BREEZOME / KLOUDIC MK01A) stay separate.'
+units:
+  system: us_customary
+  custom:
+  - {unit: cfm, base: cfm, factor: 1}
+  - {unit: ft2, base: m2, factor: 0.09290304}
+  - {unit: m2, base: m2, factor: 1}
+  - {unit: cfm/W, base: cfm/W, factor: 1}
+  - {unit: kWh, base: Wh, factor: 1000}
+  - {unit: ppb, base: ppb, factor: 1}
+  - {unit: month, base: month, factor: 1}
+conditions:
+- {id: cadr_basis, label: CADR basis, type: enum, enum: [energy_star_certified, aham_verified_maker_stated, maker_claimed],
+   description: 'Who stands behind a CADR: the ENERGY STAR filing (reported to EPA through a recognised certification body, AHAM AC-1 test), a
+     maker page that affirmatively says the figure is AHAM Verifide, or a maker figure with no stated verification. The AHAM Verifide directory
+     itself was not reachable (merchants.md); "aham_verified_maker_stated" is the maker''s claim, not a checked listing.'}
+- {id: room_basis, label: Room size basis, type: enum, enum: [energy_star_formula, aham_verified_maker_stated, maker_stated_ach],
+   description: 'ENERGY STAR room size = smoke CADR x 1.55 (the AHAM formula, ~4.8 air changes/h at 8 ft); a maker "AHAM Verified Room Size";
+     or a maker figure at a stated air-change rate.'}
+- {id: ach, label: Air changes per hour, type: number, unit: null, description: Air-change rate the maker states for a room-size figure.}
+- {id: fan_speed, label: Fan speed, type: enum, enum: [lowest, highest, sleep, low, medium, high, turbo, range_min, range_max],
+   description: 'Speed a noise/power figure is for. range_min / range_max = the ends of a printed range ("22-52 dB") whose speeds are not
+     named. Distance and weighting are almost never stated (kept in raw).'}
+- {id: power_basis, label: Power basis, type: enum, enum: [maker_rated, maker_unstated, energy_star_16h_active],
+   description: 'Nameplate/rated input power vs an unlabelled maker figure vs the ENERGY STAR annual figure (16 h/day active).'}
+- {id: filter_stage, label: Filter stage, type: enum, enum: [hepa, carbon, pre_filter, set, composite, washable, non_woven, other],
+   description: Which filter a type / life / part number / price belongs to; "set" = a combined replacement kit.}
+- {id: price_basis, label: Price basis, type: enum, enum: [displayed, list, sale], description: Which price a dated filter price is.}
+groups:
+- {id: general, label: General & identity, order: 0}
+- {id: cadr, label: Clean air delivery (CADR), order: 1}
+- {id: room, label: Room size, order: 2}
+- {id: filter, label: Filtration & filters, order: 3}
+- {id: ozone, label: Ozone & CARB, order: 4}
+- {id: noise, label: Noise & fan, order: 5}
+- {id: power, label: Power & efficiency, order: 6}
+- {id: smart, label: Smart & controls, order: 7}
+- {id: phys, label: Size & weight, order: 8}
+- {id: support, label: Warranty & certifications, order: 9}
+specs:
+- key: gen.brand
+  label: Brand
+  group: general
+  type: enum
+  enum: [coway, levoit, winix, blueair, honeywell, dyson, shark, lg, samsung, medify, dreo, alen, iqair, molekule, airdoctor, germguardian]
+  enum_open: true
+  unit: null
+  tier: core
+  level: family
+  facet: {kind: enum}
+  why: Filter
+  sources: [ENERGY STAR brand_name, CARB Brand, maker page]
+  example: coway
+- key: cadr.smoke_cfm
+  label: Smoke CADR
+  group: cadr
+  type: number
+  unit: cfm
+  tier: core
+  level: model
+  basis_conditions: [cadr_basis]
+  facet: {kind: range, bins: [100, 150, 200, 250, 300, 400], column: true}
+  why: The headline cleaning-speed number; smoke particles are the smallest of the three test aerosols and the one room sizes derive from
+  traps:
+  - 'Self-claimed CADR is not verified CADR: the basis (ENERGY STAR filing / maker says AHAM Verifide / maker unstated) is a condition, and a
+    disagreeing value under another basis is a different assertion, never averaged'
+  - 'A bare "CADR: 231 CFM" names no pollutant: it is cadr.unspecified_cfm, never assumed to be smoke'
+  - 'Metric m3/h CADR (EU/China GB/T 18801) is a different test; never converted into an AHAM cfm figure'
+  sources: [ENERGY STAR smoke_free_clean_air_delivery, Winix 'CADR (Dust / Pollen / Smoke)', Levoit 'CADR*' Smoke row, AHAM Verifide directory (not reached)]
+  example: 232
+- key: cadr.dust_cfm
+  label: Dust CADR
+  group: cadr
+  type: number
+  unit: cfm
+  tier: core
+  level: model
+  basis_conditions: [cadr_basis]
+  facet: {kind: range, bins: [100, 150, 200, 250, 300, 400]}
+  why: Mid-size particles
+  traps: ['Order of the three numbers differs by maker (Dust/Pollen/Smoke vs Smoke/Dust/Pollen): read the label, never the position']
+  sources: [ENERGY STAR dust_free_clean_air_delivery, Winix CADR row]
+  example: 243
+- key: cadr.pollen_cfm
+  label: Pollen CADR
+  group: cadr
+  type: number
+  unit: cfm
+  tier: important
+  level: model
+  basis_conditions: [cadr_basis]
+  facet: {kind: range, bins: [100, 200, 300, 400]}
+  why: Large particles (allergy season)
+  traps: ['AHAM caps reported pollen CADR at 450 (Winix XQ prints ">450"): a bound, not a value (unresolved)']
+  sources: [ENERGY STAR pollen_free_clean_air_delivery, Winix CADR row]
+  example: 246
+- key: cadr.pm25_cfm
+  label: PM2.5 CADR
+  group: cadr
+  type: number
+  unit: cfm
+  tier: important
+  level: model
+  basis_conditions: [cadr_basis]
+  facet: {kind: range, bins: [100, 200, 300, 400]}
+  why: Wildfire smoke / fine particle metric added in ENERGY STAR V3
+  sources: [ENERGY STAR pm25_cadr]
+  example: 444
+- key: cadr.unspecified_cfm
+  label: CADR (pollutant not stated)
+  group: cadr
+  type: number
+  unit: cfm
+  tier: detail
+  level: model
+  basis_conditions: [cadr_basis]
+  facet: false
+  why: Shown as printed so the gap is visible; never compared with the three AHAM figures
+  traps: ['Levoit "CADR: 231 CFM" rows: probably smoke, but the page does not say so']
+  sources: [Levoit 'CADR' row]
+  example: 231
+- key: room.size_sqft
+  label: Suggested room size
+  group: room
+  type: number
+  unit: ft2
+  tier: core
+  level: model
+  basis_conditions: [room_basis]
+  conditions: [ach]
+  facet: {kind: range, bins: [150, 250, 350, 500, 750, 1000], column: true}
+  why: 'The AHAM-style room size (smoke CADR x 1.55, ~4.8 air changes/h at 8 ft ceilings): the AHAM 2/3 rule says smoke CADR should be at
+    least 2/3 of the room''s area'
+  traps:
+  - '"Covers up to 1,718 ft2" figures are 1 air change per hour (or 2): five times the AHAM size. Those are room.coverage_sqft, never this key'
+  - The ENERGY STAR room size is computed from smoke CADR, not measured separately
+  sources: [ENERGY STAR room_size_sq_ft, Winix 'AHAM Verified Room Size', Levoit 'Ideal Room Size ... (4.8 ACH)']
+  example: 360
+- key: room.coverage_sqft
+  label: Maximum coverage (maker)
+  group: room
+  type: number
+  unit: ft2
+  tier: detail
+  level: model
+  conditions: [ach]
+  facet: false
+  why: Marketing coverage area, shown with its air-change rate when stated
+  traps: ['No ACH printed (Winix "Maximum Room Coverage") = not comparable with anything']
+  sources: [Levoit 'Ideal Room Size (1 ACH)', Winix 'Maximum Room Coverage']
+  example: 1742
+- key: room.ach_at_size
+  label: Air changes per hour at suggested size
+  group: room
+  type: number
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Confirms which convention a room size uses
+  sources: [Winix 'Clean Air Changes per Hour (Based on AHAM Verified Room Size)']
+  example: 4.8
+- key: filter.true_hepa
+  label: True HEPA
+  group: filter
+  type: bool
+  unit: null
+  tier: core
+  level: model
+  facet: {kind: bool, column: true}
+  why: True HEPA (>= 99.97 % at 0.3 um, H13-class or similar) vs "HEPA-type" marketing
+  traps:
+  - Only an affirmative statement counts (ENERGY STAR filter type exactly "HEPA", which the dataset defines as True HEPA; a maker row saying "True HEPA")
+  - '"HEPA-type", "HEPA-like", "HEPA-grade", "99% HEPA" are NOT true HEPA, but they do not prove the opposite either: the value stays unknown, never false'
+  - '"Captures 99.97% of particles 0.3 um" in marketing prose is not a filter-type row (not parsed)'
+  sources: [ENERGY STAR filter_N_type, Winix 'HEPA Filter (Filter Life)']
+  example: true
+- key: filter.hepa_class
+  label: HEPA wording (ENERGY STAR)
+  group: filter
+  type: enum
+  enum: [hepa, hepa_type]
+  unit: null
+  tier: detail
+  level: model
+  facet: {kind: enum}
+  why: 'ENERGY STAR distinguishes "HEPA" (demonstrated) from "HEPA-Type" (not demonstrated)'
+  sources: [ENERGY STAR filter_N_type]
+  example: hepa_type
+- key: filter.hepa_grade
+  label: HEPA grade
+  group: filter
+  type: enum
+  enum: [h11, h12, h13, h14]
+  unit: null
+  tier: important
+  level: model
+  facet: {kind: enum}
+  why: EN 1822 grade when the maker prints one
+  traps: ['Only when printed as a grade (H13); never derived from an efficiency percentage. No current adapter emits it']
+  sources: [maker spec tables (Coway, Blueair - not built)]
+  example: h13
+- key: filter.types
+  label: Filter stages
+  group: filter
+  type: enum
+  enum: [hepa, hepa_type, activated_carbon, composite, washable, non_woven, pre_filter]
+  enum_open: true
+  conditions: [filter_stage]
+  unit: null
+  tier: important
+  level: model
+  facet: {kind: enum}
+  why: Carbon stage for odours/VOCs; washable vs replaceable
+  sources: [ENERGY STAR filter_N_type, Winix 'Deodorization Filter']
+  example: activated_carbon
+- key: filter.part_number
+  label: Replacement filter part number
+  group: filter
+  type: text
+  unit: null
+  tier: important
+  level: model
+  conditions: [filter_stage]
+  facet: false
+  why: What to reorder; the running cost depends on it
+  traps: ['Only the maker''s own pairing (ENERGY STAR replacement_model_number_N, the maker''s Replacement Filter tab): a retailer "compatible with" list is not identity']
+  sources: [ENERGY STAR replacement_model_number_N, Winix Replacement Filter tab]
+  example: 1712-0096-00
+- key: filter.price_usd
+  label: Replacement filter price
+  group: filter
+  type: number
+  unit: USD
+  tier: important
+  level: model
+  conditions: [filter_stage, price_basis]
+  facet: false
+  why: Filter cost per year is the real cost of ownership
+  traps: ['A dated store price (sale vs list): shown with its observation date, preview only']
+  sources: [Winix Replacement Filter tab]
+  example: 89.99
+- key: filter.life_months
+  label: Filter life
+  group: filter
+  type: number
+  unit: month
+  tier: important
+  level: model
+  conditions: [filter_stage]
+  facet: {kind: range, bins: [3, 6, 12, 24]}
+  why: Replacement interval (maker's figure, usage assumptions unstated)
+  sources: [Winix '(12M)' filter rows, Coway 'Filter Life Expectancy' (not built)]
+  example: 12
+- key: tech.technologies
+  label: Cleaning technologies
+  group: filter
+  type: list
+  unit: null
+  tier: important
+  level: model
+  facet: {kind: multi}
+  why: Ionizers / PlasmaWave / UV / electrostatic add ozone or by-product risk; fan-and-filter does not
+  traps: ['Only from a technology field (ENERGY STAR technology_types) or the maker''s own technology row; never from marketing names']
+  sources: [ENERGY STAR technology_types, Winix 'Advanced Technologies']
+  example: [fan_filter, plasmawave]
+- key: ozone.carb_certified
+  label: CARB certified
+  group: ozone
+  type: bool
+  unit: null
+  tier: core
+  level: model
+  facet: {kind: bool, column: true}
+  why: California requires every indoor air cleaning device sold there to be certified (electrical safety + ozone emission <= 0.050 ppm for
+    electronic units); the strongest public ozone statement
+  traps:
+  - True only from the CARB list itself, dated (EO number + date notified in the quote). A maker "CARB" badge is cert.maker_listed (preview)
+  - Absence from the list is unknown, never false (exact model string only; colour/channel strings are listed separately)
+  sources: [CARB list of certified air cleaning devices]
+  example: true
+- key: ozone.carb_type
+  label: CARB device type
+  group: ozone
+  type: enum
+  enum: [mechanical, electronic]
+  unit: null
+  tier: important
+  level: model
+  facet: {kind: enum}
+  why: Electronic = ionizer/electrostatic/UV/PCO elements that CARB ozone-tests; mechanical = filtration only
+  sources: [CARB Type]
+  example: mechanical
+- key: ozone.carb_date
+  label: CARB date notified
+  group: ozone
+  type: date
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Dates the certification
+  sources: [CARB Date Notified]
+  example: '2026-09-09'
+- key: ozone.carb_eo
+  label: CARB Executive Order
+  group: ozone
+  type: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: The certificate reference to check
+  sources: [CARB EO Number]
+  example: G-26-209
+- key: ozone.es_emissions_ppb
+  label: Ozone emissions (ENERGY STAR filing)
+  group: ozone
+  type: number
+  unit: ppb
+  tier: detail
+  level: model
+  facet: false
+  why: Reported ozone emission for the certified unit
+  sources: [ENERGY STAR ozone_emissions_ppb]
+  example: 0
+- key: noise.db
+  label: Noise
+  group: noise
+  type: number
+  unit: dB
+  tier: core
+  level: model
+  conditions: [fan_speed]
+  headline_condition: {fan_speed: range_min}
+  facet: {kind: range, bins: [20, 25, 30, 35, 40, 50, 60]}
+  why: Bedroom use is decided by the sleep/low figure; the max figure tells you whether high speed is usable
+  traps:
+  - 'Every figure carries its speed; a printed range "22-52 dB" gives range_min/range_max (speeds unnamed), never "sleep" or "turbo"'
+  - Distance (1 m?) and weighting (dB(A)?) are almost never stated; cross-brand figures are not comparable measurements
+  sources: [Levoit 'Noise Level', Winix 'Minimum Noise Level', Coway 'Noise Level' (not built)]
+  example: 22
+- key: fan.speeds
+  label: Fan speeds
+  group: noise
+  type: integer
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Granularity of control
+  sources: [Winix 'Number of Fan Speeds']
+  example: 5
+- key: pwr.rated_w
+  label: Rated power
+  group: power
+  type: number
+  unit: W
+  tier: important
+  level: model
+  basis_conditions: [power_basis]
+  facet: {kind: range, bins: [10, 25, 50, 75, 100]}
+  why: Maximum (high speed) draw; running cost if run on high
+  traps: ['Nameplate rating, not a measured per-speed draw; ENERGY STAR publishes no watts (only CADR/W): watts are never derived from it']
+  sources: [Levoit 'Rated Power']
+  example: 38
+- key: pwr.speed_w
+  label: Power per speed
+  group: power
+  type: number
+  unit: W
+  tier: detail
+  level: model
+  conditions: [fan_speed]
+  basis_conditions: [power_basis]
+  facet: false
+  why: Running cost at the speed you actually use
+  sources: [maker manuals / spec tables (no current adapter)]
+  example: 4.5
+- key: pwr.standby_w
+  label: Standby power
+  group: power
+  type: number
+  unit: W
+  tier: detail
+  level: model
+  basis_conditions: [power_basis]
+  facet: false
+  why: Always-on smart units draw power when off
+  traps: ['"< 2W" is a bound, kept unresolved']
+  sources: [Levoit 'Standby Power']
+  example: 1.5
+- key: pwr.voltage
+  label: Input
+  group: power
+  type: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: US 120 V vs adapter-powered units
+  sources: [Levoit 'Voltage' / 'Power Supply']
+  example: AC 120V, 60Hz
+- key: pwr.annual_kwh
+  label: Annual energy use
+  group: power
+  type: number
+  unit: kWh
+  tier: important
+  level: model
+  basis_conditions: [power_basis]
+  facet: {kind: range, bins: [50, 100, 200, 400]}
+  why: ENERGY STAR typical-use energy (16 h/day active + standby)
+  sources: [ENERGY STAR annual_energy_use_kwh_yr]
+  example: 235
+- key: eff.smoke_cadr_per_w
+  label: Smoke CADR per watt
+  group: power
+  type: number
+  unit: cfm/W
+  tier: important
+  level: model
+  facet: {kind: range, bins: [2, 4, 6, 8, 10]}
+  why: Efficiency metric of the ENERGY STAR programme
+  sources: [ENERGY STAR smoke_free_clean_air_delivery_rate_cfm_w]
+  example: 11.49
+- key: eff.dust_cadr_per_w
+  label: Dust CADR per watt
+  group: power
+  type: number
+  unit: cfm/W
+  tier: detail
+  level: model
+  facet: false
+  why: Efficiency
+  sources: [ENERGY STAR dust_free_clean_air_delivery_rate_cfm_w]
+  example: 10.99
+- key: eff.pollen_cadr_per_w
+  label: Pollen CADR per watt
+  group: power
+  type: number
+  unit: cfm/W
+  tier: detail
+  level: model
+  facet: false
+  why: Efficiency
+  sources: [ENERGY STAR pollen_free_clean_air_delivery_rate_cfm_w]
+  example: 11.36
+- key: eff.ief
+  label: Integrated energy factor
+  group: power
+  type: number
+  unit: cfm/W
+  tier: detail
+  level: model
+  facet: false
+  why: Efficiency including standby
+  sources: [ENERGY STAR integrated_energy_factor_cfm_w]
+  example: 11.1
+- key: eff.energy_star
+  label: ENERGY STAR certified
+  group: power
+  type: bool
+  unit: null
+  tier: important
+  level: model
+  facet: {kind: bool, column: true}
+  why: Efficiency label; the certification also means a recognised body checked the CADR
+  traps: ['Only from the dataset (current certifications, dated); absence is not false. Transferred to another string only by an exact listing']
+  sources: [ENERGY STAR Certified Room Air Cleaners]
+  example: true
+- key: eff.most_efficient
+  label: ENERGY STAR Most Efficient
+  group: power
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet: {kind: bool}
+  why: Top-efficiency subset
+  sources: [ENERGY STAR meets_most_efficient_criteria]
+  example: true
+- key: smart.wifi
+  label: Wi-Fi / app
+  group: smart
+  type: bool
+  unit: null
+  tier: important
+  level: model
+  facet: {kind: bool, column: true}
+  why: App control, schedules, remote filter status
+  traps: ['False only from an own field saying No (ENERGY STAR connected_capable, Winix "Smart Feature(s): No"); a missing feature is unknown']
+  sources: [ENERGY STAR connected_capable, Winix 'Smart Feature(s)', Levoit Features 'Wi-Fi Indicator']
+  example: true
+- key: smart.voice
+  label: Voice assistants
+  group: smart
+  type: list
+  unit: null
+  tier: detail
+  level: model
+  facet: {kind: multi}
+  why: Alexa / Google
+  sources: [Winix 'Smart Feature(s)']
+  example: [alexa]
+- key: sensor.air_quality
+  label: Air quality sensor
+  group: smart
+  type: bool
+  unit: null
+  tier: important
+  level: model
+  facet: {kind: bool}
+  why: Needed for a real auto mode
+  sources: [ENERGY STAR automatic_mode 'Air Quality Sensor']
+  example: true
+- key: feat.auto_mode
+  label: Auto mode
+  group: smart
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet: {kind: bool}
+  why: Adjusts fan speed from the sensor
+  sources: [ENERGY STAR automatic_mode, Winix 'Auto Mode', Levoit Features]
+  example: true
+- key: feat.sleep_mode
+  label: Sleep mode
+  group: smart
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Quiet/dark night setting
+  sources: [Winix 'Sleep Mode', Levoit Features]
+  example: true
+- key: feat.timer
+  label: Timer
+  group: smart
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Convenience
+  sources: [Winix 'Timer']
+  example: true
+- key: feat.filter_indicator
+  label: Filter-change indicator
+  group: smart
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Reminds you to replace filters
+  sources: [Winix 'Filter Replacement Indicator', Levoit Features 'Check Filter Indicator']
+  example: true
+- key: phys.width_in
+  label: Width
+  group: phys
+  type: number
+  unit: in
+  tier: detail
+  level: model
+  facet: false
+  why: Fit
+  traps: ['Only from a label that names the axis order (W x D x H); "10.8 x 10.8 x 20.5 in" without axes stays text']
+  sources: [Winix 'Product Dimensions (W x D x H)']
+  example: 13.7
+- key: phys.depth_in
+  label: Depth
+  group: phys
+  type: number
+  unit: in
+  tier: detail
+  level: model
+  facet: false
+  why: Fit
+  sources: [Winix 'Product Dimensions (W x D x H)']
+  example: 8.4
+- key: phys.height_in
+  label: Height
+  group: phys
+  type: number
+  unit: in
+  tier: detail
+  level: model
+  facet: false
+  why: Fit
+  sources: [Winix 'Product Dimensions (W x D x H)']
+  example: 20.5
+- key: phys.dimensions_text
+  label: Dimensions (as printed)
+  group: phys
+  type: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Kept when the axis order is not stated
+  sources: [Levoit 'Dimensions']
+  example: 10.8 x 10.8 x 20.5 in / 27.4 x 27.4 x 52 cm
+- key: phys.weight_lb
+  label: Weight
+  group: phys
+  type: number
+  unit: lb
+  tier: important
+  level: model
+  facet: {kind: range, bins: [5, 10, 15, 20, 30]}
+  why: Moving it between rooms
+  sources: [Levoit 'Weight', Winix 'Product Weight (lbs)']
+  example: 11
+- key: sup.warranty_years
+  label: Warranty
+  group: support
+  type: integer
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Coverage
+  sources: [Winix 'Warranty']
+  example: 2
+- key: cert.maker_listed
+  label: Certifications (maker's list)
+  group: support
+  type: list
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: What the maker claims (AHAM / UL / CARB); the CARB claim is checked separately against the CARB list
+  traps: ['A maker badge is a claim, not a listing: preview only']
+  sources: [Winix 'Certifications']
+  example: [AHAM, UL, CARB, Prop65]

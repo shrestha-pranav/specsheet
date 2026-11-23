@@ -66,6 +66,10 @@ SOURCES = {
     "lg-us-tvs": {"brand": "lg", "brand_name": "LG", "category": "tvs", "module": "lg_tvs", "importer": "model"},
     "tcl-us-tvs": {"brand": "tcl", "brand_name": "TCL", "category": "tvs", "module": "tcl_tvs", "importer": "model"},
     "vizio-us-tvs": {"brand": "vizio", "brand_name": "Vizio", "category": "tvs", "module": "vizio_tvs", "importer": "model"},
+    "energystar-airpurifiers": {"brand": "energystar", "brand_name": "ENERGY STAR (cross-brand)", "category": "air-purifiers", "module": "energystar_airpurifiers", "importer": "model"},
+    "carb-airpurifiers": {"brand": "carb", "brand_name": "CARB certified air cleaners (cross-brand)", "category": "air-purifiers", "module": "carb_airpurifiers", "importer": "model"},
+    "levoit-us-airpurifiers": {"brand": "levoit", "brand_name": "Levoit", "category": "air-purifiers", "module": "levoit_airpurifiers", "importer": "model"},
+    "winix-us-airpurifiers": {"brand": "winix", "brand_name": "Winix", "category": "air-purifiers", "module": "winix_airpurifiers", "importer": "model"},
     "tripplite": {"brand": "tripplite", "brand_name": "Tripp Lite", "category": "power-strips", "module": "tripplite", "importer": "strip"},
     "cyberpower": {"brand": "cyberpower", "brand_name": "CyberPower", "category": "power-strips", "module": "cyberpower", "importer": "strip"},
     # crawl.py v0 stores (raw/<slug>/products/<key>/{extract,feed}.json, no snapshot log): read through crawlpy_strips, never written

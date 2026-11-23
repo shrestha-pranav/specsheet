@@ -1,0 +1,26 @@
+name: Air purifiers
+description: "Portable room air cleaners by manufacturer model number (Levoit LAP-C401S-WUSR / Core 400S, Coway AP-1512HH, Winix C545, Blueair
+  3232111100): smoke/dust/pollen/PM2.5 CADR with its basis (ENERGY STAR certified vs maker-stated AHAM vs self-claimed), suggested room size
+  with its basis, true HEPA only when stated, replacement filter part/life/price, noise per speed, rated power and ENERGY STAR efficiency,
+  CARB certification (dated, mechanical vs electronic), Wi-Fi. Sources: ENERGY STAR Certified Room Air Cleaners, the CARB certified list,
+  Levoit and Winix US pages."
+columns: [cadr.smoke_cfm, room.size_sqft, filter.true_hepa, noise.db, ozone.carb_certified, eff.energy_star, smart.wifi]
+features: [stem_links]
+# Stem = PROPOSALS only (possible_match), never a merge (identity.md). Strips colour/market tails so siblings are proposed for review:
+# Coway '(W)' / '(BG)' / '_WT' / '_GR'; a digit-then-dash colour+market block (Levoit
+# 'LAP-C401S-WUSR' -> 'LAP-C401S'). same_source: CARB lists
+# colour siblings as separate rows of one source, which the default rule would hide.
+stem: {cut_at: [], strip_market_suffix: false, strip_regex: '\((W|B|G|BG|GR|MG|SG|LG|WT|BK|GN|\*)\)$|_(WT|GR|BG|GN|BK|US|\*)$|(?<=\d)-[A-Z]{3,6}$|(?<=\dS)-[A-Z]{3,6}$', same_source: true}
+# Brand folding happens in crawler/adapters/_airpurifier.py (BRAND_ALIASES; adapters emit the canonical id). Listed here too so a
+# certifier spelling reaching the importer some other way folds the same way.
+brand_aliases: {"coway airmega": coway, airmega: coway, "honeywell by kaz": honeywell, "dreo home": dreo, "blueair ab": blueair, "medify air": medify,
+  goveelife: govee, "pure code": purecode}
+brand_names: {coway: Coway, levoit: Levoit, winix: Winix, blueair: Blueair, honeywell: Honeywell, dyson: Dyson, shark: Shark, lg: LG, samsung: Samsung,
+  medify: Medify Air, dreo: Dreo, alen: Alen, iqair: IQAir, molekule: Molekule, airdoctor: AirDoctor, germguardian: GermGuardian, govee: Govee,
+  purecode: PureCode, black_decker: BLACK+DECKER, cuckoo: CUCKOO, midea: Midea, sharp: Sharp, mila: Mila, bissell: BISSELL, "rabbit air": Rabbit Air}
+skip_alias_pattern: '(?i)hand ?dryer|air ?condition|furnace|\bduct|hvac|dehumidif'
+# importer 'model' identity scope: key = (brand, normalised model), market not in the key. Every source states market US (ENERGY STAR rows
+# without "United States" are dropped; CARB is a California list; Levoit/Winix are US stores); two different STATED markets quarantine.
+identity_scope:
+  cross_market_brands: "*"
+  market_scoped_brands: []
