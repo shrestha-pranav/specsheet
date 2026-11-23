@@ -49,3 +49,6 @@ No local miss queue is enabled in this round. A miss is retained only in the cur
 
 ## Default sort and preview
 Default sort is spec coverage (core specs known / core specs) descending, reviewed rows before unreviewed ones, then brand and name: a thin model stub should not outrank a complete record just because its brand sorts first. Preview rows are opt-in (`preview=1` in the URL), badged "Unreviewed", values muted with dashed provenance, and always shown below, never instead of, the reviewed value.
+
+## Hardware revisions
+Model pages with `revisions[]` get a "Hardware revisions" section before Documents: a rule-style table, one row per revision (label links to the revision page), listing only the claims that differ from the model, each with a linked source-tier badge and "(model: x)" when the model has a different value. Empty differs reads "Nothing known beyond the model", never "same". Revision index rows (`kind=revision`) are filtered out of listings and counts; revision pages link back to the model. The preview toggle's brand hint is derived from preview-only rows and omitted when the category has none.

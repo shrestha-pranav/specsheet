@@ -21,7 +21,7 @@ const context = vm.createContext({
   matchMedia:()=>({matches:false,addEventListener(){}}),
   fetch:async url => {requests.push(url); try { const body = await json(url.split('?')[0]); return {ok:true,json:async()=>body}; } catch (error) { if (error.code === 'ENOENT') return {ok:false,status:404}; throw error; }}
 });
-const names = ['categories','indexFor','detailFor','displayValue','initialState','categoryStateQuery','productUrl','validatedReturnQuery','returnWithIds','matchFacet','missingIssueUrl','correctionIssueUrl','renderTable','renderProduct','renderCompare','previewOverlay'];
+const names = ['categories','indexFor','detailFor','displayValue','initialState','categoryStateQuery','productUrl','validatedReturnQuery','returnWithIds','matchFacet','missingIssueUrl','correctionIssueUrl','renderTable','renderProduct','renderCompare','previewOverlay','revisionsMarkup'];
 const source = await readFile(resolve(root, 'docs/app.js'), 'utf8');
 assert(source.includes('  renderRoute();\n})();'), 'Application bootstrap changed; update harness');
 vm.runInContext(source.replace('  renderRoute();\n})();', `  globalThis.test = {${names.join(',')}};\n})();`), context);
@@ -84,6 +84,19 @@ const onlyPreview = previewRows.find(r=>r.unreviewed);
 const pd = await ui.detailFor(laptop.id, onlyPreview.id, true);
 assert(pd.previewOnly, 'Preview-only detail loads from the preview tree');
 await assert.rejects(ui.detailFor(laptop.id, onlyPreview.id, false), /404/, 'Trusted mode never serves preview records');
+
+// Revisions: only differing claims, source badges, honest empty state, no revision rows in listings.
+const rcat = categories.find(c=>c.id === 'routers'); Object.assign(rcat, await json('api/v1/routers/schema.json'));
+const rrows = await ui.indexFor(rcat);
+assert(!rrows.some(r=>r.kind==='revision'), 'Revision rows never listed as products');
+const modelWithRevs = (await Promise.all(rrows.map(r=>ui.detailFor('routers', r.id)))).find(d=>d.revisions?.some(r=>r.differs?.length>1));
+assert(modelWithRevs, 'A router model with revisions exists');
+const rev = ui.revisionsMarkup(rcat, modelWithRevs);
+assert.match(rev, /Hardware revisions/); assert.match(rev, /source-tier/);
+assert.equal((rev.match(/<tr><th scope="row">/g)||[]).length, modelWithRevs.revisions.length, 'One row per revision');
+assert.doesNotMatch(rev, /\[object Object\]|undefined/);
+assert.match(ui.revisionsMarkup(rcat, {specs:{}, revisions:[{id:'x-v1',label:'V1',specs:{},sources:[],differs:[]}]}), /Nothing known beyond the model/);
+assert.equal(ui.revisionsMarkup(rcat, {specs:{}}), '');
 
 const beforeIssue = requests.length;
 const issue = new URL(ui.missingIssueUrl('laptops','83DK0002US'));
