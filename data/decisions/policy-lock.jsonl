@@ -1,0 +1,22 @@
+{"at": "2026-11-23T00:00:00Z", "id": "claim/mfr-structured-datasheet@1", "note": "seeded from git HEAD 95a37f3 (as committed)", "sha256": "sha256:78cf066e41b83a39494a28fcd1aaa4c89071fd4fe1314fb30365c18a379e6061"}
+{"at": "2026-11-23T00:00:00Z", "id": "claim/asus-techspec-typed@1", "note": "seeded from git HEAD 95a37f3 (as committed)", "sha256": "sha256:1e772b0783c0145d911be9d83344649e9226329c27ff0aaa24cf8fc1570af976"}
+{"at": "2026-11-23T00:00:00Z", "id": "claim/cpu-split@1", "note": "seeded from git HEAD 95a37f3 (as committed)", "sha256": "sha256:6d1de36b11af4df87d41ed906b2d670e8c53d56f0bc4e629a70ce63b58760108"}
+{"at": "2026-11-23T00:00:00Z", "id": "claim/mfr-monitor-structured@1", "note": "seeded from git HEAD 95a37f3 (as committed)", "sha256": "sha256:53b5db03d61b7d61a78d127d5ea4131053b1f68c0642b64951fbd2805ba9819d"}
+{"at": "2026-11-23T00:00:00Z", "id": "claim/energystar-certified-power@1", "note": "seeded from git HEAD 95a37f3 (as committed)", "sha256": "sha256:539779c85560735b6acc10470aac612dbf9562f9d473e865b3bc0e6fbe6c170a"}
+{"at": "2026-11-23T00:00:00Z", "id": "claim/displayhdr-certified-tier@1", "note": "seeded from git HEAD 95a37f3 (as committed)", "sha256": "sha256:7480e368564716a1cc041fcb6f540ad0819ca8416f2c08c1d36184b7dd35801a"}
+{"at": "2026-11-23T00:00:00Z", "id": "claim/mfr-ssd-structured@1", "note": "seeded from git HEAD 95a37f3 (as committed)", "sha256": "sha256:b2f8081603529225f190ceeeef5ce138ff3e0dd17ac9dc34b14c4df56c91a7e9"}
+{"at": "2026-11-23T00:00:00Z", "id": "claim/mfr-ssd-samsung@1", "note": "seeded from git HEAD 95a37f3 (as committed)", "sha256": "sha256:03feeee8619f5dbbfb213e6652877afafb12014a7476a1a73d0ea469d6415df8"}
+{"at": "2026-11-23T00:00:00Z", "id": "claim/mfr-routers-structured@1", "note": "seeded from git HEAD 95a37f3 (as committed)", "sha256": "sha256:e5fe2b7b2c8660fe45d58f8ce3058ade7906f337d6d33a4a3fceb8c72b0fe712"}
+{"at": "2026-11-23T00:00:00Z", "id": "claim/mfr-routers-class@1", "note": "seeded from git HEAD 95a37f3 (as committed)", "sha256": "sha256:740274af857cdfcdc06c65b8cce721775c4dccbee1a6cd02106a4112fc8f4231"}
+{"at": "2026-11-23T00:00:00Z", "id": "rel/source-stated-hierarchy@1", "note": "seeded from git HEAD 95a37f3 (as committed)", "sha256": "sha256:70a0d2e4bde63aa47284400b86e1450c22f5a07c28cd735f36b3bb092a5bea3c"}
+{"at": "2026-11-23T11:04:02Z", "id": "claim/mfr-structured-datasheet@2", "sha256": "sha256:8d37acbe1b5962f3d1763910b007e378a398c2bbc6f0e37a91706af7e1118dd3"}
+{"at": "2026-11-23T11:04:02Z", "id": "claim/asus-techspec-typed@2", "sha256": "sha256:d029ac556c9d0567044578778dc843c6be5c60363f296d7db72a732f6360ea42"}
+{"at": "2026-11-23T11:04:02Z", "id": "claim/cpu-split@2", "sha256": "sha256:e8770796b5440f422a9c75a8d2c6027a93cff195239806c167c62acf419e6c3e"}
+{"at": "2026-11-23T11:04:02Z", "id": "claim/mfr-monitor-structured@2", "sha256": "sha256:926adab39652cbdddda7bc7bd13d4966e88939ba9b0a0eee442f9d594f9d5b0e"}
+{"at": "2026-11-23T11:04:02Z", "id": "claim/energystar-certified-power@2", "sha256": "sha256:b00f4ba551dc8101cce4e6a2ca9b3e1db9532a8c60e43ad08cad642d193f4986"}
+{"at": "2026-11-23T11:04:02Z", "id": "claim/displayhdr-certified-tier@2", "sha256": "sha256:2f3ca3d6fffbf3e1c43309844e2eeb970fd9c45432f71e5483f313fcdee85076"}
+{"at": "2026-11-23T11:04:02Z", "id": "claim/mfr-ssd-structured@2", "sha256": "sha256:0b0c728c09ed7a475a252c846432b2e60a4b57527063602d5ad2a763fbb98771"}
+{"at": "2026-11-23T11:04:02Z", "id": "claim/mfr-ssd-samsung@2", "sha256": "sha256:5d03162ba20955ff1966a98c34772a2bedd2482c59c87daee023de4db59e8282"}
+{"at": "2026-11-23T11:04:02Z", "id": "claim/mfr-routers-structured@2", "sha256": "sha256:05f3685a4e634aa870be947401551f2cf0144a3d18c40cdb786d229f4f74a9a6"}
+{"at": "2026-11-23T11:04:02Z", "id": "claim/mfr-routers-class@2", "sha256": "sha256:699d4aece94a6324289a4198082952ee9f001120d76d0c3f63f5c96d86eca123"}
+{"at": "2026-11-23T11:04:02Z", "id": "rel/source-stated-hierarchy@2", "sha256": "sha256:a937119d87d033ee83474d0fd32b5ef49974f8938dc5b485cb925e9cc1bf0bba"}

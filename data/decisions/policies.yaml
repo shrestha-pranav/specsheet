@@ -1,166 +1,496 @@
-# Versioned auto-accept policies (scripts/decisions.py; ARCHITECTURE 15.8). Changing what a policy accepts = new id (@N+1), never an edit.
+# Versioned auto-accept policies (scripts/decisions.py; ARCHITECTURE 15.8). A policy's meaning is FROZEN per id: data/decisions/policy-lock.jsonl
+# holds sha256(policy minus `approval`); import.py fails if the content under a locked id changes. Changing what a policy accepts = a new id
+# (@N+1) and the old one moved verbatim to retired_policies (+ a `retired` note, not hashed). Claim policies need explicit source_ids,
+# extractors and keys (list or {source_id: [keys]}); relation policies are explicit {method, types, parsers} rules.
+# audit.parsers = the parser fingerprints audited (crawler/adapters/registry.py parser_fingerprint); drift fails `import.py --strict-parsers`.
+# approval = who (a HUMAN handle) approved the policy and when; `pending` policies apply but are listed in every release manifest.
 # A claim accepted by a policy publishes in the trusted index with review.by = <policy id>. Everything else is a candidate
 # (preview dataset only) until a human ledger line (ledger.jsonl) accepts or rejects it.
-format: specsheet.policies/1
+format: specsheet.policies/2
 claim_policies:
-  - id: claim/mfr-structured-datasheet@1
-    since: "2026-11-22"
-    rationale: >-
-      Deterministic extraction of the manufacturer's own structured specification data: Lenovo PSREF model tables
-      (adapter + psref-mapping single-target columns), Tripp Lite product JSON/datasheet tables, CyberPower item JSON + datasheets,
-      and label-mapping transforms applied to those two manufacturers' labelled tables. Values must normalise to the profile type
-      (normalize.py) or the claim stays a candidate. Adapter versions are pinned: a parser bump needs a re-audit and a policy @N+1.
-    audit: "A2 round 2/3 fixture re-parse (0 diffs) + A3 spot check of literal vs normalised values, 2026-11-22"
-    match:
-      extractors: [lenovo_psref@2, import.py+psref-mapping@1, tripplite@2, cyberpower@1, import.py+label-mapping@1]
-      source_ids: [lenovo-psref, tripplite, cyberpower]
-      kinds: [official]
-      tiers: [manufacturer]
-      statuses: [known, not_applicable]
-      require_normalized: true
-      exclude_keys: []
-  - id: claim/asus-techspec-typed@1
-    since: "2026-11-22"
-    rationale: >-
-      ASUS techspec tables (asus@1): labelled manufacturer cells, but model-level pages often append option notes and
-      disclaimers. Only values that normalise to a typed profile value (number/integer/bool/enum), plus the processor,
-      colour, webcam and OS cells (single literal statements), are accepted; other free text stays a preview candidate.
-    audit: "A3 spot check of 25 random asus@1 claims (raw vs normalised), 2026-11-22: 0 wrong typed values"
-    match:
-      extractors: [asus@1]
-      source_ids: [asus-us]
-      kinds: [official]
-      tiers: [manufacturer]
-      statuses: [known, not_applicable]
-      spec_types: [number, integer, bool, enum]
-      also_keys: [cpu.model, gen.color, in.webcam, sw.os]
-      require_normalized: true
-  - id: claim/cpu-split@1
-    since: "2026-11-22"
-    rationale: >-
-      import.py splits a processor cell (crawler/adapters/_cpu.py) into model/cores/threads/clocks/cache. A split claim is only
-      accepted when the literal claim it derives from is accepted (checked in import.py), so this policy never widens trust.
-    match:
-      extractors: [import.py+cpu-split@1]
-      kinds: [official]
-      require_normalized: true
-  - id: claim/mfr-monitor-structured@1
-    since: "2026-11-23"
-    rationale: >-
-      Monitors, manufacturer-owned structured pages: Lenovo PSREF monitor platform tables (lenovo_monitors@1), LG US product JSON
-      (lg_us@1 next_data terms) and ASUS US techspec tables (asus_monitors@1). Per field: only values that normalise to the profile type
-      (normalize.py) are accepted; labels A2 recorded as unmapped (ASUS "1ms MPRT" is not GtG) never become claims, so nothing mapped
-      here is a guess. Manufacturer-marketed values (motion.gtg_marketed, hdr.peak_marketed, hdr.marketed_label) are accepted AS
-      marketed claims (the keys say so). Adapter versions pinned.
-    audit: "A2 monitors r2 report (5 adapters parsed, mapping caveats listed) + A3 per-source spot check, 2026-11-23"
-    match:
-      extractors: [lenovo_monitors@1, lg_us@1, asus_monitors@1]
-      source_ids: [lenovo-psref-monitors, lg-us, asus-us-monitors]
-      kinds: [official]
-      tiers: [manufacturer]
-      statuses: [known, not_applicable]
-      require_normalized: true
-  - id: claim/energystar-certified-power@1
-    since: "2026-11-23"
-    rationale: >-
-      ENERGY STAR product-finder rows (energystar_monitors@1) are the EPA certification record for the maker's own model string.
-      Accepted per field: the measured/declared power fields, the certification flag, native resolution and viewable diagonal.
-      NOT accepted (stay preview): luminance (basis unstated), contrast (<100 dropped by the adapter, basis unstated), panel
-      technology and release year (certification date is not release date).
-    audit: "A2 monitors r2 mapping caveats; A3 check that pwr.* normalise to the profile unit, 2026-11-23"
-    match:
-      extractors: [energystar_monitors@1]
-      source_ids: [energystar-monitors]
-      kinds: [official]
-      tiers: [regulatory]
-      statuses: [known, not_applicable]
-      keys: [pwr.typical, pwr.standby, pwr.external_adapter, pwr.energy_star, res.native, res.width_px, res.height_px, gen.viewable_diag]
-      require_normalized: true
-  - id: claim/displayhdr-certified-tier@1
-    since: "2026-11-23"
-    rationale: >-
-      VESA's DisplayHDR certified-products table (displayhdr@2) is the certification record: tier (400..1400, True Black) for a
-      listed model. Accepted as a certification claim on the model it names; a stem-only (non-exact) model match does NOT transmit it.
-    audit: "A2 monitors r2: 2129 rows parsed, tier distribution checked against the page, 2026-11-23"
-    match:
-      extractors: [displayhdr@2]
-      source_ids: [displayhdr]
-      kinds: [official]
-      tiers: [certifier]
-      keys: [hdr.vesa_tier]
-      statuses: [known]
-      require_normalized: true
-  - id: claim/mfr-ssd-structured@1
-    since: "2026-11-23"
-    rationale: >-
-      Consumer SSDs, manufacturer-owned pages: SanDisk/WD product pages (sandisk_ssd@1) and the TEAMGROUP per-capacity tables
-      (teamgroup_ssd@1). Per field: only the listed keys, only values that normalise to the profile type. Rated sequential speeds
-      are the maker's "up to" figures and are accepted AS conditioned claims (adapter attaches cache_state=in_slc_cache, the profile
-      headline condition), never as sustained speeds; the post-cache speed and SLC cache size are not on these pages and stay absent.
-      NOT accepted (preview candidates): id.msrp_us (price at fetch time) and anything not listed (e.g. unmapped labels, certifications).
-    audit: "A2 ssds report (parse + reparse verified, enum/number types validated over every claim) + A3 per-key counts and spot check, 2026-11-23"
-    match:
-      extractors: [sandisk_ssd@1, teamgroup_ssd@1]
-      source_ids: [sandisk-us-ssd, teamgroup-us-ssd]
-      kinds: [official]
-      tiers: [manufacturer]
-      statuses: [known, not_applicable]
-      keys: [gen.capacity, gen.device_class, gen.form_factor, gen.weight, if.pcie_gen, if.pcie_lanes, if.protocol, if.nvme_version, if.usb_standard, if.usb_connector, hw.controller, hw.controller_vendor, hw.dram_type, hw.dram_size, hw.dram_gen, hw.nand_type, hw.nand_vendor, perf.seq_read, perf.seq_write, perf.rand_read_iops_qd1, perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption, therm.temp_operating, port.drop]
-      require_normalized: true
-  - id: claim/mfr-ssd-samsung@1
-    since: "2026-11-23"
-    rationale: >-
-      samsung.com/us spec API (samsung_ssd@1), same per-field rule and "up to" speed conditioning as claim/mfr-ssd-structured@1, but
-      gen.capacity is NOT accepted: A2 found a real page defect (990 PRO 2TB heatsink row states 1TB), so capacity stays a candidate
-      until a human accepts it or the adapter derives it from the part number. id.msrp_us stays a candidate (price at fetch time).
-    audit: "A2 ssds report (Samsung page/API defects listed) + A3 per-key counts, 2026-11-23"
-    match:
-      extractors: [samsung_ssd@1]
-      source_ids: [samsung-us-ssd]
-      kinds: [official]
-      tiers: [manufacturer]
-      statuses: [known, not_applicable]
-      keys: [gen.device_class, gen.form_factor, gen.weight, if.pcie_gen, if.pcie_lanes, if.protocol, if.nvme_version, if.usb_standard, if.usb_connector, hw.controller, hw.controller_vendor, hw.dram_type, hw.dram_size, hw.dram_gen, hw.nand_type, hw.nand_vendor, perf.seq_read, perf.seq_write, perf.rand_read_iops_qd1, perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption, therm.temp_operating, port.drop]
-      require_normalized: true
-  - id: claim/mfr-routers-structured@1
-    since: "2026-11-23"
-    rationale: >-
-      Wi-Fi routers/mesh, manufacturer-owned spec tables: TP-Link US product + support pages (tplink_routers@1), NETGEAR US product pages (netgear_routers@1),
-      ASUS US techspec tables (asus_routers@1). Per field: only the listed keys, only values that normalise to the profile type. Per-band rates and
-      streams come from text segments that start at a band marker, never from the class number (AX5400); widths 320 MHz only with a 6 GHz radio; stream counts
-      only from an explicit NxN. Fetch-time facts (id.msrp_us, sup.latest_firmware_date), the free-text fields (antennas, QoS, power input) and anything the
-      pages do not state (SoC vendor/model, FCC ID, support end date) are NOT accepted: preview candidates or absent.
-      gen.device_type / gen.product_line are accepted only for TP-Link and ASUS (URL section), see claim/mfr-routers-class@1.
-    audit: "A2 routers report: 106 TP-Link, 60 NETGEAR, 82 ASUS pages parsed; spot check of deco-be25, archer-be800, rbe972sb, rt-ax86u-pro, xt8 (raw vs normalised), 2026-11-23"
-    match:
-      extractors: [tplink_routers@1, netgear_routers@1, asus_routers@1]
-      source_ids: [tplink-us-routers, netgear-us-routers, asus-us-routers]
-      kinds: [official]
-      tiers: [manufacturer]
-      statuses: [known, not_applicable]
-      keys: [gen.pack_count, wifi.generation, wifi.marketing_class, wifi.band_count, wifi.has_6ghz, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_5_2_mbps, wifi.rate_6_mbps, wifi.streams_24, wifi.streams_5, wifi.streams_5_2, wifi.streams_6, wifi.max_width_5_mhz, wifi.max_width_6_mhz, wifi.qam_max, wifi.mlo, wifi.mu_mimo, wifi.ofdma, wifi.wpa3, hw.cpu_cores, hw.cpu_ghz, hw.ram_mb, hw.flash_mb, port.wan_speed_mbps, port.wan_type, port.lan_count, port.lan_max_mbps, port.multigig_count, port.wan_lan_configurable, port.usb_count, port.usb_standard, mesh.supported, mesh.systems, mesh.coverage_sqft, sw.vpn_server, sw.vpn_client, sw.wireguard, sw.operating_modes, sw.parental_controls, isp.ipv6, phys.weight, phys.dimensions, sup.hardware_version]
-      require_normalized: true
-  - id: claim/mfr-routers-class@1
-    since: "2026-11-23"
-    rationale: >-
-      Device class and product line derived from the manufacturer's own URL section (TP-Link wifi-router vs deco-mesh-wifi, ASUS wifi-routers vs
-      whole-home-mesh-systems and the asus-zenwifi / asus-gaming-routers group). NETGEAR is excluded: its class comes from a model-prefix heuristic
-      (rbs = satellite) and stays a preview candidate.
-    audit: "A2 routers report, URL sections listed in the adapters' discover docstrings, 2026-11-23"
-    match:
-      extractors: [tplink_routers@1, asus_routers@1]
-      source_ids: [tplink-us-routers, asus-us-routers]
-      kinds: [official]
-      tiers: [manufacturer]
-      statuses: [known]
-      keys: [gen.device_type, gen.product_line]
-      require_normalized: true
+- id: claim/mfr-structured-datasheet@2
+  since: '2026-11-23'
+  supersedes: claim/mfr-structured-datasheet@1
+  rationale: 'Deterministic extraction of the manufacturer''s own structured specification data: Lenovo PSREF model tables (adapter + psref-mapping single-target
+    columns), Tripp Lite product JSON/datasheet tables, CyberPower item JSON + datasheets, and label-mapping transforms applied to those two manufacturers''
+    labelled tables. Values must normalise to the profile type (normalize.py) or the claim stays a candidate. Adapter versions are pinned: a parser bump
+    needs a re-audit and a policy @N+1. @2: explicit per-source key allowlist (review 2 risk 1).'
+  audit:
+    by: A3-impl r4
+    at: '2026-11-23'
+    evidence: 'key allowlist = exactly the keys @1 accepted in the last release import (accepted_digest 707f0510...), per source: no widening, no narrowing.'
+    parsers: {lenovo_psref@2: 'sha256:ec6a55f8081086820989', tripplite@2: 'sha256:949811b25418d7a2b724', cyberpower@1: 'sha256:a3e88411366c8d320d51'}
+  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  match:
+    extractors: [lenovo_psref@2, import.py+psref-mapping@1, tripplite@2, cyberpower@1, import.py+label-mapping@1]
+    source_ids: [lenovo-psref, tripplite, cyberpower]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    require_normalized: true
+    keys:
+      lenovo-psref: [cpu.ai_pc_category, cpu.chipset, cpu.model, cpu.npu_tops, disp.color_calibration, disp.size, disp.touch, gen.announce_date, gen.color,
+        gen.country_region, gen.region, gpu.model, in.fingerprint, in.kb_layout, in.tpm, in.webcam, input.pen, input.touchpad, mem.max, mem.size, phys.dimensions,
+        phys.material, phys.surface_treatment, phys.weight, port.card_reader, port.docking, port.ethernet, port.usbc_list, pwr.battery_wh, pwr.charger_w,
+        stor.size, stor.slots, sw.end_of_support, sw.included_upgrade, sw.os, sw.warranty, wl.wifi, wl.wwan]
+      tripplite: [cert.cew_usd, cert.warranty_years, cord.gauge_awg, cord.jacket, cord.length_ft, cord.plug_style, cord.plug_type, load.max_amps, load.max_watts,
+        load.voltage, outlets.count, outlets.right_angle, outlets.rotating, outlets.switch, phys.dimensions, phys.material, phys.weight_lb, safety.auto_shutoff,
+        safety.led_details, surge.dataline, surge.emi_rfi, surge.joules, surge.max_surge_current, surge.response_time, surge.vpr_max, type.ul1363_listed,
+        type.ul1449_listed, usb.total_w]
+      cyberpower: [cert.cew_usd, cert.listing_mark, cert.warranty_years, cord.length_ft, cord.plug_style, cord.plug_type, load.max_amps, load.max_watts,
+        load.voltage, outlets.count, outlets.covers, outlets.switch, phys.dimensions, phys.material, phys.mounting, phys.weight_lb, safety.breaker, safety.led_details,
+        surge.dataline, surge.emi_rfi, surge.joules, surge.max_spike_voltage, surge.max_surge_current, surge.response_time, surge.vpr_max, type.ul1363_listed,
+        type.ul1449_edition, type.ul1449_listed, usb.pd, usb.ports, usb.total_w]
+- id: claim/asus-techspec-typed@2
+  since: '2026-11-23'
+  supersedes: claim/asus-techspec-typed@1
+  rationale: 'ASUS techspec tables (asus@1): labelled manufacturer cells, but model-level pages often append option notes and disclaimers. Only values that
+    normalise to a typed profile value (number/integer/bool/enum), plus the processor, colour, webcam and OS cells (single literal statements), are accepted;
+    other free text stays a preview candidate. @2: the type-class rule (spec_types + also_keys) is replaced by an explicit key allowlist.'
+  audit:
+    by: A3-impl r4
+    at: '2026-11-23'
+    evidence: 'key allowlist = exactly the keys @1 accepted in the last release import (accepted_digest 707f0510...), per source: no widening, no narrowing.'
+    parsers: {asus@1: 'sha256:628db32b5ba83fa291c6'}
+  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  match:
+    extractors: [asus@1]
+    source_ids: [asus-us]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    require_normalized: true
+    keys:
+      asus-us: [cpu.model, disp.size, gen.color, in.webcam, mem.size, phys.weight, pwr.battery_wh, stor.size, sw.os]
+- id: claim/cpu-split@2
+  since: '2026-11-23'
+  supersedes: claim/cpu-split@1
+  rationale: 'import.py splits a processor cell (crawler/adapters/_cpu.py) into model/cores/threads/clocks/cache. A split claim is only accepted when the
+    literal claim it derives from is accepted (checked in import.py), so this policy never widens trust. @2: explicit sources and split keys.'
+  audit:
+    by: A3-impl r4
+    at: '2026-11-23'
+    evidence: 'key allowlist = exactly the keys @1 accepted in the last release import (accepted_digest 707f0510...), per source: no widening, no narrowing.'
+    parsers: {}
+  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  match:
+    extractors: [import.py+cpu-split@1]
+    kinds: [official]
+    require_normalized: true
+    source_ids: [asus-us, lenovo-psref]
+    keys:
+      asus-us: [cpu.base_clock, cpu.boost_clock, cpu.cache, cpu.cores, cpu.cores_threads, cpu.model, cpu.threads]
+      lenovo-psref: [cpu.base_clock, cpu.boost_clock, cpu.cache, cpu.cores, cpu.cores_threads, cpu.model, cpu.threads]
+- id: claim/mfr-monitor-structured@2
+  since: '2026-11-23'
+  supersedes: claim/mfr-monitor-structured@1
+  rationale: 'Monitors, manufacturer-owned structured pages: Lenovo PSREF monitor platform tables (lenovo_monitors@1), LG US product JSON (lg_us@1 next_data
+    terms) and ASUS US techspec tables (asus_monitors@1). Per field: only values that normalise to the profile type (normalize.py) are accepted; labels
+    A2 recorded as unmapped (ASUS "1ms MPRT" is not GtG) never become claims, so nothing mapped here is a guess. Manufacturer-marketed values (motion.gtg_marketed,
+    hdr.peak_marketed, hdr.marketed_label) are accepted AS marketed claims (the keys say so). Adapter versions pinned. @2: explicit per-source key allowlist.'
+  audit:
+    by: A3-impl r4
+    at: '2026-11-23'
+    evidence: 'key allowlist = exactly the keys @1 accepted in the last release import (accepted_digest 707f0510...), per source: no widening, no narrowing.'
+    parsers: {lenovo_monitors@1: 'sha256:b7e7dfee555d5a890251', lg_us@1: 'sha256:51da673073084332f227', asus_monitors@1: 'sha256:21ba35a4d7bbafdaff71'}
+  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  match:
+    extractors: [lenovo_monitors@1, lg_us@1, asus_monitors@1]
+    source_ids: [lenovo-psref-monitors, lg-us, asus-us-monitors]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    require_normalized: true
+    keys:
+      lenovo-psref-monitors: [color.dci_p3, color.srgb, ergo.vesa, ergo.weight, ergo.weight_panel, gen.color, gen.curvature, gen.size_class, hdr.contrast_static,
+        hdr.marketed_label, hdr.sdr_typ, panel.bit_depth, panel.surface, panel.technology, pwr.max, pwr.typical, res.aspect, res.height_px, res.native,
+        res.ppi, res.refresh_max, res.vrr_types, res.width_px, sup.warranty_years, vin.dp_count, vin.hdmi_count, vin.ports]
+      lg-us: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.viewable_diag, hdr.contrast_static, hdr.sdr_typ, motion.gtg_marketed,
+        panel.surface, panel.technology, pwr.external_adapter, pwr.max, pwr.typical, res.aspect, res.height_px, res.native, res.refresh_max, res.vrr_types,
+        res.width_px, sup.warranty_years, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count]
+      asus-us-monitors: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.viewable_diag, hdr.contrast_static, hdr.marketed_label,
+        hdr.peak_marketed, hdr.sdr_typ, motion.gtg_marketed, panel.surface, panel.technology, pwr.typical, res.aspect, res.height_px, res.native, res.refresh_max,
+        res.vrr_types, res.width_px, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
+- id: claim/energystar-certified-power@2
+  since: '2026-11-23'
+  supersedes: claim/energystar-certified-power@1
+  rationale: 'ENERGY STAR product-finder rows (energystar_monitors@1) are the EPA certification record for the maker''s own model string. Accepted per field:
+    the measured/declared power fields, the certification flag, native resolution and viewable diagonal. NOT accepted (stay preview): luminance (basis unstated),
+    contrast (<100 dropped by the adapter, basis unstated), panel technology and release year (certification date is not release date). @2 (parser energystar_monitors@2):
+    pwr.typical / pwr.standby carry the basis condition power_basis=energy_star_on_mode|energy_star_sleep (profile basis_conditions), so an ES test-method
+    figure is never compared with a maker''s typical/nameplate value as if they were one assertion.'
+  audit:
+    by: A3-impl r4
+    at: '2026-11-23'
+    evidence: 'Same keys as @1; parser @2 only adds the power_basis condition (A3 r4 diff: 0 value changes, conditions added on pwr.typical/pwr.standby).'
+    parsers: {energystar_monitors@2: 'sha256:a617410312626e8837c1'}
+  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  match:
+    extractors: [energystar_monitors@2]
+    source_ids: [energystar-monitors]
+    kinds: [official]
+    tiers: [regulatory]
+    statuses: [known, not_applicable]
+    keys: [pwr.typical, pwr.standby, pwr.external_adapter, pwr.energy_star, res.native, res.width_px, res.height_px, gen.viewable_diag]
+    require_normalized: true
+- id: claim/displayhdr-certified-tier@2
+  since: '2026-11-23'
+  supersedes: claim/displayhdr-certified-tier@1
+  rationale: 'VESA''s DisplayHDR certified-products table (displayhdr@2) is the certification record: tier (400..1400, True Black) for a listed model. Accepted
+    as a certification claim on the model it names; a stem-only (non-exact) model match does NOT transmit it. @2 (parser displayhdr@3): the CTS version
+    of the certification is a basis condition (cts_version), so tiers certified under different CTS versions are distinct assertions, not a silent pick.'
+  audit:
+    by: A3-impl r4
+    at: '2026-11-23'
+    evidence: Same key as @1; parser @3 only moves cts_version from the locator into conditions (A3 r4 diff).
+    parsers: {displayhdr@3: 'sha256:254fd4f565c8f164d5e8'}
+  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  match:
+    extractors: [displayhdr@3]
+    source_ids: [displayhdr]
+    kinds: [official]
+    tiers: [certifier]
+    keys: [hdr.vesa_tier]
+    statuses: [known]
+    require_normalized: true
+- id: claim/mfr-ssd-structured@2
+  since: '2026-11-23'
+  supersedes: claim/mfr-ssd-structured@1
+  rationale: 'Consumer SSDs, manufacturer-owned pages: SanDisk/WD product pages (sandisk_ssd@1) and the TEAMGROUP per-capacity tables (teamgroup_ssd@1).
+    Per field: only the listed keys, only values that normalise to the profile type. Rated sequential speeds are the maker''s "up to" figures and are accepted
+    AS conditioned claims (adapter attaches cache_state=in_slc_cache, the profile headline condition), never as sustained speeds; the post-cache speed and
+    SLC cache size are not on these pages and stay absent. NOT accepted (preview candidates): id.msrp_us (price at fetch time) and anything not listed (e.g.
+    unmapped labels, certifications). @2 (parsers samsung_ssd@2 / sandisk_ssd@2 / teamgroup_ssd@2) REPLACES the @1 ''up to'' rule: an ''up to'' speed is
+    accepted as a qualified (qualifier up_to) rated figure; it carries cache_state=in_slc_cache ONLY when the claim''s own text evidences the cache (Samsung
+    ''Measured with Intelligent TurboWrite technology being activated''); ''up to'' alone never implies a cache state (review 2 risk 2).'
+  audit:
+    by: A3-impl r4
+    at: '2026-11-23'
+    evidence: 'Same keys as @1; parser @2 drops the unconditional cache_state condition (A3 r4 diff: 5 Samsung claims keep it on evidence).'
+    parsers: {sandisk_ssd@2: 'sha256:f43f27701094bcf81d3d', teamgroup_ssd@2: 'sha256:142b129a8fb6c4f517d5'}
+  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  match:
+    extractors: [sandisk_ssd@2, teamgroup_ssd@2]
+    source_ids: [sandisk-us-ssd, teamgroup-us-ssd]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    keys: [gen.capacity, gen.device_class, gen.form_factor, gen.weight, if.pcie_gen, if.pcie_lanes, if.protocol, if.nvme_version, if.usb_standard, if.usb_connector,
+      hw.controller, hw.controller_vendor, hw.dram_type, hw.dram_size, hw.dram_gen, hw.nand_type, hw.nand_vendor, perf.seq_read, perf.seq_write, perf.rand_read_iops_qd1,
+      perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption,
+      therm.temp_operating, port.drop]
+    require_normalized: true
+- id: claim/mfr-ssd-samsung@2
+  since: '2026-11-23'
+  supersedes: claim/mfr-ssd-samsung@1
+  rationale: 'samsung.com/us spec API (samsung_ssd@1), same per-field rule and "up to" speed conditioning as claim/mfr-ssd-structured@1, but gen.capacity
+    is NOT accepted: A2 found a real page defect (990 PRO 2TB heatsink row states 1TB), so capacity stays a candidate until a human accepts it or the adapter
+    derives it from the part number. id.msrp_us stays a candidate (price at fetch time). @2 (parsers samsung_ssd@2 / sandisk_ssd@2 / teamgroup_ssd@2) REPLACES
+    the @1 ''up to'' rule: an ''up to'' speed is accepted as a qualified (qualifier up_to) rated figure; it carries cache_state=in_slc_cache ONLY when the
+    claim''s own text evidences the cache (Samsung ''Measured with Intelligent TurboWrite technology being activated''); ''up to'' alone never implies a
+    cache state (review 2 risk 2).'
+  audit:
+    by: A3-impl r4
+    at: '2026-11-23'
+    evidence: 'Same keys as @1; parser @2 drops the unconditional cache_state condition (A3 r4 diff: 5 Samsung claims keep it on evidence).'
+    parsers: {samsung_ssd@2: 'sha256:a6cbc9077c793c287d62'}
+  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  match:
+    extractors: [samsung_ssd@2]
+    source_ids: [samsung-us-ssd]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    keys: [gen.device_class, gen.form_factor, gen.weight, if.pcie_gen, if.pcie_lanes, if.protocol, if.nvme_version, if.usb_standard, if.usb_connector, hw.controller,
+      hw.controller_vendor, hw.dram_type, hw.dram_size, hw.dram_gen, hw.nand_type, hw.nand_vendor, perf.seq_read, perf.seq_write, perf.rand_read_iops_qd1,
+      perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption,
+      therm.temp_operating, port.drop]
+    require_normalized: true
+- id: claim/mfr-routers-structured@2
+  since: '2026-11-23'
+  supersedes: claim/mfr-routers-structured@1
+  rationale: 'Wi-Fi routers/mesh, manufacturer-owned spec tables: TP-Link US product + support pages (tplink_routers@1), NETGEAR US product pages (netgear_routers@1),
+    ASUS US techspec tables (asus_routers@1). Per field: only the listed keys, only values that normalise to the profile type. Per-band rates and streams
+    come from text segments that start at a band marker, never from the class number (AX5400); widths 320 MHz only with a 6 GHz radio; stream counts only
+    from an explicit NxN. Fetch-time facts (id.msrp_us, sup.latest_firmware_date), the free-text fields (antennas, QoS, power input) and anything the pages
+    do not state (SoC vendor/model, FCC ID, support end date) are NOT accepted: preview candidates or absent. gen.device_type / gen.product_line are accepted
+    only for TP-Link and ASUS (URL section), see claim/mfr-routers-class@1. @2: re-issued because @1 was edited in place (key list sup.hardware_versions
+    -> sup.hardware_version, REV report) and its parser tplink_routers changed meaning under @1 (default-revision facts moved to the revision entity); tplink_routers
+    is now @2.'
+  audit:
+    by: A3-impl r4
+    at: '2026-11-23'
+    evidence: Key list = @1 as committed in ba3b2e0; tplink_routers@2 = the committed revision-aware parser (no code change in r4, version bump only).
+    parsers: {tplink_routers@2: 'sha256:c7318e9238be7635b158', netgear_routers@1: 'sha256:a5e3fcb76ca453cc808d', asus_routers@1: 'sha256:1dedfbe9a8ca77b32bb1'}
+  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  match:
+    extractors: [tplink_routers@2, netgear_routers@1, asus_routers@1]
+    source_ids: [tplink-us-routers, netgear-us-routers, asus-us-routers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    keys: [gen.pack_count, wifi.generation, wifi.marketing_class, wifi.band_count, wifi.has_6ghz, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_5_2_mbps,
+      wifi.rate_6_mbps, wifi.streams_24, wifi.streams_5, wifi.streams_5_2, wifi.streams_6, wifi.max_width_5_mhz, wifi.max_width_6_mhz, wifi.qam_max, wifi.mlo,
+      wifi.mu_mimo, wifi.ofdma, wifi.wpa3, hw.cpu_cores, hw.cpu_ghz, hw.ram_mb, hw.flash_mb, port.wan_speed_mbps, port.wan_type, port.lan_count, port.lan_max_mbps,
+      port.multigig_count, port.wan_lan_configurable, port.usb_count, port.usb_standard, mesh.supported, mesh.systems, mesh.coverage_sqft, sw.vpn_server,
+      sw.vpn_client, sw.wireguard, sw.operating_modes, sw.parental_controls, isp.ipv6, phys.weight, phys.dimensions, sup.hardware_version]
+    require_normalized: true
+- id: claim/mfr-routers-class@2
+  since: '2026-11-23'
+  supersedes: claim/mfr-routers-class@1
+  rationale: 'Device class and product line derived from the manufacturer''s own URL section (TP-Link wifi-router vs deco-mesh-wifi, ASUS wifi-routers vs
+    whole-home-mesh-systems and the asus-zenwifi / asus-gaming-routers group). NETGEAR is excluded: its class comes from a model-prefix heuristic (rbs =
+    satellite) and stays a preview candidate. @2: parser tplink_routers@2 (see claim/mfr-routers-structured@2).'
+  audit:
+    by: A3-impl r4
+    at: '2026-11-23'
+    evidence: Same keys as @1.
+    parsers: {tplink_routers@2: 'sha256:c7318e9238be7635b158', asus_routers@1: 'sha256:1dedfbe9a8ca77b32bb1'}
+  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  match:
+    extractors: [tplink_routers@2, asus_routers@1]
+    source_ids: [tplink-us-routers, asus-us-routers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys: [gen.device_type, gen.product_line]
+    require_normalized: true
 relation_policies:
-  - id: rel/source-stated-hierarchy@1
-    since: "2026-11-22"
-    rationale: >-
-      The manufacturer source itself states the link: PSREF lists each MTM under its machine type and product, ASUS/Dell/
-      Surface/Framework/Samsung/Razer pages list the part number under the model, a crawl-brand page lists its own colour SKUs.
-      Suffix-inferred links (suffix:*) are NOT covered: they stay proposed until a human approves them in ledger.jsonl.
-    methods: ["adapter:*", "page-variants:*"]
-    types: [member_of_family, configuration_of, package_of, variant_of]
+- id: rel/source-stated-hierarchy@2
+  since: '2026-11-23'
+  supersedes: rel/source-stated-hierarchy@1
+  rationale: The manufacturer source itself states the link. @2 replaces the open globs adapter:* / page-variants:* with one explicit rule per source method,
+    relation type and parser version that produced the relations @1 approved; a new adapter, a new relation type or a parser bump gets nothing until a rule
+    is added (new id). Suffix-inferred (suffix:*) and stem (stem:*) links are never covered.
+  audit:
+    by: A3-impl r4
+    at: '2026-11-23'
+    evidence: 'rules = the (method, type, parser) triples @1 approved in the last release import (4,137 links): no widening.'
+    parsers: {lenovo_psref@2: 'sha256:ec6a55f8081086820989', asus@1: 'sha256:628db32b5ba83fa291c6', dell@1: 'sha256:13cd4d61b81c005021b6', surface@1: 'sha256:80cd87b7b1b87d6969e9',
+      razer@1: 'sha256:8752d0e2f07ae8b46ff2', samsung@1: 'sha256:d0e9cabff53a15285159', lenovo_monitors@1: 'sha256:b7e7dfee555d5a890251', samsung_ssd@2: 'sha256:a6cbc9077c793c287d62',
+      sandisk_ssd@2: 'sha256:f43f27701094bcf81d3d', teamgroup_ssd@2: 'sha256:142b129a8fb6c4f517d5', tplink_routers@2: 'sha256:c7318e9238be7635b158', crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'}
+  approval: {state: pending, by: null, at: null, note: needs a human approval (handle + date); A3 cannot approve its own audit}
+  rules:
+  - method: adapter:lenovo-psref
+    types: [member_of_family, configuration_of]
+    parsers: [lenovo_psref@2]
+  - method: adapter:asus-us
+    types: [member_of_family]
+    parsers: [asus@1]
+  - method: adapter:dell-us
+    types: [member_of_family]
+    parsers: [dell@1]
+  - method: adapter:microsoft-surface
+    types: [member_of_family, configuration_of]
+    parsers: [surface@1]
+  - method: adapter:razer-us
+    types: [member_of_family, configuration_of]
+    parsers: [razer@1]
+  - method: adapter:samsung-us
+    types: [member_of_family, configuration_of]
+    parsers: [samsung@1]
+  - method: adapter:lenovo-psref-monitors
+    types: [package_of]
+    parsers: [lenovo_monitors@1]
+  - method: adapter:samsung-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [samsung_ssd@2]
+  - method: adapter:sandisk-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [sandisk_ssd@2]
+  - method: adapter:teamgroup-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [teamgroup_ssd@2]
+  - method: adapter:tplink-us-routers
+    types: [variant_of]
+    parsers: [tplink_routers@2]
+  - method: page-variants:anker
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:baseus
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:belkin
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+retired_policies:
+- id: claim/mfr-structured-datasheet@1
+  since: '2026-11-22'
+  rationale: 'Deterministic extraction of the manufacturer''s own structured specification data: Lenovo PSREF model tables (adapter + psref-mapping single-target
+    columns), Tripp Lite product JSON/datasheet tables, CyberPower item JSON + datasheets, and label-mapping transforms applied to those two manufacturers''
+    labelled tables. Values must normalise to the profile type (normalize.py) or the claim stays a candidate. Adapter versions are pinned: a parser bump
+    needs a re-audit and a policy @N+1.'
+  audit: A2 round 2/3 fixture re-parse (0 diffs) + A3 spot check of literal vs normalised values, 2026-11-22
+  match:
+    extractors: [lenovo_psref@2, import.py+psref-mapping@1, tripplite@2, cyberpower@1, import.py+label-mapping@1]
+    source_ids: [lenovo-psref, tripplite, cyberpower]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    require_normalized: true
+    exclude_keys: []
+  retired: {at: '2026-11-23', superseded_by: claim/mfr-structured-datasheet@2, reason: 'review 2 risk 1: open-ended or edited-in-place acceptance; meaning
+      frozen as committed in ba3b2e0'}
+- id: claim/asus-techspec-typed@1
+  since: '2026-11-22'
+  rationale: 'ASUS techspec tables (asus@1): labelled manufacturer cells, but model-level pages often append option notes and disclaimers. Only values that
+    normalise to a typed profile value (number/integer/bool/enum), plus the processor, colour, webcam and OS cells (single literal statements), are accepted;
+    other free text stays a preview candidate.'
+  audit: 'A3 spot check of 25 random asus@1 claims (raw vs normalised), 2026-11-22: 0 wrong typed values'
+  match:
+    extractors: [asus@1]
+    source_ids: [asus-us]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    spec_types: [number, integer, bool, enum]
+    also_keys: [cpu.model, gen.color, in.webcam, sw.os]
+    require_normalized: true
+  retired: {at: '2026-11-23', superseded_by: claim/asus-techspec-typed@2, reason: 'review 2 risk 1: open-ended or edited-in-place acceptance; meaning frozen
+      as committed in ba3b2e0'}
+- id: claim/cpu-split@1
+  since: '2026-11-22'
+  rationale: import.py splits a processor cell (crawler/adapters/_cpu.py) into model/cores/threads/clocks/cache. A split claim is only accepted when the
+    literal claim it derives from is accepted (checked in import.py), so this policy never widens trust.
+  match:
+    extractors: [import.py+cpu-split@1]
+    kinds: [official]
+    require_normalized: true
+  retired: {at: '2026-11-23', superseded_by: claim/cpu-split@2, reason: 'review 2 risk 1: open-ended or edited-in-place acceptance; meaning frozen as committed
+      in ba3b2e0'}
+- id: claim/mfr-monitor-structured@1
+  since: '2026-11-23'
+  rationale: 'Monitors, manufacturer-owned structured pages: Lenovo PSREF monitor platform tables (lenovo_monitors@1), LG US product JSON (lg_us@1 next_data
+    terms) and ASUS US techspec tables (asus_monitors@1). Per field: only values that normalise to the profile type (normalize.py) are accepted; labels
+    A2 recorded as unmapped (ASUS "1ms MPRT" is not GtG) never become claims, so nothing mapped here is a guess. Manufacturer-marketed values (motion.gtg_marketed,
+    hdr.peak_marketed, hdr.marketed_label) are accepted AS marketed claims (the keys say so). Adapter versions pinned.'
+  audit: A2 monitors r2 report (5 adapters parsed, mapping caveats listed) + A3 per-source spot check, 2026-11-23
+  match:
+    extractors: [lenovo_monitors@1, lg_us@1, asus_monitors@1]
+    source_ids: [lenovo-psref-monitors, lg-us, asus-us-monitors]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    require_normalized: true
+  retired: {at: '2026-11-23', superseded_by: claim/mfr-monitor-structured@2, reason: 'review 2 risk 1: open-ended or edited-in-place acceptance; meaning
+      frozen as committed in ba3b2e0'}
+- id: claim/energystar-certified-power@1
+  since: '2026-11-23'
+  rationale: 'ENERGY STAR product-finder rows (energystar_monitors@1) are the EPA certification record for the maker''s own model string. Accepted per field:
+    the measured/declared power fields, the certification flag, native resolution and viewable diagonal. NOT accepted (stay preview): luminance (basis unstated),
+    contrast (<100 dropped by the adapter, basis unstated), panel technology and release year (certification date is not release date).'
+  audit: A2 monitors r2 mapping caveats; A3 check that pwr.* normalise to the profile unit, 2026-11-23
+  match:
+    extractors: [energystar_monitors@1]
+    source_ids: [energystar-monitors]
+    kinds: [official]
+    tiers: [regulatory]
+    statuses: [known, not_applicable]
+    keys: [pwr.typical, pwr.standby, pwr.external_adapter, pwr.energy_star, res.native, res.width_px, res.height_px, gen.viewable_diag]
+    require_normalized: true
+  retired: {at: '2026-11-23', superseded_by: claim/energystar-certified-power@2, reason: 'review 2 risk 1: open-ended or edited-in-place acceptance; meaning
+      frozen as committed in ba3b2e0'}
+- id: claim/displayhdr-certified-tier@1
+  since: '2026-11-23'
+  rationale: 'VESA''s DisplayHDR certified-products table (displayhdr@2) is the certification record: tier (400..1400, True Black) for a listed model. Accepted
+    as a certification claim on the model it names; a stem-only (non-exact) model match does NOT transmit it.'
+  audit: 'A2 monitors r2: 2129 rows parsed, tier distribution checked against the page, 2026-11-23'
+  match:
+    extractors: [displayhdr@2]
+    source_ids: [displayhdr]
+    kinds: [official]
+    tiers: [certifier]
+    keys: [hdr.vesa_tier]
+    statuses: [known]
+    require_normalized: true
+  retired: {at: '2026-11-23', superseded_by: claim/displayhdr-certified-tier@2, reason: 'review 2 risk 1: open-ended or edited-in-place acceptance; meaning
+      frozen as committed in ba3b2e0'}
+- id: claim/mfr-ssd-structured@1
+  since: '2026-11-23'
+  rationale: 'Consumer SSDs, manufacturer-owned pages: SanDisk/WD product pages (sandisk_ssd@1) and the TEAMGROUP per-capacity tables (teamgroup_ssd@1).
+    Per field: only the listed keys, only values that normalise to the profile type. Rated sequential speeds are the maker''s "up to" figures and are accepted
+    AS conditioned claims (adapter attaches cache_state=in_slc_cache, the profile headline condition), never as sustained speeds; the post-cache speed and
+    SLC cache size are not on these pages and stay absent. NOT accepted (preview candidates): id.msrp_us (price at fetch time) and anything not listed (e.g.
+    unmapped labels, certifications).'
+  audit: A2 ssds report (parse + reparse verified, enum/number types validated over every claim) + A3 per-key counts and spot check, 2026-11-23
+  match:
+    extractors: [sandisk_ssd@1, teamgroup_ssd@1]
+    source_ids: [sandisk-us-ssd, teamgroup-us-ssd]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    keys: [gen.capacity, gen.device_class, gen.form_factor, gen.weight, if.pcie_gen, if.pcie_lanes, if.protocol, if.nvme_version, if.usb_standard, if.usb_connector,
+      hw.controller, hw.controller_vendor, hw.dram_type, hw.dram_size, hw.dram_gen, hw.nand_type, hw.nand_vendor, perf.seq_read, perf.seq_write, perf.rand_read_iops_qd1,
+      perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption,
+      therm.temp_operating, port.drop]
+    require_normalized: true
+  retired: {at: '2026-11-23', superseded_by: claim/mfr-ssd-structured@2, reason: 'review 2 risk 1: open-ended or edited-in-place acceptance; meaning frozen
+      as committed in ba3b2e0'}
+- id: claim/mfr-ssd-samsung@1
+  since: '2026-11-23'
+  rationale: 'samsung.com/us spec API (samsung_ssd@1), same per-field rule and "up to" speed conditioning as claim/mfr-ssd-structured@1, but gen.capacity
+    is NOT accepted: A2 found a real page defect (990 PRO 2TB heatsink row states 1TB), so capacity stays a candidate until a human accepts it or the adapter
+    derives it from the part number. id.msrp_us stays a candidate (price at fetch time).'
+  audit: A2 ssds report (Samsung page/API defects listed) + A3 per-key counts, 2026-11-23
+  match:
+    extractors: [samsung_ssd@1]
+    source_ids: [samsung-us-ssd]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    keys: [gen.device_class, gen.form_factor, gen.weight, if.pcie_gen, if.pcie_lanes, if.protocol, if.nvme_version, if.usb_standard, if.usb_connector, hw.controller,
+      hw.controller_vendor, hw.dram_type, hw.dram_size, hw.dram_gen, hw.nand_type, hw.nand_vendor, perf.seq_read, perf.seq_write, perf.rand_read_iops_qd1,
+      perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption,
+      therm.temp_operating, port.drop]
+    require_normalized: true
+  retired: {at: '2026-11-23', superseded_by: claim/mfr-ssd-samsung@2, reason: 'review 2 risk 1: open-ended or edited-in-place acceptance; meaning frozen
+      as committed in ba3b2e0'}
+- id: claim/mfr-routers-structured@1
+  since: '2026-11-23'
+  rationale: 'Wi-Fi routers/mesh, manufacturer-owned spec tables: TP-Link US product + support pages (tplink_routers@1), NETGEAR US product pages (netgear_routers@1),
+    ASUS US techspec tables (asus_routers@1). Per field: only the listed keys, only values that normalise to the profile type. Per-band rates and streams
+    come from text segments that start at a band marker, never from the class number (AX5400); widths 320 MHz only with a 6 GHz radio; stream counts only
+    from an explicit NxN. Fetch-time facts (id.msrp_us, sup.latest_firmware_date), the free-text fields (antennas, QoS, power input) and anything the pages
+    do not state (SoC vendor/model, FCC ID, support end date) are NOT accepted: preview candidates or absent. gen.device_type / gen.product_line are accepted
+    only for TP-Link and ASUS (URL section), see claim/mfr-routers-class@1.'
+  audit: 'A2 routers report: 106 TP-Link, 60 NETGEAR, 82 ASUS pages parsed; spot check of deco-be25, archer-be800, rbe972sb, rt-ax86u-pro, xt8 (raw vs normalised),
+    2026-11-23'
+  match:
+    extractors: [tplink_routers@1, netgear_routers@1, asus_routers@1]
+    source_ids: [tplink-us-routers, netgear-us-routers, asus-us-routers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    keys: [gen.pack_count, wifi.generation, wifi.marketing_class, wifi.band_count, wifi.has_6ghz, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_5_2_mbps,
+      wifi.rate_6_mbps, wifi.streams_24, wifi.streams_5, wifi.streams_5_2, wifi.streams_6, wifi.max_width_5_mhz, wifi.max_width_6_mhz, wifi.qam_max, wifi.mlo,
+      wifi.mu_mimo, wifi.ofdma, wifi.wpa3, hw.cpu_cores, hw.cpu_ghz, hw.ram_mb, hw.flash_mb, port.wan_speed_mbps, port.wan_type, port.lan_count, port.lan_max_mbps,
+      port.multigig_count, port.wan_lan_configurable, port.usb_count, port.usb_standard, mesh.supported, mesh.systems, mesh.coverage_sqft, sw.vpn_server,
+      sw.vpn_client, sw.wireguard, sw.operating_modes, sw.parental_controls, isp.ipv6, phys.weight, phys.dimensions, sup.hardware_version]
+    require_normalized: true
+  retired: {at: '2026-11-23', superseded_by: claim/mfr-routers-structured@2, reason: 'review 2 risk 1: open-ended or edited-in-place acceptance; meaning
+      frozen as committed in ba3b2e0'}
+- id: claim/mfr-routers-class@1
+  since: '2026-11-23'
+  rationale: 'Device class and product line derived from the manufacturer''s own URL section (TP-Link wifi-router vs deco-mesh-wifi, ASUS wifi-routers vs
+    whole-home-mesh-systems and the asus-zenwifi / asus-gaming-routers group). NETGEAR is excluded: its class comes from a model-prefix heuristic (rbs =
+    satellite) and stays a preview candidate.'
+  audit: A2 routers report, URL sections listed in the adapters' discover docstrings, 2026-11-23
+  match:
+    extractors: [tplink_routers@1, asus_routers@1]
+    source_ids: [tplink-us-routers, asus-us-routers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys: [gen.device_type, gen.product_line]
+    require_normalized: true
+  retired: {at: '2026-11-23', superseded_by: claim/mfr-routers-class@2, reason: 'review 2 risk 1: open-ended or edited-in-place acceptance; meaning frozen
+      as committed in ba3b2e0'}
+- id: rel/source-stated-hierarchy@1
+  since: '2026-11-22'
+  rationale: 'The manufacturer source itself states the link: PSREF lists each MTM under its machine type and product, ASUS/Dell/ Surface/Framework/Samsung/Razer
+    pages list the part number under the model, a crawl-brand page lists its own colour SKUs. Suffix-inferred links (suffix:*) are NOT covered: they stay
+    proposed until a human approves them in ledger.jsonl.'
+  methods: ['adapter:*', 'page-variants:*']
+  types: [member_of_family, configuration_of, package_of, variant_of]
+  retired: {at: '2026-11-23', superseded_by: rel/source-stated-hierarchy@2, reason: 'review 2 risk 1: open-ended or edited-in-place acceptance; meaning
+      frozen as committed in ba3b2e0'}

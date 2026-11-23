@@ -18,7 +18,8 @@ import _contract as C
 from _contract import Ref, Discovery, ParseResult, claim  # noqa
 import _run
 
-ID, VERSION, SOURCE = "energystar_monitors", 1, "energystar-monitors"
+BASIS = {"pwr.typical": "energy_star_on_mode", "pwr.standby": "energy_star_sleep"}
+ID, VERSION, SOURCE = "energystar_monitors", 2, "energystar-monitors"
 CATEGORIES = {"monitors"}
 API = "https://data.energystar.gov/resource/qbg3-d468.json"
 ADAPTER = f"{ID}@{VERSION}"
@@ -100,7 +101,10 @@ class EnergyStarMonitors:
         loc = {"energystar_pd_id": r0["pd_id"], "date_certified": r0.get("date_certified", "")[:10]}
 
         def add(key, value, unit, raw):
-            pr.claims.append(claim(model, key, value, unit, str(raw), "s1", ADAPTER, "socrata_json", obs, dict(loc), f"{key} <- {raw}"))
+            c = claim(model, key, value, unit, str(raw), "s1", ADAPTER, "socrata_json", obs, dict(loc), f"{key} <- {raw}")
+            if key in BASIS:     # @2: ES test-method power is a different basis from a maker's "typical"/nameplate figure (review 2 risk 2)
+                c["conditions"] = {"power_basis": BASIS[key]}
+            pr.claims.append(c)
 
         mapped = set()
         def has(f):

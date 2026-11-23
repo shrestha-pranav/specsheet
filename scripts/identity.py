@@ -9,8 +9,15 @@ Normalisers  = scheme/issuer specific: mtm = uppercase, whitespace removed; mfr_
                commas/slashes/# are kept (Apple `Mac14,5`, HP `#ABA`).
 Conflicts    = an observation whose key identifiers hit two different existing entities is QUARANTINED (not attached, event logged)
                unless the decision ledger approved a merge of exactly those anchors.
-Registry     = anchor (category|scheme|issuer|value|market) -> id, append-only. IDs are reused on replay, never reminted;
-               new ids are minted in sorted anchor order with a collision counter that skips every id ever issued or tombstoned.
+Registry     = anchor -> id, append-only. IDs are reused on replay, never reminted; new ids are minted in sorted anchor order with a
+               collision counter that skips every id ever issued or tombstoned.
+Anchors v2   = "v2|category|level|scheme|issuer|value|market" (review 2 risk 4): the level is part of the durable anchor, so a model and a
+               configuration with the same scheme/issuer/value/market can never share an id. Legacy v1 lines ("category|scheme|issuer|
+               value|market", no level) are MIGRATED on load using the line's recorded `kind` (the level it was minted at), so every
+               existing public id keeps resolving; a legacy anchor recorded under two different ids at the same level is AMBIGUOUS and
+               is reported (`ambiguous`), never silently resolved. New lines are always written as v2.
+Kind/rebind  = lookup() callers compare the registered kind (`kind_of`); add() never rebinds an anchor already bound to another id and
+               records the attempt in `rebinds` for the importer's identity_conflicts table.
 """
 import json, re, time
 from pathlib import Path
@@ -63,9 +70,28 @@ def key(scheme, value, issuer, market, level):
     return (scheme, iss, nv, mk, level)
 
 
+ANCHOR_V = "v2"
+
+
 def anchor(category, k):
-    scheme, iss, nv, mk, _level = k
-    return "|".join([category, scheme, iss or "", nv, mk or ""])
+    scheme, iss, nv, mk, level = k
+    return "|".join([ANCHOR_V, category, level or "", scheme, iss or "", nv, mk or ""])
+
+
+def legacy_anchor(a):
+    """v2 anchor -> the v1 form (no level) it migrates from; v1 anchors are returned unchanged."""
+    p = a.split("|")
+    if p[0] == ANCHOR_V and len(p) == 7:
+        return "|".join([p[1]] + p[3:])
+    return a
+
+
+def migrate_anchor(a, kind):
+    """v1 anchor + the kind its registry line recorded -> v2 anchor. v2 anchors pass through."""
+    if a.startswith(ANCHOR_V + "|"):
+        return a
+    p = a.split("|")
+    return "|".join([ANCHOR_V, p[0], kind or ""] + p[1:])
 
 
 def keystr(k):
@@ -77,13 +103,19 @@ class IdRegistry:
     def __init__(self, path: Path, tombstones: Path | None = None, readonly=False):
         self.path, self.readonly = path, readonly
         self.by_anchor, self.ids, self.new = {}, set(), []
+        self.kind_of, self.ambiguous, self.rebinds, self.migrated = {}, [], [], 0
         if path.exists():
             for ln in path.read_text().splitlines():
                 if ln.strip():
                     r = json.loads(ln)
                     self.ids.add(r["id"])
-                    for a in r["anchors"]:
-                        self.by_anchor.setdefault(a, r["id"])
+                    self.kind_of.setdefault(r["id"], r.get("kind"))
+                    for a0 in r["anchors"]:
+                        a = migrate_anchor(a0, r.get("kind"))
+                        self.migrated += a != a0
+                        cur = self.by_anchor.setdefault(a, r["id"])
+                        if cur != r["id"]:
+                            self.ambiguous.append({"anchor": a, "ids": sorted({cur, r["id"]}), "legacy": a != a0})
         if tombstones and tombstones.exists():
             for ln in tombstones.read_text().splitlines():
                 if ln.strip():
@@ -110,11 +142,15 @@ class IdRegistry:
         return i
 
     def add(self, i, anchors, category, kind):
+        for a in anchors:
+            if a in self.by_anchor and self.by_anchor[a] != i:
+                self.rebinds.append({"anchor": a, "bound": self.by_anchor[a], "attempted": i})
         new = [a for a in anchors if a not in self.by_anchor]
         if not new:
             return
         for a in new:
             self.by_anchor[a] = i
+        self.kind_of.setdefault(i, kind)
         self.new.append({"id": i, "anchors": sorted(new), "category": category, "kind": kind, "at": time.strftime("%FT%TZ", time.gmtime())})
 
     def flush(self):

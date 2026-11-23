@@ -1,0 +1,230 @@
+{
+ "budget": {
+  "limits": {
+   "_why": "reviews/2026-11-23-astra-review-2.md risk 5: project targets, not hosting limits. Raising api_fail_mib is an explicit reviewed edit of this file.",
+   "api_fail_mib": 150,
+   "api_warn_mib": 100,
+   "repo_pack_migrate_mib": 500,
+   "repo_pack_warn_mib": 250
+  },
+  "messages": [],
+  "state": "ok"
+ },
+ "code": {
+  "dirty": true,
+  "git_head": "95a37f3bdf72a5f1ac9ace6dd6469c8055ac18c6",
+  "source_digest": "sha256:e17c5706751bfcdf596ae90f177057423195ec41720cc99e045df4c50b07437b"
+ },
+ "created_at": "2026-11-23T11:21:37Z",
+ "format": "specsheet.release/1",
+ "inputs": {
+  "accepted_digest": "86cce0d5ebbe80c5439014beda1824a3a08a100a983e0700a4a3ededa7b77c24",
+  "imported_at": "2026-11-23T11:18:50Z",
+  "importer": "sha256:c6d84405ad612655d42a46c71f7dc2082e6bb0f2e7939c8c18d9500439d65b3e",
+  "ledger": {
+   "digest": "sha256:4b532ba27accee878bc834ed58a98dbe99e54ddebe117f869bec649908dd6fd9",
+   "lines": 0
+  },
+  "normalizer": "sha256:9351078318904ae20b4d2bb2ebe840aa5cdb8b3f77d4a85b47fc7009b2ffa092",
+  "parsers": {
+   "anker": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "apple-support": {
+    "fingerprint": "sha256:6bc7c6b84247afa3c9c7",
+    "parser": "apple@1"
+   },
+   "asus-us": {
+    "fingerprint": "sha256:628db32b5ba83fa291c6",
+    "parser": "asus@1"
+   },
+   "asus-us-monitors": {
+    "fingerprint": "sha256:21ba35a4d7bbafdaff71",
+    "parser": "asus_monitors@1"
+   },
+   "asus-us-routers": {
+    "fingerprint": "sha256:1dedfbe9a8ca77b32bb1",
+    "parser": "asus_routers@1"
+   },
+   "austere": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "baseus": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "belkin": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "byjasco": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "cyberpower": {
+    "fingerprint": "sha256:a3e88411366c8d320d51",
+    "parser": "cyberpower@1"
+   },
+   "dell-us": {
+    "fingerprint": "sha256:13cd4d61b81c005021b6",
+    "parser": "dell@1"
+   },
+   "displayhdr": {
+    "fingerprint": "sha256:254fd4f565c8f164d5e8",
+    "parser": "displayhdr@3"
+   },
+   "energystar-monitors": {
+    "fingerprint": "sha256:a617410312626e8837c1",
+    "parser": "energystar_monitors@2"
+   },
+   "framework-us": {
+    "fingerprint": "sha256:a0d0263be8effbca4213",
+    "parser": "framework@1"
+   },
+   "furman": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "lenovo-psref": {
+    "fingerprint": "sha256:ec6a55f8081086820989",
+    "parser": "lenovo_psref@2"
+   },
+   "lenovo-psref-monitors": {
+    "fingerprint": "sha256:b7e7dfee555d5a890251",
+    "parser": "lenovo_monitors@1"
+   },
+   "lg-us": {
+    "fingerprint": "sha256:51da673073084332f227",
+    "parser": "lg_us@1"
+   },
+   "microsoft-surface": {
+    "fingerprint": "sha256:80cd87b7b1b87d6969e9",
+    "parser": "surface@1"
+   },
+   "netgear-us-routers": {
+    "fingerprint": "sha256:a5e3fcb76ca453cc808d",
+    "parser": "netgear_routers@1"
+   },
+   "razer-us": {
+    "fingerprint": "sha256:8752d0e2f07ae8b46ff2",
+    "parser": "razer@1"
+   },
+   "samsung-us": {
+    "fingerprint": "sha256:d0e9cabff53a15285159",
+    "parser": "samsung@1"
+   },
+   "samsung-us-ssd": {
+    "fingerprint": "sha256:a6cbc9077c793c287d62",
+    "parser": "samsung_ssd@2"
+   },
+   "sandisk-us-ssd": {
+    "fingerprint": "sha256:f43f27701094bcf81d3d",
+    "parser": "sandisk_ssd@2"
+   },
+   "teamgroup-us-ssd": {
+    "fingerprint": "sha256:142b129a8fb6c4f517d5",
+    "parser": "teamgroup_ssd@2"
+   },
+   "tplink-us-routers": {
+    "fingerprint": "sha256:c7318e9238be7635b158",
+    "parser": "tplink_routers@2"
+   },
+   "tripplite": {
+    "fingerprint": "sha256:949811b25418d7a2b724",
+    "parser": "tripplite@2"
+   },
+   "ugreen": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   }
+  },
+  "policies": {
+   "active": [
+    "claim/mfr-structured-datasheet@2",
+    "claim/asus-techspec-typed@2",
+    "claim/cpu-split@2",
+    "claim/mfr-monitor-structured@2",
+    "claim/energystar-certified-power@2",
+    "claim/displayhdr-certified-tier@2",
+    "claim/mfr-ssd-structured@2",
+    "claim/mfr-ssd-samsung@2",
+    "claim/mfr-routers-structured@2",
+    "claim/mfr-routers-class@2",
+    "rel/source-stated-hierarchy@2"
+   ],
+   "approval": {
+    "claim/asus-techspec-typed@2": "pending",
+    "claim/cpu-split@2": "pending",
+    "claim/displayhdr-certified-tier@2": "pending",
+    "claim/energystar-certified-power@2": "pending",
+    "claim/mfr-monitor-structured@2": "pending",
+    "claim/mfr-routers-class@2": "pending",
+    "claim/mfr-routers-structured@2": "pending",
+    "claim/mfr-ssd-samsung@2": "pending",
+    "claim/mfr-ssd-structured@2": "pending",
+    "claim/mfr-structured-datasheet@2": "pending",
+    "rel/source-stated-hierarchy@2": "pending"
+   },
+   "file": "sha256:09fec55d9f4c014bec75f6a795654a382a1d303a494a93ba836f87532abf8490",
+   "lock": "sha256:d30bdeefb9b952b5d2893e39b90f6f5723c93ab631f8bf460315aac67fc82bc9",
+   "parser_drift": []
+  },
+  "profiles": {
+   "laptops": {
+    "digest": "sha256:d522b1cd0174237a35dfca6eebeeff6a539e58eef486e5e9b140ec6359a25015",
+    "version": "0.2"
+   },
+   "monitors": {
+    "digest": "sha256:e148d44936d965830a74a6665ef05721e139b4958ae16b10fe584e9217553b3a",
+    "version": "0.2.0"
+   },
+   "power-strips": {
+    "digest": "sha256:341ade220e8becd76d2ba59a6d3eddf9526de433a4bc77880b70719e2d053217",
+    "version": "0.1"
+   },
+   "routers": {
+    "digest": "sha256:e2db175ee12b0b4e7a7b86f8a17746f87d59f97c06520da37f51dd876ee4c2d4",
+    "version": "0.2.0"
+   },
+   "ssds": {
+    "digest": "sha256:a48a9c5221834640dfe625cd53d1cca97f0bcea6b04a85554b4e90aa7fa2275a",
+    "version": "0.2.0"
+   }
+  },
+  "raw_snapshots": {
+   "digest": "sha256:a5438a194cb2d30259323691636fbd34089a772e98ed2c5d85a9bf6a35ceb501",
+   "observations": 6562
+  },
+  "registry": {
+   "ambiguous": 0,
+   "digest": "sha256:43d234ab79219901fbeeed93c805e16e56e47f54f94956ed7acf3cdd4aa46213",
+   "digest_after": "sha256:43d234ab79219901fbeeed93c805e16e56e47f54f94956ed7acf3cdd4aa46213",
+   "kind_changes": 0,
+   "migrated_legacy_anchors": 11950,
+   "rebind_attempts": 0
+  }
+ },
+ "output": {
+  "api_files": 14052,
+  "api_gzip_bytes": 18381375,
+  "api_logical_bytes": 74711024,
+  "files": 14057,
+  "gh_pages_commit": "e9e35c380bcc7f49ee0b61178b6b4a92ce5decd0",
+  "gh_pages_pack_bytes": 9839435,
+  "logical_bytes": 74820789,
+  "tree_digest": "sha256:603114419579297c49fb833f22f9c05cee7bd034ab51372d833497ff6228d1cb",
+  "vs_previous": {
+   "changed_bytes": 10711788,
+   "changed_files": 15,
+   "ref": "19f126fab321d444fba7a4e9856169818d736ed1",
+   "removed_files": 0
+  }
+ },
+ "release": "20261123T112137Z-86cce0d5",
+ "repository": {
+  "local_object_store_bytes": 18402304,
+  "main_pack_bytes": 11121259
+ }
+}

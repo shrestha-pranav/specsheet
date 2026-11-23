@@ -1,6 +1,6 @@
 profile_format: specsheet.category-profile/1
 category: ssds
-version: 0.1.0
+version: 0.2.0
 label: SSDs (NVMe, SATA, portable)
 market: US
 status: draft
@@ -693,8 +693,8 @@ specs:
   example: 7450
   conditions:
   - cache_state
-  headline_condition:
-    cache_state: in_slc_cache
+  basis_conditions:
+  - cache_state
 - key: perf.seq_write
   label: Sequential write (rated)
   group: perf
@@ -723,8 +723,8 @@ specs:
   example: 6900
   conditions:
   - cache_state
-  headline_condition:
-    cache_state: in_slc_cache
+  basis_conditions:
+  - cache_state
 - key: perf.rand_read_iops_qd32
   label: Random read 4K QD32
   group: perf

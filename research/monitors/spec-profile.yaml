@@ -1,6 +1,6 @@
 profile_format: specsheet.category-profile/1
 category: monitors
-version: 0.1.0
+version: 0.2.0
 label: Computer monitors
 market: US
 status: draft
@@ -123,6 +123,15 @@ conditions:
   type: text
 - id: firmware
   label: Firmware
+  type: text
+- id: power_basis
+  label: Power measurement basis
+  type: enum
+  enum:
+  - energy_star_on_mode
+  - energy_star_sleep
+- id: cts_version
+  label: DisplayHDR CTS version
   type: text
 groups:
 - id: general
@@ -837,6 +846,10 @@ specs:
   facet: true
   why: HDR claim vs cert
   level: model
+  conditions:
+  - cts_version
+  basis_conditions:
+  - cts_version
   traps:
   - '''HDR10'', ''HDR400'', ''HDR Ready'' are not certification; only ''DisplayHDR N'' badge + displayhdr.org list counts'
   - DisplayHDR 400 needs no local dimming and only 250 nits
@@ -1694,6 +1707,10 @@ specs:
   facet: false
   why: Operating cost
   level: model
+  conditions:
+  - power_basis
+  basis_conditions:
+  - power_basis
   traps:
   - Test condition (brightness 200 nit) varies
   sources:
@@ -1720,6 +1737,10 @@ specs:
   facet: false
   why: Idle drain
   level: model
+  conditions:
+  - power_basis
+  basis_conditions:
+  - power_basis
   sources:
   - Manufacturer spec page
   example: 0.3

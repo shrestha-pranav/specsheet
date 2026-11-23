@@ -1,6 +1,6 @@
 profile_format: specsheet.category-profile/1
 category: routers
-version: 0.1.0
+version: 0.2.0
 label: Wi-Fi routers & mesh systems
 market: US
 status: draft
@@ -272,6 +272,7 @@ specs:
   tier: important
   why: Shown on the box; search term only
   level: model
+  revision_scope: all
   facet: false
   traps:
   - 'AX5400 = 574+4800 Mbps summed over bands: no single device ever gets that speed'

@@ -42,7 +42,8 @@ def main(ad):
         print(f"discover: refs={len(d.refs)} complete={d.complete} stop={d.stop_reason}")
     if a.cmd in ("fetch", "run"):
         refs, _ = _refs(store, ad)
-        done = {s["ref"] for s in store.snapshots() if s["status"] == 200 and s["adapter"] == f"{ad.id}@{ad.version}"}
+        import registry as REG      # lazy: registry imports adapter modules
+        done = {s["ref"] for s in store.snapshots() if s["status"] == 200 and REG.compatible(type(ad), s)}   # any parser version (review 2 risk 1)
         todo = [r for r in refs if (a.refresh or r.key not in done) and (not a.match or re.search(a.match, r.key))]
         if a.limit:
             todo = todo[:a.limit]
@@ -64,10 +65,12 @@ def main(ad):
                     print(f"fetched {n}/{len(todo)} ({r.key})", flush=True)
         print(f"fetch: {n} fetched, {len(todo)} planned, {len(done)} already done")
     if a.cmd in ("parse", "run"):
+        import registry as REG
         pdir = store.dir / "parsed"; pdir.mkdir(exist_ok=True)
+        parser, fp = f"{ad.id}@{ad.version}", REG.parser_fingerprint(Path(sys.modules[type(ad).__module__].__file__).stem)
         latest = {}
         for s in store.snapshots():
-            if s["status"] == 200 and s["adapter"] == f"{ad.id}@{ad.version}":
+            if s["status"] == 200 and REG.compatible(type(ad), s):
                 latest[s["ref"]] = s
         refs = {r.key: r for r in _refs(store, ad)[0]} if (store.dir / "discovery.json").exists() else {}
         n = 0
@@ -76,6 +79,6 @@ def main(ad):
                 continue
             snap = C.Snapshot(s["snapshot"], refs.get(k) or C.Ref(ad.source_id, k, s["url"]), 200, s["fetched_at"], s["final_url"], {})
             pr = ad.parse(snap, store, None)
-            (pdir / (re.sub(r"[^A-Za-z0-9._-]", "_", k) + ".json")).write_text(json.dumps(dataclasses.asdict(pr)))
+            REG.cache_write(pdir / (REG.safe(k) + ".json"), parser, fp, s["snapshot"], dataclasses.asdict(pr))   # same cache format the importer validates
             n += 1
         print(f"parse: {n} snapshots -> {pdir}")

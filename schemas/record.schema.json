@@ -1011,6 +1011,27 @@
               },
               "alternatives": {
                 "$ref": "#/$defs/resolved/properties/alternatives"
+              },
+              "qualifier": {
+                "$ref": "#/$defs/resolved/properties/qualifier"
+              },
+              "display": {
+                "$ref": "#/$defs/resolved/properties/display"
+              },
+              "basis": {
+                "$ref": "#/$defs/resolved/properties/basis"
+              },
+              "measurement_mode": {
+                "$ref": "#/$defs/resolved/properties/measurement_mode"
+              },
+              "claims": {
+                "$ref": "#/$defs/resolved/properties/claims"
+              },
+              "note": {
+                "$ref": "#/$defs/resolved/properties/note"
+              },
+              "raw": {
+                "$ref": "#/$defs/resolved/properties/raw"
               }
             }
           }
@@ -1048,6 +1069,25 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/$defs/sourceRef"
+                }
+              },
+              "qualifier": {
+                "$ref": "#/$defs/resolved/properties/qualifier"
+              },
+              "display": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "basis": {
+                "type": "object",
+                "description": "Basis conditions (profile basis_conditions) the value was stated under, e.g. {power_basis: energy_star_on_mode}."
+              },
+              "claims": {
+                "type": "array",
+                "items": {
+                  "type": "string"
                 }
               }
             }
@@ -1088,6 +1128,20 @@
             null
           ],
           "description": "The source qualified the number: from = 'starting at' (lower bound / base configuration), approx, up_to. Render it ('from 1.54 kg')."
+        },
+        "basis": {
+          "type": "object",
+          "description": "Basis conditions of the single headline assertion (profile basis_conditions): the value holds under this test/certification basis."
+        },
+        "measurement_mode": {
+          "$ref": "#/$defs/resolved/properties/alternatives/items/properties/measurement_mode"
+        },
+        "revision_applicability": {
+          "enum": [
+            "all",
+            "unspecified"
+          ],
+          "description": "Only on models with hardware revisions: all = established for every revision (inherited by them); unspecified = stated for the model's default/unstated revision only (not inherited)."
         }
       }
     }

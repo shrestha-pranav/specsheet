@@ -1,0 +1,1 @@
+Wrote [the review](reviews/2026-11-23-astra-review-2.md) in 77 lines, covering finding dispositions, five risks, and three next steps. No other files edited.

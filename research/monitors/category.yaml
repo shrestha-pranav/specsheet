@@ -10,3 +10,11 @@ brand_names: {lg: LG, asus: ASUS, lenovo: Lenovo, dell: Dell, hp: HP, aoc: AOC, 
 # DisplayHDR's table also lists notebooks / all-in-ones; the listing text decides category membership.
 skip_alias_pattern: 'notebook|laptop|\byoga\b|zenbook|vivobook|thinkpad|thinkbook|spectre|\benvy\b|macbook|\bsurface\b|\bxps\b|inspiron|predator (helios|triton)|nitro v |\baspire\b|tablet|all-in-one|\baio\b'
 package_markets: {mtm: {suffix: US}}
+# Identity scope for the 'model' importer (review 2 risk 4), explicit per category. The mfr_model key is (brand, normalised model), market NOT in
+# the key, for every brand ("*"): ENERGY STAR (US program, market US), DisplayHDR (global list, market unstated) and the makers' US pages all print
+# the maker's global model string, so an exact normalised match is one model. Guard: an UNSTATED market matches any market, but two different
+# STATED markets (US vs EU) are never merged automatically - the second observation is quarantined for review. Brands whose model strings are
+# region-specific go in market_scoped_brands (market becomes part of the key). Stem matches stay proposals (stem_links), never merges.
+identity_scope:
+  cross_market_brands: "*"
+  market_scoped_brands: []

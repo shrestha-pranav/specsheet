@@ -84,7 +84,7 @@ class ResolveTest(unittest.TestCase):
                   c("c_4", 2.9, kind="measured", mmode="sustained", cond={"port": "C1", "active_ports": ["C1", "C2"]}, src="s2")]
         r = R.resolve_spec(PPS, claims, [])
         self.assertEqual((r["status"], r["value"], r["kind"]), ("known", 5, "official"), "headline = profile headline_condition, official")
-        self.assertEqual(r["alternatives"], [{"value": 5, "kind": "measured", "sources": ["s2"], "measurement_mode": "negotiated"}],
+        self.assertEqual(r["alternatives"], [{"value": 5, "kind": "measured", "sources": ["s2"], "claims": ["c_3"], "measurement_mode": "negotiated"}],
                          "equal measured value is NOT collapsed into the official one")
         self.assertEqual(len(r["conditional"]), 1, "C1+C2 condition (order-insensitive set) is one conditional row")
         row = r["conditional"][0]

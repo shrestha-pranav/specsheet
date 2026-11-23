@@ -22,7 +22,7 @@ import _ssd as S
 import _lt as L
 import _run
 
-ID, VERSION, SOURCE = "teamgroup_ssd", 1, "teamgroup-us-ssd"
+ID, VERSION, SOURCE = "teamgroup_ssd", 2, "teamgroup-us-ssd"
 CATEGORIES = {"ssds"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.teamgroupinc.com"

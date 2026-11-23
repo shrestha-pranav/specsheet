@@ -20,7 +20,7 @@ import _ssd as S
 import _lt as L
 import _run
 
-ID, VERSION, SOURCE = "samsung_ssd", 1, "samsung-us-ssd"
+ID, VERSION, SOURCE = "samsung_ssd", 2, "samsung-us-ssd"
 CATEGORIES = {"ssds"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.samsung.com"

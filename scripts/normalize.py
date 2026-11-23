@@ -193,6 +193,23 @@ def special(spec, v):
     return None
 
 
+LABEL_PREFIX = re.compile(r"^[^:\d]{1,40}:\s*")
+
+
+def raw_qualifier(spec, raw):
+    """Qualifier stated in the source literal of an already-numeric claim ("Up to 7,450 MB/s" -> up_to). Adapters that parse the number
+    themselves must not lose the qualifier (review 2 risk 2). Only a qualifier at the start of the literal (after an optional 'Label:')."""
+    if not isinstance(raw, str):
+        return None
+    s = LABEL_PREFIX.sub("", raw.strip(), count=1)
+    for rx, name in QUALS:
+        if rx.match(s):
+            return name
+    if UPTO.match(s) and not MAXLIKE.search(spec["key"] + " " + spec.get("label", "")):
+        return "up_to"
+    return None
+
+
 def normalise(spec, claim, U):
     """-> (ok, value, display). Failure keeps the raw literal at the call site (spec publishes not_yet_extracted)."""
     t, v = spec["type"], claim.get("value")
@@ -206,6 +223,10 @@ def normalise(spec, claim, U):
         x = to_number(spec, v, claim.get("unit"), U, q)
         if x is None:
             return False, None, {}
+        if isinstance(v, (int, float)) and "qualifier" not in q:
+            rq = raw_qualifier(spec, claim.get("raw"))
+            if rq:
+                q["qualifier"] = rq
         if t == "integer":
             if float(x) != int(x):
                 return False, None, {}

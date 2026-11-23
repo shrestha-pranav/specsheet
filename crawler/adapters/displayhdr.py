@@ -19,7 +19,7 @@ import _contract as C
 from _contract import Ref, Discovery, ParseResult, claim  # noqa
 import _run
 
-ID, VERSION, SOURCE = "displayhdr", 2, "displayhdr"
+ID, VERSION, SOURCE = "displayhdr", 3, "displayhdr"
 CATEGORIES = {"monitors"}
 URL = "https://displayhdr.org/certified-products/"
 ADAPTER = f"{ID}@{VERSION}"
@@ -114,8 +114,10 @@ class DisplayHdr:
         for sib in siblings(h.get("family", "")):
             pr.aliases.append({"text": sib, "kind": "model_variant", "source": "s1", "observed_at": obs})
         raw = f"{h['tier']} Certified Products: {cell} (CTS {h['cts']})"
-        pr.claims.append(claim(model, "hdr.vesa_tier", h["tier"], None, raw, "s1", ADAPTER, "html_table", obs,
-                               {"cts_version": h["cts"], "model_cell": cell}, raw))
+        c = claim(model, "hdr.vesa_tier", h["tier"], None, raw, "s1", ADAPTER, "html_table", obs, {"cts_version": h["cts"], "model_cell": cell}, raw)
+        if h.get("cts"):
+            c["conditions"] = {"cts_version": str(h["cts"])}     # @3: the certification's test-spec version is a basis condition (review 2 risk 2)
+        pr.claims.append(c)
         pr.fingerprints = {"raw": snap.snapshot, "model": model, "brand_token": cell.split()[0], "siblings": len(siblings(h.get("family", ""))), "cts": h["cts"]}
         return pr
 

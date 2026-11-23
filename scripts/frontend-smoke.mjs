@@ -21,7 +21,7 @@ const context = vm.createContext({
   matchMedia:()=>({matches:false,addEventListener(){}}),
   fetch:async url => {requests.push(url); try { const body = await json(url.split('?')[0]); return {ok:true,json:async()=>body}; } catch (error) { if (error.code === 'ENOENT') return {ok:false,status:404}; throw error; }}
 });
-const names = ['categories','indexFor','detailFor','displayValue','initialState','categoryStateQuery','productUrl','validatedReturnQuery','returnWithIds','matchFacet','missingIssueUrl','correctionIssueUrl','renderTable','renderProduct','renderCompare','previewOverlay','revisionsMarkup'];
+const names = ['categories','indexFor','detailFor','displayValue','initialState','categoryStateQuery','productUrl','validatedReturnQuery','returnWithIds','matchFacet','missingIssueUrl','correctionIssueUrl','renderTable','renderProduct','renderCompare','previewOverlay','revisionsMarkup','searchRows','extractIdentifiers','differingFields','cellValue','compareUrl','configTable','evidenceMarkup'];
 const source = await readFile(resolve(root, 'docs/app.js'), 'utf8');
 assert(source.includes('  renderRoute();\n})();'), 'Application bootstrap changed; update harness');
 vm.runInContext(source.replace('  renderRoute();\n})();', `  globalThis.test = {${names.join(',')}};\n})();`), context);
@@ -68,7 +68,6 @@ assert.equal(new URLSearchParams(ui.returnWithIds(laptop,query,['a'])).get('ids'
 assert(laptop.preview, 'laptops exposes a preview index');
 assert(!rows.some(r=>r.unreviewed), 'Trusted listing has no unreviewed rows');
 const previewRows = await ui.indexFor(laptop, true);
-assert.equal(previewRows.length, laptop.preview.count, 'Preview index loads');
 assert.equal(previewRows.filter(r=>r.unreviewed).length, laptop.preview.only_preview, 'Preview-only rows flagged');
 assert(['Dell','Apple'].every(b=>previewRows.some(r=>r.brand===b && r.unreviewed)), 'Preview-only brands visible when on');
 assert(!rows.some(r=>r.brand==='Dell'), 'Preview-only brands hidden by default');
@@ -80,6 +79,47 @@ const ps = ui.initialState(laptop, new URLSearchParams('preview=1'));
 assert.equal(ps.preview, true); assert.equal(new URLSearchParams(ui.categoryStateQuery(ps)).get('preview'), '1');
 assert.equal(ui.initialState(laptop, new URLSearchParams('')).preview, false);
 assert.equal(ui.initialState(laptop, new URLSearchParams('')).sort, 'coverage');
+// Critique 2 #1: preview is a strict union for every profile-driven category; accepted facts survive; candidates are text-labelled.
+for (const id of ['laptops','monitors','power-strips','routers','ssds']) {
+  const cat = categories.find(c=>c.id === id); Object.assign(cat, await json(`api/v1/${id}/schema.json`));
+  const trustedRows = await ui.indexFor(cat), unionRows = await ui.indexFor(cat, true);
+  const unionIds = new Set(unionRows.map(r=>r.id));
+  assert(trustedRows.every(r=>unionIds.has(r.id)), `${id}: every trusted id survives preview`);
+  assert.equal(unionRows.length, trustedRows.length + unionRows.filter(r=>r.unreviewed).length, `${id}: union = trusted + preview-only`);
+  const byId = new Map(unionRows.map(r=>[r.id,r]));
+  for (const r of trustedRows.slice(0, 400)) for (const [k,spec] of Object.entries(r.specs)) if (spec.status === 'known') assert.deepEqual(byId.get(r.id).specs[k].value, spec.value, `${id}: accepted value kept`);
+  assert(!trustedRows.some(r=>r.unreviewed || r.candidates), `${id}: trusted listing untouched by preview merge`);
+}
+const withCand = previewRows.find(r=>Object.keys(r.candidates || {}).length);
+if (withCand) { const key = Object.keys(withCand.candidates)[0]; const f = laptop.fields.find(x=>x.key===key) || {key,label:key,type:'text'}; assert.match(ui.cellValue(laptop, withCand, f), /Unreviewed candidate/, 'Candidate text-labelled in cell'); }
+
+// Critique 2 #2: retail-title search.
+assert(ui.extractIdentifiers('Lenovo Yoga 7 2-in-1 14AGP11 83TD000US laptop OLED').some(i=>i.value==='83TD000US'), 'MTM extracted from title');
+const fixture = [{id:'t1',brand:'Lenovo',name:'Yoga 7 2-in-1 14AGP11',variant_label:'x',identifiers:[{scheme:'mtm',value:'83TD000US'}],search:[]},{id:'t2',brand:'Lenovo',name:'Yoga 7 2-in-1 14AGP11',identifiers:[{scheme:'mtm',value:'83TD0000US'}],search:[]},{id:'t3',brand:'Dell',name:'XPS',identifiers:[{scheme:'mtm',value:'9999'}],search:[]}];
+const hit = ui.searchRows(fixture, 'Lenovo Yoga 7 2-in-1 14AGP11 83TD000US laptop OLED');
+assert.equal(hit.matches.get('t1').rank, 0, 'Exact identifier from retail title ranks first');
+assert(!hit.matches.has('t3'));
+assert.equal(ui.searchRows(laptop.rows || rows, 'Lenovo 83JQ0001US').matches.get('lenovo-83jq0001us')?.rank, 0, 'Brand + MTM finds the record');
+const near = ui.searchRows(rows, 'Lenovo Yoga 7 2-in-1 14AGP11 83TD000US laptop OLED');
+assert(near.matches.size > 0 && [...near.matches.values()].every(m=>m.why), 'Near-miss title returns explained candidates, not an absence claim');
+assert.equal(ui.searchRows(rows, 'zzqq nothing').matches.size, 0);
+assert.equal(ui.searchRows(rows, '83JQ0001US').matches.size, 1);
+const noHit = (() => { const st = ui.initialState(laptop, new URLSearchParams('q=zzqq%20k9k9k9')); elements.get('#results-table') || element('#results-table'); ui.renderTable(laptop, [], st, '', {found:ui.searchRows(rows, st.q), total:rows.length, baseCount:0}); return element('#results-table').innerHTML; })();
+assert.match(noHit, /No match for this search/); assert.doesNotMatch(noHit, /Not in the catalogue/); assert.match(noHit, /Prepare GitHub issue draft/); assert.match(noHit, /Public if submitted/);
+
+// Critique 2 #3/#4: configuration grid selects and launches comparison; differences span all tiers.
+const sib = rows.filter(r=>r.parent_id==='lenovo-83jq');
+assert(sib.length >= 4, '83JQ siblings indexed');
+const diffs = ui.differingFields(laptop, sib);
+assert(diffs.some(f=>f.key==='sw.os' || f.key==='input.pen'), 'Non-core differences (OS / pen) are disclosed');
+const grid = ui.configTable(laptop, sib, diffs.slice(0,5), new Set(['lenovo-83jq0002us']), '', true);
+assert.match(grid, /data-config="lenovo-83jq0002us"[^>]*checked/); assert.match(grid, /MTM \/ part number/); assert.match(grid, /83JQ000KUS/);
+const launch = ui.compareUrl('laptops', ['lenovo-83jq0002us','lenovo-83jq000kus'], false, query, {model:'lenovo-83jq'});
+assert.match(launch, /^#\/compare\/laptops\?ids=lenovo-83jq0002us%2Clenovo-83jq000kus/); assert.match(launch, /model=lenovo-83jq/);
+await ui.renderCompare(laptop, new URLSearchParams({ids:'lenovo-83jq0002us,lenovo-83jq000kus',model:'lenovo-83jq',diff:'1',detail:'1'}), 0);
+assert.match(element('main').innerHTML, /Back to model configurations/, 'Compare returns to the model');
+const cmp = element('#comparison-table').innerHTML;
+assert.match(cmp, /Claims differ/); assert.doesNotMatch(cmp, /No differences in the recorded schema/);
 const onlyPreview = previewRows.find(r=>r.unreviewed);
 const pd = await ui.detailFor(laptop.id, onlyPreview.id, true);
 assert(pd.previewOnly, 'Preview-only detail loads from the preview tree');

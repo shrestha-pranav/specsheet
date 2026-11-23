@@ -1,0 +1,7 @@
+{
+ "_why": "reviews/2026-11-23-astra-review-2.md risk 5: project targets, not hosting limits. Raising api_fail_mib is an explicit reviewed edit of this file.",
+ "api_warn_mib": 100,
+ "api_fail_mib": 150,
+ "repo_pack_warn_mib": 250,
+ "repo_pack_migrate_mib": 500
+}

@@ -581,6 +581,21 @@
           },
           "description": "Condition dimensions (top-level conditions[].id) that qualify this spec's claims, e.g. pps_ranges: [port, active_ports]."
         },
+        "basis_conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/slugPart"
+          },
+          "description": "Conditions that qualify an assertion's test/certification basis (ENERGY STAR power basis, DisplayHDR CTS version, SSD cache state) without splitting the headline: claims under different bases are distinct assertions in one group (equal values -> known with per-basis alternatives; different values -> no headline, alternatives listed)."
+        },
+        "revision_scope": {
+          "enum": [
+            "all",
+            "unspecified"
+          ],
+          "default": "unspecified",
+          "description": "Revision applicability of a model-level value: all = holds for every hardware revision by definition (e.g. the marketing class encoded in the model name), so revisions inherit it; unspecified (default) = the source describes the model page's default/unstated revision, so revisions do NOT inherit it."
+        },
         "headline_condition": {
           "type": "object",
           "description": "Which condition values give the single headline value for tables/facets, e.g. {active_ports: single}. Other conditioned claims show on the detail page.",

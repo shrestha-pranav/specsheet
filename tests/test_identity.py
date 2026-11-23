@@ -92,13 +92,14 @@ class RegistryTest(unittest.TestCase):
     def test_ids_are_reused_and_never_reminted(self):
         tmp = Path(tempfile.mkdtemp()) / "registry.jsonl"
         r = I.IdRegistry(tmp)
-        a = r.mint("acme-x1", ["c|mfr_model|acme|X1|"], "c", "model", set())
-        b = r.mint("acme-x1", ["c|mfr_model|acme|X-1B|"], "c", "model", set())
+        A = lambda v: I.anchor("c", I.key("mfr_model", v, "acme", None, "model"))      # v2 anchors (level included)
+        a = r.mint("acme-x1", [A("X1")], "c", "model", set())
+        b = r.mint("acme-x1", [A("X-1B")], "c", "model", set())
         self.assertEqual((a, b), ("acme-x1", "acme-x1-2"))
         r.flush()
         r2 = I.IdRegistry(tmp)
-        self.assertEqual(r2.lookup(["c|mfr_model|acme|X-1B|"]), ["acme-x1-2"])
-        self.assertEqual(r2.mint("acme-x1", ["c|mfr_model|acme|NEW|"], "c", "model", set()), "acme-x1-3", "issued ids are never reused")
+        self.assertEqual(r2.lookup([A("X-1B")]), ["acme-x1-2"])
+        self.assertEqual(r2.mint("acme-x1", [A("NEW")], "c", "model", set()), "acme-x1-3", "issued ids are never reused")
 
 
 if __name__ == "__main__":

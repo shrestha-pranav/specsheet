@@ -24,7 +24,7 @@ import _ssd as S
 import _lt as L
 import _run
 
-ID, VERSION, SOURCE = "sandisk_ssd", 1, "sandisk-us-ssd"
+ID, VERSION, SOURCE = "sandisk_ssd", 2, "sandisk-us-ssd"
 CATEGORIES = {"ssds"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.sandisk.com"

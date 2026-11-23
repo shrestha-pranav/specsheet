@@ -26,7 +26,7 @@ import _router as R
 import _lt as L
 import _run
 
-ID, VERSION, SOURCE = "tplink_routers", 1, "tplink-us-routers"
+ID, VERSION, SOURCE = "tplink_routers", 2, "tplink-us-routers"
 CATEGORIES = {"routers"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.tp-link.com"

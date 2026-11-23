@@ -357,7 +357,7 @@ a retype or re-unit is a MAJOR profile version and publishes as a new `schema_ve
 | `data/<cat>/<kind>/<id>.json` | yes | Normalized entity records (record.schema.json) with **accepted** claims, approved/rejected relations, identifiers, aliases. Diffs = review |
 | `data/_ids/tombstones.jsonl` | yes | Retired ids |
 | `data/gan-chargers/<brand>.json` | yes | v0 pilot input; migrated by a one-off importer (`method.extractor: legacy-pilot@0`, `review: candidate`) |
-| `docs/api/v1/**` | yes | Published static dataset (build output) |
+| `docs/api/v1/**` | no (gh-pages) | Published static dataset (build output): published as a single orphan commit on `gh-pages` by `scripts/release.sh`, never committed to main; `releases/<id>.json` (main) is the manifest |
 
 crawl.py today overwrites `page.html.gz`/`extract.json` on `--refresh`; v1 adapters must
 additionally write the snapshot log + blob so history is immutable. Per-source blob stores are
@@ -457,4 +457,5 @@ status, ...)` + per-category typed views for facets, `snapshots(sha256, source, 
   (never transmits claims). mtm -> package entity, hw_rev/edid_id -> revision child. Certifier/regulatory rows mint models but never name them.
 - Policies 2026-11-23: `claim/mfr-monitor-structured@1`, `claim/energystar-certified-power@1` (per-field key list), `claim/displayhdr-certified-tier@1`.
 - Size budget: `docs/api/v1` <= ~80 MB of bytes (Pages limit headroom); v0 `<cat>/products.json` now carries column fields only. Measured 68 MB.
+- Size budget (2026-11-23, review 2 risk 5): `data/release-budget.json` - live API warn 100 MiB / fail 150 MiB (logical bytes), main packed warn 250 MiB / migration trigger 500 MiB; `scripts/release_manifest.py` measures logical/gzip bytes, file count, changed bytes vs the previous gh-pages snapshot and packed sizes per release.
 

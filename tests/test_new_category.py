@@ -22,7 +22,8 @@ groups:
 specs:
   - {key: gen.size, label: Size, group: general, type: number, unit: in, tier: core, level: model,
      facet: {kind: range, bins: [10, 20]}, sources: [spec page]}
-  - {key: gen.kind, label: Kind, group: general, type: enum, enum: [alpha, beta], tier: core, level: model, facet: true, sources: [spec page]}
+  - {key: gen.kind, label: Kind, group: general, type: enum, enum: [alpha, beta], tier: core, level: model, facet: true, sources: [spec page],
+     revision_scope: all}
   - {key: cert.tier, label: Certification tier, group: general, type: enum, enum: [gold, silver], tier: core, level: model, facet: true, sources: [cert list]}
 """
 CATEGORY = """
@@ -33,6 +34,7 @@ features: [stem_links]
 stem: {cut_at: ["/"], strip_market_suffix: true}
 variant_label: {specs: [gen.size, gen.kind]}
 market_filter: {markets: [US]}
+identity_scope: {cross_market_brands: "*", market_scoped_brands: []}
 """
 POLICIES = """
 format: specsheet.policies/1
@@ -40,13 +42,15 @@ claim_policies:
   - id: claim/widgetco-spec@1
     since: "2026-11-23"
     rationale: fixture
-    match: {extractors: [widgetco@1], source_ids: [widgetco-us], kinds: [official], tiers: [manufacturer], statuses: [known], require_normalized: true}
+    match: {extractors: [widgetco@1], source_ids: [widgetco-us], kinds: [official], tiers: [manufacturer], statuses: [known], require_normalized: true,
+            keys: [gen.size, gen.kind]}
   - id: claim/widget-cert@1
     since: "2026-11-23"
     rationale: fixture
     match: {extractors: [widgetcert@1], source_ids: [widget-cert], kinds: [official], tiers: [certifier], keys: [cert.tier], statuses: [known]}
 relation_policies:
-  - {id: rel/fixture-adapter@1, since: "2026-11-23", rationale: fixture, methods: ["adapter:*"], types: [variant_of, package_of]}
+  - {id: rel/fixture-adapter@1, since: "2026-11-23", rationale: fixture,
+     rules: [{method: "adapter:widgetco-us", types: [variant_of, package_of], parsers: [widgetco@1]}]}
 """
 
 
@@ -79,8 +83,8 @@ class NewCategory(unittest.TestCase):
         (t / "data" / "decisions" / "policies.yaml").write_text(POLICIES)
         (t / "data" / "decisions" / "ledger.jsonl").write_text("")
         (t / "sources.extra.json").write_text(json.dumps({
-            "widgetco-us": {"brand": "widgetco", "brand_name": "WidgetCo", "category": "widgets", "module": "none", "importer": "model"},
-            "widget-cert": {"brand": "certbody", "brand_name": "Cert Body", "category": "widgets", "module": "none", "importer": "model"}}))
+            "widgetco-us": {"brand": "widgetco", "brand_name": "WidgetCo", "category": "widgets", "module": "none", "importer": "model", "parser": "widgetco@1"},
+            "widget-cert": {"brand": "certbody", "brand_name": "Cert Body", "category": "widgets", "module": "none", "importer": "model", "parser": "widgetcert@1"}}))
         rev = {"scheme": "hw_rev", "value": "B", "value_raw": "B", "issuer": "widgetco", "package_level": "revision", "role": "key", "sources": ["s1"]}
         # W-500 sells under two hardware versions (TP-Link style): model-scoped identifier value + revision_label; claims address a revision by locator
         v = lambda lab: {"scheme": "hw_version", "value": f"W-500 {lab}", "value_raw": f"W-500 {lab}", "issuer": "widgetco", "package_level": "revision", "role": "key",
@@ -157,7 +161,7 @@ class NewCategory(unittest.TestCase):
         self.assertEqual([(r["id"], r["label"], r["name"]) for r in m["revisions"]],
                          [("widgetco-w-500-v1", "V1", "W-500 (rev V1)"), ("widgetco-w-500-v2", "V2", "W-500 (rev V2)")])
         v1, v2 = m["revisions"]
-        self.assertEqual((v1["specs"], v1["differs"], v1["sources"]), ({}, [], []), "V1 states nothing of its own: it inherits the model's values")
+        self.assertEqual((v1["specs"], v1["differs"], v1["sources"]), ({}, [], []), "V1 states nothing of its own")
         self.assertEqual({k: s["value"] for k, s in v2["specs"].items()}, {"gen.size": 14, "gen.kind": "beta"})
         self.assertEqual(v2["differs"], ["gen.kind", "gen.size"])
         self.assertTrue(all(s["id"] == "s1" for s in v2["sources"]) and v2["sources"])
@@ -165,7 +169,11 @@ class NewCategory(unittest.TestCase):
         d = json.loads((self.api / "widgets" / "products" / "widgetco-w-500-v2.json").read_text())
         self.assertEqual((d["kind"], d["specs"]["gen.size"]["value"], d["relations"][0]["type"], d["relations"][0]["target"]), ("revision", 14, "variant_of", "widgetco-w-500"))
         d1 = json.loads((self.api / "widgets" / "products" / "widgetco-w-500-v1.json").read_text())
-        self.assertEqual(d1["specs"]["gen.size"]["inherited_from"], "widgetco-w-500")
+        # review 2 risk 3: a revision inherits only facts with established applicability (gen.kind: revision_scope all); the model's
+        # gen.size describes its default/unstated revision and is NOT inherited
+        self.assertEqual(d1["specs"]["gen.kind"]["inherited_from"], "widgetco-w-500")
+        self.assertNotIn("gen.size", d1["specs"])
+        self.assertEqual((m["specs"]["gen.size"]["revision_applicability"], m["specs"]["gen.kind"]["revision_applicability"]), ("unspecified", "all"))
         self.assertNotIn("revisions", d)
         # an unlabelled hw_rev revision (monitor style) still lists under its model with the identifier value as label
         m2 = json.loads((self.api / "widgets" / "products" / "widgetco-w-200-b.json").read_text())

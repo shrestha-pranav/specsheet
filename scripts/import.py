@@ -20,8 +20,12 @@ Claim ids are content hashes over stable evidence identity (source id, ref, loca
 measurement, extractor name) - not over record-local source tokens or the extractor version.
 Regional Lenovo MTMs (review P1-6): every observed MTM is kept in `regional_observations` (+ `coverage`), evidence by reference
 (snapshot + MTM in raw/); only US MTMs become published entities for now.
+Review 2 (round 4): anchors carry the level (identity.py v2, legacy registry lines migrated by recorded kind; ambiguity, kind changes and
+rebind attempts become identity_conflicts rows); policies are content-locked (decisions.py check_lock) and relation rules are checked
+against the parser that produced the link; HTML entities in names/aliases/claim literals are decoded once here (dehtml); the meta table
+records the release inputs (raw snapshot digest, parser fingerprints, profile/normaliser/code/policy/ledger/registry digests).
 """
-import argparse, collections, hashlib, json, os, re, sqlite3, sys, time
+import argparse, collections, hashlib, html, json, os, re, sqlite3, sys, time
 from pathlib import Path
 
 CODE = Path(__file__).resolve().parent.parent
@@ -177,9 +181,37 @@ def attach_claims(pr, rec, sid, resolve, default=None):
     return n
 
 
+PARSER = {"current": None}       # parser (id@version) of the observation being imported: relation policies are pinned to it
+
+
 def link(child, typ, parent, method):
     if child is not None and parent is not None and child is not parent and not any(r[0] == typ and r[1] is parent for r in child.rels):
-        child.rels.append((typ, parent, method))
+        child.rels.append((typ, parent, method, PARSER["current"] if not method.startswith(("suffix:", "stem:")) else None))
+
+
+_ENT = re.compile(r"&(#\d+|#x[0-9a-fA-F]+|[A-Za-z][A-Za-z0-9]{1,31});")
+
+
+def _un(v):
+    return html.unescape(v) if isinstance(v, str) and _ENT.search(v) else v
+
+
+def dehtml(pr):
+    """Decode HTML entities (&trade; &reg; &amp; &#8482;) in names/aliases/claim values and literals, once, at import (coordinator
+    finding 2026-11-23). Identifier VALUES are left alone (identity keys must not move); their value_raw is decoded. -> fields changed."""
+    n = 0
+    for a in pr.get("aliases") or []:
+        t = _un(a.get("text")); n += t != a.get("text"); a["text"] = t
+    for c in pr.get("claims") or []:
+        for f in ("value", "raw", "quote"):
+            if isinstance(c.get(f), str):
+                t = _un(c[f]); n += t != c[f]; c[f] = t
+            elif isinstance(c.get(f), list):
+                t = [_un(x) for x in c[f]]; n += t != c[f]; c[f] = t
+    for i in pr.get("identifiers") or []:
+        if isinstance(i.get("value_raw"), str):
+            t = _un(i["value_raw"]); n += t != i["value_raw"]; i["value_raw"] = t
+    return n
 
 
 # ----------------------------------------------------------------------------- per-source resolvers
@@ -391,7 +423,20 @@ def do_model(world, meta, sid, rec, pr, extra, stats):
     brand = cm["brand_aliases"].get(iss, iss)
     world.brand_names.setdefault(brand, cm["brand_names"].get(brand) or (meta["brand_name"] if brand == meta["brand"] else brand.upper() if len(brand) <= 3 else brand.title()))
     title = next((a["text"] for a in pr["aliases"] if a["kind"] == "marketing_name"), None) or mi["value_raw"]
-    e = world.get("model", brand, [K("mfr_model", mi["value"], brand, "model")], ob)
+    sc = cm.get("identity_scope")
+    if not sc:
+        raise SystemExit(f"research/{world.category}/category.yaml: importer 'model' needs an explicit identity_scope (review 2 risk 4)")
+    scoped = brand in (sc.get("market_scoped_brands") or []) or (sc.get("cross_market_brands", "*") != "*" and brand not in sc["cross_market_brands"])
+    mkey = K("mfr_model", mi["value"], brand, "model", mi.get("market") if scoped else None)
+    prev = world.index.get(mkey)
+    if prev is not None and not scoped and mi.get("market"):
+        stated = {v["market"] for (sch, _), v in prev.idents.items() if sch == "mfr_model" and v["role"] == "key" and v["market"]}
+        if stated and mi["market"] not in stated:      # unstated matches any market; two different STATED markets never merge automatically
+            world.quarantine.append({"kind": "model", "keys": world.anchors([mkey]), "hits": [world.anchors(prev.keys)], "obs": ob})
+            world.events.append(("quarantine", world.category, None, world.anchors([mkey]), ob, {"reason": "cross_market_exact", "markets": sorted(stated | {mi["market"]})}))
+            stats["quarantined_cross_market"] += 1
+            return
+    e = world.get("model", brand, [mkey], ob)
     if e is None:
         return
     e.idhint = e.idhint or f"{brand}-{slug(mi['value'])}"
@@ -763,12 +808,21 @@ def main():
     ap.add_argument("--seed-ids", help="one-off: seed an empty registry from a pre-registry sqlite so published ids do not change")
     ap.add_argument("--reverse-sources", action="store_true", help="test: ingest sources in reverse order (ids must not change)")
     ap.add_argument("--no-mint", action="store_true", help="test: never append to the id registry (replay must not need new ids)")
+    ap.add_argument("--strict-parsers", action="store_true", help="release: fail when a policy's audited parser fingerprint differs from the code")
     a = ap.parse_args()
     if a.source and Path(a.db).resolve() == DB_DEFAULT.resolve():
         raise SystemExit("--source builds a partial store; it may not replace state/specsheet.sqlite. Pass --db <scratch path>.")
     t0 = time.time()
     data = Path(a.data)
     dec = Decisions(data)
+    locked_new, policy_lock_digest = dec.check_lock(write=not (bool(a.source) or a.no_mint))
+    parsers = {sid: registry.parser_info(sid) for sid, m in registry.SOURCES.items()}
+    current_fp = {v["parser"]: v["fingerprint"] for v in parsers.values() if v["parser"]}
+    drift = dec.parser_drift(current_fp)
+    for pid, ex, old, new in drift:
+        print(f"PARSER DRIFT: {pid} audited {ex} at {old}, code is now {new}: re-audit + new policy id", file=sys.stderr)
+    if drift and a.strict_parsers:
+        raise SystemExit(f"--strict-parsers: {len(drift)} audited parser(s) changed since their policy audit")
     reg = I.IdRegistry(data / "_ids" / "registry.jsonl", data / "_ids" / "tombstones.jsonl", readonly=bool(a.source) or a.no_mint)
     cats = sorted({m["category"] for m in registry.SOURCES.values() if (ROOT / "research" / m["category"] / "spec-profile.yaml").exists()})
     profiles = {c: load_profile(c) for c in cats}
@@ -778,6 +832,7 @@ def main():
     import lenovo_psref
     emitted = set(lenovo_psref.COLMAP)
     stats, worlds, obs_rows, events = {}, {}, [], []
+    raw_digest_rows, parse_cache = [], collections.Counter()
     cat_stats = collections.defaultdict(lambda: collections.defaultdict(int))     # category-level (post-ingest) counters
     srcs = [(k, m) for k, m in registry.SOURCES.items() if m["category"] in cats]
     if a.reverse_sources:
@@ -798,15 +853,21 @@ def main():
             disc = {r["key"]: dict(r, **(r.get("hints") or {})) for r in d.get("refs", [])}
             st["discovery_complete"] = int(bool(d.get("complete")))
         n = 0
-        for rec, pr, extra in registry.iter_observations(sid, reparse=a.reparse):
+        cstats = {}
+        PARSER["current"] = parsers[sid]["parser"]
+        for rec, pr, extra in registry.iter_observations(sid, reparse=a.reparse, stats=cstats):
             n += 1
+            st["html_entities_decoded"] += dehtml(pr)
+            raw_digest_rows.append((sid, str(rec["ref"]), rec["snapshot"]))
             if sid == "cyberpower":
                 extra = {"discontinued": bool((disc.get(rec["ref"]) or {}).get("discontinued"))}
             fn = IMPORTERS[meta.get("importer", "generic")]
             fn(w, meta, sid, rec, pr, extra, st)
             obs_rows.append((rec["snapshot"], sid, str(rec["ref"]), rec["adapter"], rec["fetched_at"], rec["url"], len(pr["claims"]), len(pr["identifiers"])))
         st["observations"] = n
-        print(f"{sid}: {n} observations", file=sys.stderr)
+        for k_, v_ in cstats.items():
+            st[k_] = v_; parse_cache[k_] += v_
+        print(f"{sid}: {n} observations {cstats or ''}", file=sys.stderr)
     ignored_rows = []
     rules = {c: load_label_rules(c) for c in worlds}
     for sid, st in stats.items():
@@ -830,7 +891,7 @@ def main():
             k = I.key(scheme, value, brand, None, kind)
             if k:
                 seed[I.anchor(cat, k)] = eid
-    taken, minted, reused, id_conflicts = set(seed.values()), 0, 0, []
+    taken, minted, reused, id_conflicts, kind_changes = set(seed.values()), 0, 0, [], []
     pending = []
     for cat, w in worlds.items():
         for e in w.ents:
@@ -841,6 +902,9 @@ def main():
                 events.append(("id_conflict", cat, e, anchors, None, {"ids": hit}))
             if hit and hit[0] not in taken:
                 e.id = hit[0]; taken.add(e.id); reused += 1
+                if reg.kind_of.get(e.id) and reg.kind_of[e.id] != e.kind:
+                    kind_changes.append((cat, e.id, reg.kind_of[e.id], e.kind))
+                    events.append(("id_kind_changed", cat, e, anchors, None, {"registered": reg.kind_of[e.id], "now": e.kind}))
                 reg.add(e.id, anchors, cat, e.kind)
             else:
                 pending.append((cat, I.LEVELS.get(e.kind, 9), anchors[0] if anchors else "", e, anchors))
@@ -861,8 +925,8 @@ def main():
     for cat, w in worlds.items():
         for e in w.ents:
             e.parent = None
-            for typ, tgt, method in e.rels:
-                st_, did = dec.relation_state(e.id, typ, tgt.id, method)
+            for typ, tgt, method, parser in e.rels:
+                st_, did = dec.relation_state(e.id, typ, tgt.id, method, parser)
                 if any(dec.vetoed(x, y) for x in w.anchors(e.keys) for y in w.anchors(tgt.keys)):
                     st_, did = "rejected", "split-veto"
                 rel_rows.append((e.id, typ, tgt.id, st_, method, did))
@@ -1024,7 +1088,12 @@ def main():
         for q in w.quarantine:
             ob = q["obs"] or (None, None, None)
             con.execute("INSERT INTO quarantine VALUES (?,?,?,?,?,?,?)", (cat, q["kind"], json.dumps(q["keys"]), json.dumps(q["hits"]), ob[0], ob[1], ob[2]))
-    con.executemany("INSERT INTO identity_conflicts VALUES (?,?,?,?,?)", conflict_rows + [(c, "id_registry", "", json.dumps(h), "anchors map to several registered ids: " + ",".join(an[:3])) for c, h, an in id_conflicts])
+    con.executemany("INSERT INTO identity_conflicts VALUES (?,?,?,?,?)", conflict_rows + [(c, "id_registry", "", json.dumps(h), "anchors map to several registered ids: " + ",".join(an[:3])) for c, h, an in id_conflicts]
+                    + [(c, "id_kind", i, json.dumps([i]), f"registered as {k0}, now {k1}: review (level is part of the anchor)") for c, i, k0, k1 in kind_changes]
+                    + [(x["anchor"].split("|")[1] if x["anchor"].startswith("v2|") else x["anchor"].split("|")[0], "registry_ambiguous", x["anchor"], json.dumps(x["ids"]),
+                        "one anchor registered under several ids" + (" (legacy v1 line, migrated by kind)" if x["legacy"] else "")) for x in reg.ambiguous]
+                    + [(x["anchor"].split("|")[1], "registry_rebind", x["anchor"], json.dumps([x["bound"], x["attempted"]]), "anchor already bound to another id: not rebound")
+                       for x in reg.rebinds])
     cov = []
     for sid, st in stats.items():
         for (mtm, c8, mt, fam, country, graw, snap) in st["regional"]:
@@ -1056,13 +1125,34 @@ def main():
     con.executemany("INSERT INTO invalid_claims VALUES (?,?,?,?,?,?)", [k + (n, invalid_ex[k]) for k, n in invalid.items()])
     con.executemany("INSERT INTO ignored_labels VALUES (?,?,?,?,?)", ignored_rows)
     con.executemany("INSERT INTO observations VALUES (?,?,?,?,?,?,?,?)", obs_rows)
+    def fdig(*paths):
+        h = hashlib.sha256()
+        for pth in paths:
+            pth = Path(pth)
+            h.update(str(pth.name).encode() + b"\0" + (pth.read_bytes() if pth.exists() else b"<absent>") + b"\0")
+        return "sha256:" + h.hexdigest()
+    raw_digest = "sha256:" + hashlib.sha256("\n".join("|".join(r) for r in sorted(raw_digest_rows)).encode()).hexdigest()
+    used = {sid: parsers[sid] for sid in sorted(stats)}
+    inputs = {"raw_snapshots": {"digest": raw_digest, "observations": len(raw_digest_rows)},
+              "parsers": used,
+              "profiles": {c: {"version": str(profiles[c][0]["version"]), "digest": fdig(ROOT / "research" / c / "spec-profile.yaml", ROOT / "research" / c / "category.yaml",
+                                                                                      ROOT / "research" / c / "psref-mapping.yaml", ROOT / "research" / c / "label-mapping.yaml")} for c in cats},
+              "normalizer": fdig(CODE / "scripts" / "normalize.py", CODE / "scripts" / "resolve.py"),
+              "importer": fdig(CODE / "scripts" / "import.py", CODE / "scripts" / "identity.py", CODE / "scripts" / "decisions.py", CODE / "crawler" / "adapters" / "registry.py"),
+              "policies": {"file": fdig(data / "decisions" / "policies.yaml"), "lock": policy_lock_digest, "active": [p["id"] for p in dec.active()],
+                           "approval": dec.approvals(), "parser_drift": [list(x) for x in drift]},
+              "ledger": {"digest": fdig(data / "decisions" / "ledger.jsonl"), "lines": dec.lines},
+              "registry": {"digest": fdig(data / "_ids" / "registry.jsonl", data / "_ids" / "tombstones.jsonl"), "migrated_legacy_anchors": reg.migrated,
+                           "ambiguous": len(reg.ambiguous), "rebind_attempts": len(reg.rebinds), "kind_changes": len(kind_changes)}}
     meta_rows = {"built_at": time.strftime("%FT%TZ", time.gmtime()), "sources": json.dumps(sorted(stats)), "accepted_digest": digest.hexdigest(),
                  "policies": json.dumps([p["id"] for p in dec.claim_policies + dec.relation_policies]), "ledger_lines": str(dec.lines),
                  "profiles": json.dumps({c: str(profiles[c][0]["version"]) for c in cats}), "scope": "partial" if a.source else "full"}
     con.executemany("INSERT INTO meta VALUES (?,?)", list(meta_rows.items()))
+    flushed = reg.flush()
+    inputs["registry"]["digest_after"] = fdig(data / "_ids" / "registry.jsonl", data / "_ids" / "tombstones.jsonl")
+    con.execute("INSERT INTO meta VALUES (?,?)", ("inputs", json.dumps(inputs, sort_keys=True)))
     con.commit(); con.close()
     os.replace(tmp, dbp)
-    flushed = reg.flush()
     print(json.dumps({"db": str(dbp), "seconds": round(time.time() - t0, 1), "accepted_digest": digest.hexdigest(),
                       "entities": {c: dict(v) for c, v in out_counts.items()}, "claims_review": {c: dict(v) for c, v in review_counts.items()},
                       "ids": {"reused": reused, "new": minted, "registry_lines_appended": flushed, "id_conflicts": len(id_conflicts)},
@@ -1070,7 +1160,11 @@ def main():
                                    "relations": dict(collections.Counter(f"{r[3]}:{r[4].split(':')[0]}" for r in rel_rows))},
                       "source_stats": {k: {a: b for a, b in v.items() if isinstance(b, int) and b and a in ("models", "packages", "skipped_wildcard_pattern", "skipped_other_category", "regional_packages_not_published", "no_model_identifier")} for k, v in stats.items() if metas[registry.SOURCES[k]["category"]]["features"] is not None and registry.SOURCES[k].get("importer") == "model"},
                       "stem_proposals": {c: dict(v) for c, v in cat_stats.items()},
-                      "invalid_claims": sum(invalid.values()), "unmapped_rows": len(um_rows), "ignored_label_rows": len(ignored_rows)}, indent=1))
+                      "invalid_claims": sum(invalid.values()), "unmapped_rows": len(um_rows), "ignored_label_rows": len(ignored_rows),
+                      "governance": {"policies_locked_now": locked_new, "parser_drift": len(drift), "pending_approval": sorted(k for k, v in dec.approvals().items() if v != "approved"),
+                                     "registry": inputs["registry"], "raw_snapshots": inputs["raw_snapshots"], "parse_cache": dict(parse_cache),
+                                     "html_entities_decoded": sum(v.get("html_entities_decoded", 0) for v in stats.values()),
+                                     "quarantined_cross_market": sum(v.get("quarantined_cross_market", 0) for v in stats.values())}}, indent=1))
 
 
 if __name__ == "__main__":

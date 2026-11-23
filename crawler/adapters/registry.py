@@ -3,12 +3,18 @@ for the latest 200 snapshot of every ref, whichever adapter style produced it.
 
 - class adapters (lenovo_psref, asus, apple; runner _run.py): parse(snap, blobs, profile) is called directly.
 - tripplite and cyberpower are class adapters too (round 3); the FnAdapter compatibility shim is gone.
-- default reads the derived raw/<src>/parsed/<key>.json (rebuildable); reparse=True re-runs parse() over the blobs (offline, pure).
+- default reads the derived raw/<src>/parsed/<key>.json cache (rebuildable) ONLY when it was written for this snapshot by this exact
+  parser (id@version + parser_fingerprint = sha256 of the adapter module and every crawler/adapters module it imports). Any parser
+  edit, version bump or snapshot change is a cache miss: the snapshot is re-parsed and the cache rewritten (review 2, SSD hazard).
+  reparse=True re-parses every snapshot and rewrites the cache too.
+- snapshot identity is (source, ref, snapshot sha) and does NOT depend on the parser version: a parser bump re-parses existing
+  snapshots instead of orphaning them. An adapter may narrow which fetchers' snapshots it reads with `snapshot_formats`
+  (adapter tags or 'id@*' globs); default = any version of its own id.
 - lenovo-psref is always re-parsed from blobs through a US-only view of the bundle (a full run is ~1M MTMs; the catalogue is US-market),
   and its non-US rows are summarised in `extra` instead of becoming 28 claims each.
-Nothing here writes to raw/.
+Nothing here writes to raw/ except the derived parsed/ cache.
 """
-import dataclasses, gzip, importlib, json, re, sys
+import dataclasses, fnmatch, gzip, hashlib, importlib, json, re, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -48,6 +54,9 @@ SOURCES = {
 _extra = Path(C.ROOT) / "sources.extra.json"
 if _extra.exists() and C.ROOT != C.CODE:
     SOURCES.update(json.loads(_extra.read_text()))
+
+
+ADAPTERS = Path(__file__).resolve().parent
 
 
 def safe(k):
@@ -95,18 +104,110 @@ def _lenovo(source_id, store, latest):
         yield rec, dataclasses.asdict(pr), {"us_rows": us, "nonus": nonus, "columns": cols, "total": len(rows), "info": b.get("info") or {}}
 
 
-def iter_observations(source_id, reparse=False):
+CACHE_FORMAT = 2
+_FP = {}
+
+
+NOT_PARSER = {"_run", "registry"}      # CLI runner + this module: not parsing code (and _run imports registry lazily)
+
+
+def _module_deps(name, seen):
+    """Local crawler/adapters modules `name` imports (transitively), minus NOT_PARSER."""
+    if name in seen or name in NOT_PARSER:
+        return
+    p = ADAPTERS / f"{name}.py"
+    if not p.exists():
+        return
+    seen[name] = p
+    for m in re.findall(r"^\s*(?:import|from)\s+([A-Za-z_][A-Za-z0-9_]*)", p.read_text(), re.M):
+        _module_deps(m, seen)
+
+
+def parser_fingerprint(module):
+    """sha256 over the adapter module + every local module it imports (sorted by name). Any parser edit changes it."""
+    if module not in _FP:
+        seen = {}
+        _module_deps(module, seen)
+        h = hashlib.sha256()
+        for n in sorted(seen):
+            h.update(n.encode() + b"\0" + seen[n].read_bytes() + b"\0")
+        _FP[module] = "sha256:" + h.hexdigest()[:20]
+    return _FP[module]
+
+
+def adapter_for(source_id):
     meta = SOURCES[source_id]
+    mod = importlib.import_module(meta["module"])
+    return next(getattr(mod, n)() for n in dir(mod) if isinstance(getattr(mod, n), type) and getattr(getattr(mod, n), "source_id", None) == source_id)
+
+
+def parser_info(source_id):
+    """-> {"parser": "id@ver", "fingerprint": ...} for the code that parses this source now (release manifest + cache key)."""
+    meta = SOURCES[source_id]
+    if meta.get("legacy"):
+        return {"parser": "crawlpy-strips@1", "fingerprint": parser_fingerprint("crawlpy_strips")}
+    try:
+        mod = importlib.import_module(meta["module"])
+    except ModuleNotFoundError:     # fixture source: declared parser tag, no code to fingerprint
+        return {"parser": meta.get("parser"), "fingerprint": None}
+    cls = next(getattr(mod, n) for n in dir(mod) if isinstance(getattr(mod, n), type) and getattr(getattr(mod, n), "source_id", None) == source_id)
+    return {"parser": f"{cls.id}@{cls.version}", "fingerprint": parser_fingerprint(meta["module"])}
+
+
+def compatible(ad_cls, rec):
+    """Snapshot selection by fetcher id, never by parser version (review 2 risk 1)."""
+    pats = getattr(ad_cls, "snapshot_formats", None) or [f"{ad_cls.id}@*"]
+    return any(fnmatch.fnmatchcase(rec.get("adapter") or "", p) for p in pats)
+
+
+def cache_read(p, parser, fp, snapshot):
+    try:
+        d = json.loads(p.read_text())
+    except (OSError, ValueError):
+        return None
+    if not isinstance(d, dict) or d.get("cache_format") != CACHE_FORMAT:
+        return None          # legacy bare ParseResult: unknown parser -> miss
+    if d.get("parser") != parser or d.get("parser_fingerprint") != fp or d.get("snapshot") != snapshot:
+        return None
+    return d["result"]
+
+
+def cache_write(p, parser, fp, snapshot, result):
+    p.parent.mkdir(parents=True, exist_ok=True)
+    tmp = p.with_suffix(".tmp")
+    tmp.write_text(json.dumps({"cache_format": CACHE_FORMAT, "parser": parser, "parser_fingerprint": fp, "snapshot": snapshot, "result": result}))
+    tmp.replace(p)
+
+
+def iter_observations(source_id, reparse=False, stats=None):
+    """stats (optional dict) receives cache_hits / cache_misses / reparsed counters."""
+    meta = SOURCES[source_id]
+    stats = stats if stats is not None else {}
     if meta.get("legacy"):
         yield from importlib.import_module("crawlpy_strips").iter_legacy(source_id)
         return
     store = C.BlobStore(source_id)
-    latest = store.latest()
+    try:
+        mod = importlib.import_module(meta["module"])
+    except ModuleNotFoundError:     # fixture sources (sources.extra.json, module "none"): pre-parsed results only, no parser to validate
+        for key, rec in sorted(store.latest().items()):
+            p = store.dir / "parsed" / (safe(key) + ".json")
+            if p.exists():
+                d = json.loads(p.read_text())
+                stats["cache_only"] = stats.get("cache_only", 0) + 1
+                yield rec, (d["result"] if isinstance(d, dict) and d.get("cache_format") else d), {}
+        return
+    cls = next(getattr(mod, n) for n in dir(mod) if isinstance(getattr(mod, n), type) and getattr(getattr(mod, n), "source_id", None) == source_id)
+    latest = {}
+    for s in store.snapshots():
+        if s["status"] == 200 and compatible(cls, s):
+            latest[s["ref"]] = s
     if source_id == "cyberpower":   # the log also holds datasheet PDFs (documents); entities come from the item JSON only
         latest = {k: r for k, r in latest.items() if k.isdigit() and r["blob"].endswith(".json")}
     if source_id == "lenovo-psref":
         yield from _lenovo(source_id, store, latest)
         return
+    parser, fp = f"{cls.id}@{cls.version}", parser_fingerprint(meta["module"])
     refs = {}
     d = store.dir / "discovery.json"
     if d.exists():
@@ -114,17 +215,22 @@ def iter_observations(source_id, reparse=False):
             refs[r["key"]] = C.Ref(source_id, r["key"], r["url"], r.get("hints") or {k: v for k, v in r.items() if k not in ("key", "url")})
     ad = None
     for key, rec in sorted(latest.items()):
-        p = store.dir / "parsed" / (safe(key) + ".json")
-        if reparse or not p.exists():
-            if ad is None:
-                mod = importlib.import_module(meta["module"])
-                ad = next(getattr(mod, n)() for n in dir(mod) if isinstance(getattr(mod, n), type) and getattr(getattr(mod, n), "source_id", None) == source_id)
-            if key not in refs and meta.get("importer") != "strip":   # laptop adapters: only refs the discovery knows
-                continue
-            snap = C.Snapshot(rec["snapshot"], refs.get(key) or C.Ref(source_id, key, rec["url"]), 200, rec["fetched_at"], rec["final_url"], {})
-            try:
-                yield rec, dataclasses.asdict(ad.parse(snap, store, None)), {}
-            except Exception as e:  # noqa
-                print(f"[registry] parse failed {source_id}/{key}: {e!r}", file=sys.stderr)
+        if key not in refs and meta.get("importer") != "strip":   # laptop adapters: only refs the discovery knows
             continue
-        yield rec, json.loads(p.read_text()), {}
+        p = store.dir / "parsed" / (safe(key) + ".json")
+        hit = None if reparse else cache_read(p, parser, fp, rec["snapshot"])
+        if hit is not None:
+            stats["cache_hits"] = stats.get("cache_hits", 0) + 1
+            yield rec, hit, {}
+            continue
+        if ad is None:
+            ad = cls()
+        snap = C.Snapshot(rec["snapshot"], refs.get(key) or C.Ref(source_id, key, rec["url"]), 200, rec["fetched_at"], rec["final_url"], {})
+        try:
+            res = dataclasses.asdict(ad.parse(snap, store, None))
+        except Exception as e:  # noqa
+            print(f"[registry] parse failed {source_id}/{key}: {e!r}", file=sys.stderr)
+            continue
+        cache_write(p, parser, fp, rec["snapshot"], res)
+        stats["cache_misses"] = stats.get("cache_misses", 0) + 1
+        yield rec, res, {}

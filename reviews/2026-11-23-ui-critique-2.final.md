@@ -1,0 +1,1 @@
+Wrote the [72-line critique](reviews/2026-11-23-ui-critique-2.md) with ranked findings and concrete fixes. Only the requested file was changed. Browser-verification limitations are documented.

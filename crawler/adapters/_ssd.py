@@ -137,14 +137,17 @@ def temp_range(s):
     return {"min": int(m[1]), "max": int(m[2])} if m else None
 
 
-# Rated sequential speeds are the maker's "up to" figures, measured with the SLC cache active: carry that as a claim condition
-# (profile headline_condition cache_state=in_slc_cache) rather than a separate qualifier claim.
+# Rated sequential speeds are the maker's "up to" figures. "Up to" alone does NOT say the SLC cache was active (review 2 risk 2): the
+# claim keeps the literal (normalize.py turns a leading "up to" into qualifier up_to) and gets the cache_state condition ONLY when its own
+# text evidences it (Samsung "Measured with Intelligent TurboWrite technology being activated", "SLC cache", WD "nCache"). cache_state is a
+# BASIS condition in the profile (basis_conditions): it qualifies the assertion without splitting the headline.
 CACHED = {"perf.seq_read", "perf.seq_write"}
+CACHE_EVIDENCE = re.compile(r"\bSLC\b|TurboWrite|nCache|\bcache\b", re.I)
 
 
 def add(pr, adapter, snap, key, value, raw, loc_kind, loc_val, label):
     import _lt as L
     n = len(pr.claims)
     L.add(pr, adapter, snap, key, value, raw, loc_kind, loc_val, label)
-    if key in CACHED and len(pr.claims) > n:
+    if key in CACHED and len(pr.claims) > n and CACHE_EVIDENCE.search(" ".join(str(x) for x in (raw, label) if x)):
         pr.claims[-1]["conditions"] = {"cache_state": "in_slc_cache"}

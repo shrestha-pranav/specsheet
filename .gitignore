@@ -8,3 +8,6 @@ reviews/*.log
 raw/
 .agents/
 .codex/hooks.json
+# Generated site data: published from the orphan gh-pages branch by scripts/release.sh, never committed to main
+# (takes effect once docs/api is removed from the index: git rm -r -q --cached docs/api)
+docs/api/

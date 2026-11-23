@@ -103,6 +103,12 @@ def revision_entry(rd, ent, idents, model_detail):
             "sources": [s for s in rd["sources"] if s["id"] in cited], "differs": differs}
 
 
+def has_value(r):
+    """A resolved spec that publishes a value: known/conflicted, or an `unknown` headline that still lists trusted values (incomparable
+    bases in alternatives, condition-specific rows). Such an entity keeps its row/detail file (public ids must not vanish)."""
+    return r["status"] in ("known", "conflicted") or bool(r.get("alternatives") or r.get("conditional"))
+
+
 def load_profile(cat):
     return catmeta.load(cat)["profile"]
 
@@ -127,8 +133,9 @@ def schema_doc(cat, p, cfg):
     return {"id": cat, "schema_version": str(p["version"]), "groups": groups, "conditions": p.get("conditions", []), "fields": fields}
 
 
-def view(ents, claims, absn, specdefs, parent_of, ok_states):
-    """Resolve every entity for one review scope, then inherit along approved parent links (parents first)."""
+def view(ents, claims, absn, specdefs, parent_of, ok_states, identity=None):
+    """Resolve every entity for one review scope, then inherit along approved parent links (parents first). A model with revision
+    children marks each spec `revision_applicability` all|unspecified (resolve.revision_scope); revisions inherit only `all`."""
     resolved = {}
     for eid in ents:
         specs = {}
@@ -148,9 +155,13 @@ def view(ents, claims, absn, specdefs, parent_of, ok_states):
             continue
         pk, ck = ents[par]["kind"], ents[eid]["kind"]
         for k, r in resolved[par].items():
-            if r["status"] != "known" or k in resolved[eid] or not R.inheritable(specdefs[k], pk, ck):
+            if r["status"] != "known" or k in resolved[eid] or not R.inheritable(specdefs[k], pk, ck, identity):
                 continue
             resolved[eid][k] = dict(r, inherited_from=r.get("inherited_from") or par)
+    with_revs = {parent_of[e] for e in ents if ents[e]["kind"] == "revision" and parent_of.get(e) in ents}
+    for eid in with_revs:
+        for k, r in resolved[eid].items():
+            r["revision_applicability"] = R.revision_scope(specdefs[k], identity)
     return resolved, cycles
 
 
@@ -191,13 +202,13 @@ def publish(api: Path, build_stats: dict):
             docs[r["entity_id"]].append(dict(r))
         parent_of = {eid: e["parent_id"] for eid, e in ents.items() if e["parent_id"] in ents}
 
-        trusted, cyc = view(ents, claims, absn, specdefs, parent_of, {"accepted"})
-        preview, _ = view(ents, claims, absn, specdefs, parent_of, {"accepted", "candidate"})
+        trusted, cyc = view(ents, claims, absn, specdefs, parent_of, {"accepted"}, p.get("identity"))
+        preview, _ = view(ents, claims, absn, specdefs, parent_of, {"accepted", "candidate"}, p.get("identity"))
 
         def selectable(eid, specs):
             if ents[eid]["kind"] == "revision" and not cfg.get("revision_rows"):
                 return False        # revisions are published inside their model's detail (and as their own detail file); index rows are opt-in
-            return ents[eid]["kind"] != "family" and any(r["status"] in ("known", "conflicted") for r in specs.values()) \
+            return ents[eid]["kind"] != "family" and any(has_value(r) for r in specs.values()) \
                 and catmeta.passes_market_filter(cfg, idents[eid])
 
         rows_t = [eid for eid in sorted(ents) if selectable(eid, trusted[eid])]
@@ -210,7 +221,7 @@ def publish(api: Path, build_stats: dict):
                 while r and r in ents and r not in pub and r not in anc:
                     anc.add(r); r = ents[r]["parent_id"]
         # a revision of any published model/ancestor model gets a detail file even when it has no index row (a link target for the model's `revisions[]`)
-        rev_files = {eid for eid, e in ents.items() if e["kind"] == "revision" and e["parent_id"] in (pub | anc) and any(r["status"] in ("known", "conflicted") for r in trusted[eid].values())}
+        rev_files = {eid for eid, e in ents.items() if e["kind"] == "revision" and e["parent_id"] in (pub | anc) and any(has_value(r) for r in trusted[eid].values())}
         files_t = pub | anc | rev_files
         children = collections.defaultdict(list)
         for eid in files_t:
