@@ -10,3 +10,4 @@
 - Monitors renders 4133 trusted rows, no console errors.
 - Preview box copy is laptop-specific ("e.g. Dell, Surface, Apple") on monitors with 0 preview brands: make per-category or hide when 0.
 - Size class "Not yet extracted" for ASUS rows: derive from display diagonal spec (derived claim kind).
+- SSD/other names contain HTML entities like &trade; -> decode in adapters
