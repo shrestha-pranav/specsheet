@@ -5,6 +5,7 @@ import { join, resolve } from 'node:path';
 import assert from 'node:assert/strict';
 
 const root = resolve(import.meta.dirname, '../docs/api/v1');
+const listJson = async dir => (await readdir(dir).catch(e => { if (e.code === 'ENOENT') return []; throw e; })).filter(f => f.endsWith('.json'));
 const parse = async path => JSON.parse(await readFile(path, 'utf8'));
 let parsedJsonFiles = 0;
 async function parseAllJson(directory) {
@@ -53,7 +54,7 @@ async function checkV1(category) {
   const facets = await parse(join(root, category.facets));
   for (const [k, fc] of Object.entries(facets)) assert(fields.has(k) && fields.get(k).facet, `${category.id}: facet ${k} not a faceted field`);
   const productDir = join(root, category.id, 'products');
-  const files = new Set((await readdir(productDir)).filter(f => f.endsWith('.json')).map(f => f.slice(0, -5)));
+  const files = new Set((await listJson(productDir)).map(f => f.slice(0, -5)));
   const ids = new Set();
   const stripped = ['snapshot', 'locator'];
   for (const row of rows) {
@@ -139,7 +140,7 @@ for (const category of categories) {
   assert(Array.isArray(index));
   assert.equal(index.length, category.count, `Index count for ${category.id}`);
   const productDir = join(root, category.id, 'products');
-  const files = (await readdir(productDir)).filter(file => file.endsWith('.json'));
+  const files = await listJson(productDir);
   assert.equal(files.length, category.count, `Detail count for ${category.id}`);
   const ids = new Set();
   for (const row of index) {

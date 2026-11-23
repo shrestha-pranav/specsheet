@@ -1,7 +1,7 @@
 {
  "dataset_version": "1.0.0",
- "build": "acd6b5214c4b",
- "generated_at": "2026-11-23T08:43:03Z",
+ "build": "8ebdcb2c5810",
+ "generated_at": "2026-11-23T09:11:11Z",
  "record_format": "specsheet.record/1",
  "categories": [
   {
@@ -81,10 +81,29 @@
     "products": "preview/power-strips/products/",
     "only_preview": 341
    }
+  },
+  {
+   "id": "ssds",
+   "schema_version": "0.1.0",
+   "count": 547,
+   "index": [
+    "ssds/index.json"
+   ],
+   "facets": "ssds/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/ssds/index.json"
+    ],
+    "count": 55,
+    "products": "preview/ssds/products/",
+    "only_preview": 0
+   }
   }
  ],
  "release": {
-  "accepted_digest": "75d6b33b4a2797401b1159401d72a4a0df87f6adfb19124d4a4207a2fe3a6b92",
+  "accepted_digest": "832d68fa26762fad9f620cb37a05e0970ab782135b3096f5be97122a21b6c849",
   "policies": [
    "claim/mfr-structured-datasheet@1",
    "claim/asus-techspec-typed@1",
@@ -92,13 +111,16 @@
    "claim/mfr-monitor-structured@1",
    "claim/energystar-certified-power@1",
    "claim/displayhdr-certified-tier@1",
+   "claim/mfr-ssd-structured@1",
+   "claim/mfr-ssd-samsung@1",
    "rel/source-stated-hierarchy@1"
   ],
   "ledger_lines": 0,
   "profiles": {
    "laptops": "0.2",
    "monitors": "0.1.0",
-   "power-strips": "0.1"
+   "power-strips": "0.1",
+   "ssds": "0.1.0"
   },
   "coverage": {
    "lenovo-psref": {
@@ -155,6 +177,18 @@
    },
    "asus-us-monitors": {
     "observations": "346",
+    "discovery_complete": "1"
+   },
+   "samsung-us-ssd": {
+    "observations": "55",
+    "discovery_complete": "1"
+   },
+   "sandisk-us-ssd": {
+    "observations": "74",
+    "discovery_complete": "1"
+   },
+   "teamgroup-us-ssd": {
+    "observations": "61",
     "discovery_complete": "1"
    },
    "tripplite": {

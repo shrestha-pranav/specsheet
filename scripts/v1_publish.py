@@ -301,11 +301,13 @@ def publish(api: Path, build_stats: dict):
         validate_details(cat, list(details.values()) + list(pdetails.values()))
         folder = api / cat
         dump(folder / "schema.json", sch)
+        (folder / "products").mkdir(parents=True, exist_ok=True)    # a category with zero trusted rows still has an (empty) products dir
         for eid, d in details.items():
             dump(folder / "products" / f"{eid}.json", d, compact=True)
         paths = write_shards(folder, out_rows)
         dump(folder / "facets.json", build_facets(fields, out_rows), compact=True)
         pfolder = api / "preview" / cat
+        (pfolder / "products").mkdir(parents=True, exist_ok=True)
         for eid, d in pdetails.items():
             dump(pfolder / "products" / f"{eid}.json", d, compact=True)
         ppaths = write_shards(pfolder, prev_rows)

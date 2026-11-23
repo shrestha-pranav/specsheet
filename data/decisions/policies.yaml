@@ -90,6 +90,38 @@ claim_policies:
       keys: [hdr.vesa_tier]
       statuses: [known]
       require_normalized: true
+  - id: claim/mfr-ssd-structured@1
+    since: "2026-11-23"
+    rationale: >-
+      Consumer SSDs, manufacturer-owned pages: SanDisk/WD product pages (sandisk_ssd@1) and the TEAMGROUP per-capacity tables
+      (teamgroup_ssd@1). Per field: only the listed keys, only values that normalise to the profile type. Rated sequential speeds
+      are the maker's "up to" figures and are accepted AS conditioned claims (adapter attaches cache_state=in_slc_cache, the profile
+      headline condition), never as sustained speeds; the post-cache speed and SLC cache size are not on these pages and stay absent.
+      NOT accepted (preview candidates): id.msrp_us (price at fetch time) and anything not listed (e.g. unmapped labels, certifications).
+    audit: "A2 ssds report (parse + reparse verified, enum/number types validated over every claim) + A3 per-key counts and spot check, 2026-11-23"
+    match:
+      extractors: [sandisk_ssd@1, teamgroup_ssd@1]
+      source_ids: [sandisk-us-ssd, teamgroup-us-ssd]
+      kinds: [official]
+      tiers: [manufacturer]
+      statuses: [known, not_applicable]
+      keys: [gen.capacity, gen.device_class, gen.form_factor, gen.weight, if.pcie_gen, if.pcie_lanes, if.protocol, if.nvme_version, if.usb_standard, if.usb_connector, hw.controller, hw.controller_vendor, hw.dram_type, hw.dram_size, hw.dram_gen, hw.nand_type, hw.nand_vendor, perf.seq_read, perf.seq_write, perf.rand_read_iops_qd1, perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption, therm.temp_operating, port.drop]
+      require_normalized: true
+  - id: claim/mfr-ssd-samsung@1
+    since: "2026-11-23"
+    rationale: >-
+      samsung.com/us spec API (samsung_ssd@1), same per-field rule and "up to" speed conditioning as claim/mfr-ssd-structured@1, but
+      gen.capacity is NOT accepted: A2 found a real page defect (990 PRO 2TB heatsink row states 1TB), so capacity stays a candidate
+      until a human accepts it or the adapter derives it from the part number. id.msrp_us stays a candidate (price at fetch time).
+    audit: "A2 ssds report (Samsung page/API defects listed) + A3 per-key counts, 2026-11-23"
+    match:
+      extractors: [samsung_ssd@1]
+      source_ids: [samsung-us-ssd]
+      kinds: [official]
+      tiers: [manufacturer]
+      statuses: [known, not_applicable]
+      keys: [gen.device_class, gen.form_factor, gen.weight, if.pcie_gen, if.pcie_lanes, if.protocol, if.nvme_version, if.usb_standard, if.usb_connector, hw.controller, hw.controller_vendor, hw.dram_type, hw.dram_size, hw.dram_gen, hw.nand_type, hw.nand_vendor, perf.seq_read, perf.seq_write, perf.rand_read_iops_qd1, perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption, therm.temp_operating, port.drop]
+      require_normalized: true
 relation_policies:
   - id: rel/source-stated-hierarchy@1
     since: "2026-11-22"

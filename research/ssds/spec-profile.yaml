@@ -1,0 +1,1249 @@
+profile_format: specsheet.category-profile/1
+category: ssds
+version: 0.1.0
+label: SSDs (NVMe, SATA, portable)
+market: US
+status: draft
+scope: 'Consumer SSDs: M.2 NVMe, M.2 SATA, 2.5in SATA, portable USB SSDs. Excludes enterprise U.2/E1.S (listed only as other),
+  HDDs, memory cards, USB flash drives.'
+identity:
+  levels:
+  - level: family
+    label: Product line
+    meaning: e.g. Samsung 990 PRO; Crucial P3 Plus; WD_BLACK SN850X
+    key_schemes:
+    - mfr_family
+    inherits: false
+  - level: model
+    label: Model (capacity-independent)
+    meaning: Model number stem MZ-V9P / SNV3S / CT-P3P (rarely printed alone)
+    key_schemes:
+    - mfr_model
+    inherits: true
+  - level: configuration
+    label: Capacity SKU
+    meaning: 'Model + capacity part number: MZ-V9P2T0B/AM, CT1000P3PSSD8, WDS100T3X0E, SNV3S/1000G'
+    key_schemes:
+    - mfr_sku
+    inherits: true
+  - level: revision
+    label: Hardware revision
+    meaning: Silent controller/NAND/DRAM/firmware change under the same part number (date code, FW string, PCB rev, NAND part)
+    key_schemes:
+    - hw_rev
+    - fw_string
+    inherits: true
+  - level: package
+    label: Packaging variant
+    meaning: Heatsink vs bare, retail vs OEM, color, GTIN, regional suffix (/AM = Americas, BW = EU/world)
+    key_schemes:
+    - gtin
+    inherits: true
+  primary_key: Manufacturer capacity part number incl. region suffix (MZ-V9P2T0B/AM). Same part number can contain several
+    hardware revisions; revision identified by FW string / label date code / reviewer teardown, never by retail title.
+  per_brand:
+    samsung: MZ-V9P2T0B/AM (/AM US, BW world, no-slash = OEM); heatsink variant MZ-V9P2T0CW
+    wd_sandisk: WDS100T3X0E (SN850X 1TB), WDS200T3X0E; heatsink variant WDS100T2XHE; SanDisk Portable SDSSDE..
+    crucial_micron: CT1000P3PSSD8 (P3 Plus 1TB), CT1000P3SSD8 (P3), CT2000T700SSD3; heatsink 'SSD5'
+    kingston: SNV3S/1000G, SKC3000S/1024G, SFYRS/1000G (FURY Renegade, heatsink 'SFYRSK')
+    sk_hynix: SHPP41-1000GM (Platinum P41), SHGP31-1000GM-2
+    seagate: ZP1000GM3A013 (FireCuda 530), ZP1000GV3A012 (Barracuda),
+    corsair: CSSD-F1000GBMP600PNH (MP600 PRO NH)
+    teamgroup: TM8FP7001T0C101 (MP700 1TB),
+    lexar: LNM790X001T-RNNNG (NM790)
+    sabrent: SB-ROCKET-NVMe4-1TB, SB-RKT4P-1TB
+    pny: M280CS2140HS-1TB-RB (CS2140 heatsink)
+    adata_xpg: ASX8100NP-1TT-C (Gammix S70 Lite)
+    predator_acer: BL.9BWWR.xxx / GM7000-1TB (Predator GM7000)
+  schemes:
+  - scheme: mfr_family
+    level: family
+  - scheme: mfr_model
+    level: model
+    normalize: upper_strip_spaces
+  - scheme: mfr_sku
+    level: configuration
+    normalize: upper_keep_slash
+  - scheme: hw_rev
+    level: revision
+    alias_only: false
+  - scheme: fw_string
+    level: revision
+    alias_only: false
+  - scheme: gtin
+    issuer: GS1
+    level: package
+  variant_axes:
+  - gen.capacity
+  - hw.nand_type
+  - hw.dram_type
+  - hw.controller
+  - hw.nand_vendor
+  - fw.version
+  - id.revision_marker
+  model_defining:
+  - gen.device_class
+  - gen.form_factor
+  - if.protocol
+  - if.pcie_gen
+  - if.pcie_lanes
+  note: 'Silent revision swaps are the product''s point: WD SN550 TLC->QLC (2021, WD confirmed NAND+firmware change, no new
+    model number), Crucial P2 TLC->QLC, ADATA/other controller/NAND swaps (Tom''s Hardware 2021). Revision claims always carry
+    provenance and the evidence marker (FW string, date code, NAND part).'
+units:
+  system: us_customary
+  display:
+    mm: in
+    g: oz
+conditions:
+- id: cache_state
+  label: SLC cache state
+  type: enum
+  enum:
+  - in_slc_cache
+  - post_slc_cache
+  - full_drive
+- id: fill_pct
+  label: Drive fill level
+  type: number
+  unit: '%'
+- id: firmware
+  label: Firmware
+  type: text
+- id: host
+  label: Test host/interface
+  type: text
+- id: queue_depth
+  label: Queue depth
+  type: number
+groups:
+- id: general
+  label: General & identity
+  order: 0
+- id: interface
+  label: Interface & form
+  order: 1
+- id: silicon
+  label: Controller, NAND & DRAM
+  order: 2
+- id: perf
+  label: Performance
+  order: 3
+- id: endurance
+  label: Endurance & warranty
+  order: 4
+- id: security
+  label: Security
+  order: 5
+- id: power
+  label: Power
+  order: 6
+- id: thermal
+  label: Thermals & heatsink
+  order: 7
+- id: compat
+  label: Compatibility
+  order: 8
+- id: firmware
+  label: Firmware & tools
+  order: 9
+- id: portable
+  label: Portable SSD
+  order: 10
+- id: identity
+  label: Identifiers
+  order: 11
+specs:
+- key: gen.brand
+  label: Brand
+  group: general
+  type: enum
+  unit: null
+  tier: core
+  facet:
+    kind: enum
+  why: Filter
+  level: family
+  sources:
+  - Manufacturer datasheet / product page spec table
+  example: Samsung
+  enum_open: true
+- key: gen.product_line
+  label: Product line
+  group: general
+  type: text
+  unit: null
+  tier: core
+  facet: false
+  why: Family name groups capacities and revisions
+  level: family
+  traps:
+  - Brands reuse line names across generations (SN770 vs SN770M, P3 vs P3 Plus)
+  sources:
+  - Manufacturer datasheet / product page spec table
+  example: 990 PRO
+- key: gen.device_class
+  label: Device class
+  group: general
+  type: enum
+  unit: null
+  tier: core
+  facet:
+    kind: enum
+    column: true
+  why: Internal M.2 vs 2.5in vs portable are different purchases
+  level: model
+  sources:
+  - Manufacturer datasheet / product page spec table
+  enum:
+  - m2_nvme
+  - m2_sata
+  - sata_2_5
+  - portable_usb
+  - u2_u3_e1s
+  - other
+  identity_role: model_defining
+- key: gen.capacity
+  label: Capacity
+  group: general
+  type: number
+  unit: GB
+  tier: core
+  facet:
+    kind: range
+    bins:
+    - 250
+    - 500
+    - 1000
+    - 2000
+    - 4000
+    - 8000
+    column: true
+  why: Primary buying filter; specs differ per capacity
+  level: configuration
+  traps:
+  - Decimal GB (1 GB = 10^9 B) per IDEMA; OS shows less
+  - Capacity name (1TB) vs usable (931 GiB)
+  sources:
+  - Manufacturer datasheet PDF
+  example: 1000
+  identity_role: variant_axis
+- key: gen.form_factor
+  label: Form factor
+  group: general
+  type: enum
+  unit: null
+  tier: core
+  facet:
+    kind: enum
+    column: true
+  why: 'Fit: 2230 handhelds (Steam Deck/ROG Ally), 2242, 2280'
+  level: model
+  traps:
+  - 2230 and 2280 versions of one line (Kingston NV3, WD SN740) are different SKUs with different capacity/endurance caps
+  sources:
+  - Manufacturer datasheet / product page spec table
+  enum:
+  - m2_2230
+  - m2_2242
+  - m2_2260
+  - m2_2280
+  - m2_22110
+  - sata_2_5
+  - portable
+  - other
+  enum_open: true
+  identity_role: model_defining
+- key: gen.sides
+  label: Single or double sided
+  group: general
+  type: enum
+  unit: null
+  tier: important
+  facet:
+    kind: enum
+  why: Double-sided does not fit some laptop/handheld/heatsinked slots
+  level: configuration
+  traps:
+  - Rarely printed; Kingston says 'single-sided' on some; high capacities often double-sided
+  sources:
+  - Manufacturer datasheet PDF
+  - Review teardown (TechPowerUp/Tom's Hardware/StorageReview PCB photos); not printed by maker
+  enum:
+  - single
+  - double
+  - unknown
+- key: gen.dimensions
+  label: Dimensions (L x W x H)
+  group: general
+  type: object
+  unit: null
+  tier: detail
+  facet: false
+  why: Clearance incl. heatsink
+  level: configuration
+  traps:
+  - Heatsink variants add 8-20 mm height
+  sources:
+  - Manufacturer datasheet / product page spec table
+  example:
+    length: 80
+    width: 22
+    height: 2.3
+  fields:
+  - key: length
+    type: number
+    unit: mm
+  - key: width
+    type: number
+    unit: mm
+  - key: height
+    type: number
+    unit: mm
+- key: gen.weight
+  label: Weight
+  group: general
+  type: number
+  unit: g
+  tier: detail
+  facet: false
+  why: Handheld/portable use
+  level: configuration
+  sources:
+  - Manufacturer datasheet PDF
+  example: 7
+- key: gen.release_year
+  label: Release year
+  group: general
+  type: integer
+  unit: null
+  tier: detail
+  facet: false
+  why: Age/generation
+  level: model
+  sources:
+  - Manufacturer datasheet / product page spec table
+  example: 2022
+- key: if.protocol
+  label: Protocol
+  group: interface
+  type: enum
+  unit: null
+  tier: core
+  facet:
+    kind: enum
+  why: NVMe vs SATA vs USB-bridge
+  level: model
+  sources:
+  - Manufacturer datasheet / product page spec table
+  example: nvme
+  enum:
+  - nvme
+  - sata_ahci
+  - usb_uasp
+  - usb_bot
+  identity_role: model_defining
+- key: if.pcie_gen
+  label: PCIe generation
+  group: interface
+  type: integer
+  unit: null
+  tier: core
+  facet:
+    kind: enum
+    column: true
+  why: Gen3/4/5 decides speed ceiling and heat
+  level: model
+  traps:
+  - '''Gen4'' drives may be x2 or use Gen3 controller; backward-compat to Gen3 is real but caps speed'
+  sources:
+  - Manufacturer datasheet / product page spec table
+  example: 4
+  identity_role: model_defining
+- key: if.pcie_lanes
+  label: PCIe lanes
+  group: interface
+  type: integer
+  unit: null
+  tier: core
+  facet:
+    kind: enum
+  why: x2 vs x4 caps bandwidth
+  level: model
+  traps:
+  - Some budget/2230 parts are x2 and only reviews/spec rows say so
+  sources:
+  - Manufacturer datasheet / product page spec table
+  example: 4
+  identity_role: model_defining
+- key: if.nvme_version
+  label: NVMe spec version
+  group: interface
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Feature support (HMB, APST)
+  level: model
+  sources:
+  - Manufacturer datasheet / product page spec table
+  example: '2.0'
+- key: if.m2_key
+  label: M.2 key
+  group: interface
+  type: enum
+  unit: null
+  tier: important
+  facet:
+    kind: enum
+  why: B+M vs M key socket compatibility (SATA M.2 vs NVMe)
+  level: model
+  traps:
+  - M.2 SATA SSDs look identical to NVMe but won't work in NVMe-only slots
+  sources:
+  - Manufacturer datasheet / product page spec table
+  enum:
+  - M
+  - B+M
+  - B
+- key: if.usb_standard
+  label: USB standard (portable)
+  group: interface
+  type: enum
+  unit: null
+  tier: core
+  facet:
+    kind: enum
+  why: 'Portable: real link speed'
+  level: model
+  traps:
+  - '''USB 3.2 Gen 2x2'' marketing vs host that only does Gen 2 (10 Gbps); ''USB 3.2'' alone is ambiguous'
+  sources:
+  - Manufacturer datasheet / product page spec table
+  example: usb_3_2_gen2
+  enum:
+  - usb_3_2_gen1
+  - usb_3_2_gen2
+  - usb_3_2_gen2x2
+  - usb4
+  - thunderbolt3
+  - thunderbolt4
+  - usb_2
+  enum_open: true
+- key: if.usb_connector
+  label: Connector (portable)
+  group: interface
+  type: enum
+  unit: null
+  tier: detail
+  facet: false
+  why: Cable compatibility
+  level: model
+  sources:
+  - Manufacturer datasheet / product page spec table
+  enum:
+  - usb_c
+  - usb_a
+  - micro_b
+  - mixed
+- key: hw.controller
+  label: Controller
+  group: silicon
+  type: text
+  unit: null
+  tier: core
+  facet:
+    kind: enum
+    column: true
+  why: Determines sustained speed, DRAM-less, power, heat
+  level: revision
+  traps:
+  - Not printed on most budget datasheets (Kingston NV3 says only 'Gen 4x4 NVMe controller')
+  - Same model number can ship with different controllers across revisions (reported for Samsung 970 EVO Plus, Team MP34)
+  - Samsung/WD/SK hynix/Micron ship in-house; budget brands buy Phison/SMI/Maxio/InnoGrit
+  sources:
+  - Review teardown (TechPowerUp/Tom's Hardware/StorageReview PCB photos); not printed by maker; Phison E27T/E21T, SMI SM2269XT/2263XT,
+    Maxio MAP1602 in teardown reviews
+  - SSD Manager/firmware readout (identify via nvme id-ctrl)
+  example: Phison E27T
+  identity_role: variant_axis
+- key: hw.controller_vendor
+  label: Controller vendor
+  group: silicon
+  type: enum
+  unit: null
+  tier: important
+  facet:
+    kind: enum
+  why: Filter; in-house vs third party
+  level: revision
+  sources:
+  - Manufacturer datasheet / product page spec table
+  enum:
+  - in_house
+  - phison
+  - silicon_motion
+  - maxio
+  - innogrit
+  - marvell
+  - realtek
+  - yeestor
+  - other
+  enum_open: true
+- key: hw.nand_vendor
+  label: NAND maker
+  group: silicon
+  type: enum
+  unit: null
+  tier: core
+  facet:
+    kind: enum
+  why: Quality/layers; swaps hit this
+  level: revision
+  traps:
+  - Often 'unspecified' ('3D NAND'); YMTC/Kioxia/Micron lots can mix within one model
+  - Brand marks Samsung V-NAND, WD BiCS, Micron B58R names, not vendor
+  sources:
+  - Manufacturer datasheet PDF (Samsung/WD/Micron name it)
+  - Review teardown (TechPowerUp/Tom's Hardware/StorageReview PCB photos); not printed by maker
+  enum:
+  - samsung
+  - kioxia
+  - sandisk
+  - micron
+  - sk_hynix
+  - ymtc
+  - intel_solidigm
+  - other
+  enum_open: true
+  identity_role: variant_axis
+- key: hw.nand_type
+  label: NAND cell type
+  group: silicon
+  type: enum
+  unit: null
+  tier: core
+  facet:
+    kind: enum
+    column: true
+  why: TLC vs QLC changes endurance and post-cache speed
+  level: revision
+  traps:
+  - QLC rarely disclosed in name; WD SN550 and Crucial P2 moved TLC->QLC with no model number change
+  - '''3D NAND'' alone says nothing about bits per cell'
+  - Pseudo-SLC cache is not the base NAND type
+  sources:
+  - Manufacturer datasheet PDF (Samsung, WD, Crucial name it)
+  - Review teardown (TechPowerUp/Tom's Hardware/StorageReview PCB photos); not printed by maker
+  example: tlc
+  enum:
+  - slc
+  - mlc
+  - tlc
+  - qlc
+  - plc
+  identity_role: variant_axis
+- key: hw.nand_layers
+  label: NAND layer count
+  group: silicon
+  type: integer
+  unit: null
+  tier: important
+  facet:
+    kind: range
+    bins:
+    - 64
+    - 96
+    - 128
+    - 176
+    - 232
+    - 300
+  why: Proxy for generation/efficiency
+  level: revision
+  traps:
+  - Layer counts are die-level marketing, mixed counts per die possible
+  sources:
+  - Review teardown (TechPowerUp/Tom's Hardware/StorageReview PCB photos); not printed by maker
+  - NAND part marking (decoded by reviewers)
+  example: 236
+- key: hw.nand_part
+  label: NAND package part number
+  group: silicon
+  type: list
+  unit: null
+  tier: detail
+  facet: false
+  why: Identifies actual NAND (revision proof)
+  level: revision
+  traps:
+  - Different part number under same model = silent revision
+  sources:
+  - Review teardown (TechPowerUp/Tom's Hardware/StorageReview PCB photos); not printed by maker
+  items: text
+- key: hw.dram_type
+  label: DRAM cache
+  group: silicon
+  type: enum
+  unit: null
+  tier: core
+  facet:
+    kind: enum
+    column: true
+  why: DRAM vs DRAM-less/HMB matters for random IO and sustained writes
+  level: revision
+  traps:
+  - Datasheet silent => usually DRAM-less; 'HMB' uses host RAM and some hosts/OSes disable it
+  - DRAM-less variant can share a name with a DRAM model (SN770 vs SN850; Crucial P3 vs P3 Plus differ in number only)
+  sources:
+  - Manufacturer datasheet PDF (Samsung lists '1GB LPDDR4')
+  - Review teardown (TechPowerUp/Tom's Hardware/StorageReview PCB photos); not printed by maker
+  example: dram
+  enum:
+  - dram
+  - dramless_hmb
+  - dramless_none
+  - unknown
+  identity_role: variant_axis
+- key: hw.dram_size
+  label: DRAM size
+  group: silicon
+  type: number
+  unit: GB
+  tier: detail
+  facet: false
+  why: DRAM:capacity ratio (1GB per TB typical)
+  level: configuration
+  sources:
+  - Manufacturer datasheet PDF (Samsung)
+  example: 1
+- key: hw.dram_gen
+  label: DRAM type
+  group: silicon
+  type: enum
+  unit: null
+  tier: detail
+  facet: false
+  why: LPDDR4/DDR4
+  level: model
+  sources:
+  - Manufacturer datasheet / product page spec table
+  enum:
+  - ddr3
+  - ddr4
+  - lpddr4
+  - lpddr4x
+  - lpddr5
+  enum_open: true
+- key: hw.hmb_support
+  label: Host Memory Buffer supported
+  group: silicon
+  type: bool
+  unit: null
+  tier: important
+  facet:
+    kind: bool
+  why: DRAM-less drives depend on it
+  level: revision
+  traps:
+  - Often shown only in id-ctrl hmpre/hmmin or reviews
+  sources:
+  - Review teardown (TechPowerUp/Tom's Hardware/StorageReview PCB photos); not printed by maker
+  - nvme id-ctrl dump
+- key: perf.seq_read
+  label: Sequential read (rated)
+  group: perf
+  type: number
+  unit: MB/s
+  tier: core
+  facet:
+    kind: range
+    bins:
+    - 500
+    - 2000
+    - 3500
+    - 5000
+    - 7000
+    - 10000
+    - 12000
+    column: true
+  why: Headline marketing figure; compare only within test config
+  level: configuration
+  traps:
+  - '''Up to'' on best capacity; lower capacities slower (Kingston NV3 500GB 5000/3000 vs 2TB 6000/5000)'
+  - Write figure measured with cache active ('Intelligent TurboWrite' footnote)
+  - Gen5 'up to 14,000' needs Gen5 host
+  sources:
+  - Manufacturer datasheet PDF
+  example: 7450
+  conditions:
+  - cache_state
+  headline_condition:
+    cache_state: in_slc_cache
+- key: perf.seq_write
+  label: Sequential write (rated)
+  group: perf
+  type: number
+  unit: MB/s
+  tier: core
+  facet:
+    kind: range
+    bins:
+    - 500
+    - 2000
+    - 3500
+    - 5000
+    - 7000
+    - 10000
+    - 12000
+    column: true
+  why: Headline marketing figure; compare only within test config
+  level: configuration
+  traps:
+  - '''Up to'' on best capacity; lower capacities slower (Kingston NV3 500GB 5000/3000 vs 2TB 6000/5000)'
+  - Write figure measured with cache active ('Intelligent TurboWrite' footnote)
+  - Gen5 'up to 14,000' needs Gen5 host
+  sources:
+  - Manufacturer datasheet PDF
+  example: 6900
+  conditions:
+  - cache_state
+  headline_condition:
+    cache_state: in_slc_cache
+- key: perf.rand_read_iops_qd32
+  label: Random read 4K QD32
+  group: perf
+  type: number
+  unit: IOPS
+  tier: important
+  facet: false
+  why: Heavy multitask/server-like load
+  level: configuration
+  traps:
+  - Many brands list 'QD32 T16', others QD128; not comparable
+  sources:
+  - Manufacturer datasheet PDF
+  example: 1200000
+- key: perf.rand_write_iops_qd32
+  label: Random write 4K QD32
+  group: perf
+  type: number
+  unit: IOPS
+  tier: important
+  facet: false
+  why: Same
+  level: configuration
+  sources:
+  - Manufacturer datasheet PDF
+  example: 1550000
+- key: perf.rand_read_iops_qd1
+  label: Random read 4K QD1
+  group: perf
+  type: number
+  unit: IOPS
+  tier: important
+  facet: false
+  why: Closest to desktop responsiveness
+  level: configuration
+  traps:
+  - Seldom printed by budget brands
+  sources:
+  - Manufacturer datasheet PDF
+  example: 22000
+- key: perf.rand_write_iops_qd1
+  label: Random write 4K QD1
+  group: perf
+  type: number
+  unit: IOPS
+  tier: detail
+  facet: false
+  why: Same
+  level: configuration
+  sources:
+  - Manufacturer datasheet PDF
+  example: 80000
+- key: perf.slc_cache_size
+  label: SLC cache size
+  group: perf
+  type: number
+  unit: GB
+  tier: core
+  facet: false
+  why: How much you can write before slowdown
+  level: revision
+  traps:
+  - Almost never in datasheets; dynamic cache shrinks as drive fills
+  - Samsung TurboWrite sizes in whitepapers/support pages
+  - 'Dependent on fill level: a full drive has tiny cache'
+  sources:
+  - Samsung 'Intelligent TurboWrite' notes
+  - Review teardown (TechPowerUp/Tom's Hardware/StorageReview PCB photos); not printed by maker
+  example: 114
+  conditions:
+  - cache_state
+- key: perf.post_cache_write
+  label: Sustained write after SLC cache full
+  group: perf
+  type: number
+  unit: MB/s
+  tier: core
+  facet:
+    kind: range
+    bins:
+    - 100
+    - 300
+    - 600
+    - 1000
+    - 1500
+    - 2500
+    column: true
+  why: The real speed for large transfers (games, video); QLC/DRAM-less collapse here
+  level: revision
+  traps:
+  - Not in any datasheet; reviewers measure it
+  - 'WD SN550 change: ~610 -> ~390 MB/s post-cache (2021)'
+  - Depends on drive fill, temperature and firmware
+  sources:
+  - Review teardown (TechPowerUp/Tom's Hardware/StorageReview PCB photos); not printed by maker
+  example: 1500
+- key: perf.sustained_read
+  label: Sustained read (full drive)
+  group: perf
+  type: number
+  unit: MB/s
+  tier: detail
+  facet: false
+  why: Rarely throttled; useful for QLC
+  level: revision
+  sources:
+  - Review teardown (TechPowerUp/Tom's Hardware/StorageReview PCB photos); not printed by maker
+- key: perf.cache_state
+  label: Test cache state (condition)
+  group: perf
+  type: enum
+  unit: null
+  tier: detail
+  facet: false
+  why: Qualifier for speed claims
+  level: configuration
+  sources:
+  - Manufacturer datasheet / product page spec table
+  enum:
+  - in_slc_cache
+  - post_slc_cache
+  - full_drive
+- key: end.tbw
+  label: Endurance (TBW)
+  group: endurance
+  type: number
+  unit: TB
+  tier: core
+  facet:
+    kind: range
+    bins:
+    - 100
+    - 300
+    - 600
+    - 1200
+    - 2400
+    column: true
+  why: Write budget before warranty ends; scales with capacity
+  level: configuration
+  traps:
+  - Per capacity not per model (Samsung 990 PRO 1TB 600 vs 2TB 1200)
+  - Warranty ends at whichever of years or TBW first; Kingston uses 'Percentage Used' >=100
+  - Entry QLC drives 0.1-0.2 DWPD
+  sources:
+  - Manufacturer datasheet PDF
+  example: 600
+- key: end.dwpd
+  label: Drive writes per day
+  group: endurance
+  type: number
+  unit: null
+  tier: detail
+  facet: false
+  why: 'Derived: TBW / (cap x warranty days)'
+  level: configuration
+  traps:
+  - Derived, never published for client SSDs
+  sources:
+  - Manufacturer datasheet / product page spec table
+- key: end.warranty_years
+  label: Warranty period
+  group: endurance
+  type: number
+  unit: year
+  tier: core
+  facet:
+    kind: range
+    bins:
+    - 1
+    - 3
+    - 5
+    column: true
+  why: Support period
+  level: family
+  traps:
+  - Years OR TBW, whichever first; region differences (US vs EU)
+  sources:
+  - Manufacturer datasheet PDF
+  example: 5
+- key: end.mtbf
+  label: MTBF
+  group: endurance
+  type: number
+  unit: h
+  tier: detail
+  facet: false
+  why: Marketing reliability figure
+  level: family
+  traps:
+  - Statistical, not a life estimate
+  sources:
+  - Manufacturer datasheet PDF
+  example: 1500000
+- key: end.power_loss_protection
+  label: Power-loss protection
+  group: endurance
+  type: bool
+  unit: null
+  tier: detail
+  facet: false
+  why: Client drives mostly lack hardware PLP
+  level: family
+  sources:
+  - Manufacturer datasheet / product page spec table
+- key: sec.encryption
+  label: Hardware encryption
+  group: security
+  type: enum
+  unit: null
+  tier: important
+  facet:
+    kind: enum
+  why: BitLocker offload vs TCG Opal vs none
+  level: model
+  traps:
+  - Opal on some Windows setups is silently enabled by BitLocker eDrive policy; absent on cheaper tiers (Samsung 990 EVO)
+  - Portable 'password protection' software is not hardware SED
+  sources:
+  - Manufacturer datasheet PDF (Samsung 'TCG/Opal V2.0')
+  example: opal_2_ieee1667
+  enum:
+  - none
+  - aes256
+  - opal_2
+  - opal_2_ieee1667
+  - sed_pyrite
+  - unknown
+- key: pwr.active_w
+  label: Active power (read/write)
+  group: power
+  type: range
+  unit: W
+  tier: important
+  facet: false
+  why: Heat and battery
+  level: configuration
+  traps:
+  - Average vs peak; some brands only publish 'up to'
+  sources:
+  - Manufacturer datasheet PDF
+  example: 5.4/5.0
+- key: pwr.idle_mw
+  label: Idle power (APST)
+  group: power
+  type: number
+  unit: mW
+  tier: important
+  facet: false
+  why: Laptop battery; handheld
+  level: configuration
+  sources:
+  - Manufacturer datasheet PDF
+  example: 50
+- key: pwr.l1_2_mw
+  label: L1.2 low-power state
+  group: power
+  type: number
+  unit: mW
+  tier: detail
+  facet: false
+  why: Deep sleep draw
+  level: model
+  sources:
+  - Manufacturer datasheet PDF
+  example: 5
+- key: pwr.peak_w
+  label: Peak power
+  group: power
+  type: number
+  unit: W
+  tier: detail
+  facet: false
+  why: Slot power budget
+  level: model
+  sources:
+  - Manufacturer datasheet / product page spec table
+- key: therm.temp_operating
+  label: Operating temperature range
+  group: thermal
+  type: range
+  unit: degC
+  tier: detail
+  facet: false
+  why: Thermal envelope
+  level: model
+  sources:
+  - Manufacturer datasheet PDF
+  example: 0-70
+- key: therm.throttle_temp
+  label: Throttling onset (measured)
+  group: thermal
+  type: number
+  unit: degC
+  tier: important
+  facet: false
+  why: Gen4/5 drives throttle without heatsink
+  level: revision
+  traps:
+  - Not published; reviewer-measured
+  sources:
+  - Review teardown (TechPowerUp/Tom's Hardware/StorageReview PCB photos); not printed by maker
+- key: therm.heatsink
+  label: Heatsink
+  group: thermal
+  type: enum
+  unit: null
+  tier: core
+  facet:
+    kind: enum
+  why: PS5 requires heatsink; laptops forbid it
+  level: package
+  traps:
+  - With/without-heatsink are separate SKUs (e.g. -HS suffix); heatsink may block laptop slot
+  - Graphene label vs real sink
+  sources:
+  - Product page + part number table
+  enum:
+  - none
+  - bare_label
+  - low_profile_sink
+  - full_sink
+  - sink_optional_sku
+- key: therm.heatsink_height
+  label: Height with heatsink
+  group: thermal
+  type: number
+  unit: mm
+  tier: important
+  facet: false
+  why: PS5 slot clearance 11.25 mm max
+  level: package
+  sources:
+  - Manufacturer datasheet / product page spec table
+- key: compat.ps5
+  label: PS5 compatible
+  group: compat
+  type: enum
+  unit: null
+  tier: core
+  facet:
+    kind: enum
+  why: PS5 needs PCIe 4.0 x4 NVMe, M.2 2280, >=5,500 MB/s recommended, heatsink
+  level: package
+  traps:
+  - Maker-claimed ('Designed for PS5'); Sony requires heatsink; double-sided w/ sink may not fit
+  - PS4 uses only 2.5in/external USB, not M.2
+  sources:
+  - Manufacturer page (Samsung lists 'PlayStation 5' as usage)
+  - Sony PS5 expansion requirements
+  enum:
+  - 'yes'
+  - 'no'
+  - with_heatsink_only
+  - unknown
+- key: compat.ps4
+  label: PS4 compatible (external USB)
+  group: compat
+  type: enum
+  unit: null
+  tier: detail
+  facet: false
+  why: PS4 external storage needs USB 3.0+; M.2 no
+  level: package
+  sources:
+  - Manufacturer datasheet / product page spec table
+  enum:
+  - 'yes'
+  - 'no'
+  - unknown
+- key: compat.handheld
+  label: Steam Deck / ROG Ally fit
+  group: compat
+  type: enum
+  unit: null
+  tier: important
+  facet: false
+  why: 2230 vs 2242 module fit
+  level: model
+  sources:
+  - Manufacturer datasheet / product page spec table
+  enum:
+  - steam_deck_2230
+  - steam_deck_2230_2242
+  - rog_ally_2230
+  - 'no'
+  - unknown
+  enum_open: true
+- key: fw.version
+  label: Firmware version
+  group: firmware
+  type: text
+  unit: null
+  tier: important
+  facet: false
+  why: Firmware changes performance/bugs
+  level: revision
+  traps:
+  - Same model, later firmware can be a different silicon/NAND build; version shown by SSD tool
+  - Firmware can change wear/performance behavior; compare by version string
+  sources:
+  - Maker SSD tool (Samsung Magician, WD Dashboard, Kingston SSD Manager, Crucial Storage Executive)
+  example: 4B2QJXD7
+  identity_role: variant_axis
+- key: fw.dashboard_tool
+  label: Management software
+  group: firmware
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Update/health tool
+  level: model
+  sources:
+  - Manufacturer datasheet / product page spec table
+  example: Samsung Magician
+- key: port.ip_rating
+  label: Ingress rating (portable)
+  group: portable
+  type: enum
+  unit: null
+  tier: important
+  facet:
+    kind: enum
+  why: Water/dust ruggedness
+  level: model
+  sources:
+  - Mfr page
+  enum:
+  - none
+  - ip55
+  - ip65
+  - ip67
+  - ip68
+  - ip5x
+  enum_open: true
+- key: port.drop
+  label: Drop rating (portable)
+  group: portable
+  type: number
+  unit: m
+  tier: detail
+  facet: false
+  why: Marketing
+  level: model
+  traps:
+  - Self-declared tests; not MIL-STD unless stated
+  sources:
+  - Manufacturer datasheet / product page spec table
+- key: port.enclosure
+  label: Internal drive inside
+  group: portable
+  type: text
+  unit: null
+  tier: important
+  facet: false
+  why: Portable SSDs may contain a DRAM-less NVMe/SATA bridge
+  level: revision
+  traps:
+  - Portable SSDs also swap internals (SanDisk Extreme v1/v2 rev)
+  - USB bridge chip (ASMedia ASM2362/Realtek) caps speed
+  sources:
+  - Review teardown (TechPowerUp/Tom's Hardware/StorageReview PCB photos); not printed by maker
+  example: ASM2362 bridge + NVMe
+- key: port.cable_incl
+  label: Cable included
+  group: portable
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Needs USB-C-to-C for full speed
+  level: model
+  sources:
+  - Manufacturer datasheet / product page spec table
+- key: port.color
+  label: Color
+  group: portable
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Variant axis
+  level: package
+  sources:
+  - Manufacturer datasheet / product page spec table
+- key: id.part_numbers
+  label: Orderable part numbers
+  group: identity
+  type: list
+  unit: null
+  tier: core
+  facet: false
+  why: Capacity-specific identifiers
+  level: package
+  sources:
+  - Manufacturer datasheet PDF product lineup table
+  example:
+  - MZ-V9P1T0B/AM
+  - MZ-V9P2T0B/AM
+  items: text
+- key: id.gtin
+  label: UPC / EAN
+  group: identity
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Retail alias
+  level: package
+  sources:
+  - Manufacturer datasheet / product page spec table
+- key: id.revision_marker
+  label: Revision marker (date code / PCB rev / FW)
+  group: identity
+  type: text
+  unit: null
+  tier: core
+  facet: false
+  why: What separates silent swaps; label/IDENT string
+  level: revision
+  traps:
+  - 'Not on retail page: drive label ''P/N/Rev'', ''FW'', production month; SMART model string'
+  - Makers usually keep the part number unchanged across revisions (WD SN550 case)
+  sources:
+  - Drive label photo, nvme id-ctrl model/FW
+  - Review teardown
+  identity_role: variant_axis
+- key: id.msrp_us
+  label: US launch MSRP
+  group: identity
+  type: number
+  unit: USD
+  tier: detail
+  facet: false
+  why: Reference only
+  level: configuration
+  sources:
+  - Manufacturer datasheet / product page spec table

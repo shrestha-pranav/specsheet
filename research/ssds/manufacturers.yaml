@@ -1,0 +1,43 @@
+# A2 discovery, SSDs (US). Probed 2026-11-23 with the shared crawler client UA ("specsheet-research/0.1"), robots honoured, <=1 req/s.
+# status: adapter = built+run; viable = probed OK, adapter not built; blocked = stopped at WAF/403, no workaround (team rule);
+#         unprobed = not reached.  Counts are ref counts from this run.
+# Key finding: consumer storage is NOT on semiconductor.samsung.com (OEM/datacenter only) and WD_BLACK/Blue/Green/Red now live on sandisk.com.
+manufacturers:
+  samsung:
+    status: adapter            # crawler/adapters/samsung_ssd.py  raw/samsung-us-ssd  (55 SKU pages, all 200)
+    how: "https://www.samsung.com/us/memory-sitemap.xml (one request) -> /us/memory-storage/{nvme-ssd,sata-ssd,portable-ssd}/<slug>-sku-<part>/ (1 buyable SKU per page; capacity x colour x heatsink). Page embeds groupId; spec API /us/gapi/v1/bridge/cacheable/bridge-data?data_type=Specs&store_type=B2C&group_id=<id> returns fullSpecs for every SKU of the group (same API samsung.py uses)."
+    gives: [part number per capacity (MZ-V9P2T0B/AM), controller, NAND (text), DRAM size+type, seq/IOPS, MTBF, idle mW, op temp, USB standard, drop rating, price]
+    lacks: [TBW on most pages (datasheet PDF only), NAND layers, SLC cache size, post-cache speed]
+    note: "semiconductor.samsung.com (sitemap 200, robots Allow) holds only PC-OEM/datacenter parts (PM9x1, BM9C1A...), consumer URLs 301 to samsung.com/us. Page-level spec defects exist (990 PRO 2TB heatsink row says 1TB; one Controller cell holds the DRAM string): adapter guards the DRAM case, keeps raw."
+  wd_sandisk:
+    status: adapter            # crawler/adapters/sandisk_ssd.py  raw/sandisk-us-ssd
+    how: "https://www.sandisk.com/products-sitemap.xml (robots Allow; sitemap-index lists it; gzip) -> '<line>?sku=<orderable>' URLs; 74 consumer lines / 309 SKUs under /products/ssd/{internal-ssd,external-ssd}/. One line page (2.5 MB SSR, gzip 10x) inlines every SKU: data-sku blocks for titles and 'product-tech-specs-store' label/value pairs."
+    gives: [orderable SKU + Model Number (WDS100T2X0E-00BCA0 / WDS100T2X0E), capacity, form factor, interface, seq R/W, IOPS (no QD), TBW, warranty, weight, temps]
+    lacks: [controller, NAND, DRAM (WD never prints them = the silent-revision problem)]
+    note: "westerndigital.com products-sitemap has no SSDs (accessories, HDD, cloud only). Both brands on one source; brand key 'western digital' per category.yaml."
+  teamgroup:
+    status: adapter            # crawler/adapters/teamgroup_ssd.py  raw/teamgroup-us-ssd
+    how: "/en/sitemap.xml lists only ~31 SSD detail URLs; category pages /en/product-category/ssd/{m2,internal,external}/?page=N add the rest (64 model dirs). Each product-detail page has a per-capacity table (Model|Capacity|Seq R|Seq W|TBW|DRAM|TEAM P/N) + 'More Product Specifications' (interface, temp, MTBF)."
+    gives: [TEAM P/N per capacity (TM8FPP002T0C129), per-capacity speed + TBW, DRAM yes/no, interface, MTBF, warranty]
+    lacks: [controller, NAND vendor, layers]
+    note: "Site is global (/en/), not US-specific; US availability not asserted."
+  pny:
+    status: viable             # not built. https://www.pny.com/productsitemap.xml (robots Allow; one request) lists ~20 SSD pages; server HTML 'Features' block: Capacity | Part Number | Form Factor | Interface | Max Seq R/W | 'NAND Components: 3D Flash Memory'. One capacity per page, no TBW on some. Thin but cleanly parseable; good fourth adapter.
+  corsair:
+    status: viable             # not built. https://www.corsair.com/us-sitemap-products-1.xml (robots Allow) -> ~98 SSD-ish URLs /us/en/p/{data-storage,m2-ssd}/<sku>/... (PC builds also match 'ssd': filter by path). Page SSR 100 KB with Product JSON-LD (sku) but spec table is not in the first HTML, needs the PDP tech-specs endpoint probe.
+  seagate:
+    status: viable_unverified  # sitemap https://www.seagate.com/sitemap.xml 200 (80 KB) lists /products/gaming-drives/... FireCuda/Game Drive/One Touch SSD pages; product page structure not inspected.
+  solidigm:
+    status: viable_unverified  # sitemap 200; /products/client/{pro-series/p44,plus-series/p41,670p,660p}.html + product-brief PDFs. Consumer line is end-of-life/OEM-leaning; not inspected.
+  sk_hynix:
+    status: viable_unverified  # robots 200, sitemap 1 KB (index). Consumer Platinum P41/Gold P31 retired from US retail; not inspected.
+  crucial:
+    status: blocked            # www.crucial.com: every path (robots.txt, /, sitemap) returns the F5/Akamai 'Request Rejected' page to the honest UA. Stopped. Note Micron has been winding down Crucial consumer SSDs; confirm before investing.
+  kingston:
+    status: blocked            # robots.txt 200 but /siteindex.xml and /en/ssd return 403 (Cloudflare 'Just a moment'). Stopped, no workaround. Datasheet PDFs (A1 fetched NV3 one) are the access path if a human fetches them.
+  adata_xpg:
+    status: blocked            # www.adata.com and www.xpg.com return 403 to the honest UA, including robots.txt.
+  lexar:
+    status: unprobed_partial   # robots/sitemap paths 404 into the Nuxt SPA shell (301 KB HTML), no sitemap; 'www.lexar.com/' 301s. Needs an API probe (network tab), not done.
+  sabrent:
+    status: unprobed_partial   # www.sabrent.com 301 -> sabrent.com (Shopify-style); /sitemap.xml and products.json not tried this round (cheap next step: sabrent.com/products.json).

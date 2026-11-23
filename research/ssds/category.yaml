@@ -1,0 +1,42 @@
+name: SSDs
+description: 'Consumer SSDs by manufacturer part number: capacity, interface, controller/NAND/DRAM (revision-level), endurance,
+  form factor. Sources: Samsung/WD/Crucial/Kingston datasheets, review teardowns.'
+columns:
+- gen.capacity
+- gen.form_factor
+- if.pcie_gen
+- hw.dram_type
+- hw.nand_type
+- perf.seq_read
+- end.tbw
+features:
+- stem_links
+stem:
+  cut_at:
+  - /
+  strip_market_suffix: true
+brand_aliases:
+  wd: western digital
+  sandisk: western digital
+  micron: crucial
+  sk hynix: sk_hynix
+  skhynix: sk_hynix
+  teamgroup: team
+  xpg: adata
+brand_names:
+  samsung: Samsung
+  western digital: WD / SanDisk
+  crucial: Crucial
+  kingston: Kingston
+  sk_hynix: SK hynix
+  seagate: Seagate
+  corsair: Corsair
+  team: TEAMGROUP
+  sabrent: Sabrent
+  lexar: Lexar
+  pny: PNY
+  adata: ADATA / XPG
+  acer: Acer Predator
+  solidigm: Solidigm
+skip_alias_pattern: \b(hdd|hard drive|enterprise|u\.2|e1\.s|ram|memory kit|enclosure|adapter|sd card|microsd|flash drive|thumb
+  drive)\b

@@ -28,6 +28,9 @@ SOURCES = {
     "displayhdr": {"brand": "vesa", "brand_name": "VESA DisplayHDR", "category": "monitors", "module": "displayhdr", "importer": "model"},
     "lg-us": {"brand": "lg", "brand_name": "LG", "category": "monitors", "module": "lg_us", "importer": "model"},
     "asus-us-monitors": {"brand": "asus", "brand_name": "ASUS", "category": "monitors", "module": "asus_monitors", "importer": "model"},
+    "samsung-us-ssd": {"brand": "samsung", "brand_name": "Samsung", "category": "ssds", "module": "samsung_ssd", "importer": "generic"},
+    "sandisk-us-ssd": {"brand": "western digital", "brand_name": "WD / SanDisk", "category": "ssds", "module": "sandisk_ssd", "importer": "generic"},
+    "teamgroup-us-ssd": {"brand": "team", "brand_name": "TEAMGROUP", "category": "ssds", "module": "teamgroup_ssd", "importer": "generic"},
     "tripplite": {"brand": "tripplite", "brand_name": "Tripp Lite", "category": "power-strips", "module": "tripplite", "importer": "strip"},
     "cyberpower": {"brand": "cyberpower", "brand_name": "CyberPower", "category": "power-strips", "module": "cyberpower", "importer": "strip"},
     # crawl.py v0 stores (raw/<slug>/products/<key>/{extract,feed}.json, no snapshot log): read through crawlpy_strips, never written
