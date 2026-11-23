@@ -32,7 +32,7 @@ import _powerstation as PS
 import _run
 import shopify_powerbanks as S
 
-VERSION = 1
+VERSION = 2       # v2: r6 shared _powerbank changed (repeated port row = one port); station rules unchanged
 CATEGORIES = {"power-stations"}
 DELAY = 1.0
 PKG_TITLE = re.compile(r"\+|&|solar generator|\bkit\b|bundle|combo|refurb|open box|extra battery|expansion|add-on|deposit|\binverter\b|"

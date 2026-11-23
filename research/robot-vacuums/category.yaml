@@ -9,7 +9,13 @@ columns:
 - dock.self_empty
 - dock.mop_wash
 - phys.robot_height_mm
-features: []
+# r6: a variant SKU whose option names the page robot plus an add-on ('Freo S & Advanced Kit') or a pack word ('X50 Ultra Complete / White')
+# is a bundle package (scripts/bundles.py), not a configuration alias of the robot. Pages that ARE a Complete/COMBO model stay models.
+features:
+- bundle_packages
+bundles:
+  pack_words:
+  - Complete
 brand_aliases:
   dreametech: dreame
   rockrobo: roborock

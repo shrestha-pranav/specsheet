@@ -34,7 +34,7 @@ import _powerbank as P
 import _run
 import shopify_powerbanks as S
 
-VERSION = 2       # v2: review 3 (two unlabelled figures unresolved, 5 V capacity basis, rated load conditions)
+VERSION = 3       # v3: r6 shared _powerbank (repeated port row = one port); v2: review 3 (two unlabelled figures unresolved, 5 V capacity basis, rated load conditions)
 DELAY = 1.0
 
 

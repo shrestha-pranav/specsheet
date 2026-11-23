@@ -20,7 +20,7 @@ import _lt as L
 import _powerbank as P
 import _run
 
-ID, VERSION, SOURCE = "belkin_powerbanks", 2, "belkin-us-powerbanks"     # v2: shared _powerbank parser changed (review 3); Belkin rules unchanged
+ID, VERSION, SOURCE = "belkin_powerbanks", 3, "belkin-us-powerbanks"     # v3: r6 shared _powerbank (repeated port row = one port); v2: shared _powerbank parser changed (review 3); Belkin rules unchanged
 CATEGORIES = {"power-banks"}
 ADAPTER = f"{ID}@{VERSION}"
 SITEMAP = "https://www.belkin.com/sitemap-variant_products_us_001.xml"

@@ -235,10 +235,14 @@ def port_segments(text):
     'OUT1+OUT2: 15W'); without that context ('USB-A1 & Type-C1 & Type-C2: 210W') each-port vs all-ports is ambiguous (review 3)."""
     t = clean(text)
     ms = list(PORTSEG.finditer(t))
-    raw = []
+    raw, seen = [], set()
     for i, m in enumerate(ms):
         seg = t[m.end(): ms[i + 1].start() if i + 1 < len(ms) else len(t)].strip(" ;,")
         name = re.sub(r"\s*(?:Output|Input)?\s*[:：]?$", "", m.group(0).strip(), flags=re.I).strip()
+        sig = (re.sub(r"\s+", "", name).upper(), re.sub(r"\s+", " ", seg).strip().upper())
+        if sig in seen:        # r6: a block that prints the same port row twice (INIU P73-E1 'OUT1/ OUT2: ... 45W (Max)') is ONE port, not two
+            continue
+        seen.add(sig)
         raw.append((name, seg))
     plus_ctx = any("+" in n for n, _ in raw)
     out = []

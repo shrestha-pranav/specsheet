@@ -18,8 +18,9 @@ entity with several refs (Jackery Explorer 5000 Plus has 4 pages, BLUETTI Elite 
    unit variants carry two stems is an absence, not a merge (also EcoFlow 'DELTA 3 Max Series', 'DELTA 3 Ultra Series', 'TRAIL Series').
 2. **A different capacity or inverter rating is a different model** (DELTA 3 / 3 Plus / 3 Classic; AC180 vs AC180P; Yeti 1000X vs Yeti 1000 (LFP)).
 3. **Bundles are packages, never the model**: 'Solar Generator', 'Kit', '+', 'Bundle', 'Extra Battery', open-box/refurbished pages are not
-   discovered; bundle variants on a station page are listed in `fingerprints.packages` and are neither aliases nor spec sources. The model importer
-   has no non-MTM package path, so bundle packages are recorded, not minted (open issue).
+   discovered; bundle variants on a station page are listed in `fingerprints.packages` and are neither aliases nor spec sources. Since r6 the
+   importer mints a corroborated bundle SKU as a `package` (scripts/bundles.py, feature `bundle_packages`): explicit member list naming the station,
+   same members on every page that lists the SKU, not a unit SKU; free promotional items are not contents. `contains` -> the station; no specs.
 4. **Spec blocks must belong to the model**: an EcoFlow 'Specs - <name>' block naming another product, a BLUETTI block splitting values per model
    ('1,152Wh (AC180) / 1,440Wh (AC180P)'), a Goal Zero section naming another Yeti, or a Jackery 230 V block on a US page are absences. Jackery
    blocks of different unit variants are read separately; identical claims dedupe, different ones stay as a conflict.

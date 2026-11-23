@@ -1340,6 +1340,431 @@ claim_policies:
       - phys.weight
       - ups.supported
       - ups.switchover_ms
+- id: claim/mfr-power-banks-structured@5
+  since: '2026-11-23'
+  supersedes: claim/mfr-power-banks-structured@4
+  rationale: 'Power banks: @4 unchanged in meaning (same sources, per-source keys, kinds, tiers, normalisation), re-issued for the r6 parser bump of all
+    nine extractors (@2 -> @3). The one parser change: _powerbank.port_segments keeps ONE port when a block prints the same port row twice (INIU P73-E1
+    ''OUT1/ OUT2: ... 45W (Max)'' appears twice in the maker''s Output cell, so out.ports listed it twice). @4 stays in claim_policies, matching only the
+    @2 extractor versions that no longer exist in code, so it accepts nothing.'
+  audit:
+    by: A3-impl r6
+    at: '2026-11-23'
+    evidence: Re-parsed every stored page under the bumped parsers and diffed accepted claims against the r5 release import (team/reports/2026-11-23-a3-impl-r6.md);
+      fixture tests/test_r6.py.
+    parsers:
+      anker_powerbanks@3: sha256:011e63bdaf5d57f68588
+      belkin_powerbanks@3: sha256:e6252e1b71807dac0086
+      cuktech_powerbanks@3: sha256:8793a1e9d152befec1ab
+      iniu_powerbanks@3: sha256:8793a1e9d152befec1ab
+      ugreen_powerbanks@3: sha256:8793a1e9d152befec1ab
+      ecoflow_powerbanks@3: sha256:50c7f3c6bc5ba756b011
+      sharge_powerbanks@3: sha256:50c7f3c6bc5ba756b011
+      kuxiu_powerbanks@3: sha256:50c7f3c6bc5ba756b011
+      mophie_powerbanks@3: sha256:50c7f3c6bc5ba756b011
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors:
+    - anker_powerbanks@3
+    - belkin_powerbanks@3
+    - cuktech_powerbanks@3
+    - iniu_powerbanks@3
+    - ugreen_powerbanks@3
+    - ecoflow_powerbanks@3
+    - sharge_powerbanks@3
+    - kuxiu_powerbanks@3
+    - mophie_powerbanks@3
+    source_ids:
+    - anker-us-powerbanks
+    - belkin-us-powerbanks
+    - cuktech-us-powerbanks
+    - iniu-us-powerbanks
+    - ugreen-us-powerbanks
+    - ecoflow-us-powerbanks
+    - sharge-us-powerbanks
+    - kuxiu-us-powerbanks
+    - mophie-us-powerbanks
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    keys:
+      anker-us-powerbanks:
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.builtin_cable
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - pd.max_fixed_voltage
+      - pd.pps
+      - phys.dimensions
+      - phys.weight
+      belkin-us-powerbanks:
+      - cap.class_mah
+      - out.cable_note
+      - out.max_output_w
+      - out.usb_a_count
+      - out.usb_c_count
+      - phys.dimensions
+      iniu-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      cuktech-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      ugreen-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      ecoflow-us-powerbanks:
+      - cap.cell_mah
+      - cap.energy_wh
+      - in.max_w
+      - out.max_single_port_w
+      - out.max_total_w
+      - phys.dimensions
+      - phys.weight
+      sharge-us-powerbanks:
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      kuxiu-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - phys.dimensions
+      - phys.weight
+      mophie-us-powerbanks:
+      - cap.cell_mah
+      - out.max_output_w
+      - phys.dimensions
+      - phys.weight
+    require_normalized: true
+- id: claim/mfr-power-stations-structured@2
+  since: '2026-11-23'
+  supersedes: claim/mfr-power-stations-structured@1
+  rationale: 'Portable power stations: @1 unchanged in meaning (same sources, per-source keys, kinds, tiers), re-issued because the five extractors were
+    version-bumped (@1 -> @2) when the shared _powerbank module they import changed in r6 (a repeated identical port row is one port). No station rule changed;
+    exp.batteries stays excluded. Bundle variants now mint package entities in the importer (scripts/bundles.py), which carry no claims, so nothing here
+    accepts bundle data. @1 stays in claim_policies matching only the @1 extractor versions, so it accepts nothing.'
+  audit:
+    by: A3-impl r6
+    at: '2026-11-23'
+    evidence: Re-parsed every stored page under the bumped parsers and diffed accepted claims against the r5 release import (team/reports/2026-11-23-a3-impl-r6.md);
+      fixture tests/test_r6.py.
+    parsers:
+      ankersolix_stations@2: sha256:513f8cbc8ed8880ac993
+      bluetti_stations@2: sha256:93f79836f7c8066c46dc
+      ecoflow_stations@2: sha256:93f79836f7c8066c46dc
+      goalzero_stations@2: sha256:93f79836f7c8066c46dc
+      jackery_stations@2: sha256:93f79836f7c8066c46dc
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors:
+    - ankersolix_stations@2
+    - bluetti_stations@2
+    - ecoflow_stations@2
+    - goalzero_stations@2
+    - jackery_stations@2
+    source_ids:
+    - ecoflow-us-stations
+    - bluetti-us-stations
+    - jackery-us-stations
+    - goalzero-us-stations
+    - ankersolix-us-stations
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    keys:
+      ecoflow-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - conn.wireless
+      - exp.expandable
+      - exp.max_batteries
+      - exp.max_wh
+      - gen.warranty_years
+      - in.ac_w
+      - in.car_w
+      - in.solar_port_w
+      - in.solar_ports
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_boost_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      bluetti-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - cert.marks
+      - cert.ul2743
+      - conn.wireless
+      - exp.expandable
+      - gen.warranty_years
+      - in.ac_w
+      - in.max_w
+      - in.passthrough
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_boost_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ac_waveform
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - out.wireless_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      jackery-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - gen.warranty_years
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      goalzero-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - cert.marks
+      - exp.expandable
+      - gen.warranty_years
+      - in.ac_w
+      - in.recharge_ac_h
+      - in.recharge_solar_h
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ac_waveform
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      ankersolix-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - conn.wireless
+      - exp.expandable
+      - exp.max_batteries
+      - exp.max_wh
+      - gen.warranty_years
+      - in.ac_w
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+- id: claim/tvs-structured@1
+  since: '2026-11-23'
+  rationale: 'Televisions: the ENERGY STAR Certified Televisions record (regulatory) and the makers'' own labelled US spec data (Samsung spec API, LG
+    __NEXT_DATA__ spec table, TCL per-size spec boxes). Labelled rows only, never titles or prose, and review-3 rules from the start: (1) no
+    negation-blind enums: Dolby Vision / HDR10+ / VRR / ALLM / HGiG / ATSC 3.0 come from their own rows with an affirmative value, false only from a
+    row whose value is just No (ATSC: a tuner row naming 1.0 and not 3.0); a format missing from a list is unknown; processing names (UHD Dimming,
+    Precision Dimming) are not local dimming; shifted Samsung rows (FreeSync holding accessibility text, a resolution in Product Type) are ignored;
+    (2) explicit membership: hdmi.ports_4k120 only from a per-port statement (Samsung for HDMI 1/2/3/4, TCL HDMI 1-2 / 3-4 splits, LG trailing (N
+    port)), never from a generic feature list; (3) bases in conditions: on-mode/standby/annual figures carry power_basis (energy_star_on_mode,
+    doe_federal_test, energy_star_standby, maker_typical, maker_unstated) so a test figure and a declaration never merge; native refresh never
+    from a motion/marketing figure; (4) conflict-aware grouping: one size = one model number; TCL boxes attributed only by a Model row equal to
+    the SKU or a unique size match that agrees with the SKU; a printed size contradicting the model number is unresolved; retailer designations
+    group only through the maker''s ENERGY STAR same-hardware declaration (aliases), stem matches are proposals. NOT accepted (preview only):
+    refresh.max_hz (VRR/PC maxima, sometimes DLG), hdr.peak_nits (window/mode unstated), Samsung panel.backlight (read from a "Contrast" row),
+    ENERGY STAR panel.backlight (Mini-LED sets certify as Direct-lit), every status-unknown plausibility rejection.'
+  audit:
+    by: A1+A2 tvs
+    at: '2026-11-23'
+    evidence: Parsed every stored snapshot of the four sources; per-key value histograms and the shifted-row / mm-as-inch cases checked
+      (team/reports/2026-11-23-a12-tvs.md); fixtures in tests/test_tvs.py (17 tests).
+    parsers:
+      energystar_tvs@1: sha256:35b90bbed61b2720ad7c
+      samsung_tvs@1: sha256:6671f4bf6d2b8ecdac67
+      lg_tvs@1: sha256:8381b9a9945f5471873e
+      tcl_tvs@1: sha256:2710e28e9980fbe72ab2
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors: [energystar_tvs@1, samsung_tvs@1, lg_tvs@1, tcl_tvs@1]
+    source_ids: [energystar-tvs, samsung-us-tvs, lg-us-tvs, tcl-us-tvs]
+    kinds: [official]
+    tiers: [manufacturer, regulatory]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      energystar-tvs:
+        [gen.viewable_diag, panel.display_tech, panel.quantum_dot, pic.auto_brightness, pwr.annual_kwh, pwr.energy_star, pwr.on_mode_doe_w,
+         pwr.on_mode_w, pwr.standby_w, res.height_px, res.native, res.width_px]
+      samsung-us-tvs:
+        [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.size_class,
+         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.max_input, hdmi.ports_4k120, hdr.dolby_vision, hdr.formats, hdr.hdr10plus, os.platform,
+         panel.display_tech, panel.marketing_class, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand,
+         phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, pwr.annual_kwh, pwr.max_w,
+         pwr.on_mode_w, pwr.standby_w, refresh.marketing, refresh.native_hz, res.class, res.height_px, res.native, res.width_px, vrr.formats,
+         vrr.supported]
+      lg-us-tvs:
+        [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.series, gen.size_class,
+         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.ports_4k120, hdr.dolby_vision, hdr.formats, hdr.hdr10plus, os.platform, os.version,
+         panel.backlight, panel.display_tech, panel.lcd_type, panel.marketing_class, phys.depth_no_stand, phys.depth_with_stand,
+         phys.height_no_stand, phys.height_with_stand, phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand,
+         phys.width_with_stand, pwr.annual_kwh, pwr.on_mode_w, pwr.standby_w, refresh.marketing, refresh.native_hz, res.class, res.height_px,
+         res.native, res.width_px, sup.warranty, vrr.formats, vrr.supported]
+      tcl-us-tvs:
+        [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.size_class,
+         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.ports_4k120, hdr.dimming_zones, hdr.dolby_vision, hdr.formats, hdr.hdr10plus,
+         hdr.local_dimming, os.platform, panel.backlight, panel.bit_depth, panel.display_tech, panel.lcd_type, panel.marketing_class,
+         panel.quantum_dot, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand, phys.vesa,
+         phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, pwr.annual_kwh, pwr.on_mode_w, pwr.standby_w,
+         refresh.dlg_hz, refresh.marketing, refresh.native_hz, res.class, res.height_px, res.native, res.width_px, sup.warranty, vrr.formats,
+         vrr.supported]
 relation_policies:
 - id: rel/source-stated-hierarchy@2
   since: '2026-11-23'
@@ -1398,6 +1823,59 @@ relation_policies:
   - method: page-variants:belkin
     types: [configuration_of]
     parsers: [crawlpy-strips@1]
+- id: rel/bundle-contents@1
+  since: '2026-11-23'
+  rationale: A bundle package minted by scripts/bundles.py contains the station / robot model its manufacturer page names as a member. The member is explicit
+    (a '+'/'&' segment or '<model> Complete' equals the page model; Anker add-on options only when the SKU embeds the model number), the SKU is corroborated
+    (every observation gives the same member set, the SKU is no unit/configuration identifier) and contains never transmits specs (no parent link, no inheritance).
+    One rule per source method and the parser that produced the links; a new source or parser bump gets nothing.
+  audit:
+    by: A3-impl r6
+    at: '2026-11-23'
+    evidence: rules = the (method, type, parser) triples of the 209 contains links of the r6 import; fixture tests/test_r6.py.
+    parsers:
+      ankersolix_stations@2: sha256:513f8cbc8ed8880ac993
+      bluetti_stations@2: sha256:93f79836f7c8066c46dc
+      ecoflow_stations@2: sha256:93f79836f7c8066c46dc
+      jackery_stations@2: sha256:93f79836f7c8066c46dc
+      dreame_robovac@2: sha256:82418fe203d439831b23
+      narwal_robovac@2: sha256:2f212aa7076aff13a250
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); A3 cannot approve its own audit
+  rules:
+  - method: bundle:ankersolix-us-stations
+    types:
+    - contains
+    parsers:
+    - ankersolix_stations@2
+  - method: bundle:bluetti-us-stations
+    types:
+    - contains
+    parsers:
+    - bluetti_stations@2
+  - method: bundle:ecoflow-us-stations
+    types:
+    - contains
+    parsers:
+    - ecoflow_stations@2
+  - method: bundle:jackery-us-stations
+    types:
+    - contains
+    parsers:
+    - jackery_stations@2
+  - method: bundle:dreame-us-robovac
+    types:
+    - contains
+    parsers:
+    - dreame_robovac@2
+  - method: bundle:narwal-us-robovac
+    types:
+    - contains
+    parsers:
+    - narwal_robovac@2
 retired_policies:
 - id: claim/dcl-matter-certified@1
   since: '2026-11-23'

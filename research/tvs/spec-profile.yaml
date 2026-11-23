@@ -1,0 +1,810 @@
+profile_format: specsheet.category-profile/1
+category: tvs
+version: 0.1.0
+label: Televisions
+market: US
+status: draft
+scope: Consumer televisions sold in the US (LCD with direct/edge/Mini-LED/RGB Mini-LED backlight, WOLED, QD-OLED, Micro LED), incl. lifestyle/
+  art TVs (The Frame, Designer Series) and home-theater displays certified as TVs. Excludes computer monitors (monitors category, even when
+  sold as "gaming TV"), projectors, commercial/hotel/signage displays, sound bars and bundles.
+identity:
+  levels:
+  - level: family
+    label: Series / line
+    meaning: 'The maker''s line for one model year across sizes: Samsung S90F, LG OLED C5, TCL QM8K, Sony BRAVIA 8 II. Browse only; carries NO
+      panel, refresh or HDMI fact because those differ by size (research/tvs/identity.md).'
+    key_schemes: [mfr_family]
+    inherits: false
+  - level: model
+    label: Model number (one size)
+    meaning: 'The maker''s model number for ONE screen size, incl. the US market tail as the maker prints it: Samsung QN65S90FAFXZA, LG
+      OLED65B5PUA, TCL 65QM8K. A retailer/channel designation (QN65S92FAF, OLED65B5AUA) is a different model string and a different model
+      unless the maker declares it identical (identity.md).'
+    key_schemes: [mfr_model]
+    inherits: true
+  - level: revision
+    label: Panel / production version
+    meaning: 'Same model number, different panel source (the "panel lottery" WITHIN one size: e.g. a QD-OLED vs WOLED panel reported under one
+      Samsung code). Only from evidence that names the version (box/rear-label version code, a review that read it); no adapter emits it.'
+    key_schemes: [hw_rev]
+    inherits: true
+  - level: package
+    label: Trade item / GTIN
+    meaning: UPC of a model (several per model when stand colour or channel differs). Never a merge key for the model.
+    key_schemes: [gtin]
+    inherits: true
+  primary_key: Manufacturer model number of one screen size, as printed by the maker's US page (or as certified, for ENERGY STAR-only
+    models). Retail titles, series names and 'QN65S90D'-style shorthand are aliases or families, never the key.
+  per_brand:
+    samsung: 'QN65S90FAFXZA = QN (type/region) 65 (size) S90F (series + year letter F=2025) A (design gen) F (production code; E/F differ
+      between sizes of one line) XZA (US). ENERGY STAR certifies without XZA (QN65S90FAF) and lists retailer designations as identical.'
+    lg: 'OLED65B5PUA = OLED 65 B5 (series + year digit 5=2025) P/A/E/G (sales channel) U (US) A (stand/colour). ENERGY STAR certifies LG as
+      wildcard families OLED65C5*** (never a product).'
+    tcl: '65QM8K = size + series + year letter (K=2025, L=2026); no market tail; a page sells all sizes as variants.'
+    sony: 'K-65XR80 / K65XR80M2 (M2 = 2025 revision of the line); sony.com blocked for plain HTTP (merchants.md).'
+    hisense: '65U8N / 100U77SUA; ENERGY STAR adds a version tag 100U77SUA(01) kept as value_raw.'
+    vizio: 'M65Q7-L4 (size + series + model-year/revision tail -L4, -K03); the tail is part of the model.'
+  schemes:
+  - {scheme: mfr_family, level: family}
+  - {scheme: mfr_model, level: model, normalize: upper_strip_spaces}
+  - {scheme: hw_rev, level: revision}
+  - {scheme: gtin, issuer: GS1, level: package}
+  - {scheme: x_lg_material_code, level: model}
+  - {scheme: x_energystar_pd_id, level: model}
+  variant_axes: []
+  model_defining: [gen.size_class, panel.display_tech, res.native]
+  note: 'Size-dependent panel lottery: every size has its own model number, so panel facts (display tech, OLED subtype, LCD VA/IPS, backlight,
+    native refresh) are recorded per model = per size, never on the family. The same line ships WOLED in some sizes and QD-OLED in others
+    (Samsung S90 series 42/48/83 in), VA in some sizes and IPS/ADS in others (LCD lines at 43/50 in vs 55+ in). A maker page that does not
+    print the subtype leaves it unknown; it is never inferred from the line or another size.'
+units:
+  system: us_customary
+  display: {mm: in, kg: lb}
+  custom:
+  - {unit: kWh, base: Wh, factor: 1000}
+conditions:
+- {id: power_basis, label: Power basis, type: enum, enum: [energy_star_on_mode, doe_federal_test, energy_star_standby, maker_typical, maker_unstated],
+   description: 'Which test/declaration a power figure is: ENERGY STAR on-mode test (default picture, ABC as shipped), the DOE federal test
+     procedure figure reported with it, the maker''s "Typical", or a maker figure with no stated basis. Different bases are never one assertion.'}
+- {id: standby_network, label: Standby network state, type: enum, enum: [connected, not_connected],
+   description: ENERGY STAR reports standby with and without a network connection; both are true of the same TV.}
+- {id: brightness_basis, label: Brightness basis, type: enum, enum: [uhda_typical, maker_peak_unstated],
+   description: 'TCL prints peak brightness per the UHD Alliance test method (typical) in some boxes and a marketing "up to" peak in others.'}
+groups:
+- {id: general, label: General & identity, order: 0}
+- {id: panel, label: Panel, order: 1}
+- {id: res, label: Resolution & refresh, order: 2}
+- {id: hdr, label: HDR & dimming, order: 3}
+- {id: gaming, label: HDMI & gaming, order: 4}
+- {id: smart, label: Smart platform, order: 5}
+- {id: audio, label: Audio, order: 6}
+- {id: conn, label: Connectivity & tuner, order: 7}
+- {id: power, label: Power, order: 8}
+- {id: phys, label: Size & weight, order: 9}
+- {id: support, label: Warranty, order: 10}
+specs:
+- key: gen.brand
+  label: Brand
+  group: general
+  type: enum
+  enum: [samsung, lg, tcl, sony, hisense, vizio, roku, insignia, sansui, philips, rca, sceptre, emerson, loewe]
+  enum_open: true
+  unit: null
+  tier: core
+  level: family
+  facet: {kind: enum}
+  why: Filter
+  sources: [Maker page, ENERGY STAR brand_name]
+  example: samsung
+- key: gen.series
+  label: Series
+  group: general
+  type: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Groups the sizes of one line (browse only)
+  traps: ['Samsung''s "Series" row is a tier digit (7/8/9), not the line name']
+  sources: [LG 'Series' row (OLEDB5)]
+  example: OLEDB5
+- key: gen.size_class
+  label: Size class
+  group: general
+  type: number
+  unit: in
+  tier: core
+  required: true
+  level: model
+  identity_role: model_defining
+  facet: {kind: range, bins: [32, 43, 55, 65, 75, 85, 98], column: true}
+  why: The marketed size (65" class); each class is its own model number
+  traps: ['A 65" class TV is 64.5" viewable: the class is not the diagonal (gen.viewable_diag)']
+  sources: [LG 'Size', Samsung 'Screen Size', TCL 'Screen Class']
+  example: 65
+- key: gen.viewable_diag
+  label: Viewable diagonal
+  group: general
+  type: number
+  unit: in
+  tier: important
+  level: model
+  facet: false
+  why: The real diagonal for fit and viewing-distance maths
+  sources: [ENERGY STAR diagonal_viewable_screen_size_inches, LG 'Diagonal', Samsung 'Real Inch', TCL 'Viewable Display Size']
+  example: 64.5
+- key: panel.display_tech
+  label: Display technology
+  group: panel
+  type: enum
+  enum: [lcd, oled, micro_led]
+  unit: null
+  tier: core
+  required: true
+  level: model
+  identity_role: model_defining
+  facet: {kind: enum, column: true}
+  why: Self-emissive (OLED, Micro LED) vs backlit LCD is the biggest picture difference
+  traps:
+  - '"QLED", "QNED", "Neo QLED", "Mini LED", "Micro RGB" TVs are all LCDs; "LED TV" = LCD'
+  - Micro LED (Samsung MNA.. ) is self-emissive; "Micro RGB"/"RGB Mini LED" is an LCD with an RGB LED backlight
+  sources: [ENERGY STAR display_type, LG 'Display Type', Samsung 'Product Type', TCL 'Display Technology']
+  example: oled
+- key: panel.oled_subtype
+  label: OLED panel type
+  group: panel
+  type: enum
+  enum: [woled, qd_oled]
+  unit: null
+  tier: core
+  level: model
+  revision_scope: unspecified
+  facet: {kind: enum}
+  why: WOLED (LG Display, white subpixel) and QD-OLED (Samsung Display) differ in colour volume, black level in light and burn-in behaviour
+  traps:
+  - 'Size-dependent lottery: one line ships WOLED in some sizes and QD-OLED in others, and reportedly both under one model number (then it is a
+    revision fact). No US maker page prints it; it stays unknown unless a source names the panel for THAT model number.'
+  - Never inferred from the brand (LG Electronics OLED TVs are WOLED today, but that is not printed) or from another size
+  sources: [Reviews that read the panel (RTINGS), service manuals; not on maker pages]
+  example: qd_oled
+- key: panel.lcd_type
+  label: LCD panel type
+  group: panel
+  type: enum
+  enum: [va, ips]
+  unit: null
+  tier: core
+  level: model
+  revision_scope: unspecified
+  facet: {kind: enum}
+  why: VA = deep native contrast, narrow viewing angle; IPS/ADS = wide angle, greyish blacks
+  traps:
+  - 'Size lottery: a line can use VA at 55"+ and IPS/ADS at 43/50" (or the reverse); per model only'
+  - HVA / WHVA / "CrystGlow HVA" = CSOT VA-family panels; ADS = BOE IPS-type. The literal stays in raw
+  - '"Wide Viewing Angle" is a feature claim, not a panel type'
+  sources: [TCL 'Screen' / 'Panel Type', LG older 'Panel Type' (IPS / ADS)]
+  example: va
+- key: panel.backlight
+  label: Backlight
+  group: panel
+  type: enum
+  enum: [direct_led, edge_led, mini_led, rgb_mini_led, self_emissive]
+  unit: null
+  tier: important
+  level: model
+  facet: {kind: enum}
+  why: Mini-LED with local dimming vs plain direct/edge LED drives HDR performance
+  traps: ['ENERGY STAR only distinguishes direct vs edge; a Mini-LED set certified as "Direct-lit LED" is both']
+  sources: [ENERGY STAR backlight_technology_type, LG 'Backlight Type', TCL 'Mini-LED / Local Dimming Type']
+  example: mini_led
+- key: panel.quantum_dot
+  label: Quantum-dot layer
+  group: panel
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet: {kind: bool}
+  why: Wider colour volume on LCD
+  traps: ['LG "QNED" does NOT by itself mean quantum dots (2025 QNEDs dropped them); only an explicit QD / Quantum Dot / QD-LED statement counts']
+  sources: [ENERGY STAR display_type 'QD-LED (QLED)', TCL 'LED Technology' / 'Display Technology']
+  example: true
+- key: panel.marketing_class
+  label: Marketing class
+  group: panel
+  type: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: What the box says (Neo QLED, QNED evo, QD-Mini LED); shown, never used to fill the panel fields
+  sources: [Samsung 'Product Type', LG 'Display Type', TCL 'Display Technology']
+  example: Neo QLED
+- key: panel.bit_depth
+  label: Panel bit depth
+  group: panel
+  type: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: 8-bit + dithering vs native 10-bit
+  sources: [TCL 'Panel + TCON bit-depth']
+  example: 'Panel:8bit+2bit dithering TCON:10bit input'
+- key: res.native
+  label: Native resolution
+  group: res
+  type: text
+  unit: null
+  tier: core
+  required: true
+  level: model
+  identity_role: model_defining
+  facet: false
+  why: Pixels on the panel
+  traps: ['One ENERGY STAR row lists 2160 x 3840 (swapped); kept as an absence, never re-ordered']
+  sources: [ENERGY STAR native_*_resolution_pixels, LG 'Display Resolution', Samsung 'Resolution', TCL 'Panel Resolution']
+  example: 3840x2160
+- key: res.class
+  label: Resolution class
+  group: res
+  type: enum
+  enum: [hd, fhd, 4k, 8k]
+  unit: null
+  tier: core
+  level: model
+  facet: {kind: enum, column: true}
+  why: Filter
+  traps: ['Only from printed pixel counts (1366/1280->hd, 1920->fhd, 3840->4k, 7680->8k); "4K Upscaling" is not 4K']
+  sources: [printed native resolution]
+  example: 4k
+- key: res.width_px
+  label: Horizontal pixels
+  group: res
+  type: integer
+  unit: px
+  tier: detail
+  level: model
+  facet: false
+  why: Exact resolution
+  sources: [as res.native]
+  example: 3840
+- key: res.height_px
+  label: Vertical pixels
+  group: res
+  type: integer
+  unit: px
+  tier: detail
+  level: model
+  facet: false
+  why: Exact resolution
+  sources: [as res.native]
+  example: 2160
+- key: refresh.native_hz
+  label: Native refresh rate
+  group: res
+  type: integer
+  unit: Hz
+  tier: core
+  required: true
+  level: model
+  revision_scope: unspecified
+  facet: {kind: range, bins: [60, 100, 120, 144, 165], column: true}
+  why: 60 vs 120 Hz panel decides motion clarity and 4K120 gaming
+  traps:
+  - 'Marketing rates are not native: "Motion Rate 240", "TruMotion 120", "Motion Xcelerator 144Hz", "Clear Motion Index 480", "Effective
+    Refresh Rate" -> refresh.marketing, never here'
+  - 'TCL "144Hz/DLG 288Hz": 144 is native; DLG (dual line gate) 288 Hz halves vertical resolution -> refresh.dlg_hz'
+  - 'Samsung "120Hz (Up to 144Hz)": 120 is the stated panel rate, 144 the maximum accepted with VRR/PC signals -> refresh.max_hz'
+  - A size of one line may be 60 Hz while the others are 120 Hz (small sizes); per model only
+  sources: [LG 'Refresh Rate' (…Native), Samsung 'Refresh Rate', TCL 'Panel Refresh' / 'Panel Refresh Rate']
+  example: 120
+- key: refresh.max_hz
+  label: Maximum input refresh
+  group: res
+  type: integer
+  unit: Hz
+  tier: important
+  level: model
+  facet: {kind: range, bins: [60, 120, 144, 165, 240]}
+  why: Highest refresh the TV accepts (PC/console with VRR)
+  traps: ['Usually only at 4K over the HDMI 2.1 ports; "4K 240 Hz"/"288 VRR" figures may need DLG/half resolution']
+  sources: [Samsung 'Refresh Rate' / 'Motion Rate' "(Up to 144Hz)", LG 'Refresh Rate' "(VRR 144Hz)", TCL VRR row, Samsung 'HDMI Maximum Input Rate']
+  example: 144
+- key: refresh.dlg_hz
+  label: DLG (half-resolution) refresh
+  group: res
+  type: integer
+  unit: Hz
+  tier: detail
+  level: model
+  facet: false
+  why: Dual Line Gate doubles refresh by halving vertical resolution; not full-resolution refresh
+  sources: [TCL 'Panel Refresh' "/DLG 288Hz"]
+  example: 288
+- key: refresh.marketing
+  label: Marketing motion rate
+  group: res
+  type: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Shown so the shopper can see what the box number means; never a native rate
+  sources: [Samsung 'Motion Technology', TCL 'Motion Enhancement Technology' / 'Clear Motion Index', LG 'TruMotion']
+  example: Motion Xcelerator 144Hz
+- key: hdr.formats
+  label: HDR formats
+  group: hdr
+  type: list
+  items: enum
+  enum: [hdr10, hdr10plus, dolby_vision, hlg, advanced_hdr]
+  unit: null
+  tier: core
+  level: model
+  facet: {kind: multi}
+  why: Dolby Vision vs HDR10+ support decides which streaming HDR you get
+  traps:
+  - 'Only from an explicit format row (LG "Dolby Vision / HDR10 / HLG", TCL "HDR Format" list) or a per-format Yes row; a format missing from
+    a list is NOT recorded as unsupported (Samsung has no Dolby Vision row at all: unknown, not false)'
+  - '"HDR", "HDR+", "OLED HDR Pro", "HDR PRO+" are brand names, not formats'
+  sources: [LG 'HDR (High Dynamic Range)', Samsung 'HDR 10+' / 'HLG (Hybrid Log Gamma)', TCL 'High Dynamic Range (HDR) Format']
+  example: [dolby_vision, hdr10, hlg]
+- key: hdr.dolby_vision
+  label: Dolby Vision
+  group: hdr
+  type: bool
+  unit: null
+  tier: important
+  level: model
+  facet: {kind: bool}
+  why: Filter
+  traps: ['true from a Dolby Vision row (Yes / a DV mode) or a format list naming it; false only from a row whose value is just No']
+  sources: [LG 'Dolby Vision', TCL 'Dolby Vision Mode', format lists]
+  example: true
+- key: hdr.hdr10plus
+  label: HDR10+
+  group: hdr
+  type: bool
+  unit: null
+  tier: important
+  level: model
+  facet: {kind: bool}
+  why: Filter
+  sources: [Samsung 'HDR 10+', format lists]
+  example: true
+- key: hdr.local_dimming
+  label: Local dimming
+  group: hdr
+  type: bool
+  unit: null
+  tier: important
+  level: model
+  facet: {kind: bool}
+  why: Full-array local dimming is the main LCD HDR lever
+  traps:
+  - 'Samsung "UHD Dimming" / "Micro Dimming" and LG "Precision Dimming" are processing names; not counted. Only a row labelled local dimming
+    / dimming zones with an affirmative value'
+  - OLED / Micro LED dim per pixel; not this key
+  sources: [TCL 'Contrast Control Zones (Local Dimming zones)', TCL 'Dimming Zones']
+  example: true
+- key: hdr.dimming_zones
+  label: Local-dimming zones
+  group: hdr
+  type: integer
+  unit: null
+  tier: important
+  level: model
+  revision_scope: unspecified
+  facet: {kind: range, bins: [100, 500, 1000, 2000, 5000]}
+  why: More zones = less blooming (where stated; most makers do not state it)
+  traps:
+  - '"Up to N zones" is per line (largest size) and carries qualifier up_to; "N+" is a lower bound -> unresolved'
+  - Zone counts vary by size within one line; never copied from another size
+  sources: [TCL 'Dimming Zones', TCL 'Local Dimming Type']
+  example: 4000
+- key: hdr.peak_nits
+  label: Peak brightness (maker)
+  group: hdr
+  type: number
+  unit: nit
+  tier: detail
+  level: model
+  basis_conditions: [brightness_basis]
+  facet: false
+  why: Maker-claimed peak; window size and mode are usually unstated
+  traps: ['"Up to 6000 Peak Nits" is a line maximum (qualifier up_to); "High Brightness" without a number is no value']
+  sources: [TCL 'Peak Brightness (nits)', TCL 'Display Brightness', TCL 'System brightness - peak (UHDA test method typical)']
+  example: 3000
+- key: hdmi.count
+  label: HDMI inputs
+  group: gaming
+  type: integer
+  unit: null
+  tier: important
+  level: model
+  facet: {kind: range, bins: [2, 3, 4]}
+  why: Number of HDMI inputs
+  sources: [Samsung 'HDMI', LG 'HDMI Input', TCL 'HDMI']
+  example: 4
+- key: hdmi.ports_4k120
+  label: HDMI ports with 4K 120 Hz
+  group: gaming
+  type: integer
+  unit: null
+  tier: core
+  level: model
+  facet: {kind: range, bins: [0, 1, 2, 4], column: true}
+  why: How many consoles/PCs get 4K 120 Hz (HDMI 2.1 bandwidth) without a switch
+  traps:
+  - '"HDMI 2.1" on the box does not say how many ports run 4K120; only an explicit per-port statement counts ("4K 144Hz (for HDMI 1/2/3/4)",
+    "HDMI 1-2: 4K@144Hz | HDMI 3-4: 4K@60Hz", "4x HDMI 2.1 (4K@144HZ)")'
+  - 'A generic "4ea (supports 4K 120Hz, eARC, VRR ...)" list does not say every port has every feature: unresolved'
+  sources: [Samsung 'HDMI Maximum Input Rate', TCL 'HDMI' / 'HDMI 2.1', LG 'HDMI Input']
+  example: 4
+- key: hdmi.max_input
+  label: Maximum HDMI input
+  group: gaming
+  type: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: The best signal any port takes
+  sources: [Samsung 'HDMI Maximum Input Rate']
+  example: 4K 144Hz (for HDMI 1/2/3/4)
+- key: hdmi.earc
+  label: HDMI eARC
+  group: gaming
+  type: bool
+  unit: null
+  tier: important
+  level: model
+  facet: {kind: bool}
+  why: Lossless audio to a sound bar/AVR
+  traps: ['"ARC" or "Yes" is plain ARC: no eARC claim either way']
+  sources: [LG / Samsung 'HDMI Audio Return Channel', TCL 'HDMI' "(1 eARC)"]
+  example: true
+- key: vrr.supported
+  label: Variable refresh rate (VRR)
+  group: gaming
+  type: bool
+  unit: null
+  tier: core
+  level: model
+  facet: {kind: bool}
+  why: Tear-free console/PC gaming
+  traps: ['A "Game Enhancement Technology" value in the VRR row is not a VRR statement (TCL); only Yes / Up to N Hz / No']
+  sources: [Samsung 'VRR', LG 'VRR (Variable Refresh Rate)', TCL 'Variable Refresh Rate (VRR)']
+  example: true
+- key: vrr.formats
+  label: VRR certifications
+  group: gaming
+  type: list
+  items: enum
+  enum: [freesync, freesync_premium, freesync_premium_pro, gsync_compatible]
+  unit: null
+  tier: detail
+  level: model
+  facet: {kind: multi}
+  why: PC GPU compatibility
+  traps: ['Samsung''s FreeSync row sometimes holds another row''s text (accessibility list): only the enumerated FreeSync tiers are read']
+  sources: [Samsung 'FreeSync' / 'G-SYNC', LG 'FreeSync' / 'G-Sync Compatible (Nvidia)', TCL 'Free-sync Certification']
+  example: [freesync_premium_pro, gsync_compatible]
+- key: game.allm
+  label: Auto low-latency mode (ALLM)
+  group: gaming
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Console switches the TV to game mode
+  sources: [ALLM rows]
+  example: true
+- key: game.hgig
+  label: HGiG
+  group: gaming
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Console HDR tone-mapping handshake
+  sources: [Samsung 'HGiG', LG 'HGIG Mode']
+  example: true
+- key: os.platform
+  label: Smart TV platform
+  group: smart
+  type: enum
+  enum: [webos, tizen, google_tv, android_tv, roku_tv, fire_tv, vidaa, smartcast, none]
+  unit: null
+  tier: core
+  level: model
+  facet: {kind: enum, column: true}
+  why: Apps, ads, update policy, voice assistant
+  traps: ['TCL and Hisense sell the same panel/series with different platforms under different model letters (Q6LR = Roku, Q651G = Google)']
+  sources: [LG 'Operating System (OS)', Samsung 'Operating System', TCL 'Smart Platform']
+  example: webos
+- key: os.version
+  label: Platform version
+  group: smart
+  type: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Age of the software at launch
+  sources: [LG 'Operating System (OS)' (webOS 25)]
+  example: webOS 25
+- key: audio.output_w
+  label: Speaker output
+  group: audio
+  type: number
+  unit: W
+  tier: detail
+  level: model
+  facet: false
+  why: Built-in sound
+  traps: ['"10W*2" / "2*10W+20W" are per-channel lists; only a single total figure is a value']
+  sources: [Samsung 'Sound Output (RMS)', LG 'Audio Output', TCL 'Audio Power (Watts)']
+  example: 40
+- key: audio.dolby_atmos
+  label: Dolby Atmos
+  group: audio
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Atmos decoding/passthrough
+  sources: [Dolby Atmos rows]
+  example: true
+- key: conn.atsc3
+  label: ATSC 3.0 tuner
+  group: conn
+  type: bool
+  unit: null
+  tier: important
+  level: model
+  facet: {kind: bool}
+  why: NextGen TV over the air
+  traps: ['false only when the tuner row names ATSC 1.0 and not 3.0; a missing row is unknown']
+  sources: [TCL 'Tuner Type', LG 'TV Tuner', Samsung 'Digital Broadcasting']
+  example: false
+- key: conn.usb_count
+  label: USB ports
+  group: conn
+  type: integer
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Storage / camera
+  sources: [LG 'USB Input', Samsung 'USB', TCL 'USB']
+  example: 2
+- key: conn.wifi
+  label: Wi-Fi
+  group: conn
+  type: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Streaming reliability
+  sources: [Wi-Fi rows]
+  example: Wi-Fi 6E
+- key: conn.ethernet
+  label: Ethernet port
+  group: conn
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Wired streaming
+  sources: [Ethernet rows]
+  example: true
+- key: pwr.on_mode_w
+  label: On-mode power
+  group: power
+  type: number
+  unit: W
+  tier: core
+  level: model
+  basis_conditions: [power_basis]
+  facet: {kind: range, bins: [50, 100, 150, 200, 300], column: true}
+  why: Running cost; the ENERGY STAR figure is a measured test value, the maker's "Typical" is a declaration
+  traps:
+  - ENERGY STAR on-mode, the DOE federal-test figure and the maker's Typical are different bases (conditions.power_basis), never one number
+  - The ENERGY STAR 'maximum on-mode power for certification' is the programme limit, not this TV's power
+  - '"Power Consumption (Max)" is a separate key (pwr.max_w)'
+  sources: [ENERGY STAR power_consumption_in_on_mode_watts, Samsung 'Power Consumption (Typical)', LG 'Power Consumption', TCL 'Power Consumption (watts)']
+  example: 98.4
+- key: pwr.on_mode_doe_w
+  label: On-mode power (DOE test)
+  group: power
+  type: number
+  unit: W
+  tier: detail
+  level: model
+  basis_conditions: [power_basis]
+  facet: false
+  why: The federal test-procedure figure reported in the ENERGY STAR filing
+  sources: [ENERGY STAR reported_on_mode_power_per_the_federal_test_procedure_watts]
+  example: 97.2
+- key: pwr.max_w
+  label: Maximum power
+  group: power
+  type: number
+  unit: W
+  tier: detail
+  level: model
+  facet: false
+  why: Circuit sizing; HDR peaks
+  sources: [Samsung 'Power Consumption (Max)']
+  example: 405
+- key: pwr.standby_w
+  label: Standby power
+  group: power
+  type: number
+  unit: W
+  tier: detail
+  level: model
+  basis_conditions: [power_basis]
+  conditions: [standby_network]
+  facet: false
+  why: Always-on draw
+  traps: ['"Under 0.5W" / "<0.5W" is a bound, not a value (not normalised)']
+  sources: [ENERGY STAR standby (network connected / not connected), Samsung 'Power Consumption (Stand-by)']
+  example: 0.5
+- key: pwr.annual_kwh
+  label: Annual energy
+  group: power
+  type: number
+  unit: kWh
+  tier: detail
+  level: model
+  basis_conditions: [power_basis]
+  facet: false
+  why: Energy Guide label figure (DOE test, 5 h/day)
+  sources: [ENERGY STAR reported_annual_energy_consumption_kwh, LG 'Annual Power Consumption', TCL 'Power Consumption (annual, kWh)']
+  example: 255
+- key: pwr.energy_star
+  label: ENERGY STAR certified
+  group: power
+  type: bool
+  unit: null
+  tier: important
+  level: model
+  facet: {kind: bool}
+  why: Efficiency label
+  traps: ['Only from the ENERGY STAR dataset (currently certified); absence from the list is not "false" (older or lapsed certifications drop off)']
+  sources: [ENERGY STAR Certified Televisions]
+  example: true
+- key: pic.auto_brightness
+  label: Automatic brightness control
+  group: power
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Ambient light sensor; also changes the ENERGY STAR on-mode result
+  sources: [ENERGY STAR automatic_brightness_control]
+  example: true
+- key: phys.weight_no_stand
+  label: Weight without stand
+  group: phys
+  type: number
+  unit: lb
+  tier: important
+  level: model
+  facet: {kind: range, bins: [20, 40, 60, 100]}
+  why: Wall-mount rating
+  sources: [LG 'TV Weight without Stand', Samsung 'Set Weight without Stand (lb)', TCL 'Product Weight without stand (lbs)']
+  example: 37.7
+- key: phys.weight_with_stand
+  label: Weight with stand
+  group: phys
+  type: number
+  unit: lb
+  tier: detail
+  level: model
+  facet: false
+  why: Furniture load
+  sources: [as weight without stand]
+  example: 38.1
+- key: phys.width_no_stand
+  label: Width
+  group: phys
+  type: number
+  unit: in
+  tier: important
+  level: model
+  facet: {kind: range, bins: [30, 45, 57, 66, 75]}
+  why: Fit in a niche / between speakers
+  traps:
+  - 'Samsung prints some sets in mm under an "inch" label (1224.6 x 707.8 x 76.6 inch): a figure that disagrees with the size class by more
+    than the bezel allows is kept unresolved, never converted'
+  sources: [LG 'TV Dimensions without Stand (WxHxD)', Samsung 'Set Size without Stand (WxHxD)', TCL 'Product Size (WxHxD) without stand']
+  example: 57.0
+- key: phys.height_no_stand
+  label: Height without stand
+  group: phys
+  type: number
+  unit: in
+  tier: detail
+  level: model
+  facet: false
+  why: Wall-mount fit
+  sources: [as width]
+  example: 32.8
+- key: phys.depth_no_stand
+  label: Depth without stand
+  group: phys
+  type: number
+  unit: in
+  tier: detail
+  level: model
+  facet: false
+  why: Wall-mount profile
+  sources: [as width]
+  example: 1.8
+- key: phys.width_with_stand
+  label: Width with stand
+  group: phys
+  type: number
+  unit: in
+  tier: detail
+  level: model
+  facet: false
+  why: Furniture fit
+  sources: [LG 'TV Dimensions with Stand (WxHxD)', Samsung 'Set Size with Stand (WxHxD)', TCL 'Product Size (WxHxD) with Stand']
+  example: 57.0
+- key: phys.height_with_stand
+  label: Height with stand
+  group: phys
+  type: number
+  unit: in
+  tier: detail
+  level: model
+  facet: false
+  why: Furniture fit (under a cabinet / in front of a window)
+  sources: [as width with stand]
+  example: 35.3
+- key: phys.depth_with_stand
+  label: Depth with stand
+  group: phys
+  type: number
+  unit: in
+  tier: important
+  level: model
+  facet: false
+  why: Stand footprint vs furniture depth
+  sources: [as width with stand]
+  example: 9.3
+- key: phys.vesa
+  label: VESA mount pattern
+  group: phys
+  type: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Wall-mount compatibility
+  sources: [LG 'VESA Mounting (WxH)', Samsung 'VESA Spec', TCL 'VESA Hole Pattern']
+  example: 300x200
+- key: sup.warranty
+  label: Warranty
+  group: support
+  type: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Panel/burn-in coverage differs
+  sources: [LG 'Limited Warranty', TCL 'Warranty']
+  example: 1 Year Parts & Labor
+changelog:
+- {version: 0.1.0, date: '2026-11-23', change: 'First TV profile (A1): per-size panel facts, native vs marketing refresh, per-port 4K120, HDR formats, ES power with basis.'}

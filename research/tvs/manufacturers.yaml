@@ -1,0 +1,23 @@
+# A2 discovery, TVs (US). Probed 2026-11-23 with the shared crawler client UA (specsheet-crawler/0.1), robots honoured, <=1 req/s per host.
+# status: adapter = built+run; viable = probed OK, adapter not built; blocked = stop, no workaround; unprobed = not reached.
+cross_brand_sources:
+  energystar:
+    status: adapter            # crawler/adapters/energystar_tvs.py  raw/energystar-tvs
+    url: https://data.energystar.gov/resource/pd96-rr3d.json   # Socrata "ENERGY STAR Certified Televisions", no key, robots Crawl-delay 1
+    rows: {cert_rows: 175, distinct_brand_model: 175, wildcard_families: 63, models_minted: 112}
+    brands: {LG: 63, Samsung: 45, Sansui: 29, Philips: 12, XITRIX: 6, Hisense: 5, Emerson: 4, Clear Tunes: 4, Loewe: 4, Insignia: 1, RCA: 1, Sceptre: 1}
+    gives: [certified model string, upc (some), display_type, backlight (direct/edge), viewable diagonal, native resolution, on-mode power (ES test + DOE figure), standby (network on/off), annual kWh, ABC, additional_model_information (declared same-hardware designations)]
+    lacks: [refresh, HDMI, HDR formats, OS, weight/dims, panel subtype]
+    note: Only CURRENTLY certified TVs (the v9 spec is strict); lapsed models drop off, so absence is never "not certified". LG certifies wildcard families only.
+  displayhdr:
+    status: not_applicable     # displayhdr.org certified list = monitors + notebooks; no consumer TV (checked the parsed displayhdr store: Hisense/Sony rows are monitors)
+  doe_ccms:
+    status: unprobed           # regulations.doe.gov/certification-data (DOE Compliance Certification Database) covers TVs for all brands; next regulatory source
+manufacturers:
+  samsung:  {status: adapter, adapter: samsung_tvs, source_id: samsung-us-tvs, run: '195 model codes from /us/vd-sitemap.xml (tvs + lifestyle-tvs, commercial excluded); 38 product pages + 38 spec-group calls (sizes share a group)', how: 'product page "groupId" -> /us/gapi/v1/bridge/cacheable/bridge-data?data_type=Specs&group_id=<id> (JSON fullSpecs per model code; same API samsung.py uses; /us/api/ is the disallowed path, /us/gapi/ is not)'}
+  lg:       {status: adapter, adapter: lg_tvs, source_id: lg-us-tvs, run: '928 /us/tvs/lg-* sitemap URLs; 420 fetched (2021+ lines first, ~5 s per 2 MB page); rest deferred', how: 'same SSR __NEXT_DATA__ productData as lg_us.py (monitors): sku, UPC, allInfo[].tableData spec rows'}
+  tcl:      {status: adapter, adapter: tcl_tvs, source_id: tcl-us-tvs, run: '83 TV SKUs from us.tcl.com/products.json (Shopify, 407 products), 25 series pages', how: 'series page HTML: one spec box per size (two theme layouts); attributed by Model row or unique size'}
+  hisense:  {status: viable_unverified, how: 'www.hisense-usa.com/store-products-sitemap.xml (Wix) lists 159 television product pages, each 301 -> www.hisense.com/us/en/tv/<series>/<slug>; spec markup not inspected. Hisense publishes zone counts.'}
+  vizio:    {status: viable, how: 'www.vizio.com/products-sitemap.xml -> ~190 /en/tv/<series>/<MODEL> pages (200, 210 KB); specs live in an embedded JSON (sectionTitle "Size and Weight", keys television-with-stand-weight ...) - needs a JSON-in-script extractor'}
+  roku:     {status: unprobed_partial, how: 'roku.com sitemap 200 (1.3 MB); Roku-made TVs (Pro Series, Select) pages not located; robots disallows /us/api/ only'}
+  sony:     {status: blocked, how: 'electronics.sony.com and www.sony.com robots.txt -> 403 (Akamai) for the crawler UA. Stopped, no workaround.'}

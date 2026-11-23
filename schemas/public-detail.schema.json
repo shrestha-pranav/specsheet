@@ -245,6 +245,81 @@
           }
         }
       }
+    },
+    "contents": {
+      "type": "array",
+      "description": "package kind only: what the bundle contains (record.schema.json contents). `entity` = a published model id, `description` = a component the catalogue does not hold (solar panel, accessory kit).",
+      "items": {
+        "type": "object",
+        "required": [
+          "qty"
+        ],
+        "properties": {
+          "entity": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "qty": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "bundles": {
+      "type": "array",
+      "description": "Model detail only (r6): bundle packages that contain this model ('Sold as bundles'). Each is also a detail file products/<id>.json (kind=package, no specs). qty = units of THIS model in the bundle.",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "sku",
+          "qty",
+          "contents"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "sku": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "qty": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "contents": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "qty"
+              ],
+              "properties": {
+                "entity": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "qty": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

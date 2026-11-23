@@ -61,6 +61,10 @@ SOURCES = {
     "irobot-us-robovac": {"brand": "irobot", "brand_name": "iRobot", "category": "robot-vacuums", "module": "irobot_robovac", "importer": "model"},
     "mova-us-robovac": {"brand": "mova", "brand_name": "MOVA", "category": "robot-vacuums", "module": "mova_robovac", "importer": "model"},
     "csa-dcl-robovac": {"brand": "csa", "brand_name": "CSA Matter DCL (cross-brand)", "category": "robot-vacuums", "module": "csa_dcl_robovac", "importer": "model"},
+    "energystar-tvs": {"brand": "energystar", "brand_name": "ENERGY STAR (cross-brand)", "category": "tvs", "module": "energystar_tvs", "importer": "model"},
+    "samsung-us-tvs": {"brand": "samsung", "brand_name": "Samsung", "category": "tvs", "module": "samsung_tvs", "importer": "model"},
+    "lg-us-tvs": {"brand": "lg", "brand_name": "LG", "category": "tvs", "module": "lg_tvs", "importer": "model"},
+    "tcl-us-tvs": {"brand": "tcl", "brand_name": "TCL", "category": "tvs", "module": "tcl_tvs", "importer": "model"},
     "tripplite": {"brand": "tripplite", "brand_name": "Tripp Lite", "category": "power-strips", "module": "tripplite", "importer": "strip"},
     "cyberpower": {"brand": "cyberpower", "brand_name": "CyberPower", "category": "power-strips", "module": "cyberpower", "importer": "strip"},
     # crawl.py v0 stores (raw/<slug>/products/<key>/{extract,feed}.json, no snapshot log): read through crawlpy_strips, never written

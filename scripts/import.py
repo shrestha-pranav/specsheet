@@ -37,6 +37,7 @@ import jsonschema  # noqa: E402
 import yaml  # noqa: E402
 import _contract as C  # noqa: E402
 import _cpu  # noqa: E402
+import bundles as B  # noqa: E402
 import registry  # noqa: E402
 import identity as I  # noqa: E402
 import normalize as N  # noqa: E402
@@ -397,6 +398,8 @@ def stem_of(model, cfg):
         v = v.split(ch)[0]
     if cfg.get("strip_market_suffix", True):
         v = re.sub(r"-[A-Z]{1,2}(\.[A-Z]{2,4})?$", "", v)
+    if cfg.get("strip_regex"):            # category-declared market/channel tail (research/tvs/identity.md); proposals only
+        v = re.sub(cfg["strip_regex"], "", v)
     return re.sub(r"[^A-Z0-9]", "", v)
 
 
@@ -467,10 +470,12 @@ def do_model(world, meta, sid, rec, pr, extra, stats):
     e.__dict__.setdefault("msrc", set()).add(sid)
     for a in pr["aliases"]:
         e.aliases.setdefault(a["text"], a["kind"])
+    bsk = B.collect(world, e, brand, mi, pr, sid, rec, ob, PARSER["current"], cm.get("bundles"), world.brand_names.get(brand, "")) \
+        if "bundle_packages" in (cm.get("features") or []) else set()       # r6: bundle SKUs -> package candidates (scripts/bundles.py), minted after all sources
     pkg = (cm.get("package_markets") or {}).get("mtm")
     last_pkg, owners = None, {mi["value"]: e}
     for i in ids:
-        if i is mi:
+        if i is mi or id(i) in bsk:
             continue
         sch = i["scheme"]
         if sch == "mtm":
@@ -528,7 +533,7 @@ def stem_links(world, stats):
         for n, (ka, a) in enumerate(members):
             for kb, b in members[n + 1:]:
                 sa, sb = getattr(a, "msrc", set()), getattr(b, "msrc", set())
-                if sa == sb and len(sa) == 1:
+                if sa == sb and len(sa) == 1 and not cfg.get("same_source"):
                     continue      # same single source: colour/market siblings of one maker page set, not a cross-source match
                 link(b, "possible_match", a, f"stem:{brand}")
                 world.events.append(("propose_relation", world.category, b, [], None, {"type": "possible_match", "stem": st}))
@@ -890,6 +895,9 @@ def main():
     for w in worlds.values():       # review 3: contradictory pages after every corroborated page of every source
         for sev, sid, ref, meta, rec, pr, extra, st in sorted(w.deferred, key=lambda t: t[:3]):
             IMPORTERS[meta.get("importer", "generic")](w, meta, sid, rec, pr, extra, st)
+    for cat, w in worlds.items():   # r6: corroborated bundle SKUs -> package entities (contains -> member models); needs every model of the category
+        if "bundle_packages" in metas[cat]["features"]:
+            B.mint(w, cat_stats[cat], {"K": K, "add_ident": add_ident, "add_src": add_src, "link": link, "parser": PARSER, "slug": slug})
     ignored_rows = []
     rules = {c: load_label_rules(c) for c in worlds}
     for sid, st in stats.items():
@@ -989,6 +997,8 @@ def main():
                 conflict_rows.append((cat, "gtin", v, json.dumps(sorted(x.id for x in es)), "one GTIN on unrelated entities: review"))
                 events.append(("gtin_conflict", cat, None, [f"{cat}|gtin|GS1|{v}|"], None, {"ids": sorted(x.id for x in es)}))
 
+    for w in worlds.values():
+        B.finalize(w)               # package contents (entity ids now exist)
     # ------------------------------------------------------------------ write
     dbp = Path(a.db); dbp.parent.mkdir(parents=True, exist_ok=True)
     tmp = dbp.with_suffix(".tmp")

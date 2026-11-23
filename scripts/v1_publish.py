@@ -28,6 +28,9 @@ DB = ROOT / "state" / "specsheet.sqlite"
 SHARD_BYTES = 2_000_000
 # Categories are NOT listed here: every category with an entity in the store and a research/<cat>/spec-profile.yaml is published, with
 # its label, columns, market filter and variant label from research/<cat>/category.yaml (scripts/catmeta.py).
+# measurement-method conditions published per index row as x[k].basis (r6) so the grid can flag "methods differ" without the detail. The value that
+# means "not stated" is omitted (index size): an absent key reads as that default, exactly as the shell's METHOD_DEFAULTS already does.
+METHOD_DEFAULTS = {"claim_basis": "mfr_unstated", "power_mode": "unstated"}
 V0_TYPE = {"integer": "number", "object": "text", "date": "text"}
 _REC = json.loads((CODE / "schemas" / "record.schema.json").read_text())
 _PD = json.loads((CODE / "schemas" / "public-detail.schema.json").read_text())
@@ -223,6 +226,15 @@ def publish(api: Path, build_stats: dict):
         # a revision of any published model/ancestor model gets a detail file even when it has no index row (a link target for the model's `revisions[]`)
         rev_files = {eid for eid, e in ents.items() if e["kind"] == "revision" and e["parent_id"] in (pub | anc) and any(has_value(r) for r in trusted[eid].values())}
         files_t = pub | anc | rev_files
+        # r6 bundle packages (scripts/bundles.py): no specs, no parent; published as their own detail file and under each member model (`bundles`)
+        # when an approved `contains` relation points at a published model. Never index rows.
+        bundle_of = collections.defaultdict(list)
+        for eid, e in ents.items():
+            if e["kind"] == "package" and "contents" in json.loads(e["extra"] or "{}"):
+                tg = sorted({r["target_id"] for r in rels[eid] if r["type"] == "contains" and r["status"] == "approved" and r["target_id"] in files_t})
+                for t in tg:
+                    bundle_of[t].append(eid)
+        files_t = files_t | {b for v in bundle_of.values() for b in v}
         children = collections.defaultdict(list)
         for eid in files_t:
             if ents[eid]["parent_id"] in files_t:
@@ -266,6 +278,7 @@ def publish(api: Path, build_stats: dict):
 
         core = [k for k, f in fields.items() if f["tier"] == "core"]
         keep_vs = {k for k, f in fields.items() if f["facet"] or f["column"]}
+        method_keys = {k: [c for c in (f.get("conditions") or []) if c in METHOD_DEFAULTS] for k, f in fields.items()}
 
         def row_of(eid, d, specs, scope):
             e = ents[eid]
@@ -278,6 +291,9 @@ def publish(api: Path, build_stats: dict):
                     v[k] = r["value"]
                     if r.get("display") or r.get("qualifier"):
                         x[k] = {f: r[f] for f in ("display", "qualifier") if r.get(f)}
+                    mb = {c: r["basis"][c] for c in method_keys.get(k, ()) if (r.get("basis") or {}).get(c) not in (None, METHOD_DEFAULTS[c])}
+                    if mb:      # r6: the claim basis / operating mode of the headline value, same shape as the detail's specs[k].basis
+                        x.setdefault(k, {})["basis"] = mb
                 elif r["status"] != "not_yet_extracted":
                     s[k] = r["status"]
             keyids = [f"{i['scheme']}:{i['value']}" for i in idents[eid] if i["valid"] and (i["role"] == "key" or i["scheme"] == "gtin")]
@@ -308,6 +324,10 @@ def publish(api: Path, build_stats: dict):
                       "demo": False, "marketing_terms": [], "confidence": {"level": "unrated", "scope": "accepted"},
                       "identity_caveat": "Identity from manufacturer identifiers; links shown are approved (source-stated or human-reviewed)."})
             d["specs"] = {k: specs[k] for k in sorted(specs)}
+            if ents[eid]["kind"] == "package" and ex.get("contents"):
+                d["contents"] = ex["contents"]
+                d["notes"] = ("Bundle sold under one manufacturer SKU. It has no specifications of its own and inherits none: see each contained "
+                              "model for its specifications. Contents are as listed by the manufacturer's store; free promotional items are not listed.")
             if children.get(eid):
                 d["children"] = sorted(children[eid])
             details[eid] = d
@@ -316,6 +336,17 @@ def publish(api: Path, build_stats: dict):
                 for i in idents[eid]:
                     if i["valid"] and not i["disputed"] and i["scheme"] in ("mtm", "mfr_model", "mfr_sku", "gtin"):
                         lookup[f"{i['scheme']}:{lookup_norm(i['scheme'], i['value'])}"].add(eid)
+        for mid, bids in bundle_of.items():
+            if mid not in details:
+                continue
+            out_b = []
+            for bid in sorted(set(bids), key=lambda b: (details[b]["name"], b)):
+                bd = details[bid]
+                own = next((c["qty"] for c in bd["contents"] if c.get("entity") == mid), 1)
+                sku = next((i["value_raw"] for i in bd["identifiers"] if i["role"] == "key"), None)
+                out_b.append({"id": bid, "name": bd["name"], "sku": sku, "qty": own, "contents": bd["contents"]})
+            details[mid]["bundles"] = out_b
+            stats["bundles_listed"] += len(out_b)
         for mid, d in details.items():
             revs = [c for c in children.get(mid, []) if ents[c]["kind"] == "revision"]
             if not revs:

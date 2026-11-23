@@ -22,7 +22,7 @@ import _lt as L
 import _powerbank as P
 import _run
 
-VERSION = 2       # v2: review 3 (all-port totals, capacity bases, rated load, page/label identity conflicts)
+VERSION = 3       # v3: r6 a repeated identical port row is one port (_powerbank.port_segments); v2: review 3 (all-port totals, capacity bases, rated load, page/label identity conflicts)
 CATEGORIES = {"power-banks"}
 DELAY = 1.0
 PB = re.compile(r"power ?bank|portable charger|battery pack", re.I)

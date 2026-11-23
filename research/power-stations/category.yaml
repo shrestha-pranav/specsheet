@@ -12,6 +12,9 @@ columns:
 - phys.weight
 features:
 - stem_links
+# r6: bundle variants on a station page (fingerprints.packages: '+ 200W Solar', '2 x DELTA 3', Anker add-on options) become package entities
+# when corroborated (scripts/bundles.py): contains -> the station model, no specs, never an index row; listed under the model as `bundles`.
+- bundle_packages
 stem:
   cut_at:
   - /

@@ -1,0 +1,21 @@
+name: Televisions
+description: "Televisions by manufacturer model number, one size per model (Samsung QN65S90FAFXZA, LG OLED65B5PUA, TCL 65QM8K): panel per size
+  (LCD VA/IPS, OLED, Mini-LED), native vs marketing refresh, HDMI ports with 4K 120 Hz, HDR formats, VRR, platform, ENERGY STAR on-mode power with
+  its basis, size and weight with/without stand. Sources: ENERGY STAR Certified Televisions, Samsung, LG and TCL US spec data."
+columns: [gen.size_class, panel.display_tech, res.class, refresh.native_hz, hdmi.ports_4k120, os.platform, pwr.on_mode_w]
+features: [stem_links]
+# Stem = PROPOSALS only (possible_match), never a merge (research/tvs/identity.md). strip_regex removes (a) Samsung's US tail XZA, so the site code
+# QN65S90FAFXZA meets the ENERGY STAR certified string QN65S90FAF, and (b) the LG OLED channel/stand tail (OLED65B5PUA / OLED65B5AUA -> OLED65B5),
+# so retailer-channel siblings on lg.com are proposed for review. same_source: LG channel siblings come from one source (lg-us-tvs), so the
+# default "same single source = siblings, skip" rule would hide exactly the pairs that need review. Nothing else is stripped (Samsung's E/F
+# production letter is kept: it differs between sizes and is a candidate panel-source marker).
+stem: {cut_at: [], strip_market_suffix: false, strip_regex: 'XZA$|(?<=^OLED\d\d[A-Z]\d)[A-Z]U[A-Z]$', same_source: true}
+brand_aliases: {lge: lg, "lg electronics": lg, "sansui, amzfast": sansui, "loewe": loewe, "clear tunes": clear_tunes}
+brand_names: {lg: LG, samsung: Samsung, tcl: TCL, sony: Sony, hisense: Hisense, vizio: VIZIO, roku: Roku, insignia: Insignia, sansui: Sansui,
+  philips: Philips, rca: RCA, sceptre: Sceptre, emerson: Emerson, loewe: Loewe, xitrix: XITRIX, clear_tunes: Clear Tunes}
+# importer 'model' identity scope (review 2 risk 4): key = (brand, normalised model), market not in the key. ENERGY STAR (US programme) and the
+# three US maker sources all state market US; Samsung/LG codes carry their own market tail, so different markets cannot collide silently, and two
+# different STATED markets are quarantined.
+identity_scope:
+  cross_market_brands: "*"
+  market_scoped_brands: []

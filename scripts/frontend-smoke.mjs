@@ -198,7 +198,32 @@ assert.equal(ui.revisionsMarkup(rcat, {specs:{}}), '');
   element('#results-table'); ui.renderTable(rv, pair, st, '', {found:{identifiers:[],terms:[],matches:new Map()}, total:2, baseCount:2, compared:pair});
   assert.match(element('#results-table').innerHTML, /methods-flag/, 'Grid marks selected products whose basis differs');
   ui.renderTable(rv, pair, {...st, ids:[]}, '', {found:{identifiers:[],terms:[],matches:new Map()}, total:2, baseCount:2, compared:[]});
-  assert.doesNotMatch(element('#results-table').innerHTML, /methods-flag/, 'No label without a comparison');
+  const flagged = element('#results-table').innerHTML.match(/methods-flag/g) || [];
+  assert.equal(flagged.length, 1, 'Grid flags only the non-default-basis cell, even with nothing selected; default cells get none');
+  // Index carries basis: selecting rows must not fetch detail records to learn it.
+  const detailsBefore = requests.filter(url=>url.includes('/robot-vacuums/products/')).length;
+  const solo = ui.initialState(rv, new URLSearchParams('cols=clean.suction_pa')); element('#results-table');
+  ui.renderTable(rv, [pair[1]], solo, '', {found:{identifiers:[],terms:[],matches:new Map()}, total:1, baseCount:1, compared:[]});
+  assert.doesNotMatch(element('#results-table').innerHTML, /methods-flag/, 'A single row has nothing to differ from');
+  assert.equal(requests.filter(url=>url.includes('/robot-vacuums/products/')).length, detailsBefore);
+}
+
+// Round 6 UI: bundles on a model, package detail pages.
+{
+  const ps = categories.find(c=>c.id === 'power-stations'); Object.assign(ps, await json('api/v1/power-stations/schema.json'));
+  const model = await json('api/v1/power-stations/products/ecoflow-efdelta3.json');
+  assert(model.bundles?.length, 'Fixture model has bundles');
+  await ui.renderProduct(ps, 'ecoflow-efdelta3', new URLSearchParams(), 0);
+  await new Promise(resolve => setTimeout(resolve, 20));
+  const html = element('.detail-main').innerHTML;
+  assert.match(html, /Sold as bundles/); assert.match(html, /D3-2/); assert.match(html, /2 × <a href="#\/product\/power-stations\/ecoflow-efdelta3/);
+  assert.match(html, /1 × 100W Flexible Solar Panel|100W Flexible Solar Panel/); assert.match(html, /href="#\/product\/power-stations\/ecoflow-d3-2"/);
+  assert.equal((html.match(/<table/g)||[]).length, 0, 'Bundles are a flat list');
+  assert.doesNotMatch(html, /\[object Object\]|undefined/);
+  await ui.renderProduct(ps, 'ecoflow-d3-2', new URLSearchParams(), 0);
+  const pkg = element('main').innerHTML;
+  assert.match(pkg, /2 × <a href=/); assert.match(pkg, /D3-2/); assert.match(pkg, /inherits no specs; see member models/);
+  assert.doesNotMatch(pkg, /detail-grid|spec-table|\[object Object\]/);
 }
 
 const beforeIssue = requests.length;

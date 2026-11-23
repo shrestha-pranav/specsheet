@@ -20,7 +20,7 @@ import _powerbank as P
 import _powerstation as PS
 import _run
 
-ID, VERSION, SOURCE = "ankersolix_stations", 1, "ankersolix-us-stations"
+ID, VERSION, SOURCE = "ankersolix_stations", 2, "ankersolix-us-stations"     # v2: r6 shared _powerbank changed; station rules unchanged
 CATEGORIES = {"power-stations"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.ankersolix.com"
