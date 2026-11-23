@@ -1,0 +1,809 @@
+profile_format: specsheet.category-profile/1
+category: robot-vacuums
+version: 0.1.0
+label: Robot vacuums & mops
+market: US
+status: draft
+scope: Consumer robot vacuums and vacuum-mop robots (with or without a dock) sold in the US by the maker's own US store (Dreame, Roborock, Narwal built;
+  Ecovacs, iRobot, Eufy, Shark, SwitchBot, MOVA, Lefant, Yeedi probed). Excludes stick, handheld and wet-dry floor washers, window/pool/lawn robots,
+  refurbished units (a condition, not a model) and replacement parts.
+note: 'A1 2026-11-23. Every number on a robot-vacuum page is a manufacturer claim measured under an undisclosed house method. The profile therefore
+  carries the claim basis as a basis condition (claim_basis) on suction, noise and runtime, and the operating mode (power_mode) on runtime and noise.
+  Claim origin is three-way and is expressed with existing fields, not a new one: manufacturer = claim kind official + source tier manufacturer
+  (claim_basis mfr_in_house_lab | mfr_unstated); certification = kind official + claim_basis third_party_certified (TUV/SGS/Intertek named in the
+  page disclaimer) or a certifier source tier (CSA Matter DCL, FCC); measured = kind measured (independent tests, RTINGS/Vacuum Wars sealed-inlet
+  suction or dB at 1 m), never mixed into the headline with manufacturer figures (resolve.py basis rules give per-basis alternatives).'
+identity:
+  levels:
+  - level: family
+    label: Product line
+    meaning: 'Series letters: Dreame L/X/D/Aqua/Matrix, Roborock Qrevo/Saros/S/Q, Narwal Freo/Flow'
+    key_schemes:
+    - mfr_family
+    inherits: false
+  - level: model
+    label: Model
+    meaning: 'One robot + dock design: Dreame L40s Ultra, Roborock Qrevo Edge S5A, Narwal Freo Z10 Turbo. Colours, App-Only/Live-Only/Membership
+      listings and accessory-kit packs of the same SKU set are the same model.'
+    key_schemes:
+    - mfr_model
+    inherits: true
+  - level: configuration
+    label: Colour / pack SKU
+    meaning: 'Manufacturer material code per colour or pack: Dreame 010204AA000742, Roborock RR-QrevoEdgeS5A5-M2, Narwal CP-ZD-A00331-00-00'
+    key_schemes:
+    - mfr_sku
+    inherits: true
+  - level: package
+    label: Retail package
+    meaning: GTIN-level box (rarely published by the makers' stores)
+    key_schemes:
+    - gtin
+    inherits: true
+  primary_key: Manufacturer model name as printed on the maker's US spec block (these brands print no regulatory model code on US pages), plus
+    the maker's material-code SKU per colour/pack. Retail titles ('... 25,000Pa Suction, Auto-Empty ...') are aliases only. FCC ID and the
+    label model code (e.g. Roborock 'QR02RR'-style, Dreame 'RLxxxx') are alias schemes that cross-check identity, never merge keys.
+  per_brand:
+    dreame: L40s Ultra (model), 010204AA000742 / 010204AA000823 (white / black material codes)
+    roborock: Qrevo Edge S5A (model), RR-QrevoEdgeS5A5-M2 (colour digit 5 = black, 0 = white); 'with Refill & Drainage System' = separate model '<name> RDS'
+    narwal: Freo Z10 Turbo (model), CP-ZD-A00331-00-00 (material code; '_DTC_N_US_YJ_260510' channel/date tag stripped)
+    irobot: C975020 (Roomba Combo j9+; iRobot prints a real model/SKU code in the URL), not built
+    eufy: T2351 / T210M111 (eufy T-codes are model numbers), not built
+    ecovacs: DEEBOT X8 PRO OMNI (model), not built
+    shark: RV2620WD (Shark model codes), blocked
+  schemes:
+  - scheme: mfr_family
+    level: family
+  - scheme: mfr_model
+    level: model
+    normalize: upper_strip_spaces
+  - scheme: mfr_sku
+    level: configuration
+    normalize: upper_keep_slash
+  - scheme: gtin
+    issuer: GS1
+    level: package
+  - scheme: fcc_id
+    issuer: FCC
+    level: model
+    alias_only: true
+    pattern: ^[A-Z0-9]{3,5}[A-Z0-9-]{1,14}$
+  - scheme: matter_vid_pid
+    issuer: CSA
+    level: model
+    alias_only: true
+  variant_axes:
+  - gen.color
+  model_defining:
+  - nav.type
+  - mop.type
+  - dock.self_empty
+  note: 'App Only / Live Only / Membership / Group-buy pages repeat a model with the same material-code SKUs; grouping is by SKU overlap (adapters).
+    "Complete" (Dreame X50 Ultra Complete) shares a SKU with the plain page on dreametech.com and is therefore the same model; MOVA and Dreame
+    elsewhere sell "Complete" as robot + accessory kit, so treat it as a package hint, never a different robot.'
+units:
+  system: us_customary
+  display:
+    mm: in
+    g: lb
+  custom:
+  - unit: Pa
+    base: Pa
+    factor: 1
+  - unit: mL
+    base: mL
+    factor: 1
+  - unit: min
+    base: min
+    factor: 1
+conditions:
+- id: claim_basis
+  label: Claim basis (how the figure was obtained)
+  type: enum
+  enum:
+  - mfr_in_house_lab
+  - mfr_unstated
+  - third_party_certified
+  - independent_measured
+  description: 'mfr_in_house_lab = page disclaimer says "based on our in-house lab data"; mfr_unstated = no basis printed; third_party_certified =
+    disclaimer names TUV/SGS/Intertek for this figure; independent_measured = a non-manufacturer test (sealed-inlet suction, dB at a stated distance).'
+- id: power_mode
+  label: Operating mode
+  type: enum
+  enum:
+  - quiet
+  - standard
+  - max
+  - unstated
+groups:
+- id: general
+  label: General & identity
+  order: 0
+- id: clean
+  label: Vacuuming
+  order: 1
+- id: mop
+  label: Mopping
+  order: 2
+- id: nav
+  label: Navigation & obstacle avoidance
+  order: 3
+- id: battery
+  label: Battery & runtime
+  order: 4
+- id: dock
+  label: Dock / base station
+  order: 5
+- id: noise
+  label: Noise
+  order: 6
+- id: smart
+  label: Smart home & app
+  order: 7
+- id: phys
+  label: Size & weight
+  order: 8
+specs:
+- key: gen.brand
+  label: Brand
+  group: general
+  type: enum
+  unit: null
+  tier: core
+  level: family
+  enum: [dreame, roborock, narwal, ecovacs, irobot, eufy, shark, switchbot, mova, lefant, yeedi]
+  enum_open: true
+  facet:
+    kind: enum
+    column: true
+  why: Filter
+  sources:
+  - Manufacturer US store
+  example: dreame
+- key: gen.color
+  label: Colour
+  group: general
+  type: text
+  unit: null
+  tier: detail
+  level: configuration
+  identity_role: variant_axis
+  facet: false
+  why: Only difference between most sibling SKUs
+  sources:
+  - Shopify variant option (product JSON)
+  example: Black
+- key: clean.suction_pa
+  label: Maximum suction (claimed)
+  group: clean
+  type: number
+  unit: Pa
+  tier: core
+  level: model
+  conditions:
+  - claim_basis
+  basis_conditions:
+  - claim_basis
+  facet:
+    kind: range
+    bins: [5000, 10000, 15000, 20000, 25000, 30000, 36000]
+    column: true
+  why: The headline number every listing leads with
+  traps:
+  - 'Not comparable across brands: no standard test (inlet sealed or open, at fan or at brush, peak or sustained); brands print "based on our
+    in-house lab data" at best. Independent sealed-inlet tests rank robots differently from the Pa figures.'
+  - Max suction is a short boost mode (carpet boost / MAX+), not the default cleaning level
+  - Pa doubled roughly every year (4,200 Pa in 2021 -> 36,000 Pa in 2026) while measured pickup changed far less
+  - Retail titles repeat the number with a different model's figure (bundle pages, older generation)
+  sources:
+  - Manufacturer spec block ('Maximum Suction (Pa)', Dreame/Narwal) + disclaimer line for the basis
+  - Roborock Key Features bullet or page title
+  - 'independent: sealed-inlet tests (Vacuum Wars, RTINGS) -> claim_basis independent_measured (not collected yet)'
+  notes: 'Claim origin: manufacturer (official, mfr_in_house_lab | mfr_unstated) or certification (third_party_certified). Never measured by us.'
+  example: 19000
+- key: clean.dustbin_ml
+  label: Robot dustbin capacity
+  group: clean
+  type: number
+  unit: mL
+  tier: important
+  level: model
+  facet:
+    kind: range
+    bins: [200, 300, 400, 500]
+  why: How often a robot without self-empty needs emptying
+  traps:
+  - '"≥300ml" is a lower bound: not normalised'
+  - Robots with a combined water/dust box print one figure for both
+  sources:
+  - Manufacturer spec block ('Dust Box Capacity')
+  example: 310
+- key: clean.main_brush_type
+  label: Main brush
+  group: clean
+  type: text
+  unit: null
+  tier: important
+  level: model
+  facet: false
+  why: Hair tangling and carpet pickup depend on brush design (rubber vs bristle, single vs dual, cutter)
+  traps:
+  - Trademarked names (HyperStream DuoBrush, TriCut, DuoRoller) hide whether it is rubber, bristle or both
+  - '"0 tangles" claims are TUV-certified on a narrow hair test'
+  sources:
+  - Manufacturer spec block ('Main Brush Type')
+  example: HyperStream Detangling DuoBrush
+- key: clean.main_brush_lifting
+  label: Main brush lifts
+  group: clean
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet:
+    kind: bool
+  why: Keeps a wet brush off rugs when mopping
+  sources:
+  - Manufacturer spec block
+  example: true
+- key: clean.side_brush_extending
+  label: Extending side brush
+  group: clean
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet:
+    kind: bool
+  why: Edge and corner pickup
+  sources:
+  - Manufacturer spec block
+  example: true
+- key: clean.side_brush_lifting
+  label: Side brush lifts
+  group: clean
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Avoids scattering wet debris
+  sources:
+  - Manufacturer spec block
+  example: true
+- key: clean.dirt_detection
+  label: Dirt detection / re-clean
+  group: clean
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Re-cleans dirty spots
+  sources:
+  - Manufacturer spec block
+  example: true
+- key: mop.type
+  label: Mop type
+  group: mop
+  type: enum
+  unit: null
+  tier: core
+  level: model
+  identity_role: model_defining
+  enum: [none, static_pad, vibrating_pad, dual_spinning, roller, track]
+  facet:
+    kind: enum
+    column: true
+  why: Spinning pads and rollers scrub; a static pad only wipes
+  traps:
+  - '"Vacuum and mop" on a robot with a dragged static pad'
+  - Marketing names (Omni-Scrub, SpiraFlow, HydroJet) hide the mechanism
+  sources:
+  - Manufacturer spec block ('Mop Type')
+  example: dual_spinning
+- key: mop.lifting
+  label: Mop lifts on carpet
+  group: mop
+  type: bool
+  unit: null
+  tier: important
+  level: model
+  facet:
+    kind: bool
+  why: Whether rugs stay dry without removing the pads
+  sources:
+  - Manufacturer spec block ('Mop Lifting')
+  example: true
+- key: mop.lift_height_mm
+  label: Mop lift height
+  group: mop
+  type: number
+  unit: mm
+  tier: important
+  level: model
+  facet:
+    kind: range
+    bins: [5, 7, 10, 15, 20]
+  why: 7 mm clears low-pile rugs only; 20 mm+ or auto-removal handles thick carpet
+  traps:
+  - Height measured from the floor to the lifted pad 'based on in-house lab data'
+  sources:
+  - Manufacturer spec block ('Mop Lifting' / 'Mop Lifting Height')
+  example: 10.5
+- key: mop.auto_removal
+  label: Mops detach automatically
+  group: mop
+  type: bool
+  unit: null
+  tier: important
+  level: model
+  facet:
+    kind: bool
+  why: Vacuums thick carpet without dragging pads
+  sources:
+  - Manufacturer spec block ('Mop Removal')
+  example: true
+- key: mop.extending
+  label: Mop extends to edges
+  group: mop
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Edge mopping
+  sources:
+  - Manufacturer spec block ('Mop Extending', 'MopExtend RoboSwing')
+  example: true
+- key: mop.robot_tank_ml
+  label: Robot water tank
+  group: mop
+  type: number
+  unit: mL
+  tier: detail
+  level: model
+  facet: false
+  why: Mopping area per fill on robots without dock refill
+  sources:
+  - Manufacturer spec block ('Water Tank Capacity', 'Clean/Used Water Box')
+  example: 80
+- key: mop.auto_refill_from_dock
+  label: Dock refills robot tank
+  group: mop
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Continuous mopping in large homes
+  sources:
+  - Manufacturer spec block ('Auto Water Tank Refilling (from Dock to Robot)')
+  example: true
+- key: nav.type
+  label: Navigation
+  group: nav
+  type: enum
+  unit: null
+  tier: core
+  level: model
+  identity_role: model_defining
+  enum: [lidar, dtof, vslam_camera, gyroscope, none]
+  facet:
+    kind: enum
+    column: true
+  why: LiDAR maps reliably in the dark; camera vSLAM needs light; gyro robots do not map
+  traps:
+  - Trademarked names ('Pathfinder Smart Navigation', 'PreciSense') do not say which sensor; they stay unknown
+  - Retractable / in-body dToF LiDAR (VersaLift, Saros) is still LiDAR (enum dtof) but sits lower
+  sources:
+  - Manufacturer spec block ('Navigation')
+  example: lidar
+- key: nav.obstacle_sensors
+  label: Obstacle sensor types
+  group: nav
+  type: list
+  unit: null
+  tier: core
+  level: model
+  items: enum
+  enum: [structured_light, rgb_camera, tof, infrared, ultrasonic]
+  facet:
+    kind: multi
+  why: Structured light sees cables and socks in 3D; an RGB camera classifies objects (pet waste); bumper-only robots hit everything
+  traps:
+  - '"AI obstacle avoidance" without a sensor name'
+  - LED illumination is listed with the sensors but is a light, not a sensor
+  - Object-count claims ('280 object types') are classifier labels, not detection reliability
+  sources:
+  - Manufacturer spec block ('Obstacle Avoidance')
+  example: [structured_light, rgb_camera]
+- key: nav.obstacle_crossing_mm
+  label: Threshold climb (single step)
+  group: nav
+  type: number
+  unit: mm
+  tier: important
+  level: model
+  facet:
+    kind: range
+    bins: [18, 20, 22, 30, 40]
+  why: Door saddles and rug edges strand robots
+  traps:
+  - 'Pages print a double-layer step (two 2 cm steps, 4-8 cm) next to the single step; only the single-step figure is comparable and is the one
+    stored. A cell with several figures and no single-step label is not normalised.'
+  sources:
+  - Manufacturer spec block ('Obstacle Crossing Height', 'Threshold Crossing')
+  example: 22
+- key: nav.ai_object_types
+  label: Recognised object types (claimed)
+  group: nav
+  type: integer
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Marketing figure; detail only
+  sources:
+  - Manufacturer spec block ('AI Recognition & Object Type Count')
+  example: 280
+- key: bat.capacity_mah
+  label: Battery capacity
+  group: battery
+  type: number
+  unit: mAh
+  tier: important
+  level: model
+  facet:
+    kind: range
+    bins: [2600, 3200, 5200, 6400, 7000]
+  why: Coverage per charge (with runtime)
+  traps:
+  - mAh without the pack voltage is not energy; most packs are 14.4 V Li-ion (4S) but the voltage is not printed, so Wh is not derived
+  - Bigger battery does not mean longer runtime at max suction
+  sources:
+  - Manufacturer spec block ('Battery Capacity (mAh)', Roborock 'Battery Type')
+  example: 5200
+- key: bat.energy_wh
+  label: Battery energy
+  group: battery
+  type: number
+  unit: Wh
+  tier: important
+  level: model
+  facet: false
+  why: The comparable battery figure (mAh x voltage)
+  traps:
+  - Never derived from mAh without a printed voltage
+  sources:
+  - Manual / label (not on US store pages)
+  example: 74.9
+- key: bat.runtime_min
+  label: Runtime (claimed)
+  group: battery
+  type: number
+  unit: min
+  tier: important
+  level: model
+  conditions:
+  - power_mode
+  - claim_basis
+  basis_conditions:
+  - power_mode
+  - claim_basis
+  facet: false
+  why: Whole-home coverage on one charge
+  traps:
+  - Always the quiet / lowest-suction, vacuum-only mode ('up to 220 minutes in Quiet Mode'); max-suction runtime is a fraction of it
+  sources:
+  - Manufacturer spec block / feature text with mode
+  example: 220
+- key: dock.self_empty
+  label: Self-emptying dock
+  group: dock
+  type: bool
+  unit: null
+  tier: core
+  level: model
+  identity_role: model_defining
+  facet:
+    kind: bool
+    column: true
+  why: The main convenience split between a $250 and a $600 robot
+  sources:
+  - Manufacturer spec block ('Auto-Empty'); Roborock title 'Auto-Empty Dock'
+  example: true
+- key: dock.dust_bag_ml
+  label: Dock dust bag
+  group: dock
+  type: number
+  unit: mL
+  tier: important
+  level: model
+  facet: false
+  why: Months between bag changes (bag is a recurring cost)
+  traps:
+  - '"100-day" / "75-day" hands-free figures are an in-house usage model, not capacity'
+  sources:
+  - Manufacturer spec block ('Dust Bag Capacity')
+  example: 3200
+- key: dock.mop_wash
+  label: Dock washes mops
+  group: dock
+  type: bool
+  unit: null
+  tier: core
+  level: model
+  facet:
+    kind: bool
+    column: true
+  why: Separates "vacuum + mop with a pad you rinse" from a self-cleaning mop system
+  sources:
+  - Manufacturer spec block
+  example: true
+- key: dock.hot_water_wash
+  label: Hot-water mop wash
+  group: dock
+  type: bool
+  unit: null
+  tier: important
+  level: model
+  facet:
+    kind: bool
+  why: Grease removal and odour
+  sources:
+  - Manufacturer spec block ('Mop Hot Water Washing', 'Auto Mop Cleaning with Hot Water'); Roborock Key Features
+  example: true
+- key: dock.wash_water_temp_c
+  label: Mop-wash water temperature
+  group: dock
+  type: number
+  unit: degC
+  tier: detail
+  level: model
+  facet:
+    kind: range
+    bins: [45, 60, 75, 100]
+  why: '"Hot" ranges from 45 °C to 100 °C'
+  traps:
+  - Outlet temperature 'up to', measured at the dock outlet at ~23 °C room temperature
+  sources:
+  - Manufacturer spec block / disclaimer
+  example: 75
+- key: dock.hot_air_dry
+  label: Hot-air mop drying
+  group: dock
+  type: bool
+  unit: null
+  tier: important
+  level: model
+  facet:
+    kind: bool
+  why: Prevents mildew and smell in the dock
+  traps:
+  - '"Air Drying" without "hot" is a fan only (dock.mop_dry)'
+  sources:
+  - Manufacturer spec block ('Hot Air Drying', 'Mop Drying')
+  example: true
+- key: dock.mop_dry
+  label: Mop drying (any)
+  group: dock
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Fan or heated drying
+  sources:
+  - Manufacturer spec block ('Mop Drying')
+  example: true
+- key: dock.washboard_self_clean
+  label: Self-cleaning wash tray
+  group: dock
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Less manual dock cleaning
+  sources:
+  - Manufacturer spec block
+  example: true
+- key: dock.solution_dispense
+  label: Auto detergent dosing
+  group: dock
+  type: bool
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Convenience; ties you to the brand's solution
+  sources:
+  - Manufacturer spec block
+  example: true
+- key: dock.clean_tank_ml
+  label: Dock clean-water tank
+  group: dock
+  type: number
+  unit: mL
+  tier: important
+  level: model
+  facet:
+    kind: range
+    bins: [2500, 3500, 4500, 5500]
+  why: Days between refills
+  sources:
+  - Manufacturer spec block ('Clean/Used Water Tank Capacity' first figure)
+  example: 4500
+- key: dock.dirty_tank_ml
+  label: Dock dirty-water tank
+  group: dock
+  type: number
+  unit: mL
+  tier: detail
+  level: model
+  facet: false
+  why: Days between emptying
+  sources:
+  - Manufacturer spec block (second figure)
+  example: 4000
+- key: dock.plumbed_refill_drain
+  label: Plumbed refill & drain
+  group: dock
+  type: bool
+  unit: null
+  tier: important
+  level: model
+  identity_role: model_defining
+  facet:
+    kind: bool
+  why: No tanks to carry; needs a water line and drain
+  traps:
+  - 'Sold as a separate SKU/dock variant (Roborock "with Refill & Drainage System" = model "<name> RDS"; Dreame "Water Hookup Kit available
+    separately"): not a property of the standard model'
+  sources:
+  - Page title / spec block
+  example: true
+- key: noise.db
+  label: Noise (claimed)
+  group: noise
+  type: number
+  unit: dB
+  tier: important
+  level: model
+  conditions:
+  - power_mode
+  - claim_basis
+  basis_conditions:
+  - power_mode
+  - claim_basis
+  facet: false
+  why: Running while home / at night
+  traps:
+  - Distance, weighting (dBA) and mode are rarely stated; brands quote the quietest mode ('Lowest Noise')
+  - Comparison charts against unnamed "Others"
+  sources:
+  - Manufacturer spec block ('Noise', 'Lowest Noise'); independent dB-at-1m tests (not collected)
+  example: 56
+- key: smart.matter
+  label: Matter support
+  group: smart
+  type: bool
+  unit: null
+  tier: important
+  level: model
+  facet:
+    kind: bool
+  why: Works with Apple Home / Google / Alexa / Home Assistant through one standard
+  traps:
+  - '"Matter will be available through an upcoming OTA" (Roborock Qrevo Edge page) is a promise, not support: not recorded as true'
+  - The certifier record (CSA Matter Distributed Compliance Ledger, robotic-vacuum device type) is the certification-grade source; maker pages are
+    manufacturer claims
+  sources:
+  - Manufacturer spec block ('Matter Connectivity')
+  - 'certification: CSA DCL (on.dcl.csa-iot.org REST API), not built'
+  example: true
+- key: smart.voice_control
+  label: Voice control
+  group: smart
+  type: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Built-in voice assistant vs Alexa/Google skill
+  sources:
+  - Manufacturer spec block ('Voice Control')
+  example: Third-Party
+- key: phys.robot_height_mm
+  label: Robot height
+  group: phys
+  type: number
+  unit: mm
+  tier: core
+  level: model
+  facet:
+    kind: range
+    bins: [80, 90, 95, 100, 105]
+    column: true
+  why: Whether it fits under the sofa / bed (the most common fit question)
+  traps:
+  - Height with the LiDAR turret raised; retractable-LiDAR models print the lowered height
+  - Roborock 'Robot Dimensions' cells sometimes hold robot + dock ('Robot&Dock Size'); those are not stored
+  sources:
+  - Manufacturer spec block ('Robot Vacuum Dimensions' third figure)
+  example: 97
+- key: phys.robot_dimensions
+  label: Robot dimensions
+  group: phys
+  type: object
+  unit: null
+  tier: detail
+  level: model
+  fields:
+  - key: length
+    type: number
+    unit: mm
+  - key: width
+    type: number
+    unit: mm
+  - key: height
+    type: number
+    unit: mm
+  facet: false
+  why: Fit
+  traps:
+  - 'Typos on maker pages (Roborock Q7 M5+ "12.80×2.80×3.90 inches"): implausible values (outside 200-450 mm / 50-150 mm) are not stored'
+  sources:
+  - Manufacturer spec block
+  example: {length: 350, width: 350, height: 97}
+- key: phys.robot_weight_g
+  label: Robot weight
+  group: phys
+  type: number
+  unit: g
+  tier: detail
+  level: model
+  facet: false
+  why: Carrying between floors
+  traps:
+  - '"Robot Weight 32.19 lbs" (Roborock S8 MaxV Ultra) is robot + dock; values outside 1.5-7.5 kg are not stored'
+  sources:
+  - Manufacturer spec block
+  example: 4100
+- key: phys.dock_dimensions
+  label: Dock dimensions
+  group: phys
+  type: object
+  unit: null
+  tier: important
+  level: model
+  fields:
+  - key: length
+    type: number
+    unit: mm
+  - key: width
+    type: number
+    unit: mm
+  - key: height
+    type: number
+    unit: mm
+  facet: false
+  why: Docks are 45-60 cm tall and need side/front clearance
+  traps:
+  - Axis order (W x D x H vs D x W x H) is not stated consistently; stored in printed order
+  sources:
+  - Manufacturer spec block ('Base Station Dimensions')
+  example: {length: 340, width: 457, height: 590}
+- key: phys.dock_weight_g
+  label: Dock weight
+  group: phys
+  type: number
+  unit: g
+  tier: detail
+  level: model
+  facet: false
+  why: Shipping / placement
+  sources:
+  - Manufacturer spec block ('Base Station Weight')
+  example: 9200

@@ -11786,3 +11786,211 @@
 {"anchors": ["routers|hw_version|tp_link|DECO X50-OUTDOOR V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-x50-outdoor-v1-60", "kind": "revision"}
 {"anchors": ["routers|hw_version|tp_link|ARCHER AX3000 PRO V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-archer-ax3000-pro-v1-60", "kind": "revision"}
 {"anchors": ["routers|hw_version|tp_link|DECO BE25-OUTDOOR V1.60|"], "at": "2026-11-23T09:50:01Z", "category": "routers", "id": "tp-link-deco-be25-outdoor-v1-60", "kind": "revision"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|B5|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-b5", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|B6|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-b6", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|B41|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-b41", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|B42|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-b42", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|B43|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-b43", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|B61|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-b61", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|B62|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-b62", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|B63|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-b63", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|B64|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-b64", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P21|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p21", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P41|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p41", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P512|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p512", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P771|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p771", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P781|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p781", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P791|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p791", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P841|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p841", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A110A|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a110a", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A110B|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a110b", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A110R|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a110r", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A1229|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a1229", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A1259|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a1259", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A1289|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a1289", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A1339|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a1339", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A1383|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a1383", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A1610|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a1610", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A1614|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a1614", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A1637|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a1637", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A1638|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a1638", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A1641|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a1641", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A1653|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a1653", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A1654|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a1654", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A1657|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a1657", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A1664|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a1664", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A1665|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a1665", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A1681|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a1681", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A1685|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a1685", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A1688|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a1688", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|anker|A1695|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "anker-a1695", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|cuktech|P23|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "cuktech-p23", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P24-E1|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p24-e1", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P45-E1|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p45-e1", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P50-E1|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p50-e1", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P55-E2|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p55-e2", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P62-E1|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p62-e1", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P62-P1|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p62-p1", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P63-E1|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p63-e1", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P63-P1|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p63-p1", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P64-E1|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p64-e1", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P71-E1|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p71-e1", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P73-E1|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p73-e1", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P75-P1|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p75-p1", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P81-E1|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p81-e1", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P41L-E2|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p41l-e2", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P51L-E2|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p51l-e2", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P51L-P1|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p51l-p1", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P55L-E2|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p55l-e2", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|iniu|P61L-P1|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "iniu-p61l-p1", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|25188|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-25188", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|25208|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-25208", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|25866|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-25866", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|35338|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-35338", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|35340|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-35340", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|35524|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-35524", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|35525|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-35525", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|55365|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-55365", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|55987|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-55987", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|55992|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-55992", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|55995|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-55995", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|65062|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-65062", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|65176|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-65176", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|65300|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-65300", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|65958|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-65958", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|65959|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-65959", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|75066|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-75066", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|75701|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-75701", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|75702|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-75702", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|75982|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-75982", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|75984|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-75984", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|PB571|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-pb571", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BBA004|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bba004", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BBA007|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bba007", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BBA008|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bba008", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BBA009|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bba009", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BBA010|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bba010", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BBA014|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bba014", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BBA015|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bba015", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BBA018|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bba018", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BBA019|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bba019", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BBA022|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bba022", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BBA023|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bba023", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BBA024|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bba024", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BBC010|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bbc010", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPB006|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpb006", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPB011|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpb011", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPB012|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpb012", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPB014|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpb014", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPB020|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpb020", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPB021|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpb021", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPB024|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpb024", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPB027|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpb027", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPB028|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpb028", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPB029|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpb029", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPB040|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpb040", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPB044|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpb044", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPD002|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpd002", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPD004|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpd004", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPD006|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpd006", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPD007|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpd007", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPD008|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpd008", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPD010|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpd010", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPD011|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpd011", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPD014|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpd014", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPD015|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpd015", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPD022|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpd022", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|BPD024|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-bpd024", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|belkin|ENA013|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "belkin-ena013", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|cuktech|P01CT|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "cuktech-p01ct", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|cuktech|PB100|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "cuktech-pb100", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|cuktech|PB200|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "cuktech-pb200", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ugreen|90597A|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "ugreen-90597a", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|cuktech|PB100P|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "cuktech-pb100p", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|cuktech|PB200N|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "cuktech-pb200n", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|cuktech|PB200P|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "cuktech-pb200p", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|cuktech|PB200U|"], "at": "2026-11-23T13:25:42Z", "category": "power-banks", "id": "cuktech-pb200u", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|narwal|FLOW|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "narwal-flow", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|narwal|FLOW 2|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "narwal-flow-2", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|narwal|FREO S|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "narwal-freo-s", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|narwal|FREO 20|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "narwal-freo-20", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|Q7 L5|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-q7-l5", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|C30 PLUS|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-c30-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|D20 PLUS|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-d20-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|GOVAC600|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-govac600", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|Q10 S5|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-q10-s5", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|Q10 X5|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-q10-x5", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|Q7 MAX|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-q7-max", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|QR 798|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-qr-798", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|QV 35A|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-qv-35a", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|QV 35S|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-qv-35s", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|D20 ULTRA|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-d20-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|D30 ULTRA|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-d30-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|GOVAC 300|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-govac-300", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|GOVAC 400|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-govac-400", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|GOVAC 405|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-govac-405", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|GOVAC 500|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-govac-500", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|L10S PLUS|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-l10s-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|L20 ULTRA|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-l20-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|L40 ULTRA|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-l40-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|L50 ULTRA|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-l50-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|L60 ULTRA|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-l60-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|X30 ULTRA|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-x30-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|X40 ULTRA|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-x40-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|X50 ULTRA|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-x50-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|X60 ULTRA|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-x60-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|L10S ULTRA|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-l10s-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|L40S ULTRA|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-l40s-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|X40 MASTER|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-x40-master", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|SAROS 10|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-saros-10", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|SAROS 20|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-saros-20", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|narwal|FREO X PLUS|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "narwal-freo-x-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|SAROS Z70|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-saros-z70", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|D20 AIR PLUS|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-d20-air-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|D20 PRO PLUS|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-d20-pro-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|D30 ULTRA CE|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-d30-ultra-ce", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|D9 MAX GEN 2|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-d9-max-gen-2", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|L60 ULTRA FE|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-l60-ultra-fe", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|L60 ULTRA PE|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-l60-ultra-pe", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|MATRIX10 PRO|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-matrix10-pro", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|narwal|FREO 20 EDGE|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "narwal-freo-20-edge", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|narwal|FREO X10 PRO|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "narwal-freo-x10-pro", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|Q7 M5 PLUS|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-q7-m5-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|QREVO EDGE|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-qrevo-edge", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|QREVO MAXV|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-qrevo-maxv", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|QREVO SLIM|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-qrevo-slim", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|AQUA10 ROLLER|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-aqua10-roller", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|L40S ULTRA AE|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-l40s-ultra-ae", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|L40S ULTRA CE|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-l40s-ultra-ce", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|L60 PRO ULTRA|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-l60-pro-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|Q10 S5 PLUS|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-q10-s5-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|Q10 X5 PLUS|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-q10-x5-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|Q5 MAX PLUS|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-q5-max-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|Q7 MAX PLUS|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-q7-max-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|Q8 MAX PLUS|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-q8-max-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|QREVO 2 PRO|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-qrevo-2-pro", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|QREVO CURVX|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-qrevo-curvx", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|QREVO S PRO|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-qrevo-s-pro", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|D10 PLUS GEN 2|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-d10-plus-gen-2", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|L10S PRO GEN 2|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-l10s-pro-gen-2", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|L10S PRO ULTRA|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-l10s-pro-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|MATRIX10 ULTRA|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-matrix10-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|narwal|FREO Z10 TURBO|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "narwal-freo-z10-turbo", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|QREVO EDGE 2|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-qrevo-edge-2", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|S7 MAX ULTRA|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-s7-max-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|SAROS 10 RDS|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-saros-10-rds", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|L40 ULTRA GEN 2|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-l40-ultra-gen-2", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|S8 MAXV ULTRA|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-s8-maxv-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|SAROS 20 FLOW|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-saros-20-flow", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|AQUA10 ROLLER AE|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-aqua10-roller-ae", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|L10S ULTRA GEN 2|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-l10s-ultra-gen-2", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|QREVO CURV S5X|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-qrevo-curv-s5x", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|QREVO EDGE S5A|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-qrevo-edge-s5a", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|SAROS 20 SONIC|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-saros-20-sonic", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|QREVO 2 PRO SET|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-qrevo-2-pro-set", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|QREVO EDGE 3 PRO|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-qrevo-edge-3-pro", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|AQUA10 ULTRA ROLLER|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-aqua10-ultra-roller", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|Q5 DUOROLLER PLUS|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-q5-duoroller-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|QREVO CURV 2 FLOW|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-qrevo-curv-2-flow", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|S8 MAXV ULTRA RDS|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-s8-maxv-ultra-rds", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|X60 MAX ULTRA COMPLETE|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-x60-max-ultra-complete", "kind": "model"}

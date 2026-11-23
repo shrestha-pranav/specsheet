@@ -1,0 +1,32 @@
+name: Robot vacuums & mops
+description: 'Robot vacuums and vacuum-mop robots by manufacturer model: claimed suction with its test basis, battery, dustbin and dock tanks, dock
+  features (self-empty, mop wash, hot water, hot-air dry, plumbed refill), navigation and obstacle-sensor type, mop type, robot height. Sources:
+  Dreame, Roborock and Narwal US stores (manufacturer spec blocks). Every figure is a manufacturer claim unless marked certified or measured.'
+columns:
+- clean.suction_pa
+- nav.type
+- mop.type
+- dock.self_empty
+- dock.mop_wash
+- phys.robot_height_mm
+features: []
+brand_aliases:
+  dreametech: dreame
+  rockrobo: roborock
+brand_names:
+  dreame: Dreame
+  roborock: Roborock
+  narwal: Narwal
+  ecovacs: ECOVACS
+  irobot: iRobot
+  eufy: eufy
+  shark: Shark
+  switchbot: SwitchBot
+  mova: MOVA
+skip_alias_pattern: \b(stick vacuum|cordless vacuum|wet dry vacuum|floor washer|window|pool|lawn|mower|refurbished)\b
+# importer 'model': mfr_model key = (brand, normalised model name), market not in the key. All three built sources are the makers' US stores
+# (market US); model names are global marketing names (Dreame L40s Ultra is sold under that name in the EU too), so cross-market rows of one
+# brand would match - but two different STATED markets are quarantined, never merged (import.py), and no non-US source is wired yet.
+identity_scope:
+  cross_market_brands: "*"
+  market_scoped_brands: []

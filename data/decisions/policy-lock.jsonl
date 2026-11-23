@@ -20,3 +20,6 @@
 {"at": "2026-11-23T11:04:02Z", "id": "claim/mfr-routers-structured@2", "sha256": "sha256:05f3685a4e634aa870be947401551f2cf0144a3d18c40cdb786d229f4f74a9a6"}
 {"at": "2026-11-23T11:04:02Z", "id": "claim/mfr-routers-class@2", "sha256": "sha256:699d4aece94a6324289a4198082952ee9f001120d76d0c3f63f5c96d86eca123"}
 {"at": "2026-11-23T11:04:02Z", "id": "rel/source-stated-hierarchy@2", "sha256": "sha256:a937119d87d033ee83474d0fd32b5ef49974f8938dc5b485cb925e9cc1bf0bba"}
+{"at": "2026-11-23T13:27:52Z", "id": "claim/mfr-power-banks-structured@1", "sha256": "sha256:70276646c76072573dd5bd53068db890479621b4f6da144c635dc907a4c1b184"}
+{"at": "2026-11-23T13:31:06Z", "id": "claim/mfr-robovac-structured@1", "sha256": "sha256:4ec767d1c91a3dce7bfea01cf9480a6f73f010419fc2c3cc065fa76271504dc8"}
+{"at": "2026-11-23T13:32:42Z", "id": "claim/mfr-power-banks-structured@2", "sha256": "sha256:ce694d4842726808806272b10332c862cd2030387f9e19455a75f0d71b3db1d6"}

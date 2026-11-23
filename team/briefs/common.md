@@ -29,3 +29,10 @@ specs:
     example: "Intel Core Ultra 7 258V"
 ```
 Budget: WebSearch + WebFetch/curl only. No Bright Data. Write your report to team/reports/ (<=60 lines).
+
+Hard rules (classifier-enforced, do not retry if denied): no User-Agent spoofing, no curl/header workarounds against 403/Cloudflare/Akamai/WAF blocks, respect robots.txt. A blocked source gets recorded in merchants.md as blocked, then move on.
+Never commit or push; never run `scripts/release.sh` without RELEASE_DRY_RUN=1. Coordinator releases.
+Policies: new auto-accept policies need explicit source_ids/extractors/keys allowlists, a new @N id, and `approval: pending` (policy-lock.jsonl enforces immutability). Never edit a locked policy in place.
+Other agents may be editing in parallel: keep shared-script edits (scripts/*.py, registry.py) minimal and list every shared-file change in your report.
+Never run git stash/checkout/reset/restore in the shared working tree: parallel agents have uncommitted work. Compare against old output with `git worktree add /tmp/x HEAD` instead.
+Builds: run bare import.py/build.py as `flock /tmp/specsheet-release.lock <cmd>`. release.sh takes that lock itself, so NEVER wrap release.sh in flock (deadlock).

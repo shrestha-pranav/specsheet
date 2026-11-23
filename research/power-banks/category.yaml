@@ -1,0 +1,37 @@
+name: Power banks
+description: 'Portable USB power banks by manufacturer model number (Anker A1340, Belkin BPB012, INIU P63-E1, CUKTECH PB200N): cell mAh vs rated
+  Wh vs 5 V rated capacity, per-port USB PD/PPS PDO table, total vs single-port output, recharge input, cell chemistry, airline (100 Wh) limit.
+  Sources: Anker, Belkin, INIU, CUKTECH, UGREEN US store pages.'
+columns:
+- cap.cell_mah
+- cap.energy_wh
+- out.max_total_w
+- out.max_single_port_w
+- in.max_w
+- phys.weight
+features:
+- stem_links
+stem:
+  cut_at:
+  - /
+  strip_market_suffix: false
+brand_aliases:
+  anker innovations: anker
+  belkin international: belkin
+  ugreen group: ugreen
+brand_names:
+  anker: Anker
+  belkin: Belkin
+  iniu: INIU
+  cuktech: CUKTECH
+  ugreen: UGREEN
+  baseus: Baseus
+  ecoflow: EcoFlow
+  sharge: SHARGE
+  mophie: mophie
+# importer 'model' needs an explicit identity scope (review 2 risk 4). All five sources are US storefronts printing the maker's global model
+# number (A1695, BPB012, P63-E1, PB200N, 25188); the key is (brand, normalised model) with market NOT in the key. Two different STATED markets
+# are still quarantined, never merged. Stem matches stay proposals.
+identity_scope:
+  cross_market_brands: "*"
+  market_scoped_brands: []

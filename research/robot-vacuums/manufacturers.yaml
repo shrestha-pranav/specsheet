@@ -1,0 +1,59 @@
+# A2 discovery, robot vacuums (US). Probed 2026-11-23 with the shared crawler client (UA "specsheet-crawler/0.1" + repo URL), robots honoured,
+# <=1 req/s per host, no spoofing, no Bright Data. status: adapter = built+run; viable = probed OK, adapter not built; unstructured = reachable but no
+# spec table in server HTML; blocked = stopped at 403/WAF, no workaround; unprobed = not reached.
+manufacturers:
+  dreame:
+    status: adapter            # crawler/adapters/dreame_robovac.py  raw/dreame-us-robovac  (41 models from 472 products; 41 bundles, all 200)
+    how: "https://www.dreametech.com/products.json?limit=250&page=N (2 pages, Shopify) -> robot products with a SKU -> group by shared SKU. Bundle per model =
+      product page (SSR 1-3 MB) + /products/<handle>.json per member page (robots allow both)."
+    gives: [Maximum Suction (Pa) + disclaimer basis ('based on our in-house lab data'), battery mAh, dust box mL, dock dust bag, clean/used tank L, mop type,
+      mop lift height, mop removal/extend, navigation (LDS / VersaLift DToF), obstacle sensors (3D structured light, AI RGB), single-step threshold,
+      hot-water wash temperature, hot-air drying, auto refill/solution, robot + dock dimensions and weight, Matter (one model)]
+    lacks: [regulatory model code, battery Wh/voltage, runtime (one page), noise dB (one page), parts prices]
+    note: "Four page templates (li/span, table rows, cfg-spec rows, spec-item spans) + a 2-model comparison table on X40/X50/L50/Matrix10 Ultra (read only when
+      the column header names the model). 13 pages have no spec block (GoVac 300-600, C30 Plus, D20 Ultra, L10s older, X30 Ultra uses a multi-model
+      pcw widget): identity only."
+  roborock:
+    status: adapter            # crawler/adapters/roborock_robovac.py  raw/roborock-us-robovac  (35 models from 312 products; all 200)
+    how: "https://us.roborock.com/products.json (2 pages, Shopify) -> product_type 'Robot Vacuums' minus F25/H60/Dyad/Flexi, refurbished, trade-in -> SKU grouping.
+      Same bundle shape."
+    gives: [battery mAh ('Battery Type'), robot dimensions/weight, dock dimensions (Specifications rows); suction Pa and hot-water temperature (Key Features
+      bullets, preview only); 'Auto-Empty' and 'Refill & Drainage' from the title (preview only)]
+    lacks: [dustbin/tank volumes, navigation/obstacle sensor type, mop type, noise, runtime: the US store has no full spec table (it is on roborock.com
+      global pages / manuals, not probed); claim basis for suction is never printed]
+    note: "'Robot Dimensions' / 'Robot Weight' cells sometimes hold robot+dock (32.19 lbs on S8 MaxV Ultra, 'Robot&Dock Size' on Q8 Max+): bounded out.
+      Matter on Qrevo Edge is 'available through an upcoming OTA' (a promise, not recorded)."
+  narwal:
+    status: adapter            # crawler/adapters/narwal_robovac.py  raw/narwal-us-robovac  (8 models from 105 products; all 200)
+    how: "https://us.narwal.com/products.json (1 page, Shopify) -> 'Robot Vacuum Cleaner' / 'Vacuum Mop' robot titles. Bundle as above."
+    gives: [Freo Z10 Turbo only: suction, battery, mop lift, LDS navigation, robot/dock dimensions and weight]
+    lacks: [7 of 8 pages (Flow, Flow 2, Freo 20, Freo 20 Edge, Freo S, Freo X10 Pro, Freo X Plus) have marketing sections only, no spec rows]
+  mova:
+    status: unstructured       # https://us.mova-tech.com/products.json 200 (167 products, ~18 robot models, Dreame material codes 010204AA...). Page spec/compare
+                               # table is filled client-side (Vue template '[[ prod.title ]]'); body_html is prose with Pa figures. Not built.
+  ecovacs:
+    status: unstructured       # www.ecovacs.com/us robots 200; /us/sitemap.xml 'Cannot GET' (404); category page links 1 product (JS-rendered list);
+                               # DEEBOT X12s product page 200 (100 KB) is marketing only, no spec rows in HTML. Spec data likely an XHR API: not probed.
+  irobot:
+    status: viable_unverified  # robots 200 (only search/cart/account disallowed); sitemap_0-product.xml lists 42 en_US products, 2 robots; category pages
+                               # render products client-side. Product page /en_US/<slug>/C975020.html 200 with a thin Specifications list (box/robot
+                               # dimensions, weight, battery type) and a REAL model code in the URL (C975020 = Roomba Combo j9+). Discovery is the gap.
+  eufy:
+    status: unstructured       # https://us.eufy.com/products.json 200 (210 products, ~5 RoboVac with T-code SKUs T210M111 = real model numbers);
+                               # product page 200 has no spec table in HTML (reviews + prose). www.eufy.com/products.json 404.
+  shark:
+    status: blocked            # https://www.sharkclean.com/robots.txt -> 403 (WAF) to the honest UA. Stopped; no workaround.
+  switchbot:
+    status: unstructured       # us.switch-bot.com/products.json 200 (6 robots: S10, S20, K10+ Pro, K11+, K11+ Pro, K20+ Pro); pages carry prose, no table.
+  lefant:
+    status: unstructured       # www.lefant.com/products.json 200 (9 robots, SKUs 101-1670-2100); page prose only.
+  yeedi:
+    status: unstructured       # www.yeedi.com/products.json 200 but 5 untyped products (launch gifts); not pursued.
+evidence_sources:
+  energy_star: "No ENERGY STAR product category for vacuums (analyst judgment; the ENERGY STAR product finder was not re-checked this round)."
+  fcc: "Same constraints as routers (research/routers/manufacturers.yaml): fcc.gov EAS 403 (Akamai), fcc.report Cloudflare; fccid.io device pages fetchable
+    but no terms located, so a few lookups only. Not used this round. FCC ID is alias_only (identity.md)."
+  matter_dcl: "CSA Distributed Compliance Ledger REST (on.dcl.csa-iot.org /dcl/model/models) is the certification-grade source for smart.matter (vendor id +
+    product id + productName). Not probed this round; it would add claim_basis third_party_certified rows."
+  independent_tests: "RTINGS / Vacuum Wars sealed-inlet suction and dB-at-1m are the 'measured' basis the profile reserves (claim kind measured,
+    claim_basis independent_measured). Terms/robots not checked; not collected."

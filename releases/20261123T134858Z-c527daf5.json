@@ -1,0 +1,274 @@
+{
+ "budget": {
+  "limits": {
+   "_why": "reviews/2026-11-23-astra-review-2.md risk 5: project targets, not hosting limits. Raising api_fail_mib is an explicit reviewed edit of this file.",
+   "api_fail_mib": 150,
+   "api_warn_mib": 100,
+   "repo_pack_migrate_mib": 500,
+   "repo_pack_warn_mib": 250
+  },
+  "messages": [],
+  "state": "ok"
+ },
+ "code": {
+  "dirty": true,
+  "git_head": "b3e90b66744004ff8ef4552e8843bfe1942df155",
+  "source_digest": "sha256:5a5aa78f82fd11cc903bc1e42bda6c7188d8e3ab727f836370f92595be3c8968"
+ },
+ "created_at": "2026-11-23T13:48:58Z",
+ "format": "specsheet.release/1",
+ "inputs": {
+  "accepted_digest": "c527daf591dd0d61c9c2a0f8b01984285f1e16a55e706cab54026c9d8547cc68",
+  "imported_at": "2026-11-23T13:46:11Z",
+  "importer": "sha256:b7b78f9c39717d9329e4ff0065942cff22855f902e41bf9dac49479974fc0967",
+  "ledger": {
+   "digest": "sha256:4b532ba27accee878bc834ed58a98dbe99e54ddebe117f869bec649908dd6fd9",
+   "lines": 0
+  },
+  "normalizer": "sha256:9351078318904ae20b4d2bb2ebe840aa5cdb8b3f77d4a85b47fc7009b2ffa092",
+  "parsers": {
+   "anker": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "anker-us-powerbanks": {
+    "fingerprint": "sha256:1c94708f6143fd550bc2",
+    "parser": "anker_powerbanks@1"
+   },
+   "apple-support": {
+    "fingerprint": "sha256:6bc7c6b84247afa3c9c7",
+    "parser": "apple@1"
+   },
+   "asus-us": {
+    "fingerprint": "sha256:628db32b5ba83fa291c6",
+    "parser": "asus@1"
+   },
+   "asus-us-monitors": {
+    "fingerprint": "sha256:21ba35a4d7bbafdaff71",
+    "parser": "asus_monitors@1"
+   },
+   "asus-us-routers": {
+    "fingerprint": "sha256:1dedfbe9a8ca77b32bb1",
+    "parser": "asus_routers@1"
+   },
+   "austere": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "baseus": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "belkin": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "belkin-us-powerbanks": {
+    "fingerprint": "sha256:da7880ba96b779b0fe97",
+    "parser": "belkin_powerbanks@1"
+   },
+   "byjasco": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "cuktech-us-powerbanks": {
+    "fingerprint": "sha256:646c55efdbdd21c94ba5",
+    "parser": "cuktech_powerbanks@1"
+   },
+   "cyberpower": {
+    "fingerprint": "sha256:a3e88411366c8d320d51",
+    "parser": "cyberpower@1"
+   },
+   "dell-us": {
+    "fingerprint": "sha256:13cd4d61b81c005021b6",
+    "parser": "dell@1"
+   },
+   "displayhdr": {
+    "fingerprint": "sha256:254fd4f565c8f164d5e8",
+    "parser": "displayhdr@3"
+   },
+   "dreame-us-robovac": {
+    "fingerprint": "sha256:1edc479c58c8de26fd80",
+    "parser": "dreame_robovac@1"
+   },
+   "energystar-monitors": {
+    "fingerprint": "sha256:a617410312626e8837c1",
+    "parser": "energystar_monitors@2"
+   },
+   "framework-us": {
+    "fingerprint": "sha256:a0d0263be8effbca4213",
+    "parser": "framework@1"
+   },
+   "furman": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "iniu-us-powerbanks": {
+    "fingerprint": "sha256:646c55efdbdd21c94ba5",
+    "parser": "iniu_powerbanks@1"
+   },
+   "lenovo-psref": {
+    "fingerprint": "sha256:ec6a55f8081086820989",
+    "parser": "lenovo_psref@2"
+   },
+   "lenovo-psref-monitors": {
+    "fingerprint": "sha256:b7e7dfee555d5a890251",
+    "parser": "lenovo_monitors@1"
+   },
+   "lg-us": {
+    "fingerprint": "sha256:51da673073084332f227",
+    "parser": "lg_us@1"
+   },
+   "microsoft-surface": {
+    "fingerprint": "sha256:80cd87b7b1b87d6969e9",
+    "parser": "surface@1"
+   },
+   "narwal-us-robovac": {
+    "fingerprint": "sha256:6e0ef0e0b072bb790496",
+    "parser": "narwal_robovac@1"
+   },
+   "netgear-us-routers": {
+    "fingerprint": "sha256:a5e3fcb76ca453cc808d",
+    "parser": "netgear_routers@1"
+   },
+   "razer-us": {
+    "fingerprint": "sha256:8752d0e2f07ae8b46ff2",
+    "parser": "razer@1"
+   },
+   "roborock-us-robovac": {
+    "fingerprint": "sha256:253896199530aa5695d3",
+    "parser": "roborock_robovac@1"
+   },
+   "samsung-us": {
+    "fingerprint": "sha256:d0e9cabff53a15285159",
+    "parser": "samsung@1"
+   },
+   "samsung-us-ssd": {
+    "fingerprint": "sha256:a6cbc9077c793c287d62",
+    "parser": "samsung_ssd@2"
+   },
+   "sandisk-us-ssd": {
+    "fingerprint": "sha256:f43f27701094bcf81d3d",
+    "parser": "sandisk_ssd@2"
+   },
+   "teamgroup-us-ssd": {
+    "fingerprint": "sha256:142b129a8fb6c4f517d5",
+    "parser": "teamgroup_ssd@2"
+   },
+   "tplink-us-routers": {
+    "fingerprint": "sha256:c7318e9238be7635b158",
+    "parser": "tplink_routers@2"
+   },
+   "tripplite": {
+    "fingerprint": "sha256:949811b25418d7a2b724",
+    "parser": "tripplite@2"
+   },
+   "ugreen": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "ugreen-us-powerbanks": {
+    "fingerprint": "sha256:646c55efdbdd21c94ba5",
+    "parser": "ugreen_powerbanks@1"
+   }
+  },
+  "policies": {
+   "active": [
+    "claim/mfr-structured-datasheet@2",
+    "claim/asus-techspec-typed@2",
+    "claim/cpu-split@2",
+    "claim/mfr-monitor-structured@2",
+    "claim/energystar-certified-power@2",
+    "claim/displayhdr-certified-tier@2",
+    "claim/mfr-ssd-structured@2",
+    "claim/mfr-ssd-samsung@2",
+    "claim/mfr-routers-structured@2",
+    "claim/mfr-routers-class@2",
+    "claim/mfr-power-banks-structured@2",
+    "claim/mfr-robovac-structured@1",
+    "rel/source-stated-hierarchy@2"
+   ],
+   "approval": {
+    "claim/asus-techspec-typed@2": "pending",
+    "claim/cpu-split@2": "pending",
+    "claim/displayhdr-certified-tier@2": "pending",
+    "claim/energystar-certified-power@2": "pending",
+    "claim/mfr-monitor-structured@2": "pending",
+    "claim/mfr-power-banks-structured@2": "pending",
+    "claim/mfr-robovac-structured@1": "pending",
+    "claim/mfr-routers-class@2": "pending",
+    "claim/mfr-routers-structured@2": "pending",
+    "claim/mfr-ssd-samsung@2": "pending",
+    "claim/mfr-ssd-structured@2": "pending",
+    "claim/mfr-structured-datasheet@2": "pending",
+    "rel/source-stated-hierarchy@2": "pending"
+   },
+   "file": "sha256:a25d3d8accd95ceb26a874fe2de90128dcd720b44c844234c74364a04bbb6bef",
+   "lock": "sha256:a1912a6c9031c98584536728d8e57b84bb7af45abfa5392a92419c6887c46cd4",
+   "parser_drift": []
+  },
+  "profiles": {
+   "laptops": {
+    "digest": "sha256:d522b1cd0174237a35dfca6eebeeff6a539e58eef486e5e9b140ec6359a25015",
+    "version": "0.2"
+   },
+   "monitors": {
+    "digest": "sha256:e148d44936d965830a74a6665ef05721e139b4958ae16b10fe584e9217553b3a",
+    "version": "0.2.0"
+   },
+   "power-banks": {
+    "digest": "sha256:dbb7477da6469ac71860b39d0dfb08fc4bbcb9a0356f3b6758229505b3c03717",
+    "version": "0.1.0"
+   },
+   "power-strips": {
+    "digest": "sha256:341ade220e8becd76d2ba59a6d3eddf9526de433a4bc77880b70719e2d053217",
+    "version": "0.1"
+   },
+   "robot-vacuums": {
+    "digest": "sha256:e0878a1fa5e41936a8a6f011d17e2a01cc12109f2b2796e0471204ff950aa81c",
+    "version": "0.1.0"
+   },
+   "routers": {
+    "digest": "sha256:e2db175ee12b0b4e7a7b86f8a17746f87d59f97c06520da37f51dd876ee4c2d4",
+    "version": "0.2.0"
+   },
+   "ssds": {
+    "digest": "sha256:a48a9c5221834640dfe625cd53d1cca97f0bcea6b04a85554b4e90aa7fa2275a",
+    "version": "0.2.0"
+   }
+  },
+  "raw_snapshots": {
+   "digest": "sha256:a04779ca9b9ae7de35a1a83d87fbaa56f24633800f80f6e651e839c66e4d80fd",
+   "observations": 6789
+  },
+  "registry": {
+   "ambiguous": 0,
+   "digest": "sha256:dfcba96124e04e1adfaadf2146eafb5fabd26c62c2132a5da30c18f84796bc2b",
+   "digest_after": "sha256:dfcba96124e04e1adfaadf2146eafb5fabd26c62c2132a5da30c18f84796bc2b",
+   "kind_changes": 0,
+   "migrated_legacy_anchors": 11950,
+   "rebind_attempts": 0
+  }
+ },
+ "output": {
+  "api_files": 14418,
+  "api_gzip_bytes": 18756072,
+  "api_logical_bytes": 76150783,
+  "files": 14423,
+  "gh_pages_commit": "4614d9d7f0afa2510f7a5fc7ae3a0412b3d896d6",
+  "gh_pages_pack_bytes": 10050398,
+  "logical_bytes": 76263488,
+  "tree_digest": "sha256:879df664a310c92e25d54e6c19fe92b423f51bc89d9d8c0cf65b2f36c8d36a87",
+  "vs_previous": {
+   "changed_bytes": 11191122,
+   "changed_files": 20,
+   "ref": "3f37623a2759a47ad7fa33bd325d872833210cbd",
+   "removed_files": 0
+  }
+ },
+ "release": "20261123T134858Z-c527daf5",
+ "repository": {
+  "local_object_store_bytes": 23854080,
+  "main_pack_bytes": 11204859
+ }
+}

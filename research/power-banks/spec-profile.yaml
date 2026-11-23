@@ -1,0 +1,644 @@
+profile_format: specsheet.category-profile/1
+category: power-banks
+version: 0.1.0
+label: Power banks
+market: US
+status: draft
+scope: Portable USB power banks (battery packs) sold in the US, including magnetic/Qi2 packs, laptop power banks with USB-C PD, and power banks
+  with a built-in cable or AC plug. Excludes portable power stations with AC inverters (category 11), phone battery cases and jump starters.
+identity:
+  levels:
+  - level: family
+    label: Product line
+    meaning: Anker Prime / Anker Nano / MagGo / Belkin BoostCharge Pro / INIU Carry / UGREEN Nexode. Browse only, no inherited electrical specs.
+    key_schemes:
+    - mfr_family
+    inherits: false
+  - level: model
+    label: Model
+    meaning: 'The manufacturer model number printed on the label next to the rated energy: Anker A1340, Belkin BPB012, INIU BI-B41, CUKTECH PB200N.
+      Colour variants of one model are the same model.'
+    key_schemes:
+    - mfr_model
+    inherits: true
+  - level: configuration
+    label: Colour / orderable SKU
+    meaning: 'Colour or edition SKU of one model: Anker A1695H11 (black) vs A1695H21; Belkin BPB012btBK vs BPB012btWH. Same electrical specs.'
+    key_schemes:
+    - mfr_sku
+    inherits: true
+  - level: package
+    label: Bundle / GTIN
+    meaning: Power bank + cable/charger bundles and multipacks; own GTIN. A bundle page is never a model.
+    key_schemes:
+    - gtin
+    inherits: true
+  primary_key: Manufacturer model number from the product label (A1340, BPB012, BI-B41). Retail titles (Anker 525 Power Bank, PowerCore 20K,
+    "Laptop Power Bank (25K, 165W)") are aliases; Anker reuses marketing names across models and Belkin/INIU colour SKUs carry suffixes.
+  per_brand:
+    anker: A + 4 digits (A1340); colour/edition SKU appends H11/H21/.. (A1695H11); marketing numbers (525, 737) are aliases
+    belkin: BPB + 3 digits (BPB012); colour SKU BPB012btBK; JSON-LD productGroupID P-BPB012
+    iniu: BI-B41 / P50 / B6 printed as 'Model' in the SPECS block or the URL handle
+    cuktech: PB200N style 'Model:' in the SPEC block (CUKTECH 20 = alias)
+    ugreen: 5-digit item number (25188) is the SKU UGREEN prints; label model PB205-style is often missing from the store
+    baseus: label model (PPAD...) rarely on the store; store SKU E00327xx is a colour SKU
+  schemes:
+  - scheme: mfr_family
+    level: family
+  - scheme: mfr_model
+    level: model
+    normalize: upper_strip_spaces
+  - scheme: mfr_sku
+    level: configuration
+    normalize: upper_keep_slash
+  - scheme: gtin
+    issuer: GS1
+    level: package
+  - scheme: cpsc_recall
+    issuer: CPSC
+    level: model
+    alias_only: true
+  variant_axes:
+  - gen.color
+  model_defining:
+  - cap.cell_mah
+  - cap.energy_wh
+  - out.max_total_w
+  note: 'Colour SKUs are configurations of one model (identity.md). A different capacity or wattage is always a different model number, even
+    when the marketing name barely changes (Anker 10K 30W vs 10K 45W). Unknown stays unknown.'
+units:
+  system: us_customary
+  display:
+    mm: in
+    g: oz
+  custom:
+  - unit: h
+    base: h
+    factor: 1
+  - unit: cycles
+    base: cycles
+    factor: 1
+groups:
+- id: general
+  label: General & identity
+  order: 0
+- id: capacity
+  label: Capacity & energy
+  order: 1
+- id: output
+  label: Output & ports
+  order: 2
+- id: pd
+  label: USB PD / PPS / protocols
+  order: 3
+- id: input
+  label: Recharging
+  order: 4
+- id: battery
+  label: Cell & safety
+  order: 5
+- id: phys
+  label: Physical & display
+  order: 6
+specs:
+- key: gen.brand
+  label: Brand
+  group: general
+  type: enum
+  unit: null
+  tier: core
+  why: Filter
+  level: family
+  enum: [anker, belkin, iniu, cuktech, ugreen, baseus, ecoflow, sharge, mophie, kuxiu, satechi]
+  enum_open: true
+  facet:
+    kind: enum
+    column: true
+  sources:
+  - Manufacturer store page
+  example: anker
+- key: gen.product_line
+  label: Product line
+  group: general
+  type: text
+  unit: null
+  tier: important
+  why: Lines group generations (Anker Prime, Nano, MagGo; Belkin BoostCharge Pro)
+  level: family
+  facet: false
+  traps:
+  - Anker renames lines (PowerCore -> 5xx/7xx numbers -> Prime/Nano); the model number is the only stable key
+  sources:
+  - Manufacturer store page title
+  example: Anker Prime
+- key: gen.form_factor
+  label: Form factor
+  group: general
+  type: enum
+  unit: null
+  tier: core
+  why: A magnetic phone pack, a pocket 10K and a laptop 25K are different purchases
+  level: model
+  enum: [standard, magnetic, laptop, built_in_cable, ac_plug, rugged, mini]
+  facet:
+    kind: enum
+    column: false
+  traps:
+  - Derived from the title; 'laptop' is marketing for any pack with a 60W+ USB-C port
+  sources:
+  - Manufacturer store page title (derived)
+  example: magnetic
+- key: gen.color
+  label: Colour
+  group: general
+  type: list
+  unit: null
+  tier: detail
+  why: Colour SKUs are the same model
+  level: configuration
+  facet: false
+  sources:
+  - Store variant option
+  example: [Black, White]
+- key: cap.cell_mah
+  label: Capacity (cell, mAh)
+  group: capacity
+  type: integer
+  unit: mAh
+  tier: core
+  required: true
+  why: The headline number, but it is the cell capacity at the cell's nominal voltage (3.6-3.85 V), not what reaches a 5 V phone
+  level: model
+  facet:
+    kind: range
+    bins: [5000, 10000, 20000, 25000]
+    column: true
+  traps:
+  - '"10K" in a title is a class; the label prints 10000 mAh at 3.6/3.7 V'
+  - Some pages print the 5 V rated capacity under the same word "capacity"; keep the two apart (cap.rated_mah)
+  - Two-cell packs (7.2/7.4 V) state half the mAh at twice the voltage on the label (CUKTECH 74Wh 7.4V)
+  sources:
+  - Anker key_parameter 'Total Capacity'; INIU/CUKTECH/UGREEN SPECS block; Belkin title only (10K)
+  example: 20000
+- key: cap.class_mah
+  label: Capacity class (title)
+  group: capacity
+  type: integer
+  unit: mAh
+  tier: important
+  why: Belkin and others print only a class ('10K', '27.5K') in the title; useful for browsing, never a measured or rated figure
+  level: model
+  facet:
+    kind: range
+    bins: [5000, 10000, 20000, 25000]
+  traps:
+  - '10K is a marketing class; the label may say 10000 mAh at 3.6 V or 3.85 V (different Wh)'
+  sources:
+  - Manufacturer title ('Power Bank 10K')
+  example: 10000
+- key: cap.cell_voltage
+  label: Cell nominal voltage
+  group: capacity
+  type: number
+  unit: V
+  tier: important
+  why: Converts mAh to Wh; 3.6 V vs 3.85 V decides whether a 26,800 mAh pack is under the 100 Wh airline limit
+  level: model
+  facet: false
+  traps:
+  - Rarely printed on the store; it is on the label and in the manual (3.6V/3.7V/3.85V, 7.4V for 2S packs)
+  sources:
+  - Product label photo, manual PDF, CUKTECH/UGREEN SPEC block
+  example: 3.7
+- key: cap.energy_wh
+  label: Rated energy
+  group: capacity
+  type: number
+  unit: Wh
+  tier: core
+  required: true
+  why: The only capacity figure that compares across packs and the one airlines (100 Wh) and shippers use
+  level: model
+  facet:
+    kind: range
+    bins: [20, 40, 74, 100]
+    column: true
+  traps:
+  - Stores rarely print it; FAQ text and the label do. Never computed here from mAh x an assumed 3.7 V (that is how 103 Wh packs get called "airline safe")
+  - 'CUKTECH prints two figures (74Wh/75.5Wh): typical vs rated energy; the lower is kept, both stay in the literal'
+  sources:
+  - Anker FAQ ('equal to 90Wh'), CUKTECH 'Cell Capacity', label photo, manual
+  example: 74
+- key: cap.rated_mah
+  label: Rated capacity at output voltage
+  group: capacity
+  type: integer
+  unit: mAh
+  tier: important
+  why: What a 5 V device can actually draw (after conversion losses); typically 55-65 % of the cell mAh
+  level: model
+  facet: false
+  traps:
+  - The basis (5V/3A, 5V/2A, '5V/9V/7A typical') is part of the value; INIU/UGREEN/Baseus print it, Anker does not
+  sources:
+  - INIU 'Rated Capacity 6000mAh (5V)'; UGREEN 'Rated Capacity'; Baseus FAQ; label
+  example: 6000
+- key: cap.rated_basis
+  label: Rated capacity basis
+  group: capacity
+  type: text
+  unit: null
+  tier: detail
+  why: '5V/3A vs 5V/9V/7A changes the rated mAh'
+  level: model
+  facet: false
+  sources:
+  - Same literal as cap.rated_mah
+  example: 5V 3A
+- key: cap.under_100wh
+  label: Under 100 Wh (airline carry-on)
+  group: capacity
+  type: bool
+  unit: null
+  tier: core
+  why: FAA/IATA allow spare lithium batteries <=100 Wh in carry-on without approval; 100-160 Wh needs airline approval
+  level: model
+  facet:
+    kind: enum
+    column: false
+  traps:
+  - Only from a stated Wh figure or an explicit TSA/airline statement; 'TSA approved' marketing is a manufacturer claim, not an FAA ruling
+  sources:
+  - Derived from cap.energy_wh; 'TSA compliant' text (Belkin, EcoFlow)
+  example: true
+- key: out.max_total_w
+  label: Max total output
+  group: output
+  type: number
+  unit: W
+  tier: core
+  required: true
+  why: 'Total power with all ports in use, as printed (the all-port combination or the maker''s Total Output row); what limits a laptop + phone. Can be LOWER than the single-port max (INIU: 45W on one port, 15W total with all ports)'
+  level: model
+  facet:
+    kind: range
+    bins: [20, 30, 65, 100, 140]
+    column: true
+  traps:
+  - Title wattage is sometimes the single-port maximum and sometimes the total (Anker '165W' = total, each C port 100W)
+  - Wireless output is often not counted in the total
+  sources:
+  - Anker key_parameter 'Total Output'; INIU 'Output'; Belkin 'Wattage'
+  example: 165
+- key: out.max_output_w
+  label: Max output (unspecified single/total)
+  group: output
+  type: number
+  unit: W
+  tier: important
+  why: Belkin's 'Wattage' row; the page does not say whether it is per port or across ports
+  level: model
+  facet: false
+  traps:
+  - Not comparable with out.max_total_w or out.max_single_port_w until the basis is known
+  sources:
+  - Belkin Technical Specifications 'Wattage'
+  example: 20
+- key: out.max_single_port_w
+  label: Max single-port output
+  group: output
+  type: number
+  unit: W
+  tier: core
+  why: Decides whether one laptop charges at full speed
+  level: model
+  facet:
+    kind: range
+    bins: [20, 30, 45, 65, 100, 140]
+    column: true
+  sources:
+  - Per-port '(100W Max)' in the PDO list
+  example: 100
+- key: out.ports
+  label: Port table (PDOs)
+  group: output
+  type: list
+  unit: null
+  tier: core
+  why: Per-port PD fixed PDOs, PPS ranges and limits; the only way to know if a phone gets 45W PPS or a laptop gets 20V/5A
+  level: model
+  facet: false
+  items:
+    id_field: name
+    fields:
+    - {key: name, type: text, label: Port}
+    - {key: type, type: enum, enum: [usb_c, usb_a, cable_c, cable_lightning, wireless, ac, dc], label: Type}
+    - {key: direction, type: enum, enum: [out, in, in_out], label: Direction}
+    - {key: max_w, type: number, unit: W, label: Max W}
+    - {key: fixed_pdos, type: text, label: Fixed PDOs}
+    - {key: pps, type: text, label: PPS ranges}
+  display:
+    kind: object_table
+  traps:
+  - Pages print ranges like '3-11V⎓3A' (PPS or QC), and '5V⎓3A / 9V⎓3A / ...' fixed PDOs, often merged for 'USB-C Cable / Port'
+  - A port list labelled Input is not an output list (and vice versa); Anker prints both
+  sources:
+  - Anker key_parameter 'Total Output' / 'Total Input' valueList; INIU/CUKTECH/UGREEN SPECS; label
+  example: [{name: USB-C, type: usb_c, direction: out, max_w: 100, fixed_pdos: 5V3A 9V3A 15V3A 20V5A, pps: 3.3-11V 5A}]
+- key: out.simultaneous
+  label: Simultaneous-output split
+  group: output
+  type: text
+  unit: null
+  tier: important
+  why: "Total drops when several ports are in use (C1+C2 65W+30W; all ports 5V 3A total)"
+  level: model
+  facet: false
+  traps:
+  - "Often only in an image or the manual; INIU prints 'Total(OUT1+OUT2+OUT3): 15W', CUKTECH 'Multi-port: 5V=3A'"
+  sources:
+  - SPECS block, manual, label
+  example: 'C1+C2: 100W + 65W'
+- key: out.usb_c_count
+  label: USB-C ports
+  group: output
+  type: integer
+  unit: null
+  tier: core
+  why: Port count filter
+  level: model
+  facet:
+    kind: range
+    bins: [1, 2, 3]
+  sources:
+  - Anker 'Total number of ports'; Belkin 'Number of USB-C Ports'
+  example: 2
+- key: out.usb_a_count
+  label: USB-A ports
+  group: output
+  type: integer
+  unit: null
+  tier: important
+  why: Legacy devices
+  level: model
+  facet:
+    kind: range
+    bins: [0, 1, 2]
+  sources:
+  - Anker 'Total number of ports'; Belkin 'Number of USB-A ports'
+  example: 1
+- key: out.builtin_cable
+  label: Built-in cable
+  group: output
+  type: enum
+  unit: null
+  tier: important
+  why: No cable to forget
+  level: model
+  enum: [none, usb_c, lightning, usb_c_and_lightning]
+  enum_open: true
+  facet:
+    kind: enum
+  sources:
+  - Anker 'Built-in C Cable' port entry; title
+  example: usb_c
+- key: out.cable_note
+  label: Included / integrated cable
+  group: output
+  type: text
+  unit: null
+  tier: detail
+  why: Whether a cable is in the box or built in, and its length
+  level: model
+  facet: false
+  sources:
+  - Belkin 'Integrated/Included Cable Length'
+  example: 6in/0.15m USB-A to USB-C cable
+- key: out.wireless_w
+  label: Wireless output
+  group: output
+  type: number
+  unit: W
+  tier: important
+  why: Qi2 15W vs Qi2.2 25W vs 7.5W magnetic
+  level: model
+  facet:
+    kind: range
+    bins: [5, 7.5, 15, 25]
+  traps:
+  - '"MagSafe compatible" magnets with 7.5W Qi are not Qi2; only Qi2/Qi2.2 certified packs do 15/25W on iPhone'
+  sources:
+  - Title / key_parameter 'Wireless Output'
+  example: 15
+- key: out.wireless_standard
+  label: Wireless standard
+  group: output
+  type: enum
+  unit: null
+  tier: important
+  why: Qi2 certification is checkable (WPC database)
+  level: model
+  enum: [qi, qi2, qi2_2, magsafe_compatible]
+  facet:
+    kind: enum
+  sources:
+  - Title / bullets
+  example: qi2
+- key: pd.pps
+  label: PPS support
+  group: pd
+  type: bool
+  unit: null
+  tier: core
+  why: Samsung 25/45W 'Super Fast' needs PPS; '3.3-11V' style range on a USB-C port
+  level: model
+  facet:
+    kind: enum
+  traps:
+  - A '3-11V' range on a USB-A port is QC/proprietary, not PPS
+  sources:
+  - Per-port PDO list
+  example: true
+- key: pd.max_fixed_voltage
+  label: Highest fixed PDO voltage
+  group: pd
+  type: number
+  unit: V
+  tier: important
+  why: Laptops need 20 V; a 15 V-max pack will not charge most laptops
+  level: model
+  facet: false
+  sources:
+  - Per-port PDO list
+  example: 20
+- key: pd.protocols
+  label: Fast-charge protocols
+  group: pd
+  type: list
+  unit: null
+  tier: detail
+  why: QC/AFC/SCP for non-PD phones
+  level: model
+  facet: false
+  sources:
+  - INIU 'Supported Protocol'; UGREEN 'Protocols'
+  example: [PD 3.0, QC 3.0, AFC]
+- key: in.max_w
+  label: Max recharge input
+  group: input
+  type: number
+  unit: W
+  tier: core
+  why: Recharge time is input-limited; a 25K pack at 30W takes ~4 h
+  level: model
+  facet:
+    kind: range
+    bins: [18, 30, 65, 100]
+    column: true
+  sources:
+  - Anker 'Total Input'; INIU 'Input'
+  example: 100
+- key: in.pdos
+  label: Input PDOs
+  group: input
+  type: text
+  unit: null
+  tier: detail
+  why: Which charger it needs to reach full input speed
+  level: model
+  facet: false
+  sources:
+  - Anker 'Total Input'; INIU 'Input'
+  example: 5V3A 9V3A 15V3A 20V5A
+- key: in.recharge_time_h
+  label: Recharge time (full)
+  group: input
+  type: number
+  unit: h
+  tier: important
+  why: Practical turnaround
+  level: model
+  facet: false
+  traps:
+  - Quoted with the maker's own fastest charger; often 'to 80 %' or '50 % in 30 min' rather than full
+  sources:
+  - Bullets / FAQ
+  example: 2.0
+- key: in.passthrough
+  label: Pass-through charging
+  group: input
+  type: bool
+  unit: null
+  tier: important
+  why: Charge the pack and a phone from one wall outlet
+  level: model
+  facet:
+    kind: enum
+  traps:
+  - Some packs support it only at reduced total power, or only on one port
+  sources:
+  - Bullets / FAQ ('Does it support pass-through charging?')
+  example: true
+- key: bat.chemistry
+  label: Cell chemistry
+  group: battery
+  type: enum
+  unit: null
+  tier: core
+  why: LiFePO4 and semi-solid cells trade energy density for safety/cycle life; LiPo pouch vs 18650/21700 cylinders
+  level: model
+  enum: [li_ion, li_polymer, lifepo4, semi_solid, sodium_ion]
+  facet:
+    kind: enum
+    column: false
+  traps:
+  - '"Lithium-ion" on a label covers polymer pouches too; only an explicit word counts'
+  - '"Semi-solid state" is marketing for gel-electrolyte cells; no standard defines it'
+  sources:
+  - SPECS block 'Cell Type' / 'Battery Type'; FAQ; label
+  example: li_polymer
+- key: bat.cycle_life
+  label: Rated cycle life
+  group: battery
+  type: integer
+  unit: cycles
+  tier: detail
+  why: Long-term value
+  level: model
+  facet: false
+  traps:
+  - 'Quoted with a retention level (80 % after 300 cycles); keep the literal'
+  sources:
+  - FAQ / manual
+  example: 500
+- key: safety.recall
+  label: CPSC recall
+  group: battery
+  type: text
+  unit: null
+  tier: core
+  why: Recalled packs are fire hazards and are refused by airlines; recall status is model-specific
+  level: model
+  facet: false
+  sources:
+  - CPSC recalls API (saferproducts.gov RestWebServices/Recall)
+  example: 'CPSC 25-123 (2025-06-12): overheating, fire hazard'
+- key: phys.weight
+  label: Weight
+  group: phys
+  type: number
+  unit: g
+  tier: core
+  why: Carry weight; roughly 18 g per Wh for good packs
+  level: model
+  facet:
+    kind: range
+    bins: [150, 250, 400, 600]
+    column: true
+  sources:
+  - Anker key_parameter 'Weight'; SPECS block
+  example: 595
+- key: phys.dimensions
+  label: Dimensions
+  group: phys
+  type: object
+  unit: mm
+  tier: detail
+  why: Pocketability
+  level: model
+  fields:
+  - {key: w, type: number}
+  - {key: d, type: number}
+  - {key: h, type: number}
+  facet: false
+  sources:
+  - Anker key_parameter 'Dimensions'; Belkin 'Dimensions (LxWxH)'
+  example: {w: 156.97, d: 53.85, h: 49.02, unit: mm}
+- key: phys.display
+  label: Display
+  group: phys
+  type: enum
+  unit: null
+  tier: important
+  why: A percent/watt display tells you the real state; 4 LEDs do not
+  level: model
+  enum: [none, led_indicator, digital_percent, smart_display]
+  facet:
+    kind: enum
+  traps:
+  - Inferred only from explicit words (smart display, digital display, LED indicator)
+  sources:
+  - Title / bullets
+  example: smart_display
+- key: id.msrp_us
+  label: Store price (US)
+  group: general
+  type: number
+  unit: USD
+  tier: detail
+  why: Price context; fetch-time fact, never a trusted spec
+  level: configuration
+  facet: false
+  sources:
+  - Store variant price at fetch time
+  example: 119.99

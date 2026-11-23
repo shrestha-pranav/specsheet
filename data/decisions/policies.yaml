@@ -255,6 +255,139 @@ claim_policies:
     statuses: [known]
     keys: [gen.device_type, gen.product_line]
     require_normalized: true
+- id: claim/mfr-power-banks-structured@2
+  since: '2026-11-23'
+  supersedes: claim/mfr-power-banks-structured@1
+  rationale: 'Power banks, manufacturer-owned spec tables: Anker US product pages (variant key_parameter + Specifications table, anker_powerbanks@1), Belkin
+    US Technical Specifications table + title capacity class (belkin_powerbanks@1), INIU / CUKTECH / UGREEN Shopify store spec blocks (shopify_powerbanks:
+    iniu/cuktech/ugreen_powerbanks@1). Per source: only the listed keys, only values that normalise to the profile type. Capacity: cell mAh only from a
+    capacity row without a series-pack voltage (>=5 V); Wh only as printed (never mAh x assumed V); Belkin''s ''10K'' is cap.class_mah, never cap.cell_mah;
+    Belkin ''Wattage'' is out.max_output_w (basis unknown). PDO lists are literal per-port strings. NOT accepted (preview candidates): prose/title-derived
+    fields (form factor, product line, display, pass-through, wireless standard/W, recharge time, under-100Wh flag), store prices (id.msrp_us). @2: same
+    keys/sources as @1; the shared PDO parser no longer derives a wattage from V x A (19.98 W from 9V2.22A was published as official under @1 in a local
+    import), and Anker splits ''Wireless Charger:'' segments; parsers changed, so a new id.'
+  audit:
+    by: A1+A2 power banks
+    at: '2026-11-23'
+    evidence: Parsed all 143 fetched pages; spot-checked port tables / capacities against the stored literals (A1657 2S-pack, UGREEN 4S, CUKTECH two-figure
+      Wh, INIU all-port totals). Re-parsed after the V x A fix.
+    parsers:
+      anker_powerbanks@1: sha256:1c94708f6143fd550bc2
+      belkin_powerbanks@1: sha256:da7880ba96b779b0fe97
+      iniu_powerbanks@1: sha256:646c55efdbdd21c94ba5
+      cuktech_powerbanks@1: sha256:646c55efdbdd21c94ba5
+      ugreen_powerbanks@1: sha256:646c55efdbdd21c94ba5
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors:
+    - anker_powerbanks@1
+    - belkin_powerbanks@1
+    - cuktech_powerbanks@1
+    - iniu_powerbanks@1
+    - ugreen_powerbanks@1
+    source_ids:
+    - anker-us-powerbanks
+    - belkin-us-powerbanks
+    - cuktech-us-powerbanks
+    - iniu-us-powerbanks
+    - ugreen-us-powerbanks
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    keys:
+      anker-us-powerbanks:
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.builtin_cable
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - pd.max_fixed_voltage
+      - pd.pps
+      - phys.dimensions
+      - phys.weight
+      belkin-us-powerbanks:
+      - cap.class_mah
+      - out.cable_note
+      - out.max_output_w
+      - out.usb_a_count
+      - out.usb_c_count
+      - phys.dimensions
+      iniu-us-powerbanks: &pbkeys2
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      cuktech-us-powerbanks: *pbkeys2
+      ugreen-us-powerbanks: *pbkeys2
+    require_normalized: true
+- id: claim/mfr-robovac-structured@1
+  since: '2026-11-23'
+  rationale: 'Robot vacuums, the manufacturer''s own labelled spec rows on its US store: Dreame Specifications block (four label/value templates; a
+    two-model comparison column only when its header names this model, dreame_robovac@1), Roborock ''Specifications:'' rows (roborock_robovac@1),
+    Narwal Specifications rows (narwal_robovac@1). Per source: only the listed keys, only values that normalise to the profile type. Suction stays a
+    manufacturer claim with its basis condition (claim_basis mfr_in_house_lab / mfr_unstated / third_party_certified from the page disclaimer); it is
+    trusted as "what the maker states", never as comparable performance. nav.type / nav.obstacle_sensors / mop.type are keyword classes of the labelled
+    cell (unknown vocabulary -> no claim; trademarks such as Pathfinder stay unknown). Robot dimensions/weight outside physical bounds (robot+dock cells)
+    are not emitted. NOT accepted (preview candidates): Roborock Key-Features/title-derived suction, hot-water and dock flags; free text (main brush
+    type, voice control); marketing counts (nav.ai_object_types); single-instance runtime/noise until their mode/basis wording is audited.'
+  audit:
+    by: A1+A2 robot vacuums
+    at: '2026-11-23'
+    evidence: Parsed all 84 model bundles (41 Dreame, 35 Roborock, 8 Narwal); spot-checked suction, battery, tanks, obstacle crossing (single-step
+      figure), robot height and dock tanks against the stored literals; 0 invalid claims, all accepted keys normalise.
+    parsers:
+      dreame_robovac@1: sha256:1edc479c58c8de26fd80
+      roborock_robovac@1: sha256:253896199530aa5695d3
+      narwal_robovac@1: sha256:6e0ef0e0b072bb790496
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors: [dreame_robovac@1, roborock_robovac@1, narwal_robovac@1]
+    source_ids: [dreame-us-robovac, roborock-us-robovac, narwal-us-robovac]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys:
+      dreame-us-robovac: [clean.suction_pa, clean.dustbin_ml, clean.main_brush_lifting, clean.side_brush_extending, clean.side_brush_lifting,
+        clean.dirt_detection, mop.type, mop.lifting, mop.lift_height_mm, mop.auto_removal, mop.extending, mop.robot_tank_ml, mop.auto_refill_from_dock,
+        nav.type, nav.obstacle_sensors, nav.obstacle_crossing_mm, bat.capacity_mah, dock.self_empty, dock.dust_bag_ml, dock.mop_wash, dock.hot_water_wash,
+        dock.wash_water_temp_c, dock.hot_air_dry, dock.mop_dry, dock.washboard_self_clean, dock.solution_dispense, dock.clean_tank_ml, dock.dirty_tank_ml,
+        smart.matter, phys.robot_height_mm, phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions, phys.dock_weight_g]
+      roborock-us-robovac: [bat.capacity_mah, phys.robot_height_mm, phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions]
+      narwal-us-robovac: [clean.suction_pa, bat.capacity_mah, mop.lifting, mop.lift_height_mm, mop.extending, nav.type, phys.robot_height_mm,
+        phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions, phys.dock_weight_g]
+    require_normalized: true
 relation_policies:
 - id: rel/source-stated-hierarchy@2
   since: '2026-11-23'
@@ -494,3 +627,94 @@ retired_policies:
   types: [member_of_family, configuration_of, package_of, variant_of]
   retired: {at: '2026-11-23', superseded_by: rel/source-stated-hierarchy@2, reason: 'review 2 risk 1: open-ended or edited-in-place acceptance; meaning
       frozen as committed in ba3b2e0'}
+- id: claim/mfr-power-banks-structured@1
+  since: '2026-11-23'
+  rationale: 'Power banks, manufacturer-owned spec tables: Anker US product pages (variant key_parameter + Specifications table, anker_powerbanks@1), Belkin
+    US Technical Specifications table + title capacity class (belkin_powerbanks@1), INIU / CUKTECH / UGREEN Shopify store spec blocks (shopify_powerbanks:
+    iniu/cuktech/ugreen_powerbanks@1). Per source: only the listed keys, only values that normalise to the profile type. Capacity: cell mAh only from a
+    capacity row without a series-pack voltage (>=5 V); Wh only as printed (never mAh x assumed V); Belkin''s ''10K'' is cap.class_mah, never cap.cell_mah;
+    Belkin ''Wattage'' is out.max_output_w (basis unknown). PDO lists are literal per-port strings. NOT accepted (preview candidates): prose/title-derived
+    fields (form factor, product line, display, pass-through, wireless standard/W, recharge time, under-100Wh flag), store prices (id.msrp_us).'
+  audit:
+    by: A1+A2 power banks
+    at: '2026-11-23'
+    evidence: Parsed all 143 fetched pages; spot-checked port tables / capacities against the stored literals (A1657 2S-pack, UGREEN 4S, CUKTECH two-figure
+      Wh, INIU all-port totals).
+    parsers:
+      anker_powerbanks@1: sha256:aedfd6a33521ddfca02a
+      belkin_powerbanks@1: sha256:db7c985d1a8c017a9d7a
+      iniu_powerbanks@1: sha256:a0279a5959e7ddd306cf
+      cuktech_powerbanks@1: sha256:a0279a5959e7ddd306cf
+      ugreen_powerbanks@1: sha256:a0279a5959e7ddd306cf
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors:
+    - anker_powerbanks@1
+    - belkin_powerbanks@1
+    - cuktech_powerbanks@1
+    - iniu_powerbanks@1
+    - ugreen_powerbanks@1
+    source_ids:
+    - anker-us-powerbanks
+    - belkin-us-powerbanks
+    - cuktech-us-powerbanks
+    - iniu-us-powerbanks
+    - ugreen-us-powerbanks
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    keys:
+      anker-us-powerbanks:
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.builtin_cable
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - pd.max_fixed_voltage
+      - pd.pps
+      - phys.dimensions
+      - phys.weight
+      belkin-us-powerbanks:
+      - cap.class_mah
+      - out.cable_note
+      - out.max_output_w
+      - out.usb_a_count
+      - out.usb_c_count
+      - phys.dimensions
+      iniu-us-powerbanks: &pbkeys1
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      cuktech-us-powerbanks: *pbkeys1
+      ugreen-us-powerbanks: *pbkeys1
+    require_normalized: true
+  retired: {at: '2026-11-23', superseded_by: claim/mfr-power-banks-structured@2, reason: 'parser fix before any release (wattage computed from V x A); meaning frozen as first locked'}

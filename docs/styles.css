@@ -56,3 +56,6 @@ main[tabindex="-1"]:focus{outline:none}
   .compare-table .nested-scroll{overflow:visible;max-width:none}.spec-table .nested-scroll{overflow:visible;max-width:none}
   .config-id{min-width:150px}
 }
+
+.alt-list{list-style:none;padding-left:0!important}.alt-item{margin:4px 0}.alt-value{font-weight:650}.revision-applicability{font-size:12px}
+.spec-table td.value-cell{min-width:150px}

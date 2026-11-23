@@ -239,15 +239,31 @@
       return value.join(', ');
     }
     if (value && typeof value === 'object') return value.min != null && value.max != null ? `${value.min}–${value.max}${field?.unit ? ` ${field.unit}` : ''}` : JSON.stringify(value);
-    if (typeof value === 'number') return `${value}${field?.unit ? ` ${field.unit}` : ''}`;
+    if (typeof value === 'number') return field?.unit ? `${Math.abs(value) >= 1000 ? value.toLocaleString('en-US') : value} ${field.unit}` : String(value);
     return String(value);
   };
-  const valueWithContext = (spec, field) => {
+  const basisLabels = {power_basis:{label:'Power basis',values:{energy_star_on_mode:'ENERGY STAR on-mode test',energy_star_sleep:'ENERGY STAR sleep-mode test'}}, cts_version:{label:'DisplayHDR CTS'}, cache_state:{label:'Cache state',values:{in_slc_cache:'in SLC cache'}}};
+  const modeLabels = {negotiated:'negotiated', sustained:'sustained', peak:'peak', advertised_by_device:'advertised by device'};
+  const kindLabels = {official:'Manufacturer-stated', measured:'Measured', derived:'Derived', reported:'Reported'};
+  const basisText = basis => Object.entries(basis || {}).map(([key, value]) => { const meta = basisLabels[key]; return `${meta?.label || key.replaceAll('_', ' ')}: ${key === 'cts_version' ? `v${value}` : (meta?.values?.[value] || String(value).replaceAll('_', ' '))}`; });
+  const altSources = (item, sources) => (item.sources || []).map(id => (sources || []).find(source => source.id === id)).filter(Boolean).map(source => { const url = safeUrl(source.url); return url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.label || new URL(url).host)}</a>` : escapeHtml(source.label || 'Source'); });
+  const alternativeItem = (item, field, sources) => {
+    const q = qualifierLabel[item.qualifier];
+    const shown = displayStructured(item.value, field) ?? escapeHtml(`${q ? `${q} ` : ''}${item.display || formatRaw(item.value, field)}`);
+    const tags = [...basisText(item.basis), ...(item.measurement_mode ? [`Mode: ${modeLabels[item.measurement_mode] || item.measurement_mode}`] : [])];
+    const links = altSources(item, sources);
+    return `<li class="alt-item"><strong class="alt-value">${shown}</strong> <span class="muted">${escapeHtml(kindLabels[item.kind] || 'Reported')}${tags.length ? ` · ${escapeHtml(tags.join(' · '))}` : ''}${links.length ? ` · ${links.join(', ')}` : ''}</span></li>`;
+  };
+  const valueWithContext = (spec, field, sources = []) => {
     const extra = [];
+    const noHeadline = spec.status === 'unknown' && spec.alternatives?.length;
     if (spec.inherited_from) extra.push(`<small class="value-note">From model ${escapeHtml(typeof spec.inherited_from === 'string' ? spec.inherited_from : spec.inherited_from.id || spec.inherited_from.name || JSON.stringify(spec.inherited_from))}</small>`);
+    if (spec.status === 'known' && spec.basis && Object.keys(spec.basis).length) extra.push(`<small class="value-note">${escapeHtml(basisText(spec.basis).join(' · '))}</small>`);
+    if (spec.revision_applicability) extra.push(`<small class="value-note revision-applicability">${spec.revision_applicability === 'all' ? 'Applies to all hardware revisions' : 'Revision not specified by source'}</small>`);
     if (spec.conditional?.length) extra.push(`<div class="value-details"><strong>Conditions</strong><ul>${spec.conditional.map(item => `<li>${escapeHtml(formatRaw(item.conditions, field))}: ${displayStructured(item.value,field) ?? escapeHtml(formatRaw(item.value,field))}</li>`).join('')}</ul></div>`);
-    if (spec.alternatives?.length) extra.push(`<div class="value-details"><strong>Reported alternatives</strong><ul>${spec.alternatives.map(item => `<li>${escapeHtml(item.kind || 'Reported')}: ${displayStructured(item.value,field) ?? escapeHtml(formatRaw(item.value,field))}</li>`).join('')}</ul></div>`);
-    return displayValue(spec, field) + extra.join('');
+    if (noHeadline) extra.push(`<small class="value-note">${escapeHtml(spec.note || 'No single headline: the sources state this under different bases, so the values are not comparable.')}</small>`);
+    if (spec.alternatives?.length) extra.push(`<div class="value-details"><strong>${noHeadline ? 'Reported values' : 'Reported alternatives'}</strong><ul class="alt-list">${spec.alternatives.map(item => alternativeItem(item, field, sources)).join('')}</ul></div>`);
+    return (noHeadline ? '<span class="val-unknown">No single value</span>' : displayValue(spec, field)) + extra.join('');
   };
   // Opt-in preview overlay on a detail page: the unreviewed value always sits below, never replaces, the trusted one.
   const previewOverlay = (record, key, field) => {
@@ -680,7 +696,7 @@
         if (!field) return;
         const spec = specObject(record, field.key);
         const cell = row.querySelector('.value-cell');
-        cell.innerHTML = record.previewOnly ? previewMark(valueWithContext(spec, field)) : valueWithContext(spec, field) + previewOverlay(record, field.key, field);
+        cell.innerHTML = record.previewOnly ? previewMark(valueWithContext(spec, field, record.sources)) : valueWithContext(spec, field, record.sources) + previewOverlay(record, field.key, field);
         row.querySelector('.evidence-cell')?.insertAdjacentHTML('beforeend', `<a class="correction-link" href="${escapeHtml(correctionIssueUrl(record.id, field.key, spec.status === 'known' ? formatRaw(spec.value, field) : statusLabel[spec.status] || 'Unknown'))}" target="_blank" rel="noopener noreferrer">Report a correction</a>`);
       });
       if (record.kind === 'model' && category.index) {
@@ -748,7 +764,7 @@
           if (differencesOnly && !claimDiff && !candidateDiff) { if (evidenceDiff) evidenceOnly++; return ''; }
           rowCount++;
           const flag = claimDiff ? ' <span class="diff-flag">Claims differ</span>' : candidateDiff ? ' <span class="diff-flag candidate">Unreviewed candidates differ</span>' : evidenceDiff ? ' <span class="diff-flag evidence">Same value, different evidence</span>' : '';
-          return `<tr class="${claimDiff ? 'different' : candidateDiff ? 'candidate-different' : evidenceDiff ? 'evidence-different' : ''}"><th scope="row">${escapeHtml(field.label)}${flag}</th>${cells.map((spec, index) => `<td>${records[index].previewOnly ? previewMark(valueWithContext(spec, field)) : valueWithContext(spec, field) + previewOverlay(records[index], field.key, field)}<div class="evidence-cell">${evidenceMarkup(records[index], spec)}</div></td>`).join('')}</tr>`;
+          return `<tr class="${claimDiff ? 'different' : candidateDiff ? 'candidate-different' : evidenceDiff ? 'evidence-different' : ''}"><th scope="row">${escapeHtml(field.label)}${flag}</th>${cells.map((spec, index) => `<td>${records[index].previewOnly ? previewMark(valueWithContext(spec, field, records[index].sources)) : valueWithContext(spec, field, records[index].sources) + previewOverlay(records[index], field.key, field)}<div class="evidence-cell">${evidenceMarkup(records[index], spec)}</div></td>`).join('')}</tr>`;
         }).filter(Boolean).join('');
         return items ? `<tr class="group-row"><th colspan="${records.length + 1}" scope="colgroup">${escapeHtml(groupLabel(category,group))}</th></tr>${items}` : '';
       }).join('');

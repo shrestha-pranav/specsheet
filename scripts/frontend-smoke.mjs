@@ -21,7 +21,7 @@ const context = vm.createContext({
   matchMedia:()=>({matches:false,addEventListener(){}}),
   fetch:async url => {requests.push(url); try { const body = await json(url.split('?')[0]); return {ok:true,json:async()=>body}; } catch (error) { if (error.code === 'ENOENT') return {ok:false,status:404}; throw error; }}
 });
-const names = ['categories','indexFor','detailFor','displayValue','initialState','categoryStateQuery','productUrl','validatedReturnQuery','returnWithIds','matchFacet','missingIssueUrl','correctionIssueUrl','renderTable','renderProduct','renderCompare','previewOverlay','revisionsMarkup','searchRows','extractIdentifiers','differingFields','cellValue','compareUrl','configTable','evidenceMarkup'];
+const names = ['categories','indexFor','detailFor','displayValue','initialState','categoryStateQuery','productUrl','validatedReturnQuery','returnWithIds','matchFacet','missingIssueUrl','correctionIssueUrl','renderTable','renderProduct','renderCompare','previewOverlay','revisionsMarkup','searchRows','extractIdentifiers','differingFields','cellValue','compareUrl','configTable','evidenceMarkup','valueWithContext'];
 const source = await readFile(resolve(root, 'docs/app.js'), 'utf8');
 assert(source.includes('  renderRoute();\n})();'), 'Application bootstrap changed; update harness');
 vm.runInContext(source.replace('  renderRoute();\n})();', `  globalThis.test = {${names.join(',')}};\n})();`), context);
@@ -137,6 +137,32 @@ assert.equal((rev.match(/<tr><th scope="row">/g)||[]).length, modelWithRevs.revi
 assert.doesNotMatch(rev, /\[object Object\]|undefined/);
 assert.match(ui.revisionsMarkup(rcat, {specs:{}, revisions:[{id:'x-v1',label:'V1',specs:{},sources:[],differs:[]}]}), /Nothing known beyond the model/);
 assert.equal(ui.revisionsMarkup(rcat, {specs:{}}), '');
+
+// Round 4 record semantics: alternatives with basis/mode/source, unknown + alternatives, headline qualifiers, revision applicability.
+{
+  const rec = async (cat, id) => json(`api/v1/${cat}/products/${id}.json`);
+  const fieldOf = async (cat, key) => (await json(`api/v1/${cat}/schema.json`)).fields.find(f => f.key === key) || {key};
+  const mon = await rec('monitors', 'asus-be249cgn');
+  const pw = mon.specs['pwr.typical'];
+  assert.equal(pw.status, 'unknown');
+  const pwHtml = ui.valueWithContext(pw, await fieldOf('monitors', 'pwr.typical'), mon.sources);
+  assert.match(pwHtml, /No single value/); assert.match(pwHtml, /not comparable/);
+  assert.match(pwHtml, /ENERGY STAR on-mode test/); assert.match(pwHtml, /14\.83/); assert.match(pwHtml, /14\.93/);
+  assert.equal((pwHtml.match(/class="alt-item"/g) || []).length, 2); assert.match(pwHtml, /href="https?:/);
+  const hdr = await rec('monitors', 'acer-x27');
+  const hdrHtml = ui.valueWithContext(hdr.specs['hdr.vesa_tier'], await fieldOf('monitors', 'hdr.vesa_tier'), hdr.sources);
+  assert.match(hdrHtml, /DisplayHDR CTS: v1\.0/); assert.match(hdrHtml, /DisplayHDR CTS: v1\.2/); assert.match(hdrHtml, /True Black 400/);
+  const synth = ui.valueWithContext({status:'known', value:100, qualifier:'up_to', alternatives:[{value:90, kind:'measured', qualifier:'approx', measurement_mode:'sustained', sources:['s1']}]}, {key:'x', unit:'W'}, [{id:'s1', url:'https://example.com/a', label:'Example'}]);
+  assert.match(synth, /up to 100 W/); assert.match(synth, /approx\. 90 W/); assert.match(synth, /Mode: sustained/); assert.match(synth, /Measured/); assert.match(synth, />Example</);
+  const ssd = await rec('ssds', 'samsung-mu-pc1t0h-am');
+  assert.match(ui.displayValue({status:'known', value:7450, unit:'MB/s', qualifier:'up_to'}, {key:'perf.seq_read', unit:'MB/s'}), /up to 7,450 MB\/s/);
+  assert.match(ui.valueWithContext(ssd.specs['perf.seq_read'], await fieldOf('ssds', 'perf.seq_read'), ssd.sources), /up to 1,050 MB\/s/);
+  const tp = await rec('routers', 'tp-link-archer-ax10');
+  const all = ui.valueWithContext(tp.specs['wifi.generation'], await fieldOf('routers', 'wifi.generation'), tp.sources);
+  const unspec = ui.valueWithContext(tp.specs['wifi.ofdma'], await fieldOf('routers', 'wifi.ofdma'), tp.sources);
+  assert.match(all, /Applies to all hardware revisions/); assert.match(unspec, /Revision not specified/);
+  assert.doesNotMatch(pwHtml + hdrHtml + synth + all, /\[object Object\]|undefined/);
+}
 
 const beforeIssue = requests.length;
 const issue = new URL(ui.missingIssueUrl('laptops','83DK0002US'));

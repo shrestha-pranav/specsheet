@@ -10,6 +10,8 @@
 # --dry-run (or RELEASE_DRY_RUN=1): everything except the pushes and the main commit; prints the commands instead.
 # Any failure aborts before anything is pushed.
 set -euo pipefail
+# Serialize: parallel agents rebuilding docs/api corrupt each other (2026-11-23).
+exec 9>/tmp/specsheet-release.lock; flock -w 1800 9 || { echo "release lock busy" >&2; exit 3; }
 cd "$(dirname "$0")/.."
 dry=${RELEASE_DRY_RUN:-0}
 if [ "${1:-}" = "--dry-run" ]; then dry=1; shift; fi
@@ -47,11 +49,11 @@ git worktree remove --force "$wt"; git branch -D "$tmpbranch" >/dev/null; trap -
 if [ "$dry" = 1 ]; then
   echo "DRY RUN: local gh-pages = $new (orphan, single commit). Nothing pushed or committed on main. To publish:"
   echo "  git push --force origin gh-pages"
-  echo "  git add -A -- . ':(exclude)docs/api' && git commit -m \"$msg\" && git push origin main"
+  echo "  git add -A  # docs/api is gitignored && git commit -m \"$msg\" && git push origin main"
   exit 0
 fi
 git push -q --force origin gh-pages
-git add -A -- . ':(exclude)docs/api'
+git add -A  # docs/api is gitignored
 git commit -q -m "$msg"
 git push -q origin main
 git log --oneline -1

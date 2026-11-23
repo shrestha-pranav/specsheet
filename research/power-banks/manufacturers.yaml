@@ -1,0 +1,50 @@
+# A2 discovery, power banks (US). Probed 2026-11-23 with the shared crawler client UA ("specsheet-crawler/0.1" + repo URL), robots honoured,
+# <=1 req/s per host, no spoofing, no Bright Data. status: adapter = built+run; viable = probed OK, not built; blocked = robots/WAF; unprobed.
+manufacturers:
+  anker:
+    status: adapter            # crawler/adapters/anker_powerbanks.py  raw/anker-us-powerbanks  (23 refs, 22 x 200)
+    how: "https://www.anker.com/server-sitemap-index-products.xml (one urlset, 1,340 URLs all markets, 296 US) + /collections/power-banks (__NEXT_DATA__ handles) -> /products/<a1xxx|a110x>. /products.json is 404 (headless). Product page __NEXT_DATA__: product.variants[] (sku A1695H11, barcode, options) + variant metafields.infos.key_parameter + metafields.components.productSpecs (the Specifications table) + faq."
+    gives: [model number from variant SKU, colour SKUs + GTIN, cell mAh, per-port PDO list incl. PPS ranges, total output, input PDOs, port counts, dimensions, weight, Wh in FAQ/description (some), pass-through in FAQ]
+    lacks: [cell voltage (rare), chemistry, rated 5V capacity; 5 pages (A110R, A1383, A1681, A1685, A1688) have no spec table at all]
+  belkin:
+    status: adapter            # crawler/adapters/belkin_powerbanks.py  raw/belkin-us-powerbanks  (37 models, 37 x 200)
+    how: "https://www.belkin.com/sitemap-variant_products_us_001.xml (2.9 MB) -> /p/<slug>/<SKU>.html with 'power-bank' in slug (90 colour URLs -> 37 models). Page: JSON-LD ProductGroup (productGroupID P-BPB012, hasVariant sku) + span.spec-attr-label/value table + 'At a Glance' bullets."
+    gives: [model number (BPB/BPD/BBA + 3 digits), colour SKUs, capacity class from title (10K), 'Wattage', USB-A/C counts, dimensions, cable, TSA statement]
+    lacks: [mAh/Wh (11 of 102 pages mention mAh), PDOs, input, weight, chemistry except 'BoostSolid']
+  iniu:
+    status: adapter            # crawler/adapters/shopify_powerbanks.py IniuPowerbanks  raw/iniu-us-powerbanks  (41 handles)
+    how: "Shopify https://iniushop.com/products.json?limit=250 (93 products, 41 power banks) + product page 'Tech Specs' block + /products/<handle>.json."
+    gives: [Product Model (P63-E1), total capacity, per-port output PDOs + every port-combination total, input PDOs, protocols (PPS), dimensions, weight]
+    lacks: [Wh, cell voltage, chemistry; 'Rated Capacity' on 1 page]
+  cuktech:
+    status: adapter            # shopify_powerbanks.py CuktechPowerbanks  raw/cuktech-us-powerbanks  (14 handles, ~8 with a SPEC block)
+    how: "Shopify https://www.cuktech.com/products.json + page 'SPEC' block."
+    gives: [Model (PB200N), rated 5V capacity with basis, cell energy Wh (two figures) + pack voltage, battery type, per-port PDOs incl. 28V EPR, all-port total]
+    lacks: [weight/dimensions on most; 6 pages have no SPEC block]
+  ugreen:
+    status: adapter            # shopify_powerbanks.py UgreenPowerbanks  raw/ugreen-us-powerbanks  (29 handles)
+    how: "Shopify https://us.ugreen.com/products.json (174 products) + page 'Specs'/'Specifications' block (two templates: Amazon-style attributes, or a real table)."
+    gives: [SKU item number, capacity 'mAh/3.6V/Wh' on the table template, per-port output, input, display, protocols, weight, dimensions]
+    lacks: [the Amazon-attribute template gives only capacity + colour; label model number (PB205) not printed]
+  baseus:
+    status: viable             # Shopify products.json 200 (241 products, 64 power banks). Specs are images; rated capacity only in FAQ prose; model number (PPAD...) not on the store, store SKU E00327xx = colour SKU. Low structure.
+  ecoflow:
+    status: viable             # Shopify us.ecoflow.com/products.json 200 (18 RAPID power banks). Variant SKU EF-R35W10K3IN1-B-USAMZ; specs in prose + FAQ (nominal vs rated explained), Wh on all 18 pages. Good 6th adapter.
+  sharge:
+    status: viable             # Shopify sharge.com/products.json 200 (32 power banks). body_html marketing only; spec block not inspected.
+  mophie:
+    status: viable             # Shopify www.mophie.com/products.json 200 (149 'powerstation' handles incl. many LMTD colourways); SKU = numeric part number 401123961. Spec table not inspected.
+  kuxiu:
+    status: viable             # Shopify kuxiu.com/products.json 200 (16, semi-solid-state S-series). body_html has chemistry text.
+  satechi:
+    status: viable             # Shopify, 2 power banks only.
+  zendure:
+    status: viable             # Shopify products.json 200 but 0 power banks (power stations only).
+  torras:
+    status: viable             # Shopify products.json 200, 0 power banks.
+  nimble:
+    status: unprobed           # products.json 404 (not Shopify at that path); not pursued.
+evidence_sources:
+  chargerlab: "robots.txt: 'User-agent: *' Allow / with Content-Signal ai-train=no, use=reference, but ClaudeBot / anthropic-ai / Claude-Web are explicitly Disallow: /. Treated as blocked for this agent. Content is prose teardown/test articles, not a structured table."
+  cpsc_recalls: "https://www.saferproducts.gov/RestWebServices/Recall?format=json&ProductName=power%20bank -> 200, 33 recalls (2026-10-29 newest). Products[].Model is usually empty; model strings are in Description text ('model W5 PRO'). Viable as a safety adapter (exact model-string match only); not built."
+  fcc: "power banks without radios have no FCC grant; magnetic Qi2 packs do (Part 15/18). Not probed (fcc.gov 403 per routers round)."
