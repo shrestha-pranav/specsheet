@@ -19,7 +19,7 @@ import _contract as C
 import _robovac as RV
 import _run
 
-ID, VERSION, SOURCE = "dreame_robovac", 1, "dreame-us-robovac"
+ID, VERSION, SOURCE = "dreame_robovac", 2, "dreame-us-robovac"     # v2: review-3 strict enums / identity / plausibility
 CATEGORIES = {"robot-vacuums"}
 ADAPTER = f"{ID}@{VERSION}"
 HOST = "www.dreametech.com"
@@ -52,9 +52,10 @@ class DreameRobovac:
 
     def discover(self, checkpoint, net):
         ps, stop = RV.catalogue(net, HOST)
-        groups = RV.group(ps, model_of, prefer)
+        conflicts = []
+        groups = RV.group(ps, model_of, prefer, conflicts)
         refs = RV.refs_from_groups(SOURCE, HOST, groups)
-        return C.Discovery(refs, stop is None, stop, {"products": len(ps), "models": len(refs)})
+        return C.Discovery(refs, stop is None, stop, {"products": len(ps), "models": len(refs), "identity_conflicts": conflicts})
 
     def fetch(self, ref, prior, net):
         return RV.fetch_bundle(self.store, ADAPTER, ref, net)
@@ -125,6 +126,7 @@ def parse_bundle(snap, b):
     fam = re.match(r"[A-Za-z]+", name)[0].upper()
     pr.identifiers.append(RV.ident("mfr_model", RV.plus(name), "model", "dreame", raw=name, series=fam))
     pr.aliases.append({"text": "Dreame " + name, "kind": "marketing_name"})
+    prods, quarantined = RV.corroborate(prods, canon, model_of)
     RV.variant_idents(pr, prods, "dreame", RV.plus(name))
     h = b.get("html") or ""
     rows = spec_pairs(h)
@@ -134,7 +136,7 @@ def parse_bundle(snap, b):
     disc = disclaimers(h)
     fill(pr, snap, name, rows, disc, ADAPTER)
     pr.fingerprints = {"raw": snap.snapshot, "table": table if rows else None, "labels": sorted(rows), "members": [p.get("handle") for p in prods], "disclaimers": len(disc),
-                       "unmapped": {k: v[:100] for k, v in rows.items() if k not in MAPPED}}
+                       "unmapped": {k: v[:100] for k, v in rows.items() if k not in MAPPED}, "quarantined_members": quarantined}
     return pr
 
 
@@ -185,15 +187,16 @@ def fill(pr, snap, name, rows, disc, adapter):
     if v and "/" not in v:
         add("mop.robot_tank_ml", RV.ml(v), v, k)
     k, v = get("Robot Vacuum Dimensions", "Robot Dimensions", "Product Dimensions", "Robot Vacuum Product Dimensions", "Robot Vacuum Dimsensons")
-    if v and (d := RV.dims_mm(v)) and RV.plausible_robot(dims=d):
-        add("phys.robot_dimensions", d, v, k); add("phys.robot_height_mm", d["height"], v, k)
+    if v and (d := RV.dims_mm(v)):
+        d = RV.robot_dims(d)
+        add("phys.robot_dimensions", d, v, k); add("phys.robot_height_mm", RV.robot_height(d), v, k)
     k, v = get("Base Station Dimensions", "Dock Dimensions", "Base Station Product Dimensions", "Base Siation Dimensions", "Charging Dock Dimensions")
     if v:
         add("phys.dock_dimensions", RV.dims_mm(v), v, k)
     k, v = get("Robot Vacuum Weight", "Robot Weight")
     if v:
         w = RV.weight_g(v)
-        add("phys.robot_weight_g", w if w and RV.plausible_robot(weight_g=w) else None, v, k)
+        add("phys.robot_weight_g", RV.robot_weight(w), v, k)
     k, v = get("Base Station Weight", "Dock Weight", "Charging Dock Weight")
     if v:
         add("phys.dock_weight_g", RV.weight_g(v), v, k)

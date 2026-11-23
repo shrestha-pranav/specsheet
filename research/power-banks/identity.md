@@ -26,7 +26,12 @@ Levels follow spec-profile.yaml: family > model > configuration (colour SKU) > p
    (UGREEN, INIU) are dropped at discovery or parse; a page whose non-bundle variants carry two model numbers is an absence.
 4. **Belkin BBA0xx vs BPB0xx on one slug** (power-bank-10k-with-integrated-cable-and-display/BBA007 and BPB029): two printed model numbers,
    two models. They may be the same hardware for different channels; that is a `possible_match` for review, not a merge.
-5. **One INIU page can describe two models** (P41 and P41-E1 handles both print 'P41'): exact normalised match -> one model entity, two sources.
+5. **Page vs label disagreements are review items, not merges (review 3).** `shopify_powerbanks.identity_check` compares the printed model with the
+   handle token (INIU `iniu-p41-e1-...` prints 'P41'), the variant SKU model tokens (INIU P41 page: D01-P41-E2-*; qi2 page P73-E1 vs D01-P76-P1;
+   palm-size page P61L-P1 vs D01-PPT01), '+' bundle SKUs (UGREEN 35524+70427P) and edition suffixes (UGREEN 75982SR -> 75982). A conflicted page
+   is quarantined (not attached, nothing minted) when another page already owns the model, else kept with its existing id; both cases are rows in
+   identity_conflicts. So the P41-E1 page no longer feeds iniu-p41 and the Honkai Star Rail editions no longer merge into 75982/75701. INIU SKUs that
+   name another model (P55L-E2 SKUs on the P55-E2 page) are dropped as aliases; UGREEN colour item numbers stay typed aliases.
 6. Retail listings (Amazon titles, '26800mAh 4-Port') are aliases only. CPSC recall model strings (when added) are alias evidence keyed to the
    printed model; a recall naming 'A1263' attaches to Anker A1263 only by exact match.
 7. Market: all five sources are US storefronts printing global model numbers; `identity_scope.cross_market_brands: "*"` (category.yaml).

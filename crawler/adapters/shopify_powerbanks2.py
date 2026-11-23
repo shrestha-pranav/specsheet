@@ -34,7 +34,7 @@ import _powerbank as P
 import _run
 import shopify_powerbanks as S
 
-VERSION = 1
+VERSION = 2       # v2: review 3 (two unlabelled figures unresolved, 5 V capacity basis, rated load conditions)
 DELAY = 1.0
 
 
@@ -264,8 +264,8 @@ def parse2(ad, snap, page, prod):
         pr.absences.append({"key": "*", "reason": why, "source": "s1"})
         return pr
 
-    def add(k, val, raw, label):
-        L.add(pr, ad.adapter, snap, k, val, raw, "model_code", model, label)
+    def add(k, val, raw, label, cond=None, quote=None):
+        P.emit(pr, ad.adapter, snap, k, val, raw, label, model, cond, quote)
 
     lab, cap = _first(rows, r"^(total |battery |power )?(cell )?capacity$", r"^battery$", r"^battery capacity")
     if cap:
@@ -275,19 +275,25 @@ def parse2(ad, snap, page, prod):
         if re.search(r"\b\d+K\s*:", cap):
             mahs = whs = []                       # '5K: ... ; 10K: ...' = two models in one cell
         if not series and mahs:
-            add("cap.cell_mah", min(mahs), cap, lab)          # '10000mAh / 9800mAh' (typical / rated): the lower figure, both in the literal
-        add("cap.energy_wh", min(whs) if whs else None, cap, lab)
+            if re.search(r"\(\s*5\s*V", cap):               # SHARGE '10,000mAh (5V⎓3A)': a 5 V output basis on the capacity row contradicts a cell figure
+                add("cap.cell_mah", P.Unresolved("capacity printed with a 5 V output basis: cell vs rated basis contradictory"), cap, lab)
+            elif len(set(mahs)) > 1:                            # '10000mAh / 9800mAh': which is typical / rated is not printed -> no pick (review 3)
+                add("cap.cell_mah", P.Unresolved(f"{len(set(mahs))} mAh figures without a typical/rated label"), cap, lab)
+            else:
+                add("cap.cell_mah", mahs[0], cap, lab)
+        add("cap.energy_wh", P.energy(cap) if whs else None, cap, lab)
         vm = re.search(r"(\d\.\d{1,2})\s*V\b", cap)
         add("cap.cell_voltage", float(vm[1]) if vm and float(vm[1]) < 5 else None, cap, lab)
     lab, rc = _first(rows, r"^rated (battery )?capacity")
     if rc:
         b = re.search(r"\(([^)]*\d[^)]*)\)", rc)
-        if P.mah(rc) and b:
-            add("cap.rated_mah", P.mah(rc), rc, lab)
+        n, cond = P.rated(rc)
+        if n is not None and b:
+            add("cap.rated_mah", n, rc, lab, cond)                   # value + {rated_voltage_v, rated_current_a}: the load stays with the figure
             add("cap.rated_basis", b[1].strip(), rc, lab)
     lab, tot = _first(rows, r"to(?:ta|at)l output")
     if tot and (m := re.search(P.NUM + r"\s*W\b", tot)):
-        add("out.max_total_w", P.fnum(m[1]), tot, lab)
+        add("out.max_total_w", P.fnum(m[1]), tot, lab, quote=f"all-ports output: the maker's labelled '{lab}' row")
     lab, so = _first(rows, r"^single output$")
     if so:                                                                      # EcoFlow 'C1/C2: 140W ; A: 33W'
         ws = [P.fnum(x) for x in re.findall(P.NUM + r"\s*W\b", so)]

@@ -21,7 +21,7 @@ import _contract as C
 import _robovac as RV
 import _run
 
-ID, VERSION, SOURCE = "irobot_robovac", 2, "irobot-us-robovac"
+ID, VERSION, SOURCE = "irobot_robovac", 3, "irobot-us-robovac"     # v3: review-3 plausibility rejections kept as preview
 CATEGORIES = {"robot-vacuums"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.irobot.com"
@@ -170,10 +170,11 @@ def parse_bundle(snap, b):
         k0 = len(pr.claims)
         if l.startswith("retail box"):
             continue
-        if l == "robot weight" and (w := weight(v, unit)) and RV.plausible_robot(weight_g=w):
-            add("phys.robot_weight_g", w, v, lab)
-        elif l == "robot dimensions" and (dd := dims_in(v, unit, robot=True)) and RV.plausible_robot(dims=dd):
-            add("phys.robot_dimensions", dd, v, lab); add("phys.robot_height_mm", dd["height"], v, lab)
+        if l == "robot weight" and (w := weight(v, unit)):
+            add("phys.robot_weight_g", RV.robot_weight(w), v, lab)
+        elif l == "robot dimensions" and (dd := dims_in(v, unit, robot=True)):
+            dd = RV.robot_dims(dd)
+            add("phys.robot_dimensions", dd, v, lab); add("phys.robot_height_mm", RV.robot_height(dd), v, lab)
         elif re.search(r"\b(dock|clean base)\b.*dimensions", l) and (dd := dims_in(v, unit)):
             add("phys.dock_dimensions", dd, v, lab)
         elif re.search(r"\b(dock|clean base)\b.*weight", l) and (w := weight(v, unit)):

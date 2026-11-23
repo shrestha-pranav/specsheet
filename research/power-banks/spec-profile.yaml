@@ -78,6 +78,18 @@ units:
   - unit: cycles
     base: cycles
     factor: 1
+conditions:
+- id: rated_voltage_v
+  label: Rated at output voltage
+  type: number
+  unit: V
+  description: 'Review 3: the output voltage a rated (delivered) capacity was measured at (5 V). Basis condition of cap.rated_mah, so a 5 V/3 A figure
+    and a 5 V/2.1 A figure are never one comparable cohort.'
+- id: rated_current_a
+  label: Rated at load current
+  type: number
+  unit: A
+  description: The load current of the rated-capacity test ('5V/3A' -> 3). A rating without a printed load stays an unresolved preview claim.
 groups:
 - id: general
   label: General & identity
@@ -177,8 +189,10 @@ specs:
   - '"10K" in a title is a class; the label prints 10000 mAh at 3.6/3.7 V'
   - Some pages print the 5 V rated capacity under the same word "capacity"; keep the two apart (cap.rated_mah)
   - Two-cell packs (7.2/7.4 V) state half the mAh at twice the voltage on the label (CUKTECH 74Wh 7.4V)
+  - 'Review 3: never filled from a title class (10K -> cap.class_mah), from a rated (5 V) row, or from a capacity row that prints a 5 V basis
+    (SHARGE "10,000mAh (5V⎓3A)": unresolved); two unlabelled mAh figures stay unresolved'
   sources:
-  - Anker key_parameter 'Total Capacity'; INIU/CUKTECH/UGREEN SPECS block; Belkin title only (10K)
+  - Anker key_parameter 'Total Capacity'; INIU/CUKTECH/UGREEN/KUXIU/SHARGE/EcoFlow capacity rows; mophie 'Battery'. Not Belkin (title class only)
   example: 20000
 - key: cap.class_mah
   label: Capacity class (title)
@@ -197,7 +211,7 @@ specs:
   - Manufacturer title ('Power Bank 10K')
   example: 10000
 - key: cap.cell_voltage
-  label: Cell nominal voltage
+  label: Cell nominal voltage (single cell, < 5 V)
   group: capacity
   type: number
   unit: V
@@ -206,7 +220,8 @@ specs:
   level: model
   facet: false
   traps:
-  - Rarely printed on the store; it is on the label and in the manual (3.6V/3.7V/3.85V, 7.4V for 2S packs)
+  - Rarely printed on the store; it is on the label and in the manual (3.6V/3.7V/3.85V). A 2S/4S PACK voltage (7.4 V, 14.4 V) is not a cell
+    voltage and is never stored here (it blocks a cell-mAh claim instead)
   sources:
   - Product label photo, manual PDF, CUKTECH/UGREEN SPEC block
   example: 3.7
@@ -225,7 +240,9 @@ specs:
     column: true
   traps:
   - Stores rarely print it; FAQ text and the label do. Never computed here from mAh x an assumed 3.7 V (that is how 103 Wh packs get called "airline safe")
-  - 'CUKTECH prints two figures (74Wh/75.5Wh): typical vs rated energy; the lower is kept, both stay in the literal'
+  - 'CUKTECH prints two figures (74Wh/75.5Wh) without saying which is typical and which is rated: review 3 keeps the pair as an unresolved preview
+    claim (literal + reason) instead of picking the lower; a figure explicitly labelled rated is taken'
+  - Stored energy, not energy delivered at 5 V under a load
   sources:
   - Anker FAQ ('equal to 90Wh'), CUKTECH 'Cell Capacity', label photo, manual
   example: 74
@@ -237,9 +254,17 @@ specs:
   tier: important
   why: What a 5 V device can actually draw (after conversion losses); typically 55-65 % of the cell mAh
   level: model
+  conditions:
+  - rated_voltage_v
+  - rated_current_a
+  basis_conditions:
+  - rated_voltage_v
+  - rated_current_a
   facet: false
   traps:
   - The basis (5V/3A, 5V/2A, '5V/9V/7A typical') is part of the value; INIU/UGREEN/Baseus print it, Anker does not
+  - 'Review 3: published with basis {rated_voltage_v, rated_current_a}; a rating without its load or with several voltages stays unresolved;
+    never used to fill cap.cell_mah'
   sources:
   - INIU 'Rated Capacity 6000mAh (5V)'; UGREEN 'Rated Capacity'; Baseus FAQ; label
   example: 6000
@@ -272,13 +297,15 @@ specs:
   - Derived from cap.energy_wh; 'TSA compliant' text (Belkin, EcoFlow)
   example: true
 - key: out.max_total_w
-  label: Max total output
+  label: All-ports simultaneous output
   group: output
   type: number
   unit: W
   tier: core
   required: true
-  why: 'Total power with all ports in use, as printed (the all-port combination or the maker''s Total Output row); what limits a laptop + phone. Can be LOWER than the single-port max (INIU: 45W on one port, 15W total with all ports)'
+  why: 'Total power with ALL ports in use at once, as printed: the maker''s labelled Total Output row, or a printed combination whose members name
+    every physical port. Not the best single port and not the maximum over configurations: it can be LOWER than the single-port max (INIU P41:
+    45W on one port, 15W with all ports). Never rank it against out.max_single_port_w or out.max_output_w'
   level: model
   facet:
     kind: range
@@ -287,8 +314,10 @@ specs:
   traps:
   - Title wattage is sometimes the single-port maximum and sometimes the total (Anker '165W' = total, each C port 100W)
   - Wireless output is often not counted in the total
+  - 'Review 3: a subset combination (OUT1+OUT2 when OUT3 exists), a two-port "&" without "+" combinations, an unprinted sum ("65W+15W (Total)"),
+    a single listed port, or mode-dependent totals stay unresolved preview claims; the participating ports are recorded in the claim quote'
   sources:
-  - Anker key_parameter 'Total Output'; INIU 'Output'; Belkin 'Wattage'
+  - Anker key_parameter 'Total Output'; INIU/UGREEN/CUKTECH 'Output' combinations covering every port; EcoFlow/SHARGE 'Total Output'
   example: 165
 - key: out.max_output_w
   label: Max output (unspecified single/total)
@@ -305,7 +334,7 @@ specs:
   - Belkin Technical Specifications 'Wattage'
   example: 20
 - key: out.max_single_port_w
-  label: Max single-port output
+  label: Best single-port output
   group: output
   type: number
   unit: W

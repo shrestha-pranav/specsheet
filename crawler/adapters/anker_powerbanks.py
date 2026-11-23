@@ -22,7 +22,7 @@ import _lt as L
 import _powerbank as P
 import _run
 
-ID, VERSION, SOURCE = "anker_powerbanks", 1, "anker-us-powerbanks"
+ID, VERSION, SOURCE = "anker_powerbanks", 2, "anker-us-powerbanks"     # v2: review 3 (all-port totals, capacity bases)
 CATEGORIES = {"power-banks"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.anker.com"
@@ -112,8 +112,8 @@ def parse_page(snap, h):
             if o.get("name", "").lower() in ("color", "colour") and o.get("values"):
                 colors.append(o["values"][0]["label"])
 
-    def add(k, val, raw, label):
-        L.add(pr, ADAPTER, snap, k, val, raw, "model_code", model, label)
+    def add(k, val, raw, label, cond=None, quote=None):
+        P.emit(pr, ADAPTER, snap, k, val, raw, label, model, cond, quote)
 
     kp = next(((v.get("metafields") or {}).get("infos", {}).get("key_parameter", {}).get("list") for v in vs
                if (v.get("metafields") or {}).get("infos", {}).get("key_parameter")), None) or []
@@ -146,7 +146,7 @@ def parse_page(snap, h):
             else:
                 add("cap.cell_mah", P.mah(raw), raw, lab)
                 add("cap.cell_voltage", float(vm[1]) if vm else None, raw, lab)
-            add("cap.energy_wh", P.wh(raw), raw, lab)
+            add("cap.energy_wh", P.energy(raw), raw, lab)
         elif ll == "total number of ports":
             c = a = 0; cable = []
             for n, v in items:
@@ -165,7 +165,7 @@ def parse_page(snap, h):
             add("out.usb_c_count" if "usb-c" in ll else "out.usb_a_count", int(n_[0]) if n_ else None, raw, lab)
         elif ll in ("total wattage", "total output") and all(not n for n, _ in items):
             tm = re.search(P.NUM + r"\s*W", raw)
-            add("out.max_total_w", P.fnum(tm[1]) if tm else None, raw, lab)
+            add("out.max_total_w", P.fnum(tm[1]) if tm else None, raw, lab, quote=f"all-ports output: the maker's labelled '{lab}' row")
         elif ll in ("recharging time", "recharge time"):
             hm = re.search(P.NUM + r"\s*(?:hours?|hrs?)", raw, re.I)
             add("in.recharge_time_h", P.fnum(hm[1]) if hm else None, raw, lab)
@@ -173,19 +173,26 @@ def parse_page(snap, h):
             fx, pps, mw, _ = P.pdos(raw)
             add("in.max_w", mw, raw, lab); add("in.pdos", (fx + (f"; PPS {pps}" if pps else "")).strip("; ") or None, raw, lab)
         elif ll in ("total output", "output", "usb-c output", "output battery mode") or ll.startswith("total output (battery"):
-            ports, tot = [], None
+            ports, tot, combos = [], None, []
             for n, v in items:
                 if n.lower().startswith("total"):
                     tot = P.fnum(re.search(P.NUM + r"\s*W", v)[1]) if re.search(P.NUM + r"\s*W", v) else None
                     continue
                 fx, pps, mw, _ = P.pdos(v)
-                if not n:          # a nameless line is a total ('140W Max'), not a port
-                    tot = tot if tot is not None else mw
+                if not n:          # a nameless line in a 'Total Output' row is the total ('140W Max'); elsewhere it is not read as one
+                    if ll.startswith("total"):
+                        tot = tot if tot is not None else mw
+                    continue
+                if re.match(r"(?i)combined\b", n) or "+" in n:       # 'Combined USB-C Port, USB-C Cable and USB-A Port: 22.5W Max' = a combination
+                    combos.append((n, v))
                     continue
                 ports.append({"name": n or "output", "type": P.port_type(n), "direction": "out", "max_w": mw, "fixed_pdos": fx or None, "pps": pps or None})
-            if tot is None and len(ports) == 1 and "total output" not in rows and "Total Output" not in rows:
-                tot = ports[0]["max_w"]
-            add("out.max_total_w", tot, raw, lab)
+            if tot is not None:
+                add("out.max_total_w", tot, raw, lab, quote=f"all-ports output: the maker's labelled '{lab}' total")
+            else:          # review 3: only a printed combination naming every port is an all-ports figure; one listed port is not a total
+                t, toks, why = P.all_port_total([x["name"] for x in ports], combos)
+                add("out.max_total_w", t if t is not None else (P.Unresolved(why) if why else None), raw, lab,
+                    quote=("all-ports output: " + " + ".join(toks)) if toks else None)
             single = [x["max_w"] for x in ports if x["max_w"] and x["type"] != "wireless"]
             add("out.max_single_port_w", max(single) if single else None, raw, lab)
             add("out.ports", ports, raw, lab)
@@ -204,7 +211,7 @@ def parse_page(snap, h):
         else:
             unmapped[lab] = raw[:100]
     if not any(c["key"] == "cap.cell_mah" for c in pr.claims):
-        add("cap.cell_mah", P.mah(title), title, "title")
+        add("cap.class_mah", P.mah(title), title, "title (marketing capacity, never cell mAh)")
     std, w = P.wireless(title)
     add("out.wireless_standard", std if std != "magsafe_compatible" or "maggo" in (title + key).lower() else None, title, "title")
     if w and not any(c["key"] == "out.wireless_w" for c in pr.claims):
@@ -215,7 +222,7 @@ def parse_page(snap, h):
     prose = " ".join([P.clean(p.get("description"))] + [P.clean(f"{f.get('key')}: {f.get('value')}") for f in feats] +
                      [P.clean(f"{q.get('question')} {q.get('answer')}") for q in faq])
     whm = re.search(r"(?:equal to|equivalent to|rated (?:energy|capacity) of|\(|/)\s*(\d{1,3}(?:\.\d+)?)\s*Wh\b", prose)
-    if whm and not any(c["key"] == "cap.energy_wh" for c in pr.claims):
+    if whm and not any(c["key"] == "cap.energy_wh" and c["status"] == "known" for c in pr.claims):
         i = whm.start()
         add("cap.energy_wh", P.fnum(whm[1]), prose[max(0, i - 120):i + 40], "FAQ / description")
     if (cv := re.search(r"(\d\.\d{1,2})\s*V\b[^.]{0,30}(?:cell|nominal)|(?:cell|nominal)[^.]{0,30}?(\d\.\d{1,2})\s*V\b", prose, re.I)):
@@ -232,7 +239,7 @@ def parse_page(snap, h):
         add("bat.chemistry", ch, prose[max(0, i.start() - 60):i.start() + 80], "FAQ / description")
     rh, lit = P.recharge_h(prose)
     add("in.recharge_time_h", rh, lit, "FAQ / description")
-    if re.search(r"TSA|airline|carry-on|airplane|on a plane|flight", prose, re.I) and (wv := next((c["value"] for c in pr.claims if c["key"] == "cap.energy_wh"), None)):
+    if re.search(r"TSA|airline|carry-on|airplane|on a plane|flight", prose, re.I) and (wv := next((c["value"] for c in pr.claims if c["key"] == "cap.energy_wh" and c["status"] == "known"), None)):
         add("cap.under_100wh", wv < 100, f"rated {wv} Wh (stated); airline limit 100 Wh", "derived from cap.energy_wh")
     if vs and vs[0].get("price"):
         L.add(pr, ADAPTER, snap, "id.msrp_us", float(vs[0]["price"]), f"${vs[0]['price']} ({vs[0]['sku']}) at fetch", "model_code", model, "variant price")

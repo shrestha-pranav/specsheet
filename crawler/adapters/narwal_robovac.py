@@ -16,7 +16,7 @@ import _contract as C
 import _robovac as RV
 import _run
 
-ID, VERSION, SOURCE = "narwal_robovac", 1, "narwal-us-robovac"
+ID, VERSION, SOURCE = "narwal_robovac", 2, "narwal-us-robovac"     # v2: review-3 strict enums / identity / plausibility
 CATEGORIES = {"robot-vacuums"}
 ADAPTER = f"{ID}@{VERSION}"
 HOST = "us.narwal.com"
@@ -43,8 +43,8 @@ class NarwalRobovac:
 
     def discover(self, checkpoint, net):
         ps, stop = RV.catalogue(net, HOST)
-        refs = RV.refs_from_groups(SOURCE, HOST, RV.group(ps, model_of, lambda p: 0))
-        return C.Discovery(refs, stop is None, stop, {"products": len(ps), "models": len(refs)})
+        refs = RV.refs_from_groups(SOURCE, HOST, RV.group(ps, model_of, lambda p: 0, conflicts := []))
+        return C.Discovery(refs, stop is None, stop, {"products": len(ps), "models": len(refs), "identity_conflicts": conflicts})
 
     def fetch(self, ref, prior, net):
         return RV.fetch_bundle(self.store, ADAPTER, ref, net)
@@ -80,6 +80,7 @@ def parse_bundle(snap, b):
     fam = re.match(r"[A-Za-z]+", name)[0].upper()
     pr.identifiers.append(RV.ident("mfr_model", RV.plus(name), "model", "narwal", raw=name, series=fam))
     pr.aliases.append({"text": "Narwal " + name, "kind": "marketing_name"})
+    prods, quarantined = RV.corroborate(prods, canon, model_of)
     RV.variant_idents(pr, prods, "narwal", RV.plus(name), sku_norm)
     rows = spec_rows(b.get("html") or "")
 
@@ -93,12 +94,13 @@ def parse_bundle(snap, b):
             add("clean.suction_pa", RV.pa(v), v, lab, {"claim_basis": "mfr_unstated"})
         elif l == "battery capacity":
             add("bat.capacity_mah", RV.mah(v), v, lab)
-        elif l == "robot vacuum dimensions" and (d := RV.dims_mm(v)) and RV.plausible_robot(dims=d):
-            add("phys.robot_dimensions", d, v, lab); add("phys.robot_height_mm", d["height"], v, lab)
+        elif l == "robot vacuum dimensions" and (d := RV.dims_mm(v)):
+            d = RV.robot_dims(d)
+            add("phys.robot_dimensions", d, v, lab); add("phys.robot_height_mm", RV.robot_height(d), v, lab)
         elif l == "base station dimensions":
             add("phys.dock_dimensions", RV.dims_mm(v), v, lab)
         elif l == "robot vacuum weight":
-            add("phys.robot_weight_g", RV.weight_g(v), v, lab)
+            add("phys.robot_weight_g", RV.robot_weight(RV.weight_g(v)), v, lab)
         elif l == "base station weight":
             add("phys.dock_weight_g", RV.weight_g(v), v, lab)
         elif l == "mop lifting" and re.search(r"\d", v):
@@ -109,7 +111,7 @@ def parse_bundle(snap, b):
             add("mop.extending", True, v, lab)
         elif l in ("dustbin capacity", "dust box capacity"):
             add("clean.dustbin_ml", RV.ml(v), v, lab)
-    pr.fingerprints = {"raw": snap.snapshot, "labels": sorted(rows), "members": [p.get("handle") for p in prods],
+    pr.fingerprints = {"raw": snap.snapshot, "labels": sorted(rows), "members": [p.get("handle") for p in prods], "quarantined_members": quarantined,
                        "unmapped": {k: v[:100] for k, v in rows.items() if k.lower() not in ("maximum suction", "battery capacity", "robot vacuum dimensions",
                                     "base station dimensions", "robot vacuum weight", "base station weight", "mop lifting", "navigation", "mop extension", "product name")}}
     return pr

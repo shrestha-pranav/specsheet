@@ -22,7 +22,7 @@ import _contract as C
 import _robovac as RV
 import _run
 
-ID, VERSION, SOURCE = "ecovacs_robovac", 2, "ecovacs-us-robovac"
+ID, VERSION, SOURCE = "ecovacs_robovac", 3, "ecovacs-us-robovac"     # v3: review-3 strict enums / plausibility kept as preview
 CATEGORIES = {"robot-vacuums"}
 ADAPTER = f"{ID}@{VERSION}"
 LIST = "https://www.ecovacs.com/us/shop/deebot-robotic-vacuum-cleaner"
@@ -234,10 +234,11 @@ def parse_bundle(snap, b):
             add("noise.db", num(v), v, lab, {"claim_basis": "mfr_unstated", "power_mode": "standard"})
         elif re.match(r"working time on hard floor-(silent|standard) mode\(sweep\)", l) and num(v):
             add("bat.runtime_min", int(num(v)), v, lab, {"claim_basis": "mfr_unstated", "power_mode": RV.power_mode(l)})
-        elif l.startswith("deebot dimension") and "mm" in l and (d := dims(v)) and RV.plausible_robot(dims=d):
-            add("phys.robot_dimensions", d, v, lab); add("phys.robot_height_mm", d["height"], v, lab)
-        elif l.startswith("deebot net weight (kg)") and num(v) and RV.plausible_robot(weight_g=round(num(v) * 1000)):
-            add("phys.robot_weight_g", round(num(v) * 1000), v, lab)
+        elif l.startswith("deebot dimension") and "mm" in l and (d := dims(v)):
+            d = RV.robot_dims(d)
+            add("phys.robot_dimensions", d, v, lab); add("phys.robot_height_mm", RV.robot_height(d), v, lab)
+        elif l.startswith("deebot net weight (kg)") and num(v):
+            add("phys.robot_weight_g", RV.robot_weight(round(num(v) * 1000)), v, lab)
         elif l.startswith("station net weight(kg)") and num(v):
             add("phys.dock_weight_g", round(num(v) * 1000), v, lab)
         elif l.startswith("station dimension") and "without base" not in l and (d := dims(v)) and all(100 <= x <= 800 for x in d.values()):

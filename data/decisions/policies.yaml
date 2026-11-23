@@ -759,31 +759,400 @@ claim_policies:
       - phys.robot_height_mm
       - phys.robot_weight_g
     require_normalized: true
-- id: claim/dcl-matter-certified@1
+- id: claim/mfr-power-banks-structured@4
   since: '2026-11-23'
-  rationale: 'Robot vacuums, smart.matter = true from the CSA Matter Distributed Compliance Ledger (on.dcl.csa-iot.org): a robotic-vacuum model row
-    (deviceTypeId 116) with a compliance record in status 2 (certified) and a certificate id (csa_dcl_robovac@1). Rows are attached only to a US-store
-    model of the same brand whose name matches the ledger productName exactly after normalisation (no new US models from ledger names). Only true
-    is ever claimed: a registered-but-uncertified model is an absence, never false.'
+  supersedes: claim/mfr-power-banks-structured@3
+  rationale: 'Power banks, manufacturer-owned spec tables: ONE consolidated policy for all nine US stores (Anker, Belkin, INIU, CUKTECH, UGREEN, EcoFlow,
+    SHARGE, KUXIU, mophie), replacing the overlapping @2/@3 (kept in claim_policies only because tests/test_adversarial.py requires retired ids to be @1;
+    they match only the @1 extractor versions, which no longer exist in code, so they accept nothing). Review 3 parser changes, every extractor version-bumped:
+    (1) out.max_total_w = ALL-PORTS simultaneous output only: the maker''s labelled Total Output row, or a printed combination whose members each name one
+    port and together cover every individual port of the block; subset totals, ''&'' without ''+'' combinations, unprinted sums (''65W+15W''), a single
+    listed port and mode-dependent totals become status-unknown claims (literal + reason); the participating ports are quoted. (2) Capacity bases stay apart:
+    Anker title capacity -> cap.class_mah (not accepted: title-derived), never cap.cell_mah; a capacity row printing a 5 V basis, two unlabelled mAh or
+    Wh figures, and a rated row without its load are unresolved; cap.rated_mah carries conditions {rated_voltage_v, rated_current_a} (profile basis conditions).
+    (3) INIU/UGREEN page-vs-label identity conflicts (handle token, SKU model tokens, ''+'' bundle SKUs, edition suffix) are quarantined to identity_conflicts
+    when another page owns the model, else kept and listed; SKUs naming another INIU model are dropped as aliases. Per-source keys = @3 unchanged. Belkin''s
+    title capacity class (cap.class_mah) remains the one intentional title-derived key: it is a class, labelled as such, never cell mAh.'
   audit:
-    by: A2 robovac+powerbank sources r2
+    by: A3-impl r5 (review-3 fixes)
     at: '2026-11-23'
-    evidence: 276 ledger robovac rows; 31 matched to Dreame / Narwal US-store model names; 26 with a certified compliance record (cert ids quoted).
+    evidence: Re-parsed every stored power-bank page under the new parsers; diffed accepted claims against the previous release (team/reports/2026-11-23-a3-impl-r5.md);
+      adversarial fixtures in tests/test_review3.py cover every review-3 exit criterion.
     parsers:
-      csa_dcl_robovac@1: sha256:a612bcd1b7e9a16ebe35
+      anker_powerbanks@2: sha256:e50b4072c43a15652e43
+      belkin_powerbanks@2: sha256:e1a42a9c664b63dec045
+      cuktech_powerbanks@2: sha256:ade07c92eeb57a6b720a
+      iniu_powerbanks@2: sha256:ade07c92eeb57a6b720a
+      ugreen_powerbanks@2: sha256:ade07c92eeb57a6b720a
+      ecoflow_powerbanks@2: sha256:6c10f1b934db3819b5d0
+      sharge_powerbanks@2: sha256:6c10f1b934db3819b5d0
+      kuxiu_powerbanks@2: sha256:6c10f1b934db3819b5d0
+      mophie_powerbanks@2: sha256:6c10f1b934db3819b5d0
   approval:
     state: pending
     by: null
     at: null
     note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
   match:
-    extractors: [csa_dcl_robovac@1]
-    source_ids: [csa-dcl-robovac]
-    kinds: [official]
-    tiers: [certifier]
-    statuses: [known]
+    extractors:
+    - anker_powerbanks@2
+    - belkin_powerbanks@2
+    - cuktech_powerbanks@2
+    - iniu_powerbanks@2
+    - ugreen_powerbanks@2
+    - ecoflow_powerbanks@2
+    - sharge_powerbanks@2
+    - kuxiu_powerbanks@2
+    - mophie_powerbanks@2
+    source_ids:
+    - anker-us-powerbanks
+    - belkin-us-powerbanks
+    - cuktech-us-powerbanks
+    - iniu-us-powerbanks
+    - ugreen-us-powerbanks
+    - ecoflow-us-powerbanks
+    - sharge-us-powerbanks
+    - kuxiu-us-powerbanks
+    - mophie-us-powerbanks
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
     keys:
-      csa-dcl-robovac: [smart.matter]
+      anker-us-powerbanks:
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.builtin_cable
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - pd.max_fixed_voltage
+      - pd.pps
+      - phys.dimensions
+      - phys.weight
+      belkin-us-powerbanks:
+      - cap.class_mah
+      - out.cable_note
+      - out.max_output_w
+      - out.usb_a_count
+      - out.usb_c_count
+      - phys.dimensions
+      iniu-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      cuktech-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      ugreen-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      ecoflow-us-powerbanks:
+      - cap.cell_mah
+      - cap.energy_wh
+      - in.max_w
+      - out.max_single_port_w
+      - out.max_total_w
+      - phys.dimensions
+      - phys.weight
+      sharge-us-powerbanks:
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      kuxiu-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - phys.dimensions
+      - phys.weight
+      mophie-us-powerbanks:
+      - cap.cell_mah
+      - out.max_output_w
+      - phys.dimensions
+      - phys.weight
+    require_normalized: true
+- id: claim/mfr-robovac-structured@5
+  since: '2026-11-23'
+  supersedes: claim/mfr-robovac-structured@4
+  rationale: 'Robot vacuums, the manufacturer''s own labelled spec rows: ONE consolidated policy for all six US stores (Dreame, Roborock, Narwal, ECOVACS,
+    iRobot, MOVA), replacing the overlapping @2/@3/@4 (which stay in claim_policies only because tests/test_adversarial.py requires retired ids to be @1;
+    they match only the @1/@2 extractor versions, which no longer exist in code, so they accept nothing). Review 3 (reviews/2026-11-23-astra-review-3.md)
+    parser changes, every extractor version-bumped: (1) nav.type / nav.obstacle_sensors / mop.type are emitted only for explicit mechanism phrases (LDS/LiDAR,
+    dToF, vSLAM, gyro; structured light / line laser, RGB/RGBD, ToF; dual + rotating mops, roller, vibrating); generic laser/camera/visual, trademarks,
+    single rotating mops, several mechanisms in one cell and any negation become status-unknown claims (literal + reason, preview only). (2) claim_basis
+    needs an affirmative, figure-specific attribution: ''certified by <certifier>'' -> mfr_reported_certified, in-house lab -> mfr_in_house_lab; negated
+    or bare ''laboratory'' -> mfr_unstated. (3) Bundle members whose model name disagrees with the canonical page beyond pack words (Complete) are quarantined
+    to identity review (no SKU aliases); discovery grouping unions on equal names or SKU + equal pack_base only. (4) Robot dimensions/weight outside the
+    robot bounds and mixed robot+dock cells are kept as status-unknown claims with the literal and the reason instead of being dropped. Keys = @3/@4 per
+    source MINUS smart.matter: Matter is trusted only from claim/dcl-matter-certified (CSA exact match). Only listed keys, only normalised status-known
+    values.'
+  audit:
+    by: A3-impl r5 (review-3 fixes)
+    at: '2026-11-23'
+    evidence: Re-parsed every stored robovac bundle under the new parsers; diffed accepted claims against the previous release (team/reports/2026-11-23-a3-impl-r5.md);
+      adversarial fixtures in tests/test_review3.py cover every review-3 exit criterion.
+    parsers:
+      dreame_robovac@2: sha256:82418fe203d439831b23
+      roborock_robovac@2: sha256:15fcaedb2dbacaa8e938
+      narwal_robovac@2: sha256:2f212aa7076aff13a250
+      ecovacs_robovac@3: sha256:aadfd4932c14646a8025
+      irobot_robovac@3: sha256:9deb0671691dc5ef2498
+      mova_robovac@2: sha256:93a8080a92d643647cd7
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors:
+    - dreame_robovac@2
+    - roborock_robovac@2
+    - narwal_robovac@2
+    - ecovacs_robovac@3
+    - irobot_robovac@3
+    - mova_robovac@2
+    source_ids:
+    - dreame-us-robovac
+    - roborock-us-robovac
+    - narwal-us-robovac
+    - ecovacs-us-robovac
+    - irobot-us-robovac
+    - mova-us-robovac
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    keys:
+      dreame-us-robovac:
+      - clean.suction_pa
+      - clean.dustbin_ml
+      - clean.main_brush_lifting
+      - clean.side_brush_extending
+      - clean.side_brush_lifting
+      - clean.dirt_detection
+      - mop.type
+      - mop.lifting
+      - mop.lift_height_mm
+      - mop.auto_removal
+      - mop.extending
+      - mop.robot_tank_ml
+      - mop.auto_refill_from_dock
+      - nav.type
+      - nav.obstacle_sensors
+      - nav.obstacle_crossing_mm
+      - bat.capacity_mah
+      - dock.self_empty
+      - dock.dust_bag_ml
+      - dock.mop_wash
+      - dock.hot_water_wash
+      - dock.wash_water_temp_c
+      - dock.hot_air_dry
+      - dock.mop_dry
+      - dock.washboard_self_clean
+      - dock.solution_dispense
+      - dock.clean_tank_ml
+      - dock.dirty_tank_ml
+      - phys.robot_height_mm
+      - phys.robot_dimensions
+      - phys.robot_weight_g
+      - phys.dock_dimensions
+      - phys.dock_weight_g
+      roborock-us-robovac:
+      - bat.capacity_mah
+      - phys.robot_height_mm
+      - phys.robot_dimensions
+      - phys.robot_weight_g
+      - phys.dock_dimensions
+      narwal-us-robovac:
+      - clean.suction_pa
+      - bat.capacity_mah
+      - mop.lifting
+      - mop.lift_height_mm
+      - mop.extending
+      - nav.type
+      - phys.robot_height_mm
+      - phys.robot_dimensions
+      - phys.robot_weight_g
+      - phys.dock_dimensions
+      - phys.dock_weight_g
+      ecovacs-us-robovac:
+      - bat.capacity_mah
+      - clean.dustbin_ml
+      - clean.suction_pa
+      - dock.clean_tank_ml
+      - dock.dirty_tank_ml
+      - dock.dust_bag_ml
+      - dock.hot_air_dry
+      - dock.hot_water_wash
+      - dock.mop_wash
+      - dock.plumbed_refill_drain
+      - dock.self_empty
+      - dock.solution_dispense
+      - dock.wash_water_temp_c
+      - mop.auto_refill_from_dock
+      - mop.lift_height_mm
+      - mop.lifting
+      - mop.robot_tank_ml
+      - mop.type
+      - nav.obstacle_crossing_mm
+      - nav.obstacle_sensors
+      - nav.type
+      - phys.dock_dimensions
+      - phys.dock_weight_g
+      - phys.robot_dimensions
+      - phys.robot_height_mm
+      - phys.robot_weight_g
+      irobot-us-robovac:
+      - bat.capacity_mah
+      - clean.dustbin_ml
+      - mop.robot_tank_ml
+      - phys.dock_dimensions
+      - phys.dock_weight_g
+      - phys.robot_dimensions
+      - phys.robot_height_mm
+      - phys.robot_weight_g
+      mova-us-robovac:
+      - bat.capacity_mah
+      - clean.dirt_detection
+      - clean.dustbin_ml
+      - clean.main_brush_lifting
+      - clean.side_brush_extending
+      - clean.side_brush_lifting
+      - clean.suction_pa
+      - dock.clean_tank_ml
+      - dock.dirty_tank_ml
+      - dock.dust_bag_ml
+      - dock.hot_air_dry
+      - dock.hot_water_wash
+      - dock.mop_dry
+      - dock.plumbed_refill_drain
+      - dock.solution_dispense
+      - dock.wash_water_temp_c
+      - dock.washboard_self_clean
+      - mop.auto_removal
+      - mop.extending
+      - mop.lift_height_mm
+      - mop.lifting
+      - mop.robot_tank_ml
+      - mop.type
+      - nav.obstacle_crossing_mm
+      - nav.obstacle_sensors
+      - nav.type
+      - phys.robot_height_mm
+    require_normalized: true
+- id: claim/dcl-matter-certified@2
+  since: '2026-11-23'
+  supersedes: claim/dcl-matter-certified@1
+  rationale: 'Robot vacuums, smart.matter = true from the CSA Matter Distributed Compliance Ledger (on.dcl.csa-iot.org): a robotic-vacuum model row (deviceTypeId
+    116) with a compliance record in status 2 (certified) and a certificate id (csa_dcl_robovac@2). Rows are attached only to a US-store model of the same
+    brand whose name matches the ledger productName exactly after normalisation (no new US models from ledger names). Only true is ever claimed: a registered-but-uncertified
+    model is an absence, never false. @2 (review 3): parse re-checks on the stored ledger row that productName minus the brand word equals the store model
+    exactly (discovery did this only once); any mismatch is an absence. This is the ONLY policy that trusts smart.matter (claim/mfr-robovac-structured@5
+    drops it).'
+  audit:
+    by: A3-impl r5 (review-3 fixes)
+    at: '2026-11-23'
+    evidence: Re-parsed all stored DCL bundles; same certified rows as @1 after the exact-match re-check.
+    parsers:
+      csa_dcl_robovac@2: sha256:46bdba0a94f3705a296a
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors:
+    - csa_dcl_robovac@2
+    source_ids:
+    - csa-dcl-robovac
+    kinds:
+    - official
+    tiers:
+    - certifier
+    statuses:
+    - known
+    keys:
+      csa-dcl-robovac:
+      - smart.matter
     require_normalized: true
 relation_policies:
 - id: rel/source-stated-hierarchy@2
@@ -844,6 +1213,34 @@ relation_policies:
     types: [configuration_of]
     parsers: [crawlpy-strips@1]
 retired_policies:
+- id: claim/dcl-matter-certified@1
+  since: '2026-11-23'
+  rationale: 'Robot vacuums, smart.matter = true from the CSA Matter Distributed Compliance Ledger (on.dcl.csa-iot.org): a robotic-vacuum model row
+    (deviceTypeId 116) with a compliance record in status 2 (certified) and a certificate id (csa_dcl_robovac@1). Rows are attached only to a US-store
+    model of the same brand whose name matches the ledger productName exactly after normalisation (no new US models from ledger names). Only true
+    is ever claimed: a registered-but-uncertified model is an absence, never false.'
+  audit:
+    by: A2 robovac+powerbank sources r2
+    at: '2026-11-23'
+    evidence: 276 ledger robovac rows; 31 matched to Dreame / Narwal US-store model names; 26 with a certified compliance record (cert ids quoted).
+    parsers:
+      csa_dcl_robovac@1: sha256:a612bcd1b7e9a16ebe35
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors: [csa_dcl_robovac@1]
+    source_ids: [csa-dcl-robovac]
+    kinds: [official]
+    tiers: [certifier]
+    statuses: [known]
+    keys:
+      csa-dcl-robovac: [smart.matter]
+    require_normalized: true
+  retired: {at: '2026-11-23', superseded_by: claim/dcl-matter-certified@2, reason: 'review 3: parser csa_dcl_robovac@2 re-checks the exact name match;
+      @1 matched only csa_dcl_robovac@1, which no longer exists in code'}
 - id: claim/mfr-structured-datasheet@1
   since: '2026-11-22'
   rationale: 'Deterministic extraction of the manufacturer''s own structured specification data: Lenovo PSREF model tables (adapter + psref-mapping single-target

@@ -22,7 +22,7 @@ import _contract as C
 import _robovac as RV
 import _run
 
-ID, VERSION, SOURCE = "csa_dcl_robovac", 1, "csa-dcl-robovac"
+ID, VERSION, SOURCE = "csa_dcl_robovac", 2, "csa-dcl-robovac"     # v2: parse re-checks the exact name match (review 3)
 CATEGORIES = {"robot-vacuums"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://on.dcl.csa-iot.org"
@@ -131,6 +131,12 @@ def parse_bundle(snap, b):
     if not name or not brand or m.get("deviceTypeId") != ROBOVAC:
         pr.absences.append({"key": "*", "reason": "not a matched robotic-vacuum DCL row", "source": "s1"})
         return pr
+    word = next((w for _, (bd, _, w) in VENDORS.items() if bd == brand), brand)
+    listed = re.sub(rf"(?i)^\s*{word}\s+", "", (m.get("productName") or "").strip())
+    if norm(listed) != norm(name):          # Matter is trusted only through an EXACT name match, re-checked on the stored row (review 3)
+        pr.absences.append({"key": "*", "reason": f"DCL productName {m.get('productName')!r} is not exactly the store model {name!r}", "source": "s1"})
+        pr.fingerprints = {"raw": snap.snapshot, "vid_pid": f"{m.get('vid')}:{m.get('pid')}", "exact_match": False}
+        return pr
     model = RV.plus(name)
     pr.identifiers.append(RV.ident("mfr_model", model, "model", brand, market=None, raw=name))
     pr.identifiers.append(RV.ident("x_dcl_vid_pid", f"{m['vid']}:{m['pid']}", "model", "csa", role="alias", market=None, parent=model))
@@ -145,7 +151,7 @@ def parse_bundle(snap, b):
                                  "adapter", snap.fetched_at, locator={"model_code": model, "dcl": f"{m['vid']}:{m['pid']}:{c['softwareVersion']}"}, quote=q))
     else:
         pr.absences.append({"key": "smart.matter", "reason": "registered in the DCL but no certified compliance record", "source": "s1"})
-    pr.fingerprints = {"raw": snap.snapshot, "vid_pid": f"{m.get('vid')}:{m.get('pid')}", "certs": len(certs)}
+    pr.fingerprints = {"raw": snap.snapshot, "vid_pid": f"{m.get('vid')}:{m.get('pid')}", "certs": len(certs), "exact_match": True}
     return pr
 
 

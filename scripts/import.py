@@ -84,6 +84,8 @@ class World:
         self.brand_names = {}
         self.ents, self.index = [], {}
         self.quarantine = []
+        self.deferred = []       # observations whose adapter reported a page/label identity conflict (review 3): resolved after all sources
+        self.id_review = []      # (entity, scheme, value, reason) -> identity_conflicts rows once ids exist
 
     def anchors(self, keys):
         return sorted(I.anchor(self.category, k) for k in keys)
@@ -415,6 +417,11 @@ def do_model(world, meta, sid, rec, pr, extra, stats):
     if fp.get("wildcard_pattern"):
         stats["skipped_wildcard_pattern"] += 1
         return
+    ic = fp.get("identity_conflict")
+    if ic and not extra.get("_deferred"):       # review 3: corroborated pages claim the model key first, whatever the ingestion order
+        world.deferred.append((ic.get("severity", 9), sid, str(rec["ref"]), meta, rec, pr, dict(extra, _deferred=True), stats))
+        stats["identity_conflict_deferred"] += 1
+        return
     listing = next((a["text"] for a in pr["aliases"] if a["kind"] in ("certifier_listing", "marketing_name")), "")
     if tier != "manufacturer" and cm["skip_rx"] is not None and cm["skip_rx"].search(listing):
         stats["skipped_other_category"] += 1
@@ -436,9 +443,21 @@ def do_model(world, meta, sid, rec, pr, extra, stats):
             world.events.append(("quarantine", world.category, None, world.anchors([mkey]), ob, {"reason": "cross_market_exact", "markets": sorted(stated | {mi["market"]})}))
             stats["quarantined_cross_market"] += 1
             return
+    if ic and prev is not None:
+        # a contradictory page whose model already exists from another page: quarantined (not attached, nothing minted), reviewable
+        world.quarantine.append({"kind": "model", "keys": world.anchors([mkey]), "hits": [world.anchors(prev.keys)], "obs": ob})
+        world.events.append(("quarantine", world.category, None, world.anchors([mkey]), ob, {"reason": "identity_conflict:" + ic.get("reason", "?"), "detail": ic}))
+        world.id_review.append((prev, "mfr_model", mi["value"], f"{ic.get('reason')}: page {rec['ref']} quarantined, not attached ({json.dumps({k: v for k, v in ic.items() if k not in ('severity', 'model')}, sort_keys=True)[:200]})"))
+        stats["quarantined_identity_conflict"] += 1
+        return
     e = world.get("model", brand, [mkey], ob)
     if e is None:
         return
+    if ic:           # the only page for this model contradicts itself: kept (existing id), listed for review
+        world.id_review.append((e, "mfr_model", mi["value"], f"{ic.get('reason')}: sole page {rec['ref']} kept, identity uncorroborated ({json.dumps({k: v for k, v in ic.items() if k not in ('severity', 'model')}, sort_keys=True)[:200]})"))
+        stats["identity_conflict_sole_page"] += 1
+    for qm in fp.get("quarantined_members") or []:
+        world.id_review.append((e, "member_handle", str(qm.get("handle")), f"bundle member quarantined: {qm.get('reason')} (name {qm.get('name')!r}, skus {qm.get('skus')})"))
     e.idhint = e.idhint or f"{brand}-{slug(mi['value'])}"
     nk = (0 if tier == "manufacturer" else 1, sid)      # deterministic whatever the ingestion order: manufacturer name, then source id
     if e.name is None or nk < getattr(e, "name_key", (9, "")):
@@ -868,6 +887,9 @@ def main():
         for k_, v_ in cstats.items():
             st[k_] = v_; parse_cache[k_] += v_
         print(f"{sid}: {n} observations {cstats or ''}", file=sys.stderr)
+    for w in worlds.values():       # review 3: contradictory pages after every corroborated page of every source
+        for sev, sid, ref, meta, rec, pr, extra, st in sorted(w.deferred, key=lambda t: t[:3]):
+            IMPORTERS[meta.get("importer", "generic")](w, meta, sid, rec, pr, extra, st)
     ignored_rows = []
     rules = {c: load_label_rules(c) for c in worlds}
     for sid, st in stats.items():
@@ -1088,7 +1110,8 @@ def main():
         for q in w.quarantine:
             ob = q["obs"] or (None, None, None)
             con.execute("INSERT INTO quarantine VALUES (?,?,?,?,?,?,?)", (cat, q["kind"], json.dumps(q["keys"]), json.dumps(q["hits"]), ob[0], ob[1], ob[2]))
-    con.executemany("INSERT INTO identity_conflicts VALUES (?,?,?,?,?)", conflict_rows + [(c, "id_registry", "", json.dumps(h), "anchors map to several registered ids: " + ",".join(an[:3])) for c, h, an in id_conflicts]
+    review_rows = [(cat, scheme, value, json.dumps([e.id]), reason) for cat, w in sorted(worlds.items()) for e, scheme, value, reason in w.id_review]
+    con.executemany("INSERT INTO identity_conflicts VALUES (?,?,?,?,?)", conflict_rows + review_rows + [(c, "id_registry", "", json.dumps(h), "anchors map to several registered ids: " + ",".join(an[:3])) for c, h, an in id_conflicts]
                     + [(c, "id_kind", i, json.dumps([i]), f"registered as {k0}, now {k1}: review (level is part of the anchor)") for c, i, k0, k1 in kind_changes]
                     + [(x["anchor"].split("|")[1] if x["anchor"].startswith("v2|") else x["anchor"].split("|")[0], "registry_ambiguous", x["anchor"], json.dumps(x["ids"]),
                         "one anchor registered under several ids" + (" (legacy v1 line, migrated by kind)" if x["legacy"] else "")) for x in reg.ambiguous]
@@ -1156,7 +1179,7 @@ def main():
     print(json.dumps({"db": str(dbp), "seconds": round(time.time() - t0, 1), "accepted_digest": digest.hexdigest(),
                       "entities": {c: dict(v) for c, v in out_counts.items()}, "claims_review": {c: dict(v) for c, v in review_counts.items()},
                       "ids": {"reused": reused, "new": minted, "registry_lines_appended": flushed, "id_conflicts": len(id_conflicts)},
-                      "identity": {"quarantined_observations": sum(len(w.quarantine) for w in worlds.values()), "gtin_conflicts": len(conflict_rows),
+                      "identity": {"quarantined_observations": sum(len(w.quarantine) for w in worlds.values()), "gtin_conflicts": len(conflict_rows), "page_identity_review": len(review_rows),
                                    "relations": dict(collections.Counter(f"{r[3]}:{r[4].split(':')[0]}" for r in rel_rows))},
                       "source_stats": {k: {a: b for a, b in v.items() if isinstance(b, int) and b and a in ("models", "packages", "skipped_wildcard_pattern", "skipped_other_category", "regional_packages_not_published", "no_model_identifier")} for k, v in stats.items() if metas[registry.SOURCES[k]["category"]]["features"] is not None and registry.SOURCES[k].get("importer") == "model"},
                       "stem_proposals": {c: dict(v) for c, v in cat_stats.items()},

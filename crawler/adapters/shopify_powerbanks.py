@@ -22,7 +22,7 @@ import _lt as L
 import _powerbank as P
 import _run
 
-VERSION = 1
+VERSION = 2       # v2: review 3 (all-port totals, capacity bases, rated load, page/label identity conflicts)
 CATEGORIES = {"power-banks"}
 DELAY = 1.0
 PB = re.compile(r"power ?bank|portable charger|battery pack", re.I)
@@ -84,9 +84,23 @@ class _Shop:
     def model_from(self, rows, handle):
         return None
 
+    def handle_model(self, handle):         # brands whose handles name a model token (INIU p41-e1, UGREEN 35340); CUKTECH handles name the line
+        return None
+
+    def sku_model(self, sku):
+        return None
+
 
 class IniuPowerbanks(_Shop):
     id, source_id, base, brand, marker = "iniu_powerbanks", "iniu-us-powerbanks", "https://iniushop.com", "iniu", r"Tech Specs|\bSPECS\b"
+
+    def handle_model(self, handle):
+        h = re.search(r"(?:^|-)(bi-b\d{2}|b\d{2}|p\d{2,3}l?(?:-[ep]\d)?)(?:-|$)", handle)
+        return h[1].upper() if h else None
+
+    def sku_model(self, sku):
+        m = re.match(r"D01-([A-Z]{1,3}\d{1,3}L?(?:-[EP]\d)?)(?:-|$)", (sku or "").upper())
+        return m[1] if m else None
 
     def model_from(self, rows, handle):
         m = rows.get("Product Model") or rows.get("Model")
@@ -111,6 +125,14 @@ class UgreenPowerbanks(_Shop):
         m = rows.get("SKU") or rows.get("Sku")
         mm = re.match(r"^(\d{5}A?|PB\d{3})(?:SR)?\b(?!\s*\+)", m or "")     # 75982SR = Honkai Star Rail edition of 75982 (identity.md rule 1)
         return mm[1] if mm else None
+
+    def handle_model(self, handle):
+        h = re.search(r"(?:^|-)(\d{5}A?)(?:-|$)", handle)
+        return h[1] if h else None
+
+    def sku_model(self, sku):
+        m = re.fullmatch(r"(\d{5}A?)", (sku or "").strip().upper())
+        return m[1] if m else None
 
 
 def page_text(h):
@@ -137,6 +159,42 @@ def spec_rows(ad, text):
     return {}, ""
 
 
+def _mk(x):
+    return re.sub(r"[^A-Z0-9]", "", re.sub(r"(?i)^BI-", "", x or "").upper())
+
+
+def identity_check(ad, model, printed, handle, prod):
+    """Page vs label corroboration (review 3, fix 2). -> (conflict dict or None, foreign SKUs). Conflicts (severity: lower = weaker):
+      1 sku_disagrees     every variant SKU that names a model names another one (INIU P41 page: SKUs D01-P41-E2-*; qi2 page P73-E1 vs P76-P1)
+      2 bundle_skus       every variant SKU is a '+' bundle (UGREEN 35524+70427P)
+      2 edition_suffix    the printed label carries an edition suffix the model drops (UGREEN 75982SR -> 75982)
+      3 handle_disagrees  the handle names another model token (INIU iniu-p41-e1-... prints 'P41')
+    The importer quarantines a conflicted observation when its model already exists from a corroborated page, else keeps it and lists it in
+    identity_conflicts; existing public ids never move. SKUs naming a different model on a corroborated page are dropped as aliases (foreign)."""
+    hm = ad.handle_model(handle)
+    toks = {}
+    for v in prod.get("variants") or []:
+        t = ad.sku_model(v.get("sku"))
+        if t:
+            toks[v["sku"].strip().upper()] = t
+    skus = [(v.get("sku") or "").strip() for v in prod.get("variants") or [] if (v.get("sku") or "").strip()]
+    pt = re.match(r"\s*([A-Z0-9][A-Z0-9-]*)", (printed or "").upper())
+    pt = pt[1] if pt else None
+    c = None
+    if hm and _mk(hm) != _mk(model):
+        c = {"reason": "handle_disagrees", "severity": 3, "handle_token": hm}
+    elif pt and ad.brand == "ugreen" and re.fullmatch(r"\d{5}A?SR", pt):
+        c = {"reason": "edition_suffix", "severity": 2, "printed": pt}
+    elif skus and all("+" in x for x in skus):
+        c = {"reason": "bundle_skus", "severity": 2, "skus": skus[:6]}
+    elif toks and not any(_mk(t) == _mk(model) for t in toks.values()) and not re.fullmatch(r"PB\d{3}", model):   # UGREEN PB label model + item numbers = the wanted mapping
+        c = {"reason": "sku_disagrees", "severity": 1, "sku_tokens": sorted(set(toks.values()))}
+    if c:
+        c.update(model=model, printed=(printed or "")[:40], handle=handle)
+    foreign = sorted(s for s, t in toks.items() if _mk(t) != _mk(model)) if not c and ad.brand == "iniu" else []    # UGREEN colour item numbers stay aliases
+    return c, foreign
+
+
 def parse_shop(ad, snap, page, prod):
     pr, key = C.ParseResult(), snap.ref.key
     pr.sources = [L.source(snap, f"{ad.brand.upper()} US store page {key}")]
@@ -148,11 +206,13 @@ def parse_shop(ad, snap, page, prod):
         pr.absences.append({"key": "*", "reason": "no model number in the spec block or handle", "source": "s1"})
         pr.fingerprints = {"labels": list(rows), "title": title}
         return pr
+    printed = rows.get("Product Model") or rows.get("Model") or rows.get("SKU") or rows.get("Sku")
+    conflict, foreign = identity_check(ad, model, printed, key, prod)
     pr.identifiers.append(L.ident("mfr_model", model, "model", ad.brand))
     pr.aliases.append({"text": title, "kind": "marketing_name"})
     colors = []
     for v in prod.get("variants") or []:
-        if v.get("sku") and v["sku"].upper() != model.upper():
+        if v.get("sku") and v["sku"].upper() != model.upper() and v["sku"].strip().upper() not in foreign:
             pr.identifiers.append(L.ident("mfr_sku", v["sku"].upper(), "configuration", ad.brand, role="alias", variant=v.get("title")))
         if v.get("barcode") and re.fullmatch(r"\d{12,14}", str(v["barcode"])):
             pr.identifiers.append(L.ident("gtin", str(v["barcode"]), "package", "GS1", role="alias"))
@@ -160,49 +220,49 @@ def parse_shop(ad, snap, page, prod):
         if o.get("name", "").lower() in ("color", "colour"):
             colors += [x for x in o.get("values") or [] if x.lower() != "default title"]
 
-    def add(k, val, raw, label):
-        L.add(pr, ad.adapter, snap, k, val, raw, "model_code", model, label)
+    def add(k, val, raw, label, cond=None, quote=None):
+        P.emit(pr, ad.adapter, snap, k, val, raw, label, model, cond, quote)
 
     add("gen.form_factor", P.form_factor(title), title, "title (derived)")
     add("gen.color", colors, " | ".join(colors), "variant option Color")
     cap = rows.get("Total Capacity") or rows.get("Power Capacity") or rows.get("Battery Capacity")
     if cap:
         vm = re.search(r"/\s*(\d\.\d{1,2})\s*V\b", cap)
-        add("cap.cell_mah", P.mah(cap), cap, "Capacity")
+        five = re.search(r"\(\s*5\s*V", cap)
+        add("cap.cell_mah", P.Unresolved("capacity printed with a 5 V output basis: cell vs rated basis contradictory") if five and P.mah(cap) else P.mah(cap), cap, "Capacity")
         add("cap.cell_voltage", float(vm[1]) if vm else None, cap, "Capacity")
-        add("cap.energy_wh", P.wh(cap), cap, "Capacity")
+        add("cap.energy_wh", P.energy(cap), cap, "Capacity")
     if (cc := rows.get("Cell Capacity")):
-        whs = [P.fnum(x) for x in re.findall(r"(\d{1,3}(?:\.\d+)?)\s*[Ww]h\b", cc)]
-        add("cap.energy_wh", min(whs) if whs else None, cc, "Cell Capacity")
+        add("cap.energy_wh", P.energy(cc), cc, "Cell Capacity")
         vm = re.search(r"(\d+(?:\.\d+)?)\s*V\b", cc)
         if vm and float(vm[1]) < 5:
             add("cap.cell_voltage", float(vm[1]), cc, "Cell Capacity")
     if (rc := rows.get("Rated Capacity")):
-        n = P.mah(rc)
-        if n and re.search(r"\(\s*\d", rc):             # CUKTECH/INIU print the rated (5 V) capacity with its basis in brackets
-            add("cap.rated_mah", n, rc, "Rated Capacity")
-            b = re.search(r"\(([^)]*)\)", rc)
+        n, cond = P.rated(rc)
+        add("cap.rated_mah", n, rc, "Rated Capacity", cond)       # never backfills cap.cell_mah (CUKTECH 'Rated Capacity 20000mAh' without basis)
+        b = re.search(r"\(([^)]*)\)", rc)
+        if cond:
             add("cap.rated_basis", b[1].strip() if b else None, rc, "Rated Capacity")
-        elif n and ad.brand == "cuktech" and not cap:
-            add("cap.cell_mah", n, rc, "Rated Capacity (CUKTECH: cell mAh)")
     out = rows.get("Output") or ""
     if out:
-        ports, combo, total = P.ports_from(out, "out")
+        ports, combo, total, toks = P.ports_from(out, "out")
         tot = rows.get("Total Output")
         if tot and re.search(P.NUM + r"\s*W", tot):
-            total = P.fnum(re.search(P.NUM + r"\s*W", tot)[1])
+            total, toks = P.fnum(re.search(P.NUM + r"\s*W", tot)[1]), None
+            add("out.max_total_w", total, tot, "Total Output", quote="all-ports output: the maker's labelled 'Total Output' row")
+        else:
+            add("out.max_total_w", total, out, "Output", quote=("all-ports output: " + " + ".join(toks)) if toks else None)
         add("out.ports", ports, out, "Output")
         add("out.simultaneous", combo, out, "Output")
         single = [p["max_w"] for p in ports if p["max_w"] and p["type"] != "wireless"]
         add("out.max_single_port_w", max(single) if single else None, out, "Output")
-        add("out.max_total_w", total if total is not None else (single[0] if len(ports) == 1 and single else None), out, "Output")
         add("pd.pps", True if any(p["pps"] and p["type"] in ("usb_c", "cable_c", None) for p in ports) or re.search(r"\bPPS\b", rows.get("Supported Protocol", "") + rows.get("Protocols", "")) else None, out, "Output")
         vmax = [P.pdos(p["fixed_pdos"] or "")[3] for p in ports]
         add("pd.max_fixed_voltage", max([x for x in vmax if x] or [0]) or None, out, "Output")
     inp = rows.get("Input") or ""
     if inp:
         fx, pps, mw, _ = P.pdos(inp)
-        ip, _, _ = P.ports_from(inp, "in")
+        ip = P.ports_from(inp, "in")[0]
         mws = [p["max_w"] for p in ip if p["max_w"]]
         add("in.max_w", max(mws) if mws else mw, inp, "Input")
         add("in.pdos", fx or None, inp, "Input")
@@ -234,6 +294,10 @@ def parse_shop(ad, snap, page, prod):
         add("id.msrp_us", float(v0["price"]), f"${v0['price']} ({v0.get('sku')}) at fetch", "variant price")
     pr.fingerprints = {"raw": snap.snapshot, "labels": list(rows), "block": blk[:300],
                        "unmapped": {k: v[:100] for k, v in rows.items() if k in ("Multi-port", "Product with feature", "Cable Spec", "Efficiency")}}
+    if conflict:
+        pr.fingerprints["identity_conflict"] = conflict
+    if foreign:
+        pr.fingerprints["foreign_skus"] = foreign
     if (mp := rows.get("Multi-port")):
         add("out.simultaneous", mp, mp, "Multi-port")
     return pr

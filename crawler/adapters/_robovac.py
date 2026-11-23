@@ -2,8 +2,10 @@
 parsers. Network only through crawl.Net (robots, <=1 req/s, breaker); parsers are pure.
 
 Discovery (one source = one Shopify store): /products.json?limit=250&page=N (a few requests) -> keep robot-vacuum products (brand predicate) ->
-group products that share ANY variant SKU (the manufacturer's material code) or derive the same model name: "App Only", "Live Only",
-"Membership", "Complete" and colour pages of one robot are one model. Bundles without SKUs, refurbished units, accessories, stick and wet-dry
+group products by CORROBORATED identity (review 3, fix 2): the derived model name is the anchor ("App Only", "Live Only", "Membership" and colour
+pages derive the same name); a shared variant SKU only joins pages whose names agree once pack words ("Complete") are removed. A SKU shared by
+pages whose names disagree (dock / generation / Plus / RDS / Set / Heat) is a conflict: never a union, recorded for review. Unions are checked
+per component, so A~B and B~C can never bridge incompatible A and C. Bundles without SKUs, refurbished units, accessories, stick and wet-dry
 vacuums are dropped (recorded in the discovery checkpoint). One ref per model; hints carry the member handles.
 Fetch: ONE snapshot per model = gzip JSON bundle {page_url, html (canonical product page), products: [/products/<handle>.json for every member]},
 so the parse never depends on discovery.json (members' titles and SKUs are inside the snapshot). 1 + members requests.
@@ -49,24 +51,49 @@ def skus(p):
     return {v["sku"].strip() for v in p.get("variants", []) if v.get("sku") and v["sku"].strip()}
 
 
-def group(products, model_of, prefer):
-    """Union products sharing a SKU or a derived model name. -> [(model_name, canonical, members)] sorted by model name.
+PACK_WORDS = re.compile(r"(?i)\b(complete)\b")      # listing/pack words that do not name different robot or dock hardware
+
+
+def name_key(name):
+    """Normalised model name; '+' == 'Plus' (Q7 Max+ == Q7 Max Plus), every other suffix (Plus, RDS, Set, Heat, Pro, Ultra) is kept."""
+    return norm(plus(name or ""))
+
+
+def pack_base(name):
+    return name_key(PACK_WORDS.sub(" ", name or ""))
+
+
+def group(products, model_of, prefer, conflicts=None):
+    """Corroborated grouping. -> [(model_name, canonical, members)] sorted by model name. Products join when their names are equal (name_key),
+    or when they share a variant SKU AND their names agree after pack words are removed (pack_base). A shared SKU between pages whose pack_base
+    differs is appended to `conflicts` ({sku, names, handles, reason}) and joins nothing. Because a union needs equal pack_base, every member of a
+    component has the same pack_base: a SKU bridge can never merge incompatible endpoints.
     model_of(p) -> name or None (None = not a robot vacuum); prefer(p) -> sort key (lower = better canonical page)."""
     ps = [p for p in products if model_of(p)]
     parent = list(range(len(ps)))
+    base = [pack_base(model_of(p)) for p in ps]
 
     def find(i):
         while parent[i] != i:
             parent[i] = parent[parent[i]]
             i = parent[i]
         return i
-    by = {}
+    by_name, by_sku = {}, {}
     for i, p in enumerate(ps):
-        for k in [("sku", s) for s in skus(p)] + [("name", norm(model_of(p)))]:
-            if k in by:
-                parent[find(i)] = find(by[k])
-            else:
-                by[k] = i
+        k = name_key(model_of(p))
+        if k in by_name:
+            parent[find(i)] = find(by_name[k])
+        else:
+            by_name[k] = i
+        for s in sorted(skus(p)):
+            by_sku.setdefault(s, []).append(i)
+    for s, idx in sorted(by_sku.items()):
+        for j in idx[1:]:
+            if base[j] == base[idx[0]]:
+                parent[find(j)] = find(idx[0])
+            elif conflicts is not None:
+                conflicts.append({"sku": s, "names": sorted({model_of(ps[x]) for x in idx}), "handles": sorted(ps[x]["handle"] for x in idx),
+                                  "reason": "one SKU on pages whose model names disagree beyond pack words: not grouped"})
     groups = {}
     for i, p in enumerate(ps):
         groups.setdefault(find(i), []).append(p)
@@ -75,6 +102,30 @@ def group(products, model_of, prefer):
         members.sort(key=lambda p: (prefer(p), len(p["title"]), p["handle"]))
         out.append((model_of(members[0]), members[0], members))
     return sorted(out, key=lambda t: norm(t[0]))
+
+
+def corroborate(products, canon, model_of):
+    """Parse-time replay of the grouping rule on a stored bundle (bundles were fetched with the older, unconditional union): -> (kept members,
+    quarantined [{handle, name, reason}]). A member stays when its name equals the canonical page's, or when it shares a SKU with an already kept
+    member and its name agrees after pack words. Quarantined members contribute no SKU/GTIN aliases and no titles; they go to identity review."""
+    cname = model_of(canon) if canon else None
+    if not cname:
+        return list(products), []
+    kept, out, todo = [canon], [], [p for p in products if p is not canon]
+    changed = True
+    while changed:
+        changed = False
+        for p in list(todo):
+            n = model_of(p)
+            have = set().union(*(skus(k) for k in kept))
+            if n and (name_key(n) == name_key(cname) or (pack_base(n) == pack_base(cname) and skus(p) & have)):
+                kept.append(p); todo.remove(p); changed = True
+    for p in todo:
+        n = model_of(p)
+        why = ("not a robot-vacuum listing" if not n else "model name disagrees with the canonical page beyond pack words" if pack_base(n) != pack_base(cname)
+               else "pack listing without a SKU shared with the model's pages")
+        out.append({"handle": p.get("handle"), "name": n, "skus": sorted(skus(p)), "reason": why})
+    return [p for p in products if p in kept], out
 
 
 def norm(s):
@@ -248,70 +299,154 @@ def yes(s):
     return None
 
 
+class Unresolved:
+    """A labelled cell that names the spec but cannot be normalised to a trusted value (generic / negated / ambiguous wording, a plausibility
+    rejection, a mixed robot+dock cell). add() stores it as a status-unknown claim: the literal stays in `raw`, the reason in `quote`; no policy
+    accepts an unknown claim, so it is inspectable preview evidence and never a normalised value."""
+    __slots__ = ("reason",)
+
+    def __init__(self, reason):
+        self.reason = reason
+
+    def __bool__(self):
+        return False
+
+    def __repr__(self):
+        return f"Unresolved({self.reason!r})"
+
+
+NEGATION = re.compile(r"(?i)(?<![a-z])(no|not|non|without|w/o|lacks?|excluding|except)(?![a-z])")
+
+
+def _negated(t):
+    return NEGATION.search(t)
+
+
+def _rest(t, *phrases):
+    for ph in phrases:
+        t = re.sub(ph, " ", t)
+    return t
+
+
+# Explicit mechanism phrases (review 3, fix 1). Generic words (laser, camera, vision, visual, sensor) never select a mechanism on their own.
+SL = r"(?:(?:single|dual|double|triple|lateral)[- ]?(?:line[- ]?)?laser\s+)?(?:3d\s+)?structured[- ]light|(?:single|dual|double|triple)?[- ]?line[- ]?lasers?"
+RGB = r"\brgb-?d?\b|\brbg\b"
+TOF = r"\b3d\s*tof\b|\bd?tof\b|time[- ]of[- ]flight"
+
+
 def obstacle_sensors(s):
+    """Labelled obstacle-avoidance cell -> sorted-by-appearance list of explicit mechanisms, Unresolved, or None (nothing about sensors).
+    'Line laser' / 'structured light' = structured_light; 'RGB' / 'RGBD' = rgb_camera; 'ToF' = tof; 'infrared' = infrared. Generic 'laser',
+    'AI camera', 'vision' or any negation -> Unresolved: a partial list would assert that the robot lacks the unnamed sensor."""
     t = (s or "").lower()
+    if not t.strip():
+        return None
+    if _negated(t):
+        return Unresolved("negated wording in the obstacle-sensor cell")
     out = []
-    if re.search(r"structured light|3d light|line laser|laser", t):
-        out.append("structured_light")
-    if re.search(r"rgb|camera|ai vision|visual|vision", t):
-        out.append("rgb_camera")
-    if re.search(r"\btof\b|time of flight|dtof", t):
-        out.append("tof")
-    if re.search(r"infrared|\bir\b", t):
-        out.append("infrared")
-    if re.search(r"ultrasonic", t):
-        out.append("ultrasonic")
+    for rx, v in ((SL, "structured_light"), (RGB, "rgb_camera"), (TOF, "tof"), (r"\binfrared\b|\bir\b", "infrared"), (r"ultrasonic", "ultrasonic")):
+        if re.search(rx, t):
+            out.append(v)
+    rest = _rest(t, SL, RGB, TOF, r"camera lights?|supplementary lights?|led(?: lights?)?|\blds\b|\blidar\b")
+    gen = re.search(r"laser|camera|vision|visual|sensor|radar|lidar", rest)
+    if gen:
+        return Unresolved(f"generic '{gen[0]}' does not name a mechanism")
     return out or None
 
 
 def navigation(s):
+    """Labelled navigation cell -> dtof | lidar | vslam_camera | gyroscope, Unresolved, or None. dToF is a kind of LiDAR (profile note: a LiDAR
+    filter must include dtof); 'dToF LiDAR' = dtof. Generic 'laser' / 'camera' / 'visual' and negations -> Unresolved; two different
+    mechanisms (LDS + vSLAM) -> Unresolved."""
     t = (s or "").lower()
-    if re.search(r"dtof", t):
-        return "dtof"
-    if re.search(r"\blds\b|lidar|laser distance", t):
-        return "lidar"
-    if re.search(r"dtof", t):
-        return "dtof"
-    if re.search(r"vslam|camera|visual", t):
-        return "vslam_camera"
-    if re.search(r"gyro", t):
-        return "gyroscope"
-    return None
+    if not t.strip():
+        return None
+    if _negated(t):
+        return Unresolved("negated wording in the navigation cell")
+    found = []
+    if re.search(r"\bd-?tof\b", t):
+        found.append("dtof")
+    elif re.search(r"\blds\b|\blidar\b|laser distance sensor", t):
+        found.append("lidar")
+    if re.search(r"\bv-?slam\b|visual slam", t):
+        found.append("vslam_camera")
+    if re.search(r"\bgyro", t):
+        found.append("gyroscope")
+    if len(found) > 1:
+        return Unresolved("several navigation mechanisms in one cell: " + ", ".join(found))
+    if found:
+        return found[0]
+    gen = re.search(r"laser|camera|visual|vision", _rest(t, SL))
+    return Unresolved(f"generic '{gen[0]}' does not name a navigation mechanism") if gen else None
 
 
 def mop_type(s):
+    """Labelled mop cell -> roller | dual_spinning | vibrating_pad | track | static_pad, Unresolved, or None. dual_spinning needs BOTH an explicit
+    count (dual/two/twin/2) and an explicit rotation word; 'single rotating mop' has no enum value; trademarks ('Omni-Scrub'), bare 'pad' /
+    'cloth' / 'dual mops' and negations -> Unresolved."""
     t = (s or "").lower()
-    if re.search(r"roller", t):
-        return "roller"
-    if re.search(r"spinning|rotating|rotary|omni-scrub|dual.*mops?\b", t):
-        return "dual_spinning"
+    if not t.strip():
+        return None
+    if _negated(t):
+        return Unresolved("negated wording in the mop cell")
+    rot = re.search(r"rotat\w*|rotary|rotatry|spinning|spin\b", t)
+    dual = re.search(r"\b(dual|two|twin|2|double)\b", t)
+    single = re.search(r"\b(single|one|1)\b", t)
+    kinds = []
+    if re.search(r"\broller\b", t):
+        kinds.append("roller")
+    if rot:
+        kinds.append("dual_spinning" if dual and not single else None)
     if re.search(r"vibrat|sonic", t):
-        return "vibrating_pad"
-    if re.search(r"track|crawler", t):
-        return "track"
-    if re.search(r"pad|cloth", t):
-        return "static_pad"
-    return None
+        kinds.append("vibrating_pad")
+    if re.search(r"\btrack\b|crawler", t):
+        kinds.append("track")
+    if re.search(r"\bstatic\b|\bfixed (?:mop )?pad", t):
+        kinds.append("static_pad")
+    if None in kinds:
+        return Unresolved("single or uncounted rotating mop: no enum value" if single or not dual else "rotating mop count unclear")
+    if len(set(kinds)) > 1:
+        return Unresolved("several mop mechanisms in one cell: " + ", ".join(kinds))
+    if kinds:
+        return kinds[0]
+    return Unresolved("mop cell names no explicit mechanism") if re.search(r"mop|pad|cloth|scrub", t) else None
+
+
+CERTIFIERS = r"t[uü]v(?:\s*(?:s[uü]d|rheinland|nord))?|sgs|intertek|\bul\b|bureau veritas|\bcsa\b"
 
 
 def basis_for(number_literal, disclaimers):
-    """Which disclaimer qualifies a headline number. -> (basis, quote) with basis in the profile's claim_basis enum."""
+    """Which disclaimer qualifies a headline number. -> (basis, quote) with basis in the profile's claim_basis enum.
+    The disclaimer must carry THIS number and an AFFIRMATIVE attribution: 'certified/tested/verified by <certifier>' or '<certifier> certified'
+    -> mfr_reported_certified (a manufacturer statement about a certificate; we have not checked the certificate: third_party_certified is kept
+    for certifier-tier sources). 'in-house lab' / 'our lab' / 'internal lab' -> mfr_in_house_lab. A bare 'laboratory' or any negated
+    attribution ('not certified by SGS') -> mfr_unstated with the disclaimer kept as the quote."""
     pat = re.escape(number_literal.replace(",", "")).replace("\\ ", r"\s*")
     for d in disclaimers:
-        if re.search(pat, d.replace(",", ""), re.I):
-            if re.search(r"t[uü]v|sgs|intertek|\bul\b|certified by", d, re.I):
-                return "third_party_certified", d
-            if re.search(r"in-house|our lab|internal lab|laboratory", d, re.I):
-                return "mfr_in_house_lab", d
+        dn = d.replace(",", "")
+        if not re.search(r"(?<![\d.])" + pat + r"(?![\d.])", dn, re.I):
+            continue
+        if _negated(d):
+            return "mfr_unstated", d
+        if re.search(r"(?i)(?:certified|tested|verified|validated|measured)\s+by\s+(?:the\s+)?(?:" + CERTIFIERS + r")|(?:" + CERTIFIERS + r")[- ]?(?:certified|certification|verified)", d):
+            return "mfr_reported_certified", d
+        if re.search(r"(?i)in-house|\bour (?:own )?lab|internal lab", d):
+            return "mfr_in_house_lab", d
+        if re.search(r"(?i)laborator|certif|t[uü]v|sgs|intertek", d):
+            return "mfr_unstated", d          # names a lab or certifier without an affirmative, attributable statement
     return "mfr_unstated", None
 
 
 def add(pr, adapter, snap, model, key, value, raw, label, conditions=None, quote=None):
     """One manufacturer claim on the model (locator model_code); skips empty values. raw = the source literal, never rewritten."""
-    if value in (None, "", [], {}):
-        return
     raw = raw if isinstance(raw, str) else " | ".join(raw)
     model = plus(model)
+    if isinstance(value, Unresolved):
+        pr.claims.append(C.claim(model, key, None, None, raw, "s1", adapter, "adapter", snap.fetched_at, locator={"model_code": model, "label": label},
+                                 quote=value.reason, conditions=conditions, status="unknown"))
+        return
+    if value in (None, "", [], {}):
+        return
     pr.claims.append(C.claim(model, key, value, None, raw, "s1", adapter, "adapter", snap.fetched_at,
                              locator={"model_code": model, "label": label}, quote=quote, conditions=conditions))
 
@@ -348,10 +483,35 @@ def variant_idents(pr, products, issuer, model, sku_norm=lambda s: s):
 
 
 def plausible_robot(dims=None, weight_g=None):
-    """Guard against cells that mix robot + dock (Roborock 'Robot&Dock Size', 'Robot Weight 32.19 lbs'): a robot body is 200-450 mm across,
-    50-150 mm tall and 1.5-7.5 kg. Out of range -> the claim is not emitted (recorded in fingerprints.implausible), never 'corrected'."""
+    """Sanity bounds for a robot body: 200-450 mm across, 50-150 mm tall, 1.5-7.5 kg. A check, not component identification."""
     if dims is not None:
         return all(200 <= dims[k] <= 450 for k in ("length", "width")) and 50 <= dims["height"] <= 150
     if weight_g is not None:
         return 1500 <= weight_g <= 7500
     return False
+
+
+def robot_dims(d):
+    """-> d, or Unresolved with the reason when the triple is outside the robot bounds (the cell may include the dock, or be a typo).
+    Review 3, fix 3: a rejection is kept as preview evidence (literal + reason), never dropped and never 'corrected'."""
+    if d is None:
+        return None
+    if plausible_robot(dims=d):
+        return d
+    return Unresolved(f"plausibility: {d['length']:g} x {d['width']:g} x {d['height']:g} mm is outside a robot body (200-450 mm across, 50-150 mm tall);"
+                      " the cell may include the dock")
+
+
+def robot_height(d):
+    return d["height"] if isinstance(d, dict) else d
+
+
+def robot_weight(w):
+    if w is None:
+        return None
+    if plausible_robot(weight_g=w):
+        return w
+    return Unresolved(f"plausibility: {w:g} g is outside a robot body (1.5-7.5 kg); the cell may include the dock")
+
+
+MIXED = Unresolved("one cell states robot and dock together; no explicit robot/dock split printed")

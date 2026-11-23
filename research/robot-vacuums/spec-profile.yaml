@@ -103,10 +103,14 @@ conditions:
   enum:
   - mfr_in_house_lab
   - mfr_unstated
+  - mfr_reported_certified
   - third_party_certified
   - independent_measured
-  description: 'mfr_in_house_lab = page disclaimer says "based on our in-house lab data"; mfr_unstated = no basis printed; third_party_certified =
-    disclaimer names TUV/SGS/Intertek for this figure; independent_measured = a non-manufacturer test (sealed-inlet suction, dB at a stated distance).'
+  description: 'mfr_in_house_lab = page disclaimer says "based on our in-house lab data"; mfr_unstated = no basis printed (also: a disclaimer that names
+    a lab or certifier without an affirmative statement, or a negated one such as "not certified by SGS"); mfr_reported_certified = the manufacturer''s
+    disclaimer affirmatively attributes THIS figure to TUV/SGS/Intertek/UL ("certified by ...": a manufacturer statement, certificate not checked
+    here, review 3); third_party_certified = a certifier-tier source we read ourselves; independent_measured = a non-manufacturer test (sealed-inlet
+    suction, dB at a stated distance). Claim bases are not comparison methods: two figures on different bases never form a ranking cohort.'
 - id: power_mode
   label: Operating mode
   type: enum
@@ -298,6 +302,8 @@ specs:
   why: Spinning pads and rollers scrub; a static pad only wipes
   traps:
   - '"Vacuum and mop" on a robot with a dragged static pad'
+  - 'Review 3: dual_spinning needs an explicit count AND rotation ("dual rotating mops"); "single rotating mop" has no enum value; trademarks
+    ("Omni-Scrub"), bare "mop pad" and "dual mops" stay unresolved'
   - Marketing names (Omni-Scrub, SpiraFlow, HydroJet) hide the mechanism
   sources:
   - Manufacturer spec block ('Mop Type')
@@ -395,7 +401,10 @@ specs:
   why: LiDAR maps reliably in the dark; camera vSLAM needs light; gyro robots do not map
   traps:
   - Trademarked names ('Pathfinder Smart Navigation', 'PreciSense') do not say which sensor; they stay unknown
-  - Retractable / in-body dToF LiDAR (VersaLift, Saros) is still LiDAR (enum dtof) but sits lower
+  - 'Retractable / in-body dToF LiDAR (VersaLift, Saros) is still LiDAR (enum dtof) but sits lower. dtof is a KIND of lidar: a LiDAR filter must
+    match [lidar, dtof] (hierarchy-aware), never lidar alone'
+  - 'Review 3: only explicit mechanism phrases are trusted (LDS/LiDAR, dToF, vSLAM, gyro). Generic "laser", "camera", "visual", two mechanisms in one
+    cell, or any negation stay as unresolved preview claims with the literal and the reason'
   sources:
   - Manufacturer spec block ('Navigation')
   example: lidar
@@ -413,6 +422,8 @@ specs:
   why: Structured light sees cables and socks in 3D; an RGB camera classifies objects (pet waste); bumper-only robots hit everything
   traps:
   - '"AI obstacle avoidance" without a sensor name'
+  - 'Review 3: "AI camera" / "vision" does not say RGB, and bare "laser" does not say structured light; a cell with any generic or negated term
+    stays unresolved (a partial list would assert the robot lacks the unnamed sensor). Trusted: structured light / line laser, RGB / RGBD, ToF'
   - LED illumination is listed with the sensors but is a light, not a sensor
   - Object-count claims ('280 object types') are classifier labels, not detection reliability
   sources:
@@ -699,9 +710,11 @@ specs:
   - '"Matter will be available through an upcoming OTA" (Roborock Qrevo Edge page) is a promise, not support: not recorded as true'
   - The certifier record (CSA Matter Distributed Compliance Ledger, robotic-vacuum device type) is the certification-grade source; maker pages are
     manufacturer claims
+  - 'Review 3: trusted ONLY from a CSA DCL row whose product name (brand word removed) equals the US-store model exactly and that has a certified
+    compliance record (claim/dcl-matter-certified). A maker page tick ("Matter Connectivity ✓") stays a preview manufacturer claim'
   sources:
-  - Manufacturer spec block ('Matter Connectivity')
-  - 'certification: CSA DCL (on.dcl.csa-iot.org REST API), not built'
+  - 'certification: CSA DCL (on.dcl.csa-iot.org REST API, csa_dcl_robovac): the only trusted source'
+  - 'Manufacturer spec block ("Matter Connectivity"): preview only'
   example: true
 - key: smart.voice_control
   label: Voice control

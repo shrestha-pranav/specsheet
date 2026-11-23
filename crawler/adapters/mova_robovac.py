@@ -23,7 +23,7 @@ import _contract as C
 import _robovac as RV
 import _run
 
-ID, VERSION, SOURCE = "mova_robovac", 1, "mova-us-robovac"
+ID, VERSION, SOURCE = "mova_robovac", 2, "mova-us-robovac"     # v2: review-3 strict enums / identity
 CATEGORIES = {"robot-vacuums"}
 ADAPTER = f"{ID}@{VERSION}"
 HOST = "us.mova.tech"
@@ -83,8 +83,9 @@ class MovaRobovac:
 
     def discover(self, checkpoint, net):
         ps, stop = RV.catalogue(net, HOST)
-        refs = RV.refs_from_groups(SOURCE, HOST, RV.group(ps, model_of, lambda p: ("live only" in p["title"].lower(), 0)))
-        return C.Discovery(refs, stop is None, stop, {"products": len(ps), "models": len(refs)})
+        conflicts = []
+        refs = RV.refs_from_groups(SOURCE, HOST, RV.group(ps, model_of, lambda p: ("live only" in p["title"].lower(), 0), conflicts))
+        return C.Discovery(refs, stop is None, stop, {"products": len(ps), "models": len(refs), "identity_conflicts": conflicts})
 
     _compare = None
 
@@ -135,6 +136,7 @@ def parse_bundle(snap, b):
         return pr
     pr.identifiers.append(RV.ident("mfr_model", RV.plus(name), "model", "mova", raw=name, series=re.match(r"[A-Za-z]+", name)[0].upper()))
     pr.aliases.append({"text": "MOVA " + name, "kind": "marketing_name"})
+    prods, quarantined = RV.corroborate(prods, canon, model_of)
     RV.variant_idents(pr, prods, "mova", RV.plus(name))
     own = {p["handle"] for p in prods if p.get("handle")}
     entry = next((e for e in islands(b.get("html")) if (e.get("url") or "").split("?")[0] in {"/products/" + h for h in own}), None)
@@ -147,12 +149,18 @@ def parse_bundle(snap, b):
     done = set()
 
     def add(k, v, raw, label, cond=None, src="s1"):     # one snapshot = one source (import.py); compare-page values carry locator.page
-        if v in (None, "", [], {}) or k in done:
+        if k in done or (not isinstance(v, RV.Unresolved) and v in (None, "", [], {})):
+            return
+        m = RV.plus(name)
+        loc = {"model_code": m, "label": label, **({"page": "compare", "url": COMPARE} if src == "s2" else {})}
+        if isinstance(v, RV.Unresolved):          # literal + reason kept as preview evidence; a later explicit cell for the key may still be read
+            if (k, raw, src) in done:
+                return
+            done.add((k, raw, src))
+            pr.claims.append(C.claim(m, k, None, None, raw, src, ADAPTER, "adapter", snap.fetched_at, locator=loc, quote=v.reason, conditions=cond, status="unknown"))
             return
         done.add(k)
-        m = RV.plus(name)
-        pr.claims.append(C.claim(m, k, v, None, raw, src, ADAPTER, "adapter", snap.fetched_at, locator={"model_code": m, "label": label, **({"page": "compare", "url": COMPARE} if src == "s2" else {})},
-                                 conditions=cond))
+        pr.claims.append(C.claim(m, k, v, None, raw, src, ADAPTER, "adapter", snap.fetched_at, locator=loc, conditions=cond))
     used = set()
     sp = {k: RV.text(str(v)) for k, v in ((entry or {}).get("specs") or {}).items()}
     for lab, v in sp.items():
@@ -166,7 +174,7 @@ def parse_bundle(snap, b):
         compare_row(lambda k, val, raw, label, cond=None: add(k, val, raw, label, cond, "s2"), lab, v)
         if len(pr.claims) > k0:
             cu.add(lab)
-    pr.fingerprints = {"raw": snap.snapshot, "labels": sorted(sp), "members": sorted(own), "entry": (entry or {}).get("title"),
+    pr.fingerprints = {"raw": snap.snapshot, "labels": sorted(sp), "members": sorted(own), "quarantined_members": quarantined, "entry": (entry or {}).get("title"),
                        "unmapped": {k: v[:80] for k, v in sp.items() if k not in used}, "compare_column": col_h, "compare_labels": nlab,
                        "compare_unmapped": sorted(set(cols.get(col_h) or {}) - cu)}
     return pr

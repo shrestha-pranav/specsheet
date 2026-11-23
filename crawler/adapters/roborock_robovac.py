@@ -19,7 +19,7 @@ import _contract as C
 import _robovac as RV
 import _run
 
-ID, VERSION, SOURCE = "roborock_robovac", 1, "roborock-us-robovac"
+ID, VERSION, SOURCE = "roborock_robovac", 2, "roborock-us-robovac"     # v2: review-3 identity / mixed robot+dock cells kept as preview
 CATEGORIES = {"robot-vacuums"}
 ADAPTER = f"{ID}@{VERSION}"
 HOST = "us.roborock.com"
@@ -51,9 +51,10 @@ class RoborockRobovac:
 
     def discover(self, checkpoint, net):
         ps, stop = RV.catalogue(net, HOST)
-        groups = RV.group(ps, model_of, prefer)
+        conflicts = []
+        groups = RV.group(ps, model_of, prefer, conflicts)
         refs = RV.refs_from_groups(SOURCE, HOST, groups)
-        return C.Discovery(refs, stop is None, stop, {"products": len(ps), "models": len(refs)})
+        return C.Discovery(refs, stop is None, stop, {"products": len(ps), "models": len(refs), "identity_conflicts": conflicts})
 
     def fetch(self, ref, prior, net):
         return RV.fetch_bundle(self.store, ADAPTER, ref, net)
@@ -100,6 +101,7 @@ def parse_bundle(snap, b):
     fam = re.match(r"[A-Za-z]+", name)[0].upper()
     pr.identifiers.append(RV.ident("mfr_model", RV.plus(name), "model", "roborock", raw=name, series=fam))
     pr.aliases.append({"text": "Roborock " + name, "kind": "marketing_name"})
+    prods, quarantined = RV.corroborate(prods, canon, model_of)
     RV.variant_idents(pr, prods, "roborock", RV.plus(name))
     h = b.get("html") or ""
     rows, kf = spec_rows(h), key_features(h)
@@ -139,10 +141,14 @@ def parse_bundle(snap, b):
         m = re.search(r"(?i)robot(?: dimensions)?\s*[:：]\s*([^;]*?)(?:;|dock|charging|$)", rd)
         part = m[1] if m else ("" if re.search(r"(?i)dock", rd.split("inch")[0]) else re.split(r"(?i)[,;]?\s*(?:auto-empty\s+)?dock\s*[:：]", rd)[0])
         d = RV.dims_mm(part if re.search(r"(?i)in|mm|cm", part) else part + " inches") if part else None
-        if d and RV.plausible_robot(dims=d):
-            add("phys.robot_dimensions", d, rd, rl); add("phys.robot_height_mm", d["height"], rd, rl)
-        elif d:
+        if not part and re.search(r"(?i)dock", rd):
+            add("phys.robot_dimensions", RV.MIXED, rd, rl)               # 'Robot&Dock Size ...': no explicit robot figure
             bad.append(("phys.robot_dimensions", rd))
+        elif d:
+            d = RV.robot_dims(d)
+            add("phys.robot_dimensions", d, rd, rl); add("phys.robot_height_mm", RV.robot_height(d), rd, rl)
+            if isinstance(d, RV.Unresolved):
+                bad.append(("phys.robot_dimensions", rd))
         dm = re.search(r"(?i)dock(?: dimensions)?\s*[:：]\s*([^;]*)", rd)
         if dm and not dd:
             add("phys.dock_dimensions", RV.dims_mm(dm[1] if re.search(r"(?i)in|mm|cm", dm[1]) else dm[1] + " inches"), rd, rl)
@@ -151,15 +157,14 @@ def parse_bundle(snap, b):
         combined = re.match(r"(?i)\s*robot\s*(&|\+|and)", rw)
         m = re.search(r"(?i)robot\s*[:：]\s*([^,;]*)", rw)
         part = m[1] if m else re.split(r"(?i)dock", rw)[0]
-        w = None if combined else RV.weight_g(part)
-        if w and RV.plausible_robot(weight_g=w):
-            add("phys.robot_weight_g", w, rw, "Robot Weight")
-        elif w:
+        w = RV.MIXED if combined else RV.robot_weight(RV.weight_g(part))
+        add("phys.robot_weight_g", w, rw, "Robot Weight")
+        if isinstance(w, RV.Unresolved):
             bad.append(("phys.robot_weight_g", rw))
     dw = rows.get("Dock Weight")
     if dw:
         add("phys.dock_weight_g", RV.weight_g(dw), dw, "Dock Weight")
-    pr.fingerprints = {"raw": snap.snapshot, "labels": sorted(rows), "key_features": kf[:12], "members": [p.get("handle") for p in prods],
+    pr.fingerprints = {"raw": snap.snapshot, "labels": sorted(rows), "key_features": kf[:12], "members": [p.get("handle") for p in prods], "quarantined_members": quarantined,
                        "unmapped": {k: v[:100] for k, v in rows.items() if k not in MAPPED},
                        "implausible": bad}
     return pr

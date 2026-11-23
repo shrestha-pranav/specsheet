@@ -16,9 +16,13 @@ Levels follow spec-profile.yaml: family > model > configuration (colour / pack S
   with the material-code SKUs as configuration aliases. A later FCC/label source must attach as an alias (`fcc_id` is `alias_only`), never re-key.
 - **'+' vs 'Plus'.** Roborock writes `Q7 Max+`, Dreame writes `D20 Pro Plus`. The model value is canonicalised to `Plus` (`_robovac.plus`, value_raw keeps
   the literal) so `Q7 Max` and `Q7 Max+` (different robots: the '+' has an auto-empty dock) never collapse into one id slug.
-- **Grouping = shared SKU.** A store lists one robot several times: "App Only", "Live Only", "Membership", "Group Buy Perks", colour pages, and on
-  dreametech.com "X50 Ultra Complete" (shares SKU 010204AA000863 with the X50 Ultra page). `_robovac.group` unions products that share any variant SKU
-  or derive the same model name; the plainest page is canonical; all member titles become retail_title aliases, all SKUs configuration aliases.
+- **Grouping = corroborated identity (review 3, replaces "any shared SKU or name").** A store lists one robot several times: "App Only", "Live Only",
+  "Membership", "Group Buy Perks", colour pages, and on dreametech.com "X50 Ultra Complete" (shares SKU 010204AA000863 with the X50 Ultra page).
+  `_robovac.group` unions pages whose derived names are equal, or that share a SKU AND whose names agree once pack words ("Complete") are removed.
+  A SKU shared by pages whose names disagree otherwise (Plus, RDS, Set, Heat, AE, generation) is a conflict, never a union (discovery checkpoint
+  `identity_conflicts`); unions are per component, so a three-page SKU bridge cannot merge incompatible endpoints. Stored bundles (fetched under the
+  old rule) are re-checked at parse time (`_robovac.corroborate`): a contradictory member contributes no SKU/GTIN alias or title and is listed in
+  identity_conflicts (`member_handle`) for review. Names are anchors for discovery; SKUs only corroborate. 2026-11-23 data: no member was quarantined.
 - **Not models:** refurbished units (a condition of a model; dropped, would be a listing), trade-in and warranty products, SKU-less bundles
   ("L60 Ultra PE + D30 Ultra", "with Accessory Kit"), accessories, stick/wet-dry vacuums (Roborock F25/H60/Dyad/Flexi, Dreame H/R series).
 - **Dock variants are models.** Roborock "S8 MaxV Ultra with Refill & Drainage System" is its own SKU (RR-S80MaxVUltraRDS-M1) with different dock

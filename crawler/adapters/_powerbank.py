@@ -3,7 +3,10 @@
 PDO model reused from the GaN-charger pilot (data/gan-chargers/*.json: pd_fixed_pdos "5V3A 9V3A 15V2A 20V1.5A", pps_ranges "3.3-11V 3A"):
 fixed PDOs and PPS/variable ranges are kept as normalised literal strings, one port per entry of `out.ports`.
 """
-import html, re
+import html, re, sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _contract as C  # noqa: E402  (claim builder for unresolved preview claims only)
 
 SEP = r"\s*(?:⎓|=|/|:|\s)?\s*"
 NUM = r"(\d+(?:\.\d+)?)"
@@ -43,6 +46,65 @@ def mah(text):
 def wh(text):
     m = re.search(r"(?<![\d.])(\d{1,3}(?:\.\d+)?)\s*Wh\b", text or "")
     return fnum(m[1]) if m else None
+
+
+class Unresolved:
+    """A labelled cell that names the spec but does not establish a trusted value (review 3): emitted by unresolved() as a status-unknown claim
+    with the literal in `raw` and the reason in `quote`. No policy accepts status unknown, so it is preview evidence, never a number."""
+    __slots__ = ("reason",)
+
+    def __init__(self, reason):
+        self.reason = reason
+
+    def __bool__(self):
+        return False
+
+    def __repr__(self):
+        return f"Unresolved({self.reason!r})"
+
+
+def unresolved(pr, adapter, snap, key, raw, label, model, reason):
+    pr.claims.append(C.claim(model, key, None, None, raw if isinstance(raw, str) else " | ".join(raw), "s1", adapter, "adapter", snap.fetched_at,
+                             locator={"model_code": model, "label": label}, quote=reason, status="unknown"))
+
+
+def emit(pr, adapter, snap, key, value, raw, label, model, conditions=None, quote=None):
+    """One model claim: a value, an Unresolved (-> status unknown + reason) or nothing. Conditions/quote are kept on the claim."""
+    if isinstance(value, Unresolved):
+        return unresolved(pr, adapter, snap, key, raw, label, model, value.reason)
+    if value in (None, "", []):
+        return
+    pr.claims.append(C.claim(model, key, value, None, raw if isinstance(raw, str) else " | ".join(raw), "s1", adapter, "adapter", snap.fetched_at,
+                             locator={"model_code": model, "label": label}, quote=quote, conditions=conditions))
+
+
+def energy(text):
+    """Printed Wh. One figure -> it. Several DIFFERENT figures ('74Wh/75.5Wh', '36Wh/ 35.28Wh') -> the one explicitly labelled rated, else
+    Unresolved: the profile's cap.energy_wh is the rated energy and an unlabelled pair does not say which is which (review 3)."""
+    t = text or ""
+    whs = list(dict.fromkeys(fnum(x) for x in re.findall(r"(?<![\d.])(\d{1,3}(?:\.\d+)?)\s*Wh\b", t)))
+    if len(whs) <= 1:
+        return whs[0] if whs else None
+    lab = re.search(r"(?i)rated(?: energy| capacity)?\s*[:：]?\s*(\d{1,3}(?:\.\d+)?)\s*Wh\b|(\d{1,3}(?:\.\d+)?)\s*Wh\s*\(?\s*rated", t)
+    if lab:
+        return fnum(lab[1] or lab[2])
+    return Unresolved(f"{len(whs)} Wh figures ({' / '.join(str(x) for x in whs)}) without a rated/typical label")
+
+
+def rated(text):
+    """'13500mAh(5V/6A)' / '5,800mAh (5V⎓3A)' -> (mAh, {rated_voltage_v, rated_current_a}) : the 5 V rating is inseparable from its load
+    (review 3, fix 3). A basis without a current ('(5V)'), with several voltages ('5V/9V/7A typical'), or no basis -> (Unresolved, None)."""
+    n = mah(text)
+    if not n:
+        return None, None
+    b = re.search(r"\(([^)]*\d[^)]*)\)", text or "")
+    if not b:
+        return Unresolved("rated mAh printed without its output basis (voltage and current)"), None
+    vs = re.findall(r"(\d+(?:\.\d+)?)\s*V\b", b[1])
+    cs = re.findall(r"(\d+(?:\.\d+)?)\s*A\b", b[1])
+    if len(set(vs)) != 1 or len(set(cs)) != 1:
+        return Unresolved(f"rated basis '{b[1].strip()}' does not name exactly one voltage and one current"), None
+    return n, {"rated_voltage_v": fnum(vs[0]), "rated_current_a": fnum(cs[0])}
 
 
 def grams(text):
@@ -161,36 +223,127 @@ def port_type(name):
     return None
 
 
-PORTSEG = re.compile(r"(?:(Total\s*\([^)]*\)|(?:OUT|IN)\d(?:\s*[/&+]\s*(?:OUT|IN)?\d)*(?:\s*\((?:Type-|USB-)[^)]*\))?)\s*[:：]?|("
-                     r"USB[- ]?C\d?(?:\s*/\s*(?:USB[- ]?)?C\d?)?(?:\s*/\s*C-?Cab\w*)?(?:\s*\+\s*USB[- ]?[AC]\d?)*|USB[- ]?A\d?(?:\s*&\s*Type-C\d)*|"
-                     r"Type-C\d?|Built-?in (?:USB-C )?Cable|C-?Cable|Wireless(?: Charging| Output)?|Magnetic(?: Wireless)?)\s*(?:Output|Input)?\s*[:：])", re.I)
+_TOK = (r"(?:USB[- ]?[AC]\d?|Type-?C\d?|OUT\s*\d?|IN\s*\d?|Wire?less(?:\s+(?:Out(?:put)?|Charging))?(?:\s*\([^)]*\))?|Magnetic(?:\s+Wireless)?|"
+        r"(?:Built-?in\s+)?(?:USB-C\s+)?(?:C-?)?Cab(?:le|el)s?|Ports?)")
+PORTSEG = re.compile(r"(?<![\w.])(?:(Total\s*(?:\[[^\]]*\]|\((?:[^()]|\([^()]*\))*\)))\s*[:：]?|((?:OUT|IN)\d(?:\s*[/&+]\s*(?:OUT|IN)?\d)*\s*\((?:Type-|USB-)[^)]*\))\s*[:：]?|("
+                     + _TOK + r"(?:\s*(?:[/&+,]|\band\b)?\s*" + _TOK + r")*(?:\s*\((?:Type-|USB-)[^)]*\))?)\s*(?:Output|Input)?\s*[:：])", re.I)
 
 
 def port_segments(text):
-    """'OUT1/OUT2: 5V⎓3A ... 45W(Max); OUT3: ...; OUT1+OUT2: 15W(Max)' -> [(name, text, is_combo)]."""
+    """'OUT1/OUT2: 5V⎓3A ... 45W(Max); OUT3: ...; OUT1+OUT2: 15W(Max)' -> [(name, text, kind)], kind in port | combo | ambiguous.
+    '+' or 'Total' = a combination. '&' means 'each of' ONLY when the same block prints '+' combinations (INIU 'OUT1&OUT2: 45W' next to
+    'OUT1+OUT2: 15W'); without that context ('USB-A1 & Type-C1 & Type-C2: 210W') each-port vs all-ports is ambiguous (review 3)."""
     t = clean(text)
     ms = list(PORTSEG.finditer(t))
-    out = []
+    raw = []
     for i, m in enumerate(ms):
         seg = t[m.end(): ms[i + 1].start() if i + 1 < len(ms) else len(t)].strip(" ;,")
         name = re.sub(r"\s*(?:Output|Input)?\s*[:：]?$", "", m.group(0).strip(), flags=re.I).strip()
-        combo = bool(re.search(r"\+|total", name, re.I)) or name.count("&") >= 2     # 'OUT1&OUT2:' = each of two ports; 'A1 & C1 & C2:' = all ports
-        out.append((name, seg, combo))
+        raw.append((name, seg))
+    plus_ctx = any("+" in n for n, _ in raw)
+    out = []
+    for name, seg in raw:
+        if re.search(r"\+|^total", name, re.I):
+            kind = "combo"
+        elif "&" in name and not plus_ctx:
+            kind = "ambiguous"
+        else:
+            kind = "port"
+        out.append((name, seg, kind))
     return out
 
 
+def port_tokens(name):
+    """Port name -> physical port tokens. 'OUT1/OUT2' / 'OUT1&OUT2' -> [OUT1, OUT2]; 'USB-C Cable / Port' -> [CABLE, C]; 'USB-C1/C2' -> [C1, C2];
+    'Wireless OUT (Phone)' -> [W(PHONE)]; 'OUT3 (USB-A1)' -> [OUT3] (the OUTn number wins when printed)."""
+    parts = [x for x in re.split(r"\s*/\s*|\s*&\s*|\s*,\s*|\s+and\s+", re.sub(r"(?i)^combined\s+", "", name or "")) if x.strip()]
+    toks, typ = [], None
+    for x in parts:
+        u = x.upper()
+        m = re.search(r"\bOUT\s*(\d)", u)
+        if re.search(r"WIRE?LESS|MAGNETIC|\bQI", u):
+            q = re.search(r"\(([^)]*)\)", u)
+            toks.append("W" + (f"({q[1].strip()})" if q else "")); continue
+        if m:
+            toks.append("OUT" + m[1]); continue
+        if "CABLE" in u or "CABEL" in u:
+            toks.append("CABLE"); typ = typ or "C"; continue
+        c = re.search(r"(?:USB[- ]?|TYPE-?)?C\s*(\d)\b|^C(\d)\b", u)
+        a_ = re.search(r"(?:USB[- ]?)?A\s*(\d)\b|^A(\d)\b", u)
+        if c:
+            typ = "C"; toks.append("C" + (c[1] or c[2])); continue
+        if a_:
+            typ = "A"; toks.append("A" + (a_[1] or a_[2])); continue
+        if re.search(r"USB[- ]?C|TYPE-?C", u):
+            typ = "C"; toks.append("C"); continue
+        if re.search(r"USB[- ]?A", u):
+            typ = "A"; toks.append("A"); continue
+        if re.fullmatch(r"\s*OUT(PUT)?\s*", u):
+            toks.append("OUT"); continue
+        if re.fullmatch(r"\s*PORTS?\s*", u) and typ:
+            toks.append(typ); continue
+        toks.append(re.sub(r"[^A-Z0-9]", "", u))
+    return toks
+
+
+ADDITIVE = re.compile(NUM + r"\s*W\s*\+\s*" + NUM + r"\s*W")
+
+
+def all_port_total(port_names, combos):
+    """Shopper-visible 'all ports at once' output (review 3, fix 1). port_names: names of the individual output ports (the physical inventory);
+    combos: [(name, segment text)] of printed combinations. -> (W, participating tokens, None) or (None, None, reason).
+    Accepted only when a combination's members, each naming exactly one port, cover EVERY port of the inventory and the segment prints the
+    figure ('15W(Max)', '10W + 5W = 15W'); a subset ('OUT1+OUT2' when OUT3 exists), an alternative member ('OUT1/OUT2+Wireless'), an unprinted
+    sum ('65W+15W (Total)') or disagreeing covering combinations are never a total."""
+    inv = {t for n in port_names for t in port_tokens(n)}
+    if not combos:
+        return None, None, None
+    if not inv:
+        return None, None, "combination printed but no individual port inventory to check it against"
+    found, why = {}, []
+    for name, seg in combos:
+        inner = re.match(r"(?i)total\s*[\(\[](.*)[\)\]]\s*$", name)
+        body = inner[1] if inner else re.sub(r"(?i)^combined\s+|\s*total\s*", "", name)
+        members = [m for m in re.split(r"\s*\+\s*|\s*,\s*|\s+and\s+", body) if m.strip()]
+        mt = [port_tokens(m) for m in members]
+        if not members or any(len(x) != 1 for x in mt):
+            why.append(f"'{name}': a member names several alternative ports"); continue
+        cover = {x[0] for x in mt}
+        if not inv <= cover:
+            why.append(f"'{name}' omits {', '.join(sorted(inv - cover))}"); continue
+        if ADDITIVE.search(seg) and not re.search(r"=\s*" + NUM + r"\s*W", seg) and not MAXW.search(seg.replace(ADDITIVE.search(seg)[0], " ")):
+            why.append(f"'{name}': additive figures, sum not printed"); continue
+        eq = re.search(r"=\s*" + NUM + r"\s*W", seg)
+        mw = [fnum(next(x for x in m if x)) for m in MAXW.findall(seg)]
+        w = fnum(eq[1]) if eq else (max(mw) if mw else None)
+        if w is None:
+            ws = re.findall(r"(?<![\d.])" + NUM + r"\s*W\b(?!h)", RANGE.sub(" ", clean(seg)))
+            w = fnum(ws[0]) if len(set(ws)) == 1 else None
+        if w is None:
+            why.append(f"'{name}': no single printed W figure"); continue
+        found.setdefault(w, sorted(cover))
+    if len(found) == 1:
+        w, toks = next(iter(found.items()))
+        return w, toks, None
+    if len(found) > 1:
+        return None, None, "combinations covering every port print different totals: " + ", ".join(f"{w} W" for w in sorted(found))
+    return None, None, "no printed combination covers every port (" + "; ".join(why)[:200] + ")"
+
+
 def ports_from(text, direction="out"):
-    """-> (ports list, simultaneous literal, total W or None)."""
-    ports, combos, total, best = [], [], None, 0
-    for name, seg, combo in port_segments(text):
+    """-> (ports list, simultaneous literal, total W or Unresolved or None, participating tokens or None). Ports = individual ports only
+    (ambiguous '&' segments are neither a port nor a total; they stay in the simultaneous literal)."""
+    ports, combos, lit = [], [], []
+    for name, seg, kind in port_segments(text):
         fx, pps, mw, _ = pdos(seg)
-        if combo and not MAXW.search(seg) and re.search(NUM + r"\s*W\s*\+\s*" + NUM + r"\s*W", seg):
-            mw = fnum(sum(float(x) for x in re.findall(NUM + r"\s*W\b", seg.split("(")[0])))     # '65W+15W (Total)' = 80 W
-        if combo:
-            combos.append(f"{name}: {seg}"[:120])
-            n = 99 if re.match(r"total", name, re.I) else name.count("+") + name.count("&") + 1
-            if mw and (total is None or n > best or (n == best and mw > total)):
-                total, best = mw, n      # the combination with the most ports = 'all ports at once' (detail stays in `simultaneous`)
+        if kind != "port":
+            lit.append(f"{name}: {seg}"[:120])
+            if kind == "combo":
+                combos.append((name, seg))
             continue
         ports.append({"name": name, "type": port_type(name), "direction": direction, "max_w": mw, "fixed_pdos": fx or None, "pps": pps or None})
-    return ports, "; ".join(combos) or None, total
+    amb = [n for n, _, k in port_segments(text) if k == "ambiguous"]
+    total, toks, why = all_port_total([p["name"] for p in ports], combos)
+    if total is None and (why or amb):
+        total = Unresolved(why or f"'{amb[0]}': '&' without '+' combinations does not say each-port or all-ports")
+    return ports, "; ".join(lit) or None, total, toks
