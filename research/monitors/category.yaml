@@ -1,0 +1,12 @@
+name: Monitors
+description: "Computer monitors by manufacturer model number: size, resolution, panel, refresh, HDR tier, power. Sources: LG, ASUS, Lenovo PSREF, ENERGY STAR, VESA DisplayHDR."
+columns: [gen.size_class, res.native, panel.technology, res.refresh_max, hdr.vesa_tier, pwr.typical]
+features: [stem_links]
+# Model-string stem for CROSS-SOURCE PROPOSALS (research/monitors/identity.md): never an automatic merge.
+stem: {cut_at: ["/", "#"], strip_market_suffix: true}
+brand_aliases: {lge: lg, "lg electronics": lg}
+brand_names: {lg: LG, asus: ASUS, lenovo: Lenovo, dell: Dell, hp: HP, aoc: AOC, msi: MSI, benq: BenQ, acer: Acer, philips: Philips,
+  viewsonic: ViewSonic, samsung: Samsung, eizo: EIZO, gigabyte: Gigabyte, hkc: HKC, sony: Sony, iiyama: iiyama, alienware: Alienware}
+# DisplayHDR's table also lists notebooks / all-in-ones; the listing text decides category membership.
+skip_alias_pattern: 'notebook|laptop|\byoga\b|zenbook|vivobook|thinkpad|thinkbook|spectre|\benvy\b|macbook|\bsurface\b|\bxps\b|inspiron|predator (helios|triton)|nitro v |\baspire\b|tablet|all-in-one|\baio\b'
+package_markets: {mtm: {suffix: US}}

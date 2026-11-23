@@ -1,0 +1,6 @@
+name: Power strips & surge protectors
+description: "Surge protectors and power strips by manufacturer model number: joules, clamping voltage, outlets, cord."
+columns: [type.kind, outlets.count, surge.joules, surge.vpr_max, cord.length_ft, load.max_amps]
+variant_label:
+  entity_variant: {color: "colour {}", pack: "multi-pack ({})"}
+features: [strip_variants]

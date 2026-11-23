@@ -5,3 +5,8 @@
 - Format: storage "1000 GB" should display as 1 TB (unit display rule).
 - UX: default sort Brand asc puts thin Apple model rows first; prefer default sort by completeness or brand=Lenovo-first? (decide: sort by spec coverage desc).
 - favicon.ico 404 (trivial).
+
+# 2026-11-23 00:46 monitors check
+- Monitors renders 4133 trusted rows, no console errors.
+- Preview box copy is laptop-specific ("e.g. Dell, Surface, Apple") on monitors with 0 preview brands: make per-category or hide when 0.
+- Size class "Not yet extracted" for ASUS rows: derive from display diagonal spec (derived claim kind).

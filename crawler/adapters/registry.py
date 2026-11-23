@@ -15,26 +15,33 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _contract as C  # noqa: E402
 
 SOURCES = {
-    "lenovo-psref": {"brand": "lenovo", "brand_name": "Lenovo", "category": "laptops", "module": "lenovo_psref"},
-    "asus-us": {"brand": "asus", "brand_name": "ASUS", "category": "laptops", "module": "asus"},
-    "apple-support": {"brand": "apple", "brand_name": "Apple", "category": "laptops", "module": "apple"},
-    "dell-us": {"brand": "dell", "brand_name": "Dell", "category": "laptops", "module": "dell"},
-    "microsoft-surface": {"brand": "microsoft", "brand_name": "Microsoft Surface", "category": "laptops", "module": "surface"},
-    "framework-us": {"brand": "framework", "brand_name": "Framework", "category": "laptops", "module": "framework"},
-    "samsung-us": {"brand": "samsung", "brand_name": "Samsung", "category": "laptops", "module": "samsung"},
-    "razer-us": {"brand": "razer", "brand_name": "Razer", "category": "laptops", "module": "razer"},
-    "energystar-monitors": {"brand": "energystar", "brand_name": "ENERGY STAR (cross-brand)", "category": "monitors", "module": "energystar_monitors"},
-    "lenovo-psref-monitors": {"brand": "lenovo", "brand_name": "Lenovo", "category": "monitors", "module": "lenovo_monitors"},
-    "displayhdr": {"brand": "vesa", "brand_name": "VESA DisplayHDR", "category": "monitors", "module": "displayhdr"},
-    "lg-us": {"brand": "lg", "brand_name": "LG", "category": "monitors", "module": "lg_us"},
-    "asus-us-monitors": {"brand": "asus", "brand_name": "ASUS", "category": "monitors", "module": "asus_monitors"},
-    "tripplite": {"brand": "tripplite", "brand_name": "Tripp Lite", "category": "power-strips", "module": "tripplite"},
-    "cyberpower": {"brand": "cyberpower", "brand_name": "CyberPower", "category": "power-strips", "module": "cyberpower"},
+    "lenovo-psref": {"brand": "lenovo", "brand_name": "Lenovo", "category": "laptops", "module": "lenovo_psref", "importer": "lenovo-psref"},
+    "asus-us": {"brand": "asus", "brand_name": "ASUS", "category": "laptops", "module": "asus", "importer": "asus"},
+    "apple-support": {"brand": "apple", "brand_name": "Apple", "category": "laptops", "module": "apple", "importer": "apple"},
+    "dell-us": {"brand": "dell", "brand_name": "Dell", "category": "laptops", "module": "dell", "importer": "generic"},
+    "microsoft-surface": {"brand": "microsoft", "brand_name": "Microsoft Surface", "category": "laptops", "module": "surface", "importer": "generic"},
+    "framework-us": {"brand": "framework", "brand_name": "Framework", "category": "laptops", "module": "framework", "importer": "generic"},
+    "samsung-us": {"brand": "samsung", "brand_name": "Samsung", "category": "laptops", "module": "samsung", "importer": "generic"},
+    "razer-us": {"brand": "razer", "brand_name": "Razer", "category": "laptops", "module": "razer", "importer": "generic"},
+    "energystar-monitors": {"brand": "energystar", "brand_name": "ENERGY STAR (cross-brand)", "category": "monitors", "module": "energystar_monitors", "importer": "model"},
+    "lenovo-psref-monitors": {"brand": "lenovo", "brand_name": "Lenovo", "category": "monitors", "module": "lenovo_monitors", "importer": "model"},
+    "displayhdr": {"brand": "vesa", "brand_name": "VESA DisplayHDR", "category": "monitors", "module": "displayhdr", "importer": "model"},
+    "lg-us": {"brand": "lg", "brand_name": "LG", "category": "monitors", "module": "lg_us", "importer": "model"},
+    "asus-us-monitors": {"brand": "asus", "brand_name": "ASUS", "category": "monitors", "module": "asus_monitors", "importer": "model"},
+    "tripplite": {"brand": "tripplite", "brand_name": "Tripp Lite", "category": "power-strips", "module": "tripplite", "importer": "strip"},
+    "cyberpower": {"brand": "cyberpower", "brand_name": "CyberPower", "category": "power-strips", "module": "cyberpower", "importer": "strip"},
     # crawl.py v0 stores (raw/<slug>/products/<key>/{extract,feed}.json, no snapshot log): read through crawlpy_strips, never written
-    **{slug: {"brand": slug, "brand_name": name, "category": "power-strips", "module": "crawlpy_strips", "legacy": True}
+    **{slug: {"brand": slug, "brand_name": name, "category": "power-strips", "module": "crawlpy_strips", "legacy": True, "importer": "strip"}
        for slug, name in (("anker", "Anker"), ("belkin", "Belkin"), ("ugreen", "UGREEN"), ("baseus", "Baseus"),
                           ("byjasco", "Jasco (GE / Philips)"), ("furman", "Furman"), ("austere", "Austere"))},
 }
+
+# importer = which scripts/import.py handler reads the source: lenovo-psref | asus | apple | generic (model->configuration pages) | strip | model
+# (one page = one model, optional MTM packages, claims on the model). A new category adds its sources here (or, in fixture tests, in
+# $SPECSHEET_ROOT/sources.extra.json) and ships research/<cat>/{spec-profile,category}.yaml: nothing else names it.
+_extra = Path(C.ROOT) / "sources.extra.json"
+if _extra.exists() and C.ROOT != C.CODE:
+    SOURCES.update(json.loads(_extra.read_text()))
 
 
 def safe(k):
@@ -94,7 +101,6 @@ def iter_observations(source_id, reparse=False):
     if source_id == "lenovo-psref":
         yield from _lenovo(source_id, store, latest)
         return
-    mod = importlib.import_module(meta["module"])
     refs = {}
     d = store.dir / "discovery.json"
     if d.exists():
@@ -105,8 +111,9 @@ def iter_observations(source_id, reparse=False):
         p = store.dir / "parsed" / (safe(key) + ".json")
         if reparse or not p.exists():
             if ad is None:
+                mod = importlib.import_module(meta["module"])
                 ad = next(getattr(mod, n)() for n in dir(mod) if isinstance(getattr(mod, n), type) and getattr(getattr(mod, n), "source_id", None) == source_id)
-            if key not in refs and meta["category"] != "power-strips":   # laptop adapters: only refs the discovery knows
+            if key not in refs and meta.get("importer") != "strip":   # laptop adapters: only refs the discovery knows
                 continue
             snap = C.Snapshot(rec["snapshot"], refs.get(key) or C.Ref(source_id, key, rec["url"]), 200, rec["fetched_at"], rec["final_url"], {})
             try:

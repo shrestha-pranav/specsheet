@@ -19,21 +19,18 @@ from pathlib import Path
 import jsonschema
 import yaml
 
+import catmeta
 import resolve as R
 
-ROOT = Path(__file__).resolve().parent.parent
+CODE = Path(__file__).resolve().parent.parent
+ROOT = catmeta.ROOT                    # data root (research/, state/, data/); SPECSHEET_ROOT overrides it for fixture tests
 DB = ROOT / "state" / "specsheet.sqlite"
 SHARD_BYTES = 2_000_000
-
-CATEGORIES = {
-    "laptops": {"name": "Laptops", "description": "US-market laptop configurations by manufacturer part number (Lenovo MTM, ASUS part/model code, Apple model).",
-                "columns": ["cpu.model", "mem.size", "stor.size", "disp.size", "gpu.model", "pwr.battery_wh", "phys.weight"], "us_only": True},
-    "power-strips": {"name": "Power strips & surge protectors", "description": "Surge protectors and power strips by manufacturer model number: joules, clamping voltage, outlets, cord.",
-                     "columns": ["type.kind", "outlets.count", "surge.joules", "surge.vpr_max", "cord.length_ft", "load.max_amps"], "us_only": False},
-}
+# Categories are NOT listed here: every category with an entity in the store and a research/<cat>/spec-profile.yaml is published, with
+# its label, columns, market filter and variant label from research/<cat>/category.yaml (scripts/catmeta.py).
 V0_TYPE = {"integer": "number", "object": "text", "date": "text"}
-_REC = json.loads((ROOT / "schemas" / "record.schema.json").read_text())
-_PD = json.loads((ROOT / "schemas" / "public-detail.schema.json").read_text())
+_REC = json.loads((CODE / "schemas" / "record.schema.json").read_text())
+_PD = json.loads((CODE / "schemas" / "public-detail.schema.json").read_text())
 DETAIL_VALIDATOR = jsonschema.Draft202012Validator(_PD, resolver=jsonschema.RefResolver.from_schema(_PD, store={_REC["$id"]: _REC}))
 
 
@@ -61,28 +58,36 @@ def fmt_storage(gb):
     return f"{gb / 1000:g} TB" if gb >= 1000 and gb % 1000 == 0 else f"{gb:g} GB"
 
 
-def variant_label(e, specs):
-    ex = json.loads(e["extra"])
-    if e["category"] == "power-strips":
-        v = ex.get("variant") or {}
-        if e["kind"] in ("configuration", "package") and v:
-            return {"color": f"colour {v.get('suffix') or v.get('value')}", "pack": f"multi-pack ({v.get('suffix')})"}.get(v.get("axis"), v.get("value") or v.get("suffix"))
+def _fmt(r, spec, trim=None):
+    v = r["value"]
+    if isinstance(v, (int, float)) and not isinstance(v, bool):
+        if r.get("display"):
+            return r["display"]
+        u = spec.get("unit") or ""
+        if u == "GB" and v >= 1000 and v % 1000 == 0:
+            return f"{v / 1000:g} TB"
+        return f"{v:g} {u}".strip()
+    t = re.sub(r"\s*[®™]", "", str(v))
+    return t.split(",")[0][:trim] if trim else t
+
+
+def variant_label(cfg, specdefs, e, specs):
+    """category.yaml `variant_label`: {specs: [...]} joined with ' / ', or {entity_variant: {axis: template}} from the importer's variant record."""
+    vl = cfg.get("variant_label")
+    if not vl:
         return None
-    parts = []
-    g = lambda k: specs.get(k) if specs.get(k, {}).get("status") == "known" else None
-    if g("cpu.model"):
-        parts.append(re.sub(r"\s*[®™]", "", str(g("cpu.model")["value"]).split(",")[0])[:40])
-    if g("mem.size"):
-        parts.append(f"{g('mem.size')['value']:g} GB")
-    if g("stor.size"):
-        parts.append(g("stor.size").get("display") or fmt_storage(g("stor.size")["value"]))
-    if g("gen.color"):
-        parts.append(str(g("gen.color")["value"]))
+    if "entity_variant" in vl:
+        v = json.loads(e["extra"]).get("variant") or {}
+        if e["kind"] in ("configuration", "package") and v:
+            t = vl["entity_variant"].get(v.get("axis"))
+            return t.format(v.get("suffix") or v.get("value")) if t else (v.get("value") or v.get("suffix"))
+        return None
+    parts = [_fmt(specs[k], specdefs[k], (vl.get("trim") or {}).get(k)) for k in vl.get("specs", []) if specs.get(k, {}).get("status") == "known" and k in specdefs]
     return " / ".join(parts) or None
 
 
 def load_profile(cat):
-    return yaml.safe_load((ROOT / "research" / cat / "spec-profile.yaml").read_text())
+    return catmeta.load(cat)["profile"]
 
 
 def schema_doc(cat, p, cfg):
@@ -103,10 +108,6 @@ def schema_doc(cat, p, cfg):
                        "column": s["key"] in cfg["columns"], "display": s.get("display"), "facet": facet,
                        "conditions": s.get("conditions"), "headline_condition": s.get("headline_condition")})
     return {"id": cat, "schema_version": str(p["version"]), "groups": groups, "conditions": p.get("conditions", []), "fields": fields}
-
-
-def us_ok(idents):
-    return any((i["scheme"] == "mtm" and i["value"].endswith("US")) or i["market"] == "US" for i in idents)
 
 
 def view(ents, claims, absn, specdefs, parent_of, ok_states):
@@ -143,8 +144,10 @@ def publish(api: Path, build_stats: dict):
     if meta.get("scope") == "partial":
         raise SystemExit("state/specsheet.sqlite is a partial (--source) import; refusing to publish it over the full release")
     manifest_cats, categories, lookup = [], [], collections.defaultdict(set)
-    for cat, cfg in CATEGORIES.items():
-        p = load_profile(cat)
+    cats = [r[0] for r in con.execute("SELECT DISTINCT category FROM entities ORDER BY 1")]
+    for cat in cats:
+        cfg = catmeta.load(cat)
+        p = cfg["profile"]
         sch = schema_doc(cat, p, cfg)
         specdefs = {s["key"]: s for s in p["specs"]}
         fields = {f["key"]: f for f in sch["fields"]}
@@ -176,11 +179,11 @@ def publish(api: Path, build_stats: dict):
 
         def selectable(eid, specs):
             return ents[eid]["kind"] != "family" and any(r["status"] in ("known", "conflicted") for r in specs.values()) \
-                and (not cfg["us_only"] or us_ok(idents[eid]))
+                and catmeta.passes_market_filter(cfg, idents[eid])
 
         rows_t = [eid for eid in sorted(ents) if selectable(eid, trusted[eid])]
         rows_p = [eid for eid in sorted(ents) if selectable(eid, preview[eid])]
-        dropped_us = sum(1 for eid, e in ents.items() if e["kind"] != "family" and preview[eid] and cfg["us_only"] and not us_ok(idents[eid]))
+        dropped_us = sum(1 for eid, e in ents.items() if e["kind"] != "family" and preview[eid] and not catmeta.passes_market_filter(cfg, idents[eid]))
         pub = set(rows_t)
         anc = set()
         for eid in rows_t:
@@ -223,7 +226,7 @@ def publish(api: Path, build_stats: dict):
                          for r in rels[eid] if r["status"] in ok_rel and (scope != "trusted" or r["target_id"] in files_t)]
             lc = {"current": "current", "discontinued": "discontinued"}.get(e["lifecycle"], "unknown")
             model_str = next((i["value"] for i in idents[eid] if i["scheme"] in ("mtm", "mfr_model", "mfr_sku") and i["role"] == "key"), None)
-            vl = variant_label(e, specs)
+            vl = variant_label(cfg, specdefs, e, specs)
             return {"record_format": "specsheet.record/1", "review_scope": scope, "id": eid, "category": cat, "kind": e["kind"],
                     "brand": {"id": e["brand"], "name": e["brand_name"]}, "name": e["name"] or eid, "variant_label": vl, "lifecycle": {"state": lc},
                     "identifiers": ids_out, "aliases": [{"text": a["text"], "kind": a["kind"]} for a in aliases[eid]], "relations": relations,
@@ -307,7 +310,7 @@ def publish(api: Path, build_stats: dict):
             dump(pfolder / "products" / f"{eid}.json", d, compact=True)
         ppaths = write_shards(pfolder, prev_rows)
         # v0 compat: slim products.json (columns only) + fields the UI can drive
-        compat_fields = [f for f in sch["fields"] if f["column"] or (f["facet"] and f["tier"] == "core" and f["type"] in ("number", "bool", "enum"))]
+        compat_fields = [f for f in sch["fields"] if f["column"]]     # columns only (size budget: the UI reads index shards; this file is a v0 fallback)
         v0f = [{"key": f["key"], "label": f["label"], "group": f["group"], "type": V0_TYPE.get(f["type"], f["type"]) if f["type"] != "list" else "list", "unit": f["unit"],
                 "facet": bool(f["facet"]), "priority": f["priority"], "column": f["column"]} for f in compat_fields]
         slim = []
@@ -325,7 +328,7 @@ def publish(api: Path, build_stats: dict):
         dump(folder / "products.json", slim, compact=True)
         prev_entry = {"review_scope": "preview", "index": [f"preview/{cat}/{x}" for x in ppaths], "count": len(prev_rows),
                       "products": f"preview/{cat}/products/", "only_preview": sum(1 for r in prev_rows if not r["in_trusted"])}
-        categories.append({"id": cat, "name": cfg["name"], "description": cfg["description"], "count": len(out_rows), "demo": False, "status": "accepted",
+        categories.append({"id": cat, "name": cfg["name"], "description": cfg["description"].strip(), "count": len(out_rows), "demo": False, "status": "accepted",
                            "schema": f"{cat}/schema.json", "index": [f"{cat}/{x}" for x in paths], "facets": f"{cat}/facets.json", "products": f"{cat}/products.json",
                            "fields": v0f, "preview": prev_entry})
         manifest_cats.append({"id": cat, "schema_version": sch["schema_version"], "count": len(out_rows), "index": [f"{cat}/{x}" for x in paths], "facets": f"{cat}/facets.json",

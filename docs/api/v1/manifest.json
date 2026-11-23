@@ -1,7 +1,7 @@
 {
  "dataset_version": "1.0.0",
- "build": "2f24c5495650",
- "generated_at": "2026-11-23T08:26:44Z",
+ "build": "acd6b5214c4b",
+ "generated_at": "2026-11-23T08:43:03Z",
  "record_format": "specsheet.record/1",
  "categories": [
   {
@@ -44,6 +44,26 @@
    }
   },
   {
+   "id": "monitors",
+   "schema_version": "0.1.0",
+   "count": 4133,
+   "index": [
+    "monitors/index-0.json",
+    "monitors/index-1.json"
+   ],
+   "facets": "monitors/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/monitors/index.json"
+    ],
+    "count": 1465,
+    "products": "preview/monitors/products/",
+    "only_preview": 0
+   }
+  },
+  {
    "id": "power-strips",
    "schema_version": "0.1",
    "count": 538,
@@ -64,11 +84,14 @@
   }
  ],
  "release": {
-  "accepted_digest": "bc69042518e0a3c39f0d453009e5769dfef56c721f8d2626fcbba17269e5c8e4",
+  "accepted_digest": "75d6b33b4a2797401b1159401d72a4a0df87f6adfb19124d4a4207a2fe3a6b92",
   "policies": [
    "claim/mfr-structured-datasheet@1",
    "claim/asus-techspec-typed@1",
    "claim/cpu-split@1",
+   "claim/mfr-monitor-structured@1",
+   "claim/energystar-certified-power@1",
+   "claim/displayhdr-certified-tier@1",
    "rel/source-stated-hierarchy@1"
   ],
   "ledger_lines": 0,
@@ -115,11 +138,23 @@
     "discovery_complete": "1"
    },
    "energystar-monitors": {
-    "observations": "863",
+    "observations": "1504",
     "discovery_complete": "1"
    },
    "lenovo-psref-monitors": {
     "observations": "195",
+    "discovery_complete": "1"
+   },
+   "displayhdr": {
+    "observations": "2129",
+    "discovery_complete": "1"
+   },
+   "lg-us": {
+    "observations": "504",
+    "discovery_complete": "1"
+   },
+   "asus-us-monitors": {
+    "observations": "346",
     "discovery_complete": "1"
    },
    "tripplite": {

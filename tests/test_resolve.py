@@ -133,12 +133,12 @@ class PublishFixtureTest(unittest.TestCase):
                 {"key": "outlets", "label": "Outlets", "group": "g", "type": "integer", "facet": True},
                 {"key": "joules", "label": "Joules", "group": "g", "type": "number", "unit": "J", "facet": True},
                 {"key": "color", "label": "Colour", "group": "g", "type": "text", "level": "configuration"}]}
-        old = (vp.DB, vp.CATEGORIES, vp.load_profile)
-        vp.DB, vp.CATEGORIES, vp.load_profile = db, {"fx": {"name": "Fixture", "description": "", "columns": ["outlets"], "us_only": False}}, lambda cat: prof
+        old = (vp.DB, vp.catmeta.load)
+        vp.DB, vp.catmeta.load = db, lambda cat: {"id": cat, "name": "Fixture", "description": "", "columns": ["outlets"], "market_filter": None, "variant_label": None, "profile": prof}
         try:
             cats, mcats, rel = vp.publish(tmp / "api", {})
         finally:
-            vp.DB, vp.CATEGORIES, vp.load_profile = old
+            vp.DB, vp.catmeta.load = old
         api = tmp / "api"
         idx = json.loads((api / "fx" / "index.json").read_text())
         self.assertEqual({r["id"] for r in idx}, {"acme-m1", "acme-m1-blk"})

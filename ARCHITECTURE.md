@@ -443,5 +443,18 @@ status, ...)` + per-category typed views for facets, `snapshots(sha256, source, 
   incl. candidates and proposed links. Details validate against `schemas/public-detail.schema.json` at build time.
 - **Deferred**: non-US Lenovo MTMs are retained as `regional_observations` + `coverage` (evidence by reference: snapshot + MTM),
   not yet materialised as claims (needs a streaming/partitioned store); stale `parsed/*.json` cache keys (P1-9); profile-driven
-  category metadata/columns (P1-8: still `v1_publish.CATEGORIES`); hash-partitioned shards; typed CTO constraints; Apple
+  category metadata/columns (done in 15.9); hash-partitioned shards; typed CTO constraints; Apple
   one-page-many-identifiers split.
+
+### 15.9 A category = profile + category.yaml + source registration (A3-impl r3, 2026-11-23)
+- `research/<cat>/spec-profile.yaml` (A1: specs, facets, identity levels) + optional `research/<cat>/category.yaml` (A3: name, columns,
+  market_filter, variant_label, importer `features`, brand aliases/names, stem rule; documented in `scripts/catmeta.py`) + `SOURCES` entries in
+  `crawler/adapters/registry.py` (each names an `importer`: lenovo-psref | asus | apple | generic | strip | **model**). Nothing else names a category:
+  `v1_publish.py` publishes every category present in the store; `import.py` ingests every source whose category has a profile.
+  `tests/test_new_category.py` proves it with a throwaway root (`SPECSHEET_ROOT`, `sources.extra.json`).
+- `model` importer: one page/row = one model; mfr_model key is brand-scoped and NOT market-scoped, so an exact normalised string from two
+  sources is one entity (accepted by identity, no policy needed); stem equality (identity.md rule) only PROPOSES `possible_match`
+  (never transmits claims). mtm -> package entity, hw_rev/edid_id -> revision child. Certifier/regulatory rows mint models but never name them.
+- Policies 2026-11-23: `claim/mfr-monitor-structured@1`, `claim/energystar-certified-power@1` (per-field key list), `claim/displayhdr-certified-tier@1`.
+- Size budget: `docs/api/v1` <= ~80 MB of bytes (Pages limit headroom); v0 `<cat>/products.json` now carries column fields only. Measured 68 MB.
+

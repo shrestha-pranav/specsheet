@@ -44,6 +44,52 @@ claim_policies:
       extractors: [import.py+cpu-split@1]
       kinds: [official]
       require_normalized: true
+  - id: claim/mfr-monitor-structured@1
+    since: "2026-11-23"
+    rationale: >-
+      Monitors, manufacturer-owned structured pages: Lenovo PSREF monitor platform tables (lenovo_monitors@1), LG US product JSON
+      (lg_us@1 next_data terms) and ASUS US techspec tables (asus_monitors@1). Per field: only values that normalise to the profile type
+      (normalize.py) are accepted; labels A2 recorded as unmapped (ASUS "1ms MPRT" is not GtG) never become claims, so nothing mapped
+      here is a guess. Manufacturer-marketed values (motion.gtg_marketed, hdr.peak_marketed, hdr.marketed_label) are accepted AS
+      marketed claims (the keys say so). Adapter versions pinned.
+    audit: "A2 monitors r2 report (5 adapters parsed, mapping caveats listed) + A3 per-source spot check, 2026-11-23"
+    match:
+      extractors: [lenovo_monitors@1, lg_us@1, asus_monitors@1]
+      source_ids: [lenovo-psref-monitors, lg-us, asus-us-monitors]
+      kinds: [official]
+      tiers: [manufacturer]
+      statuses: [known, not_applicable]
+      require_normalized: true
+  - id: claim/energystar-certified-power@1
+    since: "2026-11-23"
+    rationale: >-
+      ENERGY STAR product-finder rows (energystar_monitors@1) are the EPA certification record for the maker's own model string.
+      Accepted per field: the measured/declared power fields, the certification flag, native resolution and viewable diagonal.
+      NOT accepted (stay preview): luminance (basis unstated), contrast (<100 dropped by the adapter, basis unstated), panel
+      technology and release year (certification date is not release date).
+    audit: "A2 monitors r2 mapping caveats; A3 check that pwr.* normalise to the profile unit, 2026-11-23"
+    match:
+      extractors: [energystar_monitors@1]
+      source_ids: [energystar-monitors]
+      kinds: [official]
+      tiers: [regulatory]
+      statuses: [known, not_applicable]
+      keys: [pwr.typical, pwr.standby, pwr.external_adapter, pwr.energy_star, res.native, res.width_px, res.height_px, gen.viewable_diag]
+      require_normalized: true
+  - id: claim/displayhdr-certified-tier@1
+    since: "2026-11-23"
+    rationale: >-
+      VESA's DisplayHDR certified-products table (displayhdr@2) is the certification record: tier (400..1400, True Black) for a
+      listed model. Accepted as a certification claim on the model it names; a stem-only (non-exact) model match does NOT transmit it.
+    audit: "A2 monitors r2: 2129 rows parsed, tier distribution checked against the page, 2026-11-23"
+    match:
+      extractors: [displayhdr@2]
+      source_ids: [displayhdr]
+      kinds: [official]
+      tiers: [certifier]
+      keys: [hdr.vesa_tier]
+      statuses: [known]
+      require_normalized: true
 relation_policies:
   - id: rel/source-stated-hierarchy@1
     since: "2026-11-22"

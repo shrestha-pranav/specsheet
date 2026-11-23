@@ -402,26 +402,6 @@
   "products": "laptops/products.json",
   "fields": [
    {
-    "key": "gen.platform_variant",
-    "label": "Platform variant (Intel/AMD/Snapdragon, Lunar vs Arrow Lake)",
-    "group": "general",
-    "type": "enum",
-    "unit": null,
-    "facet": true,
-    "priority": 10,
-    "column": false
-   },
-   {
-    "key": "gen.region",
-    "label": "Region / SKU market",
-    "group": "general",
-    "type": "enum",
-    "unit": null,
-    "facet": true,
-    "priority": 30,
-    "column": false
-   },
-   {
     "key": "cpu.model",
     "label": "Processor model",
     "group": "cpu",
@@ -442,26 +422,6 @@
     "column": true
    },
    {
-    "key": "gpu.type",
-    "label": "Integrated or discrete",
-    "group": "gpu",
-    "type": "enum",
-    "unit": null,
-    "facet": true,
-    "priority": 20,
-    "column": false
-   },
-   {
-    "key": "gpu.tgp",
-    "label": "Discrete GPU TGP (incl. Dynamic Boost)",
-    "group": "gpu",
-    "type": "number",
-    "unit": "W",
-    "facet": true,
-    "priority": 30,
-    "column": false
-   },
-   {
     "key": "mem.size",
     "label": "Installed RAM",
     "group": "memory",
@@ -470,26 +430,6 @@
     "facet": true,
     "priority": 10,
     "column": true
-   },
-   {
-    "key": "mem.soldered",
-    "label": "RAM soldered / on-package",
-    "group": "memory",
-    "type": "enum",
-    "unit": null,
-    "facet": true,
-    "priority": 30,
-    "column": false
-   },
-   {
-    "key": "mem.max",
-    "label": "Max RAM possible for this config",
-    "group": "memory",
-    "type": "number",
-    "unit": "GB",
-    "facet": true,
-    "priority": 50,
-    "column": false
    },
    {
     "key": "stor.size",
@@ -502,26 +442,6 @@
     "column": true
    },
    {
-    "key": "stor.slots",
-    "label": "M.2 slot count (total/free)",
-    "group": "storage",
-    "type": "number",
-    "unit": null,
-    "facet": true,
-    "priority": 20,
-    "column": false
-   },
-   {
-    "key": "stor.soldered",
-    "label": "Storage soldered",
-    "group": "storage",
-    "type": "bool",
-    "unit": null,
-    "facet": true,
-    "priority": 50,
-    "column": false
-   },
-   {
     "key": "disp.size",
     "label": "Screen size",
     "group": "display",
@@ -530,46 +450,6 @@
     "facet": true,
     "priority": 10,
     "column": true
-   },
-   {
-    "key": "disp.panel_type",
-    "label": "Panel type (IPS/OLED/mini-LED)",
-    "group": "display",
-    "type": "enum",
-    "unit": null,
-    "facet": true,
-    "priority": 40,
-    "column": false
-   },
-   {
-    "key": "disp.nits_sdr",
-    "label": "Brightness typical SDR",
-    "group": "display",
-    "type": "number",
-    "unit": "nits",
-    "facet": true,
-    "priority": 50,
-    "column": false
-   },
-   {
-    "key": "disp.touch",
-    "label": "Touchscreen",
-    "group": "display",
-    "type": "bool",
-    "unit": null,
-    "facet": true,
-    "priority": 80,
-    "column": false
-   },
-   {
-    "key": "port.tb_usb4",
-    "label": "Thunderbolt/USB4 present (version)",
-    "group": "ports",
-    "type": "enum",
-    "unit": null,
-    "facet": true,
-    "priority": 20,
-    "column": false
    },
    {
     "key": "pwr.battery_wh",
@@ -604,6 +484,92 @@
   }
  },
  {
+  "id": "monitors",
+  "name": "Monitors",
+  "description": "Computer monitors by manufacturer model number: size, resolution, panel, refresh, HDR tier, power. Sources: LG, ASUS, Lenovo PSREF, ENERGY STAR, VESA DisplayHDR.",
+  "count": 4133,
+  "demo": false,
+  "status": "accepted",
+  "schema": "monitors/schema.json",
+  "index": [
+   "monitors/index-0.json",
+   "monitors/index-1.json"
+  ],
+  "facets": "monitors/facets.json",
+  "products": "monitors/products.json",
+  "fields": [
+   {
+    "key": "gen.size_class",
+    "label": "Size class (marketed diagonal)",
+    "group": "general",
+    "type": "number",
+    "unit": "in",
+    "facet": true,
+    "priority": 20,
+    "column": true
+   },
+   {
+    "key": "panel.technology",
+    "label": "Panel technology",
+    "group": "panel",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "res.native",
+    "label": "Native resolution",
+    "group": "res",
+    "type": "text",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "res.refresh_max",
+    "label": "Refresh rate: max (incl OC)",
+    "group": "res",
+    "type": "number",
+    "unit": "Hz",
+    "facet": false,
+    "priority": 70,
+    "column": true
+   },
+   {
+    "key": "hdr.vesa_tier",
+    "label": "VESA DisplayHDR tier (certified)",
+    "group": "hdr",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "pwr.typical",
+    "label": "Typical power",
+    "group": "power",
+    "type": "number",
+    "unit": "W",
+    "facet": false,
+    "priority": 10,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/monitors/index.json"
+   ],
+   "count": 1465,
+   "products": "preview/monitors/products/",
+   "only_preview": 0
+  }
+ },
+ {
   "id": "power-strips",
   "name": "Power strips & surge protectors",
   "description": "Surge protectors and power strips by manufacturer model number: joules, clamping voltage, outlets, cord.",
@@ -628,36 +594,6 @@
     "column": true
    },
    {
-    "key": "type.ul1449_listed",
-    "label": "UL 1449 listed (Type 3 SPD)",
-    "group": "cert",
-    "type": "bool",
-    "unit": null,
-    "facet": true,
-    "priority": 10,
-    "column": false
-   },
-   {
-    "key": "surge.vpr_ln",
-    "label": "VPR line-neutral",
-    "group": "surge",
-    "type": "number",
-    "unit": "V",
-    "facet": true,
-    "priority": 10,
-    "column": false
-   },
-   {
-    "key": "surge.vpr_lg",
-    "label": "VPR line-ground",
-    "group": "surge",
-    "type": "number",
-    "unit": "V",
-    "facet": true,
-    "priority": 20,
-    "column": false
-   },
-   {
     "key": "surge.vpr_max",
     "label": "VPR worst mode (derived)",
     "group": "surge",
@@ -676,16 +612,6 @@
     "facet": true,
     "priority": 50,
     "column": true
-   },
-   {
-    "key": "safety.auto_shutoff",
-    "label": "Auto shut-off on protection failure",
-    "group": "safety",
-    "type": "bool",
-    "unit": null,
-    "facet": true,
-    "priority": 10,
-    "column": false
    },
    {
     "key": "outlets.count",
@@ -716,26 +642,6 @@
     "facet": true,
     "priority": 10,
     "column": true
-   },
-   {
-    "key": "load.max_watts",
-    "label": "Max load",
-    "group": "load",
-    "type": "number",
-    "unit": "W",
-    "facet": true,
-    "priority": 20,
-    "column": false
-   },
-   {
-    "key": "usb.total_w",
-    "label": "USB total power",
-    "group": "usb",
-    "type": "number",
-    "unit": "W",
-    "facet": true,
-    "priority": 20,
-    "column": false
    }
   ],
   "preview": {

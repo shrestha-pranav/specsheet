@@ -511,6 +511,7 @@
         "tier": {
           "enum": [
             "regulatory",
+            "certifier",
             "manufacturer",
             "measurement",
             "retailer",

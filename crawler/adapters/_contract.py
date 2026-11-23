@@ -11,12 +11,13 @@ raw/<source>/blobs/<sha256><ext>  content addressed, never overwritten
 raw/<source>/parsed/<key>.json    derived ParseResult (rebuildable from blobs; not authoritative)
 raw/<source>/discovery.json       latest Discovery (refs + checkpoint)
 """
-import gzip, hashlib, json, sys, time
+import gzip, hashlib, json, os, sys, time
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "crawler"))
+CODE = Path(__file__).resolve().parents[2]
+ROOT = Path(os.environ.get("SPECSHEET_ROOT") or CODE)   # data root; env override is for fixture tests
+sys.path.insert(0, str(CODE / "crawler"))
 import crawl  # noqa: E402  (shared Net)
 
 NET = crawl.Net()
