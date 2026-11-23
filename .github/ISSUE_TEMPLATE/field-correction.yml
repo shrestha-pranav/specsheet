@@ -1,0 +1,27 @@
+name: Correct a specification
+description: Report a field value with supporting evidence.
+title: "Specification correction: "
+labels: [field-correction]
+body:
+  - type: markdown
+    attributes:
+      value: "Review before submitting: GitHub issues are public. Include product information only. Opening this form does not submit a report."
+  - type: textarea
+    id: payload
+    attributes:
+      label: Catalogue field
+      description: Entity ID, field key, shown value, and dataset build supplied by the catalogue.
+    validations:
+      required: true
+  - type: textarea
+    id: claimed_value
+    attributes:
+      label: Proposed value
+    validations:
+      required: true
+  - type: input
+    id: evidence_url
+    attributes:
+      label: Evidence URL
+    validations:
+      required: true

@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Build the versioned, category-agnostic static dataset in docs/api/v1."""
+import argparse
 import json
 import re
+import sys
 import shutil
 import subprocess
 import tempfile
@@ -254,9 +256,15 @@ def stamp_build():
     import hashlib, re as _re
     h = hashlib.sha256()
     for f in sorted(API.rglob("*.json")) + [OUT / "app.js", OUT / "styles.css"]:
+        if f in (API / "manifest.json", API / "build.json"):
+            continue   # derived from the hash (manifest carries it)
         h.update(f.read_bytes())
     build = h.hexdigest()[:12]
     dump(API / "build.json", {"build": build})
+    if (API / "manifest.json").exists():
+        m = json.loads((API / "manifest.json").read_text())
+        m["build"] = build
+        dump(API / "manifest.json", m)
     idx = OUT / "index.html"
     html = idx.read_text()
     html = _re.sub(r'href="styles\.css(\?v=[0-9a-f]+)?"', f'href="styles.css?v={build}"', html)
@@ -268,12 +276,20 @@ def stamp_build():
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--no-state", action="store_true", help="skip the profile-driven categories (laptops, power-strips); needs no state/specsheet.sqlite")
+    args = ap.parse_args()
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
     chargers, lookup = charger_records()
     strips = strip_records()
     categories = [
         {"id": "gan-chargers", "name": "USB-C wall chargers", "description": "Cross-brand power, ports, and USB PD capability.", "count": len(chargers), "demo": False, "products": "gan-chargers/products.json", "fields": CHARGER_FIELDS},
-        {"id": "power-strips-demo", "name": "Power strips", "description": "Fictional demonstration of a second category schema.", "count": len(strips), "demo": True, "products": "power-strips-demo/products.json", "fields": STRIP_FIELDS},
+        {"id": "power-strips-demo", "name": "Power strips (demo)", "description": "Fictional demonstration of a second category schema.", "count": len(strips), "demo": True, "products": "power-strips-demo/products.json", "fields": STRIP_FIELDS},
     ]
+    if not args.no_state:
+        import v1_publish
+        if not v1_publish.DB.exists():
+            raise SystemExit(f"{v1_publish.DB} missing: run scripts/import.py first (or pass --no-state to build chargers only)")
     if API.exists():
         shutil.rmtree(API)
     for category, records in ((categories[0], chargers), (categories[1], strips)):
@@ -284,13 +300,27 @@ def main():
             dump(folder / "products" / f"{record['id']}.json", record)
             index.append({k: record[k] for k in ("id", "category", "brand", "name", "family", "model", "variant", "identifiers", "specs", "confidence", "demo")})
         dump(folder / "products.json", index)
+    manifest_cats = [{"id": c["id"], "schema_version": "0", "count": c["count"], "index": [], "facets": None, "demo": c["demo"], "legacy": True} for c in categories]
+    v1_stats, release = {}, None
+    if not args.no_state:
+        v1c, v1m, release = v1_publish.publish(API, v1_stats)
+        categories += v1c
+        manifest_cats += v1m
+    else:
+        v1_publish_lookup = {}
+        dump(API / "lookup" / "identifiers.json", {})
+        dump(API / "redirects.json", {})
     dump(API / "categories.json", categories)
     dump(API / "lookup" / "models.json", lookup)
-    (API / "README.md").write_text("# Static dataset v1\n\n`categories.json` contains category schemas and counts. Each category has an index `products.json`, detail records under `products/<id>.json`, and `schema.json`. These are versioned static JSON files, not a dynamic API. Every specification has `{value,status,sources,confidence,source_scope}`. `status` is known, unknown, conflicted, not_yet_extracted, or not_applicable. Only known values are established for filtering. Source IDs refer to the detail record's `sources`; `record_context` means no direct field citation was supplied. Legacy charger records are unreviewed. The power-strip entries are fictional demo data.\n")
+    dump(API / "manifest.json", {"dataset_version": "1.0.0", "build": "", "generated_at": __import__("time").strftime("%FT%TZ", __import__("time").gmtime()),
+                                 "record_format": "specsheet.record/1", "categories": manifest_cats, "release": release})
+    (API / "README.md").write_text("# Static dataset v1\n\n`manifest.json` lists categories with schema versions, index shards and facets. Contract: `team/briefs/a4-contract.md`.\n\nLegacy v0 files (`categories.json` fields, `<cat>/products.json`) remain for the chargers pilot and the demo category; `laptops` and `power-strips` also ship a slim `products.json` (column fields only) so the current UI keeps working until A4 switches to `index*.json` + `facets.json`. Every specification has `{value,status,sources,...}`; `status` is known, unknown, conflicted, not_yet_extracted, not_applicable, or not_published. Only known values are established for filtering. Laptops/power strips: the trusted files (`<cat>/index*.json`, `facets.json`, `products/`) contain only claims accepted by a recorded decision (`data/decisions/`: human ledger line or versioned auto-accept policy, id in `manifest.release.policies`) and approved links; unreviewed candidates and proposed links live separately under `preview/<cat>/` (rows flagged `review_scope: preview`, details are deltas over the trusted record). Laptops are US-market only (Lenovo `US` MTMs). The `power-strips-demo` entries are fictional.\n")
     (OUT / ".nojekyll").write_text("")
     stamp_build()
     checked = check_js()
     print(f"built {len(chargers)} charger and {len(strips)} demo products; checked {checked} JavaScript files/scripts")
+    for cat, st in v1_stats.items():
+        print(f"  {cat}: {json.dumps(st)}")
 
 
 if __name__ == "__main__":

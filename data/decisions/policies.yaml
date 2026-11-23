@@ -1,0 +1,55 @@
+# Versioned auto-accept policies (scripts/decisions.py; ARCHITECTURE 15.8). Changing what a policy accepts = new id (@N+1), never an edit.
+# A claim accepted by a policy publishes in the trusted index with review.by = <policy id>. Everything else is a candidate
+# (preview dataset only) until a human ledger line (ledger.jsonl) accepts or rejects it.
+format: specsheet.policies/1
+claim_policies:
+  - id: claim/mfr-structured-datasheet@1
+    since: "2026-11-22"
+    rationale: >-
+      Deterministic extraction of the manufacturer's own structured specification data: Lenovo PSREF model tables
+      (adapter + psref-mapping single-target columns), Tripp Lite product JSON/datasheet tables, CyberPower item JSON + datasheets,
+      and label-mapping transforms applied to those two manufacturers' labelled tables. Values must normalise to the profile type
+      (normalize.py) or the claim stays a candidate. Adapter versions are pinned: a parser bump needs a re-audit and a policy @N+1.
+    audit: "A2 round 2/3 fixture re-parse (0 diffs) + A3 spot check of literal vs normalised values, 2026-11-22"
+    match:
+      extractors: [lenovo_psref@2, import.py+psref-mapping@1, tripplite@2, cyberpower@1, import.py+label-mapping@1]
+      source_ids: [lenovo-psref, tripplite, cyberpower]
+      kinds: [official]
+      tiers: [manufacturer]
+      statuses: [known, not_applicable]
+      require_normalized: true
+      exclude_keys: []
+  - id: claim/asus-techspec-typed@1
+    since: "2026-11-22"
+    rationale: >-
+      ASUS techspec tables (asus@1): labelled manufacturer cells, but model-level pages often append option notes and
+      disclaimers. Only values that normalise to a typed profile value (number/integer/bool/enum), plus the processor,
+      colour, webcam and OS cells (single literal statements), are accepted; other free text stays a preview candidate.
+    audit: "A3 spot check of 25 random asus@1 claims (raw vs normalised), 2026-11-22: 0 wrong typed values"
+    match:
+      extractors: [asus@1]
+      source_ids: [asus-us]
+      kinds: [official]
+      tiers: [manufacturer]
+      statuses: [known, not_applicable]
+      spec_types: [number, integer, bool, enum]
+      also_keys: [cpu.model, gen.color, in.webcam, sw.os]
+      require_normalized: true
+  - id: claim/cpu-split@1
+    since: "2026-11-22"
+    rationale: >-
+      import.py splits a processor cell (crawler/adapters/_cpu.py) into model/cores/threads/clocks/cache. A split claim is only
+      accepted when the literal claim it derives from is accepted (checked in import.py), so this policy never widens trust.
+    match:
+      extractors: [import.py+cpu-split@1]
+      kinds: [official]
+      require_normalized: true
+relation_policies:
+  - id: rel/source-stated-hierarchy@1
+    since: "2026-11-22"
+    rationale: >-
+      The manufacturer source itself states the link: PSREF lists each MTM under its machine type and product, ASUS/Dell/
+      Surface/Framework/Samsung/Razer pages list the part number under the model, a crawl-brand page lists its own colour SKUs.
+      Suffix-inferred links (suffix:*) are NOT covered: they stay proposed until a human approves them in ledger.jsonl.
+    methods: ["adapter:*", "page-variants:*"]
+    types: [member_of_family, configuration_of, package_of, variant_of]

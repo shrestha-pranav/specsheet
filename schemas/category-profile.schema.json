@@ -1,0 +1,696 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specsheet.invalid/schemas/category-profile/1",
+  "title": "specsheet category profile (v1)",
+  "description": "Which specs matter for one product category, how they are typed, united, conditioned, tiered and faceted, and at which identity level they live. Authored as research/<category>/spec-profile.yaml (A1), validated by scripts/build.py. Compatible with the provisional format in team/briefs/common.md: every v1 addition is optional and defaults to the provisional behaviour. Keys starting with x_ are free extension slots; any other unknown key is an error.",
+  "type": "object",
+  "required": [
+    "category",
+    "version",
+    "identity",
+    "groups",
+    "specs"
+  ],
+  "additionalProperties": false,
+  "patternProperties": {
+    "^x_": {}
+  },
+  "properties": {
+    "profile_format": {
+      "const": "specsheet.category-profile/1",
+      "description": "Format of this file. Optional while provisional profiles are migrated; build assumes /1 when absent."
+    },
+    "category": {
+      "$ref": "#/$defs/slug",
+      "description": "Category slug, also the published directory name."
+    },
+    "version": {
+      "description": "Profile content version. Provisional files use a YAML number (0.1); v1 prefers a semver string. Bump MINOR for added specs/enum values, MAJOR for a removed/retyped/re-united key (published as schema_version).",
+      "oneOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
+        }
+      ]
+    },
+    "label": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "market": {
+      "type": "string",
+      "description": "Default market for identifiers and units, e.g. US.",
+      "default": "US"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "pilot",
+        "published",
+        "demo",
+        "retired"
+      ],
+      "default": "draft"
+    },
+    "note": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "identity": {
+      "$ref": "#/$defs/identity"
+    },
+    "units": {
+      "type": "object",
+      "description": "Unit system. Every claim value is stored in the spec's canonical unit; raw literal is kept separately. display maps canonical unit -> preferred display unit for the market (e.g. m -> ft for US cords).",
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "enum": [
+            "si",
+            "us_customary",
+            "mixed"
+          ],
+          "default": "si"
+        },
+        "display": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "custom": {
+          "type": "array",
+          "description": "Units not in the built-in registry (built-ins: schemas/units.json). factor/offset convert TO the base unit.",
+          "items": {
+            "type": "object",
+            "required": [
+              "unit",
+              "base",
+              "factor"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "unit": {
+                "type": "string"
+              },
+              "base": {
+                "type": "string"
+              },
+              "factor": {
+                "type": "number"
+              },
+              "offset": {
+                "type": "number",
+                "default": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "conditions": {
+      "type": "array",
+      "description": "Condition dimensions a claim may be qualified by (port, active_ports, input_voltage, mode, region, firmware...). Specs opt in via spec.conditions.",
+      "items": {
+        "$ref": "#/$defs/conditionDim"
+      }
+    },
+    "groups": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label"
+        ],
+        "additionalProperties": false,
+        "patternProperties": {
+          "^x_": {}
+        },
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/slugPart"
+          },
+          "label": {
+            "type": "string"
+          },
+          "order": {
+            "type": "integer"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "specs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/spec"
+      }
+    },
+    "derived": {
+      "type": "array",
+      "description": "Specs computed from other resolved specs (e.g. port_count = len(ports), max_single_port_w = max(ports[].max_w)). Resulting claims have kind=derived.",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "from",
+          "rule"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "$ref": "#/$defs/specKey"
+          },
+          "from": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/specKey"
+            }
+          },
+          "rule": {
+            "type": "string",
+            "description": "Name of a registered pure function in pipeline/derive.py."
+          }
+        }
+      }
+    },
+    "changelog": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "version",
+          "change"
+        ],
+        "properties": {
+          "version": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "change": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "scope": {
+      "type": "string",
+      "description": "Prose: what is in/out of the category (market, standards, sub-types)."
+    }
+  },
+  "$defs": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"
+    },
+    "slugPart": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_]{0,63}$"
+    },
+    "specKey": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_]*(\\.[a-z0-9][a-z0-9_]*)*$",
+      "description": "Dotted, lowercase, stable forever. Renames go through spec.aliases."
+    },
+    "level": {
+      "enum": [
+        "family",
+        "model",
+        "configuration",
+        "package",
+        "listing",
+        "revision"
+      ]
+    },
+    "identity": {
+      "type": "object",
+      "required": [
+        "levels"
+      ],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {}
+      },
+      "properties": {
+        "levels": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Entity levels used by this category, coarse to fine. Strings (provisional) or objects. listing is always implicit.",
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/level"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "level"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "level": {
+                    "$ref": "#/$defs/level"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "meaning": {
+                    "type": "string"
+                  },
+                  "key_schemes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Identifier schemes that name an entity at this level (e.g. configuration: [mtm]; package: [gtin, mfr_sku])."
+                  },
+                  "inherits": {
+                    "type": "boolean",
+                    "description": "Whether resolved specs flow down from the parent level. family is always false (section 0.2)."
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "primary_key": {
+          "type": "string",
+          "description": "Prose: what uniquely names a buyable configuration."
+        },
+        "per_brand": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "schemes": {
+          "type": "array",
+          "description": "Identifier schemes valid in this category beyond the global registry (record.schema.json identifier.scheme).",
+          "items": {
+            "type": "object",
+            "required": [
+              "scheme"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "scheme": {
+                "type": "string"
+              },
+              "issuer": {
+                "type": "string"
+              },
+              "pattern": {
+                "type": "string"
+              },
+              "normalize": {
+                "type": "string",
+                "description": "Named normaliser, e.g. upper_strip_dashes. Regional suffixes are never stripped (section 0.4)."
+              },
+              "level": {
+                "$ref": "#/$defs/level"
+              },
+              "alias_only": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "variant_axes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/specKey"
+          },
+          "description": "Specs that differ between configurations of one model."
+        },
+        "model_defining": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/specKey"
+          },
+          "description": "Specs whose disagreement vetoes a same-model match."
+        },
+        "note": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "conditionDim": {
+      "type": "object",
+      "required": [
+        "id",
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/slugPart"
+        },
+        "label": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "text",
+            "enum",
+            "number",
+            "list",
+            "bool"
+          ]
+        },
+        "enum": {
+          "type": "array"
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "facet": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "range",
+                "enum",
+                "multi",
+                "bool",
+                "text"
+              ],
+              "description": "range=min/max slider (number/range types), enum=single choice, multi=any-of over list/enum, bool=yes/no/unknown."
+            },
+            "order": {
+              "type": "integer"
+            },
+            "default_visible": {
+              "type": "boolean",
+              "default": false
+            },
+            "column": {
+              "type": "boolean",
+              "description": "Shown as a default table column."
+            },
+            "bins": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "description": "Suggested breakpoints for range facets."
+            },
+            "path": {
+              "type": "string",
+              "description": "For list/object specs: which item field to facet on, e.g. 'type' for ports[].type, or an aggregate like 'max(max_w)'."
+            },
+            "unknown_bucket": {
+              "type": "boolean",
+              "default": true,
+              "description": "Offer an explicit 'unknown' choice; unknown is never folded into false."
+            }
+          }
+        }
+      ]
+    },
+    "spec": {
+      "type": "object",
+      "required": [
+        "key",
+        "label",
+        "group",
+        "type",
+        "tier"
+      ],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {}
+      },
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/specKey"
+        },
+        "label": {
+          "type": "string"
+        },
+        "group": {
+          "$ref": "#/$defs/slugPart"
+        },
+        "type": {
+          "enum": [
+            "number",
+            "integer",
+            "bool",
+            "enum",
+            "text",
+            "range",
+            "list",
+            "object",
+            "date"
+          ]
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Canonical unit (W, V, A, mm, g, m, J, Wh, nit, Hz, GB, USD...). null = dimensionless."
+        },
+        "enum": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "description": "Allowed values. type=enum without this list is an open enum (build warns; values queue for profile review), the provisional-format behaviour."
+        },
+        "enum_open": {
+          "type": "boolean",
+          "default": false,
+          "description": "true: unseen values are accepted as candidates and queued for profile review instead of rejected."
+        },
+        "items": {
+          "description": "For type=list: the element type. A string is a scalar type; an object describes per-instance records (ports, outlets, displays).",
+          "oneOf": [
+            {
+              "enum": [
+                "number",
+                "integer",
+                "bool",
+                "enum",
+                "text",
+                "range"
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "fields"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "id_field": {
+                  "type": "string",
+                  "description": "Item field that names the instance (e.g. name: C1/C2/A1); claims about one item use conditions.port = that value."
+                },
+                "fields": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "key",
+                      "type"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "key": {
+                        "$ref": "#/$defs/slugPart"
+                      },
+                      "label": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "enum": [
+                          "number",
+                          "integer",
+                          "bool",
+                          "enum",
+                          "text",
+                          "range",
+                          "list"
+                        ]
+                      },
+                      "unit": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "enum": {
+                        "type": "array"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "fields": {
+          "type": "array",
+          "description": "For type=object: same shape as items.fields.",
+          "items": {
+            "type": "object"
+          }
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/slugPart"
+          },
+          "description": "Condition dimensions (top-level conditions[].id) that qualify this spec's claims, e.g. pps_ranges: [port, active_ports]."
+        },
+        "headline_condition": {
+          "type": "object",
+          "description": "Which condition values give the single headline value for tables/facets, e.g. {active_ports: single}. Other conditioned claims show on the detail page.",
+          "additionalProperties": true
+        },
+        "level": {
+          "$ref": "#/$defs/level",
+          "description": "Lowest identity level where this spec normally varies (default model)."
+        },
+        "identity_role": {
+          "enum": [
+            "variant_axis",
+            "model_defining",
+            "none"
+          ],
+          "default": "none"
+        },
+        "tier": {
+          "enum": [
+            "core",
+            "important",
+            "detail"
+          ]
+        },
+        "required": {
+          "type": "boolean",
+          "default": false,
+          "description": "Missing => record flagged incomplete (never invented)."
+        },
+        "facet": {
+          "$ref": "#/$defs/facet"
+        },
+        "priority": {
+          "type": "integer",
+          "description": "Order within group (build.py field priority)."
+        },
+        "display": {
+          "type": "object",
+          "description": "Renderer hint passed through to the published schema (e.g. object_table, delimited_list)."
+        },
+        "absence": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "unknown",
+              "not_applicable",
+              "not_published",
+              "not_yet_extracted",
+              "conflicted"
+            ]
+          },
+          "description": "Absence statuses that are meaningful for this spec; default all."
+        },
+        "normalize": {
+          "type": "string",
+          "description": "Named normaliser or prose rule for raw -> canonical value."
+        },
+        "why": {
+          "type": "string"
+        },
+        "traps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Where officially published (prose). Not claim sources."
+        },
+        "example": {},
+        "aliases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/specKey"
+          },
+          "description": "Former keys; build maps old claims forward."
+        },
+        "deprecated": {
+          "type": "boolean"
+        },
+        "replaced_by": {
+          "$ref": "#/$defs/specKey"
+        },
+        "note": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "list"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "items": true
+            }
+          }
+        }
+      ]
+    }
+  }
+}

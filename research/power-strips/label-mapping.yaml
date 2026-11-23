@@ -1,0 +1,62 @@
+# Source-label -> profile-key mapping for power strips (A2 round 3). Consumed by scripts/import.py.
+#
+# The Tripp Lite / CyberPower adapters keep every datasheet row they do not map in `fingerprints.unmapped` (label -> raw). import.py
+# looks each label up here, first match wins:
+#   maps_to + transform [+ unit]  -> an extra claim (extractor `import.py+label-mapping@1`, review: candidate, locator.label kept)
+#   ignore: <reason>              -> counted in table `ignored_labels` (NOT in `unmapped`); reason is the audit trail
+#   (no rule)                     -> stays in `unmapped` = work for A1 (new profile key) or A2 (parser)
+# A label is matched exactly (`label`) or by regex (`re`, searched, case-insensitive). `brands` optionally restricts (tripplite | cyberpower).
+# Transforms live in scripts/import.py (TRANSFORMS): num, dollars, yesno, text, dims_hwd_in, dims_whd_in, plug_style, listing_marks,
+# switch, usb_types, emi, keyhole.   A transform returning nothing leaves the label unmapped (never coerced).
+#
+# Dimension objects keep the source axis order ({h,w,d} or {w,h,d}, unit in): the two brands label different orders and the profile
+# says "L x W x H"; we do not guess which axis is the strip's length.
+
+rules:
+# ----------------------------------------------------------------------------- mapped
+- {label: "Unit Dimensions (hwd / in.)", brands: [tripplite], maps_to: phys.dimensions, transform: dims_hwd_in, unit: in}
+- {label: "Physical Dimensions - (WxHxD) (in)", brands: [cyberpower], maps_to: phys.dimensions, transform: dims_whd_in, unit: in}
+- {label: "Physical Weight (lb)", brands: [cyberpower], maps_to: phys.weight_lb, transform: num, unit: lb}
+- {label: "Maximum Surge Voltage", brands: [cyberpower], maps_to: surge.max_spike_voltage, transform: num, unit: V}
+- {label: "Circuit Breaker", brands: [cyberpower], maps_to: safety.breaker, transform: num, unit: A, skip_values: "^(none|no|n/a)$"}
+- {label: "CEG Amount", brands: [cyberpower], maps_to: cert.cew_usd, transform: dollars, unit: USD}
+- {label: "Connected Equipment Insurance", brands: [tripplite], maps_to: cert.cew_usd, transform: dollars, unit: USD}
+- {re: "^(EMI ?/ ?RFI Filtering|EMI/RFI Filtration|EMI/RFI Line Noise Protection)$", maps_to: surge.emi_rfi, transform: emi}
+- {label: "Plug Style", brands: [cyberpower], maps_to: cord.plug_style, transform: plug_style, skip_values: "^(wall tap|none)$"}
+- {re: "^Product Warranty( Period \\(Worldwide\\)| Period \\(U\\.S\\. & Canada\\)|)$", maps_to: cert.warranty_years, transform: text}
+- {label: "Safety", brands: [cyberpower], maps_to: cert.listing_mark, transform: listing_marks}
+- {re: "^(Switches|Switch|On/Off Switch)$", maps_to: outlets.switch, transform: switch}
+- {label: "Diagnostic LED Details", maps_to: safety.led_details, transform: text}
+- {label: "LED Indicators", maps_to: safety.led_details, transform: text}
+- {label: "Input Cord Details", brands: [tripplite], maps_to: cord.jacket, transform: text}
+- {label: "USB Charge Port Type", brands: [cyberpower], maps_to: usb.ports, transform: usb_types}
+- {label: "Material", brands: [cyberpower], maps_to: phys.material, transform: material}
+- {label: "Keyhole Mounting Slots", brands: [cyberpower], maps_to: phys.mounting, transform: keyhole, skip_values: "^no$"}
+- {label: "Safety Covers", brands: [cyberpower], maps_to: outlets.covers, transform: yesno}
+- {label: "Watts", brands: [cyberpower], maps_to: load.max_watts, transform: num, unit: W}
+- {label: "Output Capacity (Watts)", brands: [tripplite], maps_to: load.max_watts, transform: num, unit: W}
+- {label: "Output Watts - Continuous", brands: [cyberpower], maps_to: load.max_watts, transform: num, unit: W}
+- {label: "Continuous Power Capability", brands: [cyberpower], maps_to: load.max_watts, transform: num, unit: W}
+- {label: "Wire Gauge (AWG)", brands: [tripplite], maps_to: cord.gauge_awg, transform: num, unit: AWG}
+- {label: "USB-C Ports Quantity", brands: [cyberpower], maps_to: usb.ports, transform: usb_c_count}
+- {label: "Total USB Output (W)", brands: [cyberpower], maps_to: usb.total_w, transform: num, unit: W}
+- {label: "USB Type-C PD", brands: [cyberpower], maps_to: usb.pd, transform: pd_yesno, skip_values: "^no$"}
+
+# ----------------------------------------------------------------------------- ignored, each with its reason
+- {re: "^(Shipping|Package)( -)? (Weight|Dimensions)", ignore: "shipping/packaging figure, not the product; profile has no packaged-size key"}
+- {re: "^(Unit|Physical) (Weight|Dimensions).*\\((kg|cm|mm)\\)|^Physical Dimensions - .*\\((cm|mm)\\)|^Unit Dimensions .*\\(hwd / cm\\)", ignore: "same value as the mapped inch/lb label in another unit (duplicate)"}
+- {re: "^Input Cord Length \\(m\\)$|^Power Cord Length$|^Cord Length$", ignore: "duplicate of mapped cord.length_ft in another unit / 'Walltap' placeholder"}
+- {re: "^Nominal Input Voltage|^Input Voltage( Range)?$|^AC Voltage$|^Voltage Range$|^Nominal Output Voltage$|^Output Voltage$|^Input Frequency|^Frequency Compatibility$|^Recommended Electrical Service$|^Input Plug Features$|^Amperage$|^Current$|^Output Amp Capacity$|^Output Capacity \\(VA\\)$|^Electrical Rating$", ignore: "duplicate of mapped load.voltage/load.max_amps/load.max_watts (US 120 V 60 Hz), or amperage row with known data errors ('125 A')"}
+- {re: "^(Operating|Storage) (Temperature|Humidity|Elevation|Relative Humidity)", ignore: "environmental envelope, not a purchase-relevant spec (no profile key)"}
+- {re: "^(Receptacle|Housing|Power Cord|Input Cord|Light bar) Color$|^Color$", ignore: "cosmetic colour: identifies a colour variant, not a spec (identity.md rule 3)"}
+- {re: "^Maximum Surge Current (H-N|H-G|N-G|L-N|L-G)$", ignore: "per-mode surge current; profile has one surge.max_surge_current (A1 may add per-mode keys, see round-2 report)"}
+- {re: "^(AC Suppression Surge Current Rating|IEEE587 Cat\\. A Ringwave Let- Through|Immunity|Protection Modes|Attenuation|Threshold Switch)$", ignore: "surge test detail with free text / range type (surge.emi_db is range, format not defined); kept raw in parsed/"}
+- {re: "^(Antimicrobial|Antibacterial|UV Sterilization|IP68 Rated|IP20 Rated|Flow-Through Ventilation|External Receptacle|Locking|Lock Type|Number of Shelves|Device Slots|Charger Functions|Charging Station Form Factor)$", ignore: "not a power-strip attribute (charging cabinets / hygiene options); out of profile scope"}
+- {re: "^(Product Compliance|Environmental|Replacement Battery Cartridge)$", ignore: "RoHS / environmental statement; not a spec in the profile"}
+- {re: "^(Transformer Accommodation|Integrated Cord Clip|Cord Management|Built-in Cable Management|Cord Retention Tray/Cord Organizers|Mounting Holes or Slots|Mounting Details|Mounting Accessory Included|Included Mounting Accessories|Slot or Hole Mount Measurement.*|Adjustable Mounting Brackets|External Site Ground Pin|Rack Height|Style|Form Factors? ?(Supported)?|Form Factor Details|Charging Form Factor|Outlet Orientation|Outlets Measurement.*|Center\\)|Outlet Spacing|Outlets - Widely Spaced|Outlet Safety Covers Detail|Outlet Details|Locking Switch Cover)", ignore: "physical layout / mounting detail: free text or per-brand counts with no profile key (outlets.spacing_mm needs per-pair parsing; phys.form enum is not derivable from these strings)"}
+- {re: "^(Outlets - (Front|Rear|Energy Saving|Always On)|Output Receptacles|Charging Port Type|Charging Ports Details|Charging Ports / Amps|Charging Amps per Port|Total Charging Amps|Number of Ports|Outlet Type|Outlets - Total|Charging Method|Input Connection Type)$", ignore: "outlet/port breakdown by location or connector: outlets.count / usb.ports already come from the labelled totals; split not modelled"}
+- {re: "^(Right-Angle Plug|Diagnostic LED\\(s\\)|Built-In Circuit Breaker|Overload Protection|Overcurrent Protection|Safe Thermal Fusing|Overcharge Protection|Audible Alarm|Grounding|Grounding Details|Input Plug Type Details|Input Cord Length Details|Input Cord Gauge Type|Cord Type|Rotating Power Cord)$", ignore: "yes/no or free-text twin of a mapped key (breaker, plug style, gauge) that would not add a new value; a 'No' is absence of mention, not a 'straight' plug"}
+- {re: "^(USB Charge Port|USB Charge Port (Amperage|Voltage|Standard)|USB Input Port Amperage|USB-A Amperage|USB-C Wattage|USB-C Type \\(PD or Non PD\\)|Charging Ports|Wireless Charging.*|Charger auto-restart|Shutdown Timer|Smart Sensor.*|Standby Power Consumption|Auto Shutdown \\(Safe Fail\\)|GaN Technology|Individually Controllable Load Banks|Green Energy-Saving Features)$", ignore: "USB / smart-saving detail beyond usb.ports + usb.total_w (per-port budgets are 'shared' strings); wireless pads out of profile scope"}
+- {re: "^(Connected Equipment Guarantee|Warranty Details|\\(U\\.S\\., Canada & Puerto Rico\\)|Additional Information)$", ignore: "narrative/fragment row; the figure is mapped from CEG Amount / Connected Equipment Insurance (the '(U.S., Canada & Puerto Rico)' row is a wrapped fragment of the insurance cell)"}
+- {re: "^(Device Compatibility|Network Compatibility|Product Type|AC Suppression Components Used|Light bar.*|Number of Light bars|Indicators)$", ignore: "marketing/compatibility text or accessory (light bars); no profile key"}
+- {re: "^(Telephone/DSL Protection Details|Cable \\(Coax\\) Protection Details|Isolated Filter Banks|Output Receptacles|AC Suppression.*)$", ignore: "line-count detail of a protection already captured by surge.dataline / isolated_banks"}

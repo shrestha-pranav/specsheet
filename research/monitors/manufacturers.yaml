@@ -1,0 +1,34 @@
+# A2 discovery, monitors (US). Probed 2026-11-22 with the shared crawler client UA, robots honoured, <=1 req/s.
+# status: adapter = built+run; viable = probed OK, adapter not built; blocked = stop, no workaround; unprobed = not reached.
+cross_brand_sources:
+  energystar:
+    status: adapter            # crawler/adapters/energystar_monitors.py  raw/energystar-monitors
+    url: https://data.energystar.gov/resource/qbg3-d468.json   # Socrata, no key, robots Crawl-delay 1
+    rows: {monitor_cert_rows: 1622, distinct_brand_model: 1504}
+    gives: [model_number (as certified), upc (some rows), panel_type (TN/IPS/VA LCD only), native_resolution, screen_size_in, luminance, contrast, on/sleep power W, release date, additional_model_information aliases]
+    lacks: [refresh, response, DisplayHDR tier, panel vendor, ports detail, USB-C PD W (yes/no only)]
+    note: Best cross-brand model-number seed. model_number is the certified string (suffix often stripped), not an orderable SKU.
+  displayhdr:
+    status: adapter            # crawler/adapters/displayhdr.py, 2129 (tier, model) rows; was: not built (needs a tier-by-table HTML parse; ~1 request)
+    url: https://displayhdr.org/certified-products/    # robots Crawl-delay 10
+    shape: static HTML, 10 <table>s; the heading text before each table is the tier (DisplayHDR 400/500/600/1000/1400, True Black 400-1400); cols = Model | "Family Models:" list | CTS version. Tables 6-10 mix in laptops/OLED notebooks.
+    note: Only structured official source for hdr.vesa_tier. "Family Models" lists sibling/regional suffixes (AG275UXM2/P, /D, /WS...) = free alias map. Brand is the first token of Model.
+  eprel:
+    status: blocked            # eprel.ec.europa.eu/api/... -> 403 {"message":"Forbidden"}; site is an Angular SPA. Stopped, no workaround. EU energy label only; low value for a US catalogue.
+manufacturers:
+  lenovo:   {status: adapter, adapter: lenovo_monitors, source_id: lenovo-psref-monitors, url: "https://psref.lenovo.com (Monitors classification, 306 products, 195 active after skips)", yields: "full spec tree + per-MTM rows incl. US MTM, EAN, announce date; panel/gamut/ports/VESA/weight/warranty"}
+  energystar_all: {status: adapter, note: "covers Philips 185, LG 171, ASUS 161, ViewSonic 149, Dell 132, Lenovo 111, Acer 101, HP 79, MSI 79, AOC 69, Samsung 54, BenQ 41, EIZO 35 certified models"}
+  lg:       {status: adapter, adapter: lg_us, source_id: lg-us, run: '521 sitemap product URLs, 504 fetched 200, 17 stale 404', how: "https://www.lg.com/us/sitemap.xml (1.4 MB) -> 529 /us/monitors/<slug> URLs (~99 are category pages); product page is SSR 1.8 MB with schema.org Product JSON-LD + __NEXT_DATA__ attribute list [{term, description, attributeOrder}] (Refresh Rate, Response Time (GTG), Resolution...). Model number is in BreadcrumbList last item (22MP410-B). Robots Allow /.", cost: "~430 pages x 1.8 MB"}
+  asus:     {status: adapter, adapter: asus_monitors, source_id: asus-us-monitors, run: '346 monitor refs (347 listed, 1 non-monitor URL), all 200', how: "odinapi.asus.com SeriesFilterResult ...ProductLevel1Code=displays-desktops&ProductLevel2Code=monitors&PageSize=300 -> 347 monitors as JSON (ProductURL, PDWebPath). Same API family asus.py already uses for laptops; then <ProductURL>techspec/ (SSR table) or rog.asus.com spec JSON-LD.", note: "next best adapter: reuse asus.py transport"}
+  benq:     {status: viable, how: "https://www.benq.com/sitemap.xml -> /en-us/sitemap.xml; monitor URLs under /en-us/monitor/<line>/<model>.html (200, 0.5 MB, no JSON-LD; spec table in HTML, extractor needed). Contains qsg/ and landing pages: filter by URL depth."}
+  samsung:  {status: viable_unverified, how: "https://www.samsung.com/us/b2c-sitemap.xml has 0 URLs matching 'monitors'; computing/monitor URLs use another pattern. Spec tables JS-rendered (A1). Needs a pattern probe; not done."}
+  aoc:      {status: viable_unverified, how: "https://www.aoc.com/sitemap-en-us.xml lists product URLs (200); /us/gaming/monitors listing 200 (0.5 MB). Spec page structure not inspected."}
+  viewsonic: {status: viable_unverified, how: "/us/monitors 200 (262 KB). No sitemap.xml (404 serves the SPA shell); product spec page structure not inspected. robots disallows some bots (barkrowler, Yandex) but not generic UA."}
+  dell:     {status: partial, how: "Dell monitor pages are NOT in the hreflang product sitemaps (those hold only laptop-computers/ 102 + desktop-computers/ 45 spd pages). Monitor URLs are /en-us/shop/<slug>/apd/<210-sku>/monitors-monitor-accessories; guessed apd URLs redirect to /shop/accessories (discontinued). 3.7 MB pages. Spec datasheet PDFs (A1 verified U3224KB) are the clean source; enumeration source still needed (category listing or search). Energy Star gives 132 DELL model numbers to seed it."}
+  apple:    {status: viable, how: "2 products (Studio Display, Pro Display XDR): https://www.apple.com/studio-display/specs/ 200 SSR (170 KB). Hand-sized, reuse apple.py pattern."}
+  philips:  {status: unprobed_partial, how: "MMD/Philips monitors sold in US by Philips-licensed MMD (philips.com/c-m-pc/monitors 404; US shop path not found). Energy Star lists 185 PHILIPS models: seed from there."}
+  hp:       {status: blocked_or_slow, how: "www.hp.com robots 200 but /us-en/shop/vwa/monitors connection timeout (000, twice-consistent with Akamai TLS reset on non-browser clients). Not retried, no workaround."}
+  acer:     {status: blocked_or_slow, how: "www.acer.com robots.txt and /us-en/monitors both connection timeout (000). Not retried."}
+  msi:      {status: blocked, how: "403 Access Denied (Akamai) on robots.txt and /Monitor. Stopped."}
+  gigabyte: {status: blocked, how: "403 Access Denied on robots.txt and /Monitor. Stopped."}
+  sony:     {status: blocked, how: "403 Access Denied on robots.txt. Stopped (Sony monitors are professional only anyway)."}

@@ -1,0 +1,1094 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specsheet.invalid/schemas/record/1",
+  "title": "specsheet entity record (v1)",
+  "description": "One entity (family | model | configuration | package | listing | revision) with its identifiers, relations, aliases, claims, media and documents. Stored as data/<category>/<kind>/<id>.json (git) and published, with a computed `specs` block and private fields stripped, as docs/api/v1/<category>/products/<id>.json. Claims are append-only: a correction adds a claim and marks the old one superseded; nothing is edited in place.",
+  "type": "object",
+  "required": [
+    "record_format",
+    "id",
+    "category",
+    "kind",
+    "brand",
+    "name",
+    "identifiers",
+    "relations",
+    "claims"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "record_format": {
+      "const": "specsheet.record/1"
+    },
+    "id": {
+      "$ref": "#/$defs/entityId"
+    },
+    "category": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"
+    },
+    "kind": {
+      "enum": [
+        "family",
+        "model",
+        "configuration",
+        "package",
+        "listing",
+        "revision"
+      ]
+    },
+    "brand": {
+      "type": "object",
+      "required": [
+        "id",
+        "name"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Canonical display name chosen by us; retail titles go in aliases."
+    },
+    "variant_label": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Short delta label vs parent, e.g. 'Core Ultra 7 258V / 32 GB / 1 TB / OLED' or '2-pack'."
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "enum": [
+            "current",
+            "discontinued",
+            "announced",
+            "unknown"
+          ]
+        },
+        "first_seen": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "last_seen_official": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last complete official enumeration that contained it. Partial/blocked discovery never advances 'gone' (section 0.6)."
+        },
+        "gone_since": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "release_date": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "identifiers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/identifier"
+      }
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/relation"
+      }
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/alias"
+      }
+    },
+    "options": {
+      "type": "array",
+      "description": "Model-level configure-to-order axes with constraints (section 0.10); never expanded into a Cartesian product of configurations.",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "values"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "values": {
+            "type": "array"
+          },
+          "constraints": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "e.g. 'memory.size_gb=64 requires cpu.model in [...]'"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/sourceRef"
+            }
+          }
+        }
+      }
+    },
+    "contents": {
+      "type": "array",
+      "description": "package kind only: what is in the box (components link to their own model/configuration).",
+      "items": {
+        "type": "object",
+        "required": [
+          "qty"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "entity": {
+            "$ref": "#/$defs/entityId"
+          },
+          "description": {
+            "type": "string"
+          },
+          "qty": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/sourceRef"
+            }
+          }
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    },
+    "absences": {
+      "type": "array",
+      "description": "Extraction outcomes for target specs that produced no value claim: the stop reason distinguishes not_found from not_attempted (section 0.5).",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "status",
+          "source"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "not_published",
+              "not_applicable",
+              "not_attempted",
+              "blocked",
+              "ambiguous_identity",
+              "budget"
+            ]
+          },
+          "source": {
+            "$ref": "#/$defs/sourceRef"
+          },
+          "checked_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "method": {
+            "$ref": "#/$defs/method"
+          }
+        }
+      }
+    },
+    "media": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/asset"
+      }
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/asset"
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source"
+      },
+      "description": "Record-local source table; claims point at it by id."
+    },
+    "specs": {
+      "type": "object",
+      "description": "PUBLISHED ONLY, computed by the resolver; never hand-edited in data/.",
+      "additionalProperties": {
+        "$ref": "#/$defs/resolved"
+      }
+    },
+    "review": {
+      "$ref": "#/$defs/review"
+    },
+    "demo": {
+      "type": "boolean",
+      "default": false
+    },
+    "notes": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "entityId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,95}$",
+      "description": "Globally unique, minted once, never reused, never re-pointed. Readable slug <brand>-<primary identifier>[-<qualifier>]; collisions get a qualifier, not a counter. Retired ids live in tombstones (data/_ids/tombstones.jsonl) and publish as redirects."
+    },
+    "sourceRef": {
+      "type": "string",
+      "pattern": "^s[0-9]+$",
+      "description": "Id in this record's sources[]."
+    },
+    "identifier": {
+      "type": "object",
+      "required": [
+        "scheme",
+        "value"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "scheme": {
+          "type": "string",
+          "description": "Namespaced scheme. Global: mfr_model (brand model number, e.g. A2663), mfr_sku (orderable part/SKU incl. colour/region, e.g. HP 8Z4X1AV#ABA), mtm (Lenovo machine-type-model), gtin (GTIN-8/12/13/14, UPC/EAN normalised to GTIN-14 in value, raw kept), fcc_id, ul_file, usbif_tid, retailer:<store> (e.g. retailer:bestbuy, retailer:amazon_asin). asin is retailer:amazon_asin and alias-only.",
+          "pattern": "^(mfr_model|mfr_sku|mtm|gtin|fcc_id|ul_file|usbif_tid|energy_star|retailer:[a-z0-9_]+|x_[a-z0-9_]+)$"
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Normalised per the scheme's normaliser (case/space only; regional suffixes kept)."
+        },
+        "value_raw": {
+          "type": "string",
+          "description": "Exactly as the source printed it."
+        },
+        "issuer": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Brand id for mfr_*, store for retailer:*, GS1 for gtin."
+        },
+        "market": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "ISO country/region the identifier is scoped to, null = global/unknown."
+        },
+        "package_level": {
+          "enum": [
+            "model",
+            "configuration",
+            "package",
+            "unverified"
+          ],
+          "default": "unverified"
+        },
+        "role": {
+          "enum": [
+            "key",
+            "alias"
+          ],
+          "default": "alias",
+          "description": "key = names this entity at its level and is a hard-match key; alias = observed pointer only (ASINs, retailer SKUs, FCC ids are always alias: FCC is not a hardware-equivalence key, section 0.4)."
+        },
+        "check_digit_valid": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "gtin only."
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sourceRef"
+          }
+        },
+        "first_seen": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "last_seen": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "scheme": {
+                "pattern": "^(retailer:|fcc_id$)"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "role": {
+                "const": "alias"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "relation": {
+      "type": "object",
+      "required": [
+        "type",
+        "target",
+        "status",
+        "method"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "member_of_family",
+            "variant_of",
+            "configuration_of",
+            "package_of",
+            "contains",
+            "listing_of",
+            "revision_of",
+            "same_configuration",
+            "same_package",
+            "possible_match",
+            "different",
+            "insufficient_evidence",
+            "replaced_by"
+          ]
+        },
+        "target": {
+          "$ref": "#/$defs/entityId"
+        },
+        "status": {
+          "enum": [
+            "proposed",
+            "approved",
+            "rejected",
+            "retracted"
+          ],
+          "description": "Only approved relations are used by the resolver/publisher. possible_match never transmits claims (section 0.1)."
+        },
+        "method": {
+          "type": "string",
+          "description": "hard_key:<scheme> | soft_match | manual | adapter:<id>"
+        },
+        "score": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sourceRef"
+          }
+        },
+        "decided_by": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Human reviewer handle for approved nontrivial links; LLMs may only propose."
+        },
+        "decided_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "alias": {
+      "type": "object",
+      "required": [
+        "text",
+        "kind"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "retail_title",
+            "marketing_name",
+            "regional_name",
+            "former_name",
+            "search_term"
+          ]
+        },
+        "source": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "market": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "id",
+        "url",
+        "tier"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "url": {
+          "type": "string",
+          "pattern": "^https?://"
+        },
+        "label": {
+          "type": "string"
+        },
+        "source_id": {
+          "type": "string",
+          "description": "Registry id in data/sources.yaml (policy: automation, retention, LLM-ok, republication)."
+        },
+        "tier": {
+          "enum": [
+            "regulatory",
+            "manufacturer",
+            "measurement",
+            "retailer",
+            "crowd",
+            "other"
+          ]
+        },
+        "retrieved_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "snapshot": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "PRIVATE: raw snapshot hash; stripped at publish."
+        },
+        "origin_group": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Independence: sources sharing an origin (copied blurb) share this value and count once."
+        }
+      }
+    },
+    "method": {
+      "type": "object",
+      "required": [
+        "stage",
+        "extractor"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "stage": {
+          "enum": [
+            "feed",
+            "jsonld",
+            "adapter",
+            "table",
+            "pdf_text",
+            "ocr",
+            "llm",
+            "manual",
+            "crowd",
+            "derive",
+            "legacy"
+          ]
+        },
+        "extractor": {
+          "type": "string",
+          "description": "<adapter_id>@<version>, e.g. shopify@1, psref@2, legacy-pilot@0."
+        },
+        "model": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "LLM/OCR model id when used."
+        },
+        "prompt_hash": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cache_key": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "sha256(content hash + profile version + extractor + model), section 0.6."
+        }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "required": [
+        "id",
+        "key",
+        "status",
+        "kind",
+        "source",
+        "method",
+        "observed_at",
+        "review"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^c_[0-9a-f]{16}$",
+          "description": "sha256(entity|key|value|conditions|source url|extractor)[:16], so re-extraction is idempotent."
+        },
+        "key": {
+          "type": "string",
+          "description": "Spec key from the category profile."
+        },
+        "status": {
+          "enum": [
+            "known",
+            "unknown",
+            "not_published",
+            "not_applicable"
+          ],
+          "description": "known: value asserted. unknown: source mentions the spec without a usable value. not_published: source was checked and does not state it. not_applicable: source says it does not apply. conflicted exists only on resolved specs."
+        },
+        "value": {
+          "description": "Typed per profile in canonical unit; range = {min,max}; list = array (empty array = known empty); object per profile fields. Absent unless status=known."
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "raw": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Literal source text (e.g. Anker '3..25A'), max 300 chars. Never silently fixed."
+        },
+        "conditions": {
+          "type": "object",
+          "description": "Keys are profile condition ids, e.g. {port: C1, active_ports: [C1]}. {} = unconditional.",
+          "additionalProperties": true
+        },
+        "kind": {
+          "enum": [
+            "official",
+            "measured",
+            "derived",
+            "reported"
+          ],
+          "description": "official = manufacturer/regulatory declared (section 0.8 'declared'); measured = instrumented test (subtype in measurement.mode); derived = computed from other claims; reported = retailer/third-party/crowd assertion without measurement."
+        },
+        "measurement": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "enum": [
+                "negotiated",
+                "sustained",
+                "peak",
+                "advertised_by_device"
+              ]
+            },
+            "instrument": {
+              "type": "string"
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        },
+        "source": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "locator": {
+          "type": "object",
+          "description": "Where in the source: {selector|table|pdf_page|image_sha256|bbox|json_path}.",
+          "additionalProperties": true
+        },
+        "quote": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Supporting snippet (<=200 chars). LLM claims without a matching quote are dropped."
+        },
+        "method": {
+          "$ref": "#/$defs/method"
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the source was fetched/seen."
+        },
+        "extracted_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "derived_from": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Claim ids (derived) or relation target (inherited)."
+        },
+        "via_relation": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Set when the claim was observed on another entity id and carried over; unpublishable unless that relation is an approved equivalence."
+        },
+        "confidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "extraction": {
+              "enum": [
+                "high",
+                "medium",
+                "low"
+              ]
+            },
+            "evidence": {
+              "enum": [
+                "high",
+                "medium",
+                "low"
+              ]
+            }
+          }
+        },
+        "review": {
+          "$ref": "#/$defs/review"
+        },
+        "supersedes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "known"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "value"
+            ]
+          }
+        }
+      ]
+    },
+    "review": {
+      "type": "object",
+      "required": [
+        "state"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "enum": [
+            "candidate",
+            "accepted",
+            "rejected",
+            "superseded",
+            "needs_evidence"
+          ]
+        },
+        "by": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Human handle (ledger line) or the policy id that accepted it, e.g. claim/mfr-structured-datasheet@1."
+        },
+        "at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ticket": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Issue/PR URL."
+        }
+      }
+    },
+    "asset": {
+      "type": "object",
+      "required": [
+        "url",
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "image",
+            "spec_image",
+            "manual",
+            "datasheet",
+            "quick_start",
+            "certificate",
+            "declaration",
+            "teardown",
+            "other"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "pattern": "^https?://"
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "content_type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "bytes": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "pages": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "source": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "retrieved_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "ocr_state": {
+          "enum": [
+            "none",
+            "queued",
+            "done",
+            "failed",
+            "not_needed"
+          ],
+          "default": "none"
+        },
+        "republish": {
+          "enum": [
+            "link_only",
+            "thumbnail",
+            "mirror"
+          ],
+          "default": "link_only",
+          "description": "From source policy; v0 publishes link_only."
+        }
+      }
+    },
+    "resolved": {
+      "type": "object",
+      "required": [
+        "value",
+        "status",
+        "sources"
+      ],
+      "additionalProperties": false,
+      "description": "Published resolution of one spec. Backward compatible with the v0 build ({value,status,sources,confidence,source_scope}).",
+      "properties": {
+        "value": {},
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "enum": [
+            "known",
+            "unknown",
+            "conflicted",
+            "not_yet_extracted",
+            "not_applicable",
+            "not_published"
+          ]
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sourceRef"
+          }
+        },
+        "claims": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "kind": {
+          "enum": [
+            "official",
+            "measured",
+            "derived",
+            "reported",
+            null
+          ]
+        },
+        "confidence": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "identity": {
+                  "type": "string"
+                },
+                "extraction": {
+                  "type": "string"
+                },
+                "evidence": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        },
+        "source_scope": {
+          "enum": [
+            "field",
+            "record_context",
+            "none",
+            "demo"
+          ]
+        },
+        "conditional": {
+          "type": "array",
+          "description": "Non-headline condition groups.",
+          "items": {
+            "type": "object",
+            "required": [
+              "conditions",
+              "value",
+              "status",
+              "sources"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "conditions": {
+                "type": "object"
+              },
+              "value": {},
+              "status": {
+                "$ref": "#/$defs/resolved/properties/status"
+              },
+              "kind": {
+                "enum": [
+                  "official",
+                  "measured",
+                  "derived",
+                  "reported",
+                  null
+                ]
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/sourceRef"
+                }
+              },
+              "alternatives": {
+                "$ref": "#/$defs/resolved/properties/alternatives"
+              }
+            }
+          }
+        },
+        "alternatives": {
+          "type": "array",
+          "description": "Conflicting primary values (status conflicted) and/or other-kind values (measured beside official, per measurement mode).",
+          "items": {
+            "type": "object",
+            "required": [
+              "value",
+              "kind",
+              "sources"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "value": {},
+              "kind": {
+                "enum": [
+                  "official",
+                  "measured",
+                  "derived",
+                  "reported"
+                ]
+              },
+              "measurement_mode": {
+                "enum": [
+                  "negotiated",
+                  "sustained",
+                  "peak",
+                  "advertised_by_device"
+                ]
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/sourceRef"
+                }
+              }
+            }
+          }
+        },
+        "inherited_from": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Entity id the value came from (model -> configuration -> package only; never family)."
+        },
+        "raw": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Source literal when the value could not be normalised (status not_yet_extracted)."
+        },
+        "note": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "display": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Display string in a larger exact unit, e.g. stor.size 1000 (GB) -> '1 TB'. Never changes value."
+        },
+        "qualifier": {
+          "enum": [
+            "from",
+            "approx",
+            "up_to",
+            null
+          ],
+          "description": "The source qualified the number: from = 'starting at' (lower bound / base configuration), approx, up_to. Render it ('from 1.54 kg')."
+        }
+      }
+    }
+  }
+}

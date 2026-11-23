@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specsheet.invalid/schemas/public-detail/1",
+  "title": "Published detail record (docs/api/v1/<cat>/products/<id>.json and preview/<cat>/products/<id>.json)",
+  "description": "Public projection of an accepted record (record.schema.json): no claims[], no snapshots/locators; specs are resolved values. review_scope=trusted holds accepted claims + approved relations only; review_scope=preview is a delta (specs that differ from the trusted record) incl. candidates and proposed relations.",
+  "type": "object",
+  "required": [
+    "record_format",
+    "review_scope",
+    "id",
+    "category",
+    "kind",
+    "brand",
+    "name",
+    "identifiers",
+    "relations",
+    "specs",
+    "sources"
+  ],
+  "properties": {
+    "record_format": {
+      "const": "specsheet.record/1"
+    },
+    "review_scope": {
+      "enum": [
+        "trusted",
+        "preview"
+      ]
+    },
+    "id": {
+      "$ref": "https://specsheet.invalid/schemas/record/1#/$defs/entityId"
+    },
+    "category": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "family",
+        "model",
+        "configuration",
+        "package",
+        "revision"
+      ]
+    },
+    "brand": {
+      "type": "object",
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "name": {
+      "type": "string"
+    },
+    "variant_label": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "lifecycle": {
+      "type": "object"
+    },
+    "identifiers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "scheme",
+          "value",
+          "role"
+        ],
+        "properties": {
+          "scheme": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "key",
+              "alias"
+            ]
+          }
+        }
+      }
+    },
+    "aliases": {
+      "type": "array"
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "type",
+          "target",
+          "status",
+          "method"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "target": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "approved",
+              "proposed"
+            ]
+          },
+          "method": {
+            "type": "string"
+          },
+          "decision": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "specs": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "https://specsheet.invalid/schemas/record/1#/$defs/resolved"
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "url"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "https://specsheet.invalid/schemas/record/1#/$defs/sourceRef"
+          },
+          "url": {
+            "type": "string"
+          },
+          "via": {
+            "type": "string",
+            "description": "Ancestor entity whose source this is (inherited specs)."
+          }
+        },
+        "not": {
+          "required": [
+            "snapshot"
+          ]
+        }
+      }
+    },
+    "children": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "trusted": {
+      "type": "boolean"
+    },
+    "family": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "model": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "variant": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "demo": {
+      "const": false
+    }
+  }
+}

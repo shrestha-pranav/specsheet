@@ -1,0 +1,163 @@
+{
+ "dataset_version": "1.0.0",
+ "build": "2f24c5495650",
+ "generated_at": "2026-11-23T08:26:44Z",
+ "record_format": "specsheet.record/1",
+ "categories": [
+  {
+   "id": "gan-chargers",
+   "schema_version": "0",
+   "count": 150,
+   "index": [],
+   "facets": null,
+   "demo": false,
+   "legacy": true
+  },
+  {
+   "id": "power-strips-demo",
+   "schema_version": "0",
+   "count": 4,
+   "index": [],
+   "facets": null,
+   "demo": true,
+   "legacy": true
+  },
+  {
+   "id": "laptops",
+   "schema_version": "0.2",
+   "count": 2419,
+   "index": [
+    "laptops/index-0.json",
+    "laptops/index-1.json"
+   ],
+   "facets": "laptops/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/laptops/index-0.json",
+     "preview/laptops/index-1.json"
+    ],
+    "count": 2655,
+    "products": "preview/laptops/products/",
+    "only_preview": 236
+   }
+  },
+  {
+   "id": "power-strips",
+   "schema_version": "0.1",
+   "count": 538,
+   "index": [
+    "power-strips/index.json"
+   ],
+   "facets": "power-strips/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/power-strips/index.json"
+    ],
+    "count": 511,
+    "products": "preview/power-strips/products/",
+    "only_preview": 341
+   }
+  }
+ ],
+ "release": {
+  "accepted_digest": "bc69042518e0a3c39f0d453009e5769dfef56c721f8d2626fcbba17269e5c8e4",
+  "policies": [
+   "claim/mfr-structured-datasheet@1",
+   "claim/asus-techspec-typed@1",
+   "claim/cpu-split@1",
+   "rel/source-stated-hierarchy@1"
+  ],
+  "ledger_lines": 0,
+  "profiles": {
+   "laptops": "0.2",
+   "monitors": "0.1.0",
+   "power-strips": "0.1"
+  },
+  "coverage": {
+   "lenovo-psref": {
+    "mtms_observed": "484104",
+    "mtms_published_scope": "2103",
+    "regions": "{\"UAE\": 47097, \"Africa-French-Portuguese\": 27702, \"Hungary\": 19447, \"CIS\": 19290, \"Nordics\": 18925, \"Middle-EAST-EM\": 18692, \"South Africa\": 15559, \"Egypt\": 15521, \"Denmark\": 14469, \"Africa-UK\": 13977, \"Bulgaria\": 13531, \"Israel\": 13377, \"Saudi Arabia\": 13231, \"Cyprus\": 9583, \"Middle East\": 9568, \"France\": 9338, \"Romania\": 9086, \"Germany\": 7982, \"Czech, Slovakia\": 7878, \"Greece\": 7846, \"Netherlands\": 7645, \"Belgium\": 7556, \"Poland\": 7447, \"T\\u00fcrkiye\": 7288, \"Switzerland\": 7263, \"Italy\": 7235, \"Spain\": 7045, \"Portugal\": 6484, \"Croatia\": 6440, \"Serbia\": 6437, \"Luxembourg\": 6139, \"Ukraine\": 6101, \"Pakistan\": 6087, \"UK\": 6080, \"Iceland\": 5868, \"Austria\": 5827, \"Algeria\": 4923, \"Morocco\": 4919, \"India\": 3568, \"Russia\": 3387, \"Korea\": 2886, \"Philippines\": 2727, \"Thailand\": 2661, \"Australia\": 2252, \"Croatia, Slovenia\": 2202, \"Singapore\": 2131, \"US\": 2103, \"Kazakhstan\": 2053, \"Japan\": 1992, \"Indonesia\": 1959, \"Hong Kong S.A.R. of China\": 1954, \"Vietnam\": 1883, \"UK Group\": 1881, \"Malaysia\": 1846, \"LA Group\": 1695, \"Canada\": 1658, \"Mexico\": 1606, \"Taiwan, China\": 1525, \"Sweden\": 1019, \"Brazil\": 975, \"Cambodia, Laos\": 965, \"Slovenia\": 850, \"Argentina\": 844, \"Emat-FR\": 834, \"Chile\": 785, \"South East Europe\": 773, \"Sri Lanka\": 683, \"Emat-UK\": 510, \"Norway\": 505, \"Ireland\": 467, \"Central America\": 266, \"Estonia, Latvia, Lithuania\": 241, \"CA Group\": 234, \"Georgia\": 214, \"Lebanon\": 175, \"Emat-PO\": 172, \"South Africa Off Shore Group\": 155, \"New Zealand\": 139, \"Moldova\": 107, \"Colombia\": 80, \"Caribbean Group\": 69, \"North West LA Group\": 55, \"Ecuador\": 45, \"Azerbaijan\": 30, \"Peru\": 30, \"USA\": 23, \"Uruguay\": 4, \"Bolivia\": 2, \"Paraguay\": 1}",
+    "regional_claims_materialised": "no (US only; evidence by reference: snapshot + MTM)",
+    "observations": "282",
+    "discovery_complete": "1"
+   },
+   "asus-us": {
+    "observations": "142",
+    "discovery_complete": "1"
+   },
+   "apple-support": {
+    "observations": "20",
+    "discovery_complete": "1"
+   },
+   "dell-us": {
+    "observations": "100",
+    "discovery_complete": "1"
+   },
+   "microsoft-surface": {
+    "observations": "15",
+    "discovery_complete": "1"
+   },
+   "framework-us": {
+    "observations": "0",
+    "discovery_complete": "0"
+   },
+   "samsung-us": {
+    "observations": "3",
+    "discovery_complete": "1"
+   },
+   "razer-us": {
+    "observations": "15",
+    "discovery_complete": "1"
+   },
+   "energystar-monitors": {
+    "observations": "863",
+    "discovery_complete": "1"
+   },
+   "lenovo-psref-monitors": {
+    "observations": "195",
+    "discovery_complete": "1"
+   },
+   "tripplite": {
+    "observations": "249",
+    "discovery_complete": "unknown"
+   },
+   "cyberpower": {
+    "observations": "293",
+    "discovery_complete": "1"
+   },
+   "anker": {
+    "observations": "11",
+    "discovery_complete": "unknown"
+   },
+   "belkin": {
+    "observations": "54",
+    "discovery_complete": "unknown"
+   },
+   "ugreen": {
+    "observations": "0",
+    "discovery_complete": "unknown"
+   },
+   "baseus": {
+    "observations": "11",
+    "discovery_complete": "unknown"
+   },
+   "byjasco": {
+    "observations": "216",
+    "discovery_complete": "unknown"
+   },
+   "furman": {
+    "observations": "30",
+    "discovery_complete": "unknown"
+   },
+   "austere": {
+    "observations": "5",
+    "discovery_complete": "unknown"
+   }
+  }
+ }
+}

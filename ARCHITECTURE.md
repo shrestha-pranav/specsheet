@@ -298,3 +298,150 @@ What the pilot taught:
 - LLM adjudication for mid-score matches: worth it, or just queue for humans at this scale?
 - Legal/ToS: storing manufacturer text vs facts only; retailer scraping vs official APIs.
 - What's the minimum gold set size to trust auto-linking?
+
+## 15. Data model v1 (A3, 2026-11-22; pending Codex review)
+
+Formal schemas: `schemas/category-profile.schema.json`, `schemas/record.schema.json`,
+`schemas/units.json`. Section 0 still overrides; this section makes it concrete. Frontend contract:
+`team/briefs/a4-contract.md`.
+
+### 15.1 Three layers, one direction of flow
+
+```
+adapters ──► RAW (local, immutable)  ──►  NORMALIZED (git: data/)  ──►  PUBLISHED (git: docs/api/v1)
+             snapshots + blobs            entities + claims + relations    resolved, stripped, static
+             state/specsheet.sqlite       research/<cat>/spec-profile.yaml
+             (working index, derivable)   data/sources.yaml
+```
+Every layer is re-derivable from the one to its left plus human decisions (approved relations,
+claim reviews), which live only in `data/` and are therefore never lost by a rebuild.
+
+### 15.2 Category profiles
+`research/<cat>/spec-profile.yaml` (A1 owns content; A3 owns format). The provisional format is
+valid v1; additions are optional: `profile_format`, `units` (canonical unit per spec; market
+display units, e.g. m→ft for US cords), top-level `conditions` dimensions (port, active_ports,
+input_voltage, mode...) that specs opt into, `items`/`fields` for per-instance lists (ports,
+outlets), `headline_condition` (which conditioned value is the table/facet value), `level` +
+`identity_role` (variant_axis / model_defining), facet objects (`kind`, `path`, `bins`,
+`column`, `unknown_bucket`), `derived` specs, key `aliases` for renames. Spec keys are permanent;
+a retype or re-unit is a MAJOR profile version and publishes as a new `schema_version`.
+
+### 15.3 Entities, identifiers, claims
+- **Kinds**: family / model / configuration / package / listing / revision; one file each.
+  Links are `relations` with `status` proposed|approved|rejected|retracted; only approved
+  relations feed resolution, `possible_match` never transmits claims, family never passes specs
+  down. Inheritance is model → configuration → package, blocked by an explicit claim at the
+  lower level (unknown/not_applicable/conflict included).
+- **IDs**: readable slugs `<brand>-<primary identifier>[-qualifier]`, globally unique, minted
+  once, never reused. Merge/split = tombstone `data/_ids/tombstones.jsonl` (`{id, replaced_by[], at,
+  reason}`) → published `redirects.json`.
+- **Identifiers** are namespaced (`mfr_model`, `mfr_sku`, `mtm`, `gtin`, `fcc_id`, `ul_file`,
+  `retailer:<store>`), keep `value_raw`, carry issuer/market/package_level and `role`. `retailer:*`
+  (incl. ASIN) and `fcc_id` are schema-forced `role: alias`: pointers, never hard keys.
+- **Aliases**: retail titles, marketing/regional names: searchable, never identity.
+- **Claims** (append-only): `{key, status, value, unit, raw, conditions, kind, measurement, source,
+  locator, quote, method{stage, extractor@version, model, cache_key}, observed_at, review}`.
+  `kind` = official | measured | derived | reported (§0.8 "declared" = official; negotiated/sustained/
+  peak = `measurement.mode`). Claim ids are content hashes, so re-running an extractor is a no-op.
+  Claim status known | unknown | not_published | not_applicable; `conflicted` and
+  `not_yet_extracted` exist only on resolved specs. Extraction stop reasons go in `absences`.
+
+### 15.4 Storage layout
+| Path | Git? | Contents |
+|---|---|---|
+| `raw/<source>/snapshots.jsonl` | no | **Append-only** snapshot log: `{snapshot: sha256:<body>, ref, url, final_url, status, fetched_at, etag, last_modified, adapter@ver, blob}` |
+| `raw/<source>/blobs/<sha256><ext>` | no | Content-addressed bodies (HTML gz, JSON, PDF, images). Never overwritten, retention per `data/sources.yaml` |
+| `raw/<source>/index.jsonl`, `products/<key>/*` | no | crawl.py v0 "latest view" (kept; becomes a cache derived from snapshots) |
+| `state/specsheet.sqlite` | no | Working store: refs, discovery checkpoints, observations, *candidate* claims, extraction cache, OCR queue, search-miss/request intake. Deletable: rebuilt from raw + data |
+| `data/sources.yaml` | yes | Source registry + policy (§0.7): tier, automation_ok, retention_h, llm_ok, republish |
+| `data/<cat>/<kind>/<id>.json` | yes | Normalized entity records (record.schema.json) with **accepted** claims, approved/rejected relations, identifiers, aliases. Diffs = review |
+| `data/_ids/tombstones.jsonl` | yes | Retired ids |
+| `data/gan-chargers/<brand>.json` | yes | v0 pilot input; migrated by a one-off importer (`method.extractor: legacy-pilot@0`, `review: candidate`) |
+| `docs/api/v1/**` | yes | Published static dataset (build output) |
+
+crawl.py today overwrites `page.html.gz`/`extract.json` on `--refresh`; v1 adapters must
+additionally write the snapshot log + blob so history is immutable. Per-source blob stores are
+fine (dedupe across sources is not worth a migration). Promotion `state → data/` is a script
+(`scripts/promote.py`, to build) that writes only claims that validate against the profile and
+entity creation/links that are hard-key or human-approved; the git diff is the review.
+
+### 15.5 Adapter contract (every A2 adapter, `crawler/adapters/<id>.py`)
+```python
+@dataclass(frozen=True)
+class Ref:            # something discoverable at a source
+    source_id: str; key: str; url: str
+    hints: dict       # title, skus, gtins, product_type, feed blob... (cheap, unverified)
+
+@dataclass(frozen=True)
+class Discovery:
+    refs: list[Ref]; complete: bool; stop_reason: str | None   # only complete=True may mark gone
+    checkpoint: dict  # opaque, passed back on the next run
+
+@dataclass(frozen=True)
+class Snapshot:
+    snapshot: str     # "sha256:<hex>" of body; blob path derived
+    ref: Ref; status: int | str; fetched_at: str; final_url: str
+    headers: dict     # etag, last_modified, content_type
+    not_modified: bool = False   # 304 -> points at the prior snapshot
+
+@dataclass
+class ParseResult:
+    identifiers: list[dict]; aliases: list[dict]; claims: list[dict]   # record.schema $defs shapes,
+    media: list[dict]; documents: list[dict]; absences: list[dict]     # entity unresolved
+    links: list[Ref]  # follow-ups: PDFs, spec images, variant pages
+    fingerprints: dict   # raw, spec_section, assets, variants (section 0.6)
+
+class Adapter(Protocol):
+    id: str; version: int; source_id: str          # bump version => extraction cache miss
+    categories: set[str]                           # profiles it can emit claims for
+    def discover(self, checkpoint: dict | None, net: Net) -> Discovery: ...
+    def fetch(self, ref: Ref, prior: Snapshot | None, net: Net) -> Snapshot: ...
+    def parse(self, snap: Snapshot, blobs: BlobReader, profile: Profile) -> ParseResult: ...
+```
+Rules: network only through the shared `Net` (robots, 1 req/s/host, breaker, conditional GET);
+`parse` is **pure** (no network, deterministic, fixture-tested; reruns from blobs for free);
+adapters never mint entity ids or decide identity: they emit observations and the matcher
+attaches them; never coerce a value the source didn't state (`raw` literal + proposed value);
+a parse failure is an `absence` with a reason, not an exception that drops the snapshot.
+
+### 15.6 Publish step (`scripts/build.py`)
+1. Load + validate profiles and all `data/` records against the schemas; fail the build on error.
+2. Resolve each entity: accepted claims (+ inherited, + derived) → `specs[key]` (headline value,
+   `conditional[]`, `alternatives[]` when official≠measured or conflicted). Pure function.
+3. Strip private fields (`source.snapshot`, locators into private blobs, candidate/rejected
+   claims, `listing` entities beyond alias+link).
+4. Emit `manifest.json`, `categories.json`, `<cat>/schema.json`, `<cat>/index.json`
+   (compact, sharded over ~2 MB), `<cat>/facets.json`, `<cat>/products/<id>.json`,
+   `lookup/identifiers.json`, `redirects.json`, `build.json`. Shapes: a4-contract.md.
+
+### 15.7 Postgres later (§0.11), same shapes
+`entities(id, category, kind, brand, name, doc jsonb)`, `identifiers(entity_id, scheme, value,
+market, role, ...)` unique on (scheme, value, market) where role=key, `relations`, `claims(id pk,
+entity_id, key, doc jsonb, review_state)` append-only, `resolved(entity_id, key, value jsonb,
+status, ...)` + per-category typed views for facets, `snapshots(sha256, source, ...)`,
+`requests`, `search_misses`. The JSON files import 1:1; the static export stays as a CDN read path.
+
+### 15.8 Decisions, identity and publication (A3-impl r2, 2026-11-22; implements the Astra data-model review P0/P1)
+- **Inputs of record** (git): `data/_ids/registry.jsonl` (anchor `category|scheme|issuer|value|market` -> id, append-only; ids
+  are looked up, never reminted; new ids minted in sorted anchor order, length-capped), `data/_ids/tombstones.jsonl`,
+  `data/decisions/policies.yaml` (versioned auto-accept policies) and `data/decisions/ledger.jsonl` (human decisions:
+  accept/reject claim, approve/reject relation, merge, split). `state/specsheet.sqlite` = f(raw/, these files); acceptance
+  test `tests/test_replay.py` deletes it, replays (both source orders, `--no-mint`) and compares ids/links/claims/rejections.
+- **Identity** (`scripts/identity.py`): scoped keys (scheme, issuer, normalised value, market, level); GTINs check-digit
+  validated, package-level aliases only, never merge keys; one GTIN on unrelated entities -> `identity_conflicts`, excluded
+  from lookup; an observation whose keys hit two entities is quarantined unless the ledger merges them; every
+  create/attach/quarantine/proposal is an `identity_events` row and `attachments` keeps observation->entity links.
+  Source-stated hierarchy is approved by `rel/source-stated-hierarchy@1`; suffix inference only proposes.
+- **Claims**: the full validated claim document is stored (`claims.doc`, record.schema `claim`), plus normalised value
+  (`scripts/normalize.py`, before acceptance), review state and decision id. Stable claim id = hash of source id, ref, locator,
+  key, value, unit, conditions, kind, measurement, extractor name (not version, not record-local `s1`).
+- **Resolution** (`scripts/resolve.py`): supersession, then condition groups (headline = profile `headline_condition`, else
+  `{}`; no headline evidence = unknown + `conditional[]`), official > derived > reported > measured with other kinds as
+  `alternatives` (never conflicts). Inheritance over approved parents in topological order, only for specs whose profile
+  `level` does not vary below the parent; packages never inherit `phys.*`; inherited sources re-pointed at the ancestor URL.
+- **Publication**: trusted `<cat>/…` = accepted claims + approved links only (facets, lookup); `preview/<cat>/…` = deltas
+  incl. candidates and proposed links. Details validate against `schemas/public-detail.schema.json` at build time.
+- **Deferred**: non-US Lenovo MTMs are retained as `regional_observations` + `coverage` (evidence by reference: snapshot + MTM),
+  not yet materialised as claims (needs a streaming/partitioned store); stale `parsed/*.json` cache keys (P1-9); profile-driven
+  category metadata/columns (P1-8: still `v1_publish.CATEGORIES`); hash-partitioned shards; typed CTO constraints; Apple
+  one-page-many-identifiers split.

@@ -1,0 +1,118 @@
+# Laptop manufacturers, US market. Probed 2026-11-22 with curl, robots respected, UA specsheet-crawler/0.1.
+# status: verified = endpoint returns data and was parsed; probed = reachable, not parsed; blocked = 403/timeouts
+manufacturers:
+  - slug: lenovo
+    name: Lenovo
+    priority: 1
+    catalogue_source: {type: json-api, url: "https://psref.lenovo.com/api/ph/ProductCategoryTree", status: verified, note: "no auth; 917 laptop products (282 active), 1592 total"}
+    spec_source: {type: json-api, url: "https://psref.lenovo.com/api/search/DefinitionFilterAndSearch/ShowModel?product_key=<ProductKey>&pageindex=N&pagesize=30", status: verified, note: "per-MTM rows, 55 columns incl. EAN/UPC, Region; needs anonymous JWT from POST /api/home/auth/issue with Origin+Referer headers. Also LoadSpecData (platform sheet)"}
+    adapter: crawler/adapters/lenovo_psref.py   # v2 contract adapter; ShowModel pagesize=500 works (UI uses 30)
+    id_scheme: MTM
+    id_regex: '^[0-9]{2}[A-Z0-9]{2}[0-9A-Z]{4}[A-Z]{2}$'
+    blocks: "www.lenovo.com 403 (Akamai) on robots.txt; psref.lenovo.com robots.txt = 404 (no rules). Use PSREF only."
+  - slug: apple
+    name: Apple
+    priority: 2
+    catalogue_source: {type: html, url: "https://support.apple.com/en-us/108052", status: probed, note: "Mac identifier/year/A-number index; shop sitemap https://www.apple.com/us/shop/sitemap-index.xml"}
+    spec_source: {type: html, url: "https://support.apple.com/en-us/<kb-id> per model (tech specs) ; https://www.apple.com/mac/compare/", status: probed, note: "tiny catalogue (~10 laptops live); parse by hand-written per-model tables; part numbers MXxxx LL/A from apple.com/shop buy pages"}
+    adapter: crawler/adapters/apple.py   # indexes 108052 (Pro) + 102869 (Air); 20 models since 2022, 178 part-number families
+    id_scheme: part number + A-number + Model Identifier
+    id_regex: '^[A-Z0-9]{5}LL/A$'
+    blocks: none seen
+  - slug: asus
+    name: ASUS
+    priority: 3
+    catalogue_source: {type: json-api, url: "https://odinapi.asus.com/recent-data/apiv2/SeriesFilterResult?SystemCode=asus&WebsiteCode=us&ProductLevel1Code=laptops&PageSize=20&PageIndex=1", status: verified-list, note: "TotalCount 280 laptop series pages; returns ProductURL. Sitemaps https://www.asus.com/sitemap.xml also OK"}
+    spec_source: {type: html/json, url: "<ProductURL>techspec/ (and /spec/)", status: not-probed, note: "per-series tech spec lists multiple model codes; US SKU codes e.g. UX3405MA-PP287W"}
+    adapter: crawler/adapters/asus.py   # 280 list rows -> 142 pages; ROG rows are per-config (PartNo 90NR0LF1-M00WU0, SalesModelName G835LXG-DB96)
+    id_scheme: model code (base) + ROG PartNo
+    id_regex: '^[A-Z]{1,4}[0-9]{3,5}[A-Z]{0,3}(-[A-Z0-9]{3,8})?$'
+    blocks: "support GetPDLevel API returned empty Items for the params tried"
+  - slug: hp
+    name: HP
+    priority: 4
+    catalogue_source: {type: sitemap, url: "https://www.hp.com/us-en/shop/sitemap*.xml (robots lists gb-en variants; us-en pattern same)", status: partial, note: "hp.com shop PDP/sitemap fetches dropped (curl 000, Akamai TLS/HTTP2 fingerprinting). support.hp.com/us-en/products/laptops loads (200)"}
+    spec_source: {type: html, url: "https://support.hp.com/us-en/product/<slug>/<id>/document/c0xxxxxx (QuickSpecs PDFs: https://www8.hp.com/h20195/v2/GetDocument.aspx?docname=...)", status: not-probed}
+    id_scheme: product number
+    id_regex: '^[0-9A-Z]{5}[A-Z]{2}(#[A-Z0-9]{3})?$'
+    blocks: "Akamai bot protection on www.hp.com shop; likely needs browser/proxy"
+  - slug: dell
+    name: Dell
+    priority: 5
+    catalogue_source: {type: sitemap, url: "https://www.dell.com/index-product-pages-hreflang-sitemap.xml.gz", status: verified, note: "-> dhs-product-urls-hreflang-sitemap-000[12].xml.gz (not downloaded yet)"}
+    spec_source: {type: html, url: "https://www.dell.com/en-us/shop/<slug>/spd/<platform>", status: probed, note: "category page 200 (2.6MB); spec tables per platform; support.dell.com 403"}
+    id_scheme: platform code (pa14250, dc16251) ; no stable per-config ID
+    id_regex: '^[a-z]{2}[0-9]{2}[0-9]{3}$'   # verified from 48 en-us laptop spd slugs; JSON-LD sku = <code>_reg_01
+    blocks: "dell.com/support 403 (Akamai)"
+  - slug: microsoft
+    name: Microsoft Surface
+    priority: 6
+    catalogue_source: {type: sitemap, url: "https://www.microsoft.com/en-us/surface/surface.index.xml", status: verified}
+    spec_source: {type: html, url: "https://www.microsoft.com/en-us/surface/devices/surface-laptop-7th-edition (tech specs section) + support.microsoft.com Surface spec pages", status: probed}
+    id_scheme: SKU / regulatory model
+    id_regex: null
+    blocks: none
+  - slug: framework
+    name: Framework
+    priority: 7
+    catalogue_source: {type: sitemap, url: "https://frame.work/sitemap.xml", status: verified, note: "NOT Shopify (/products.json returns HTML). Crawl-Delay: 10 in robots.txt"}
+    spec_source: {type: html, url: "https://frame.work/laptop13 , /laptop12, /laptop16", status: probed}
+    id_scheme: product + batch
+    id_regex: null
+    blocks: "honor Crawl-Delay 10"
+  - slug: acer
+    name: Acer
+    priority: 8
+    catalogue_source: {type: html, url: "https://www.acer.com/us-en/laptops", status: blocked, note: "connection dropped (curl 000)"}
+    spec_source: {type: html, url: "https://store.acer.com / https://www.acer.com/us-en/laptops/.../<model>", status: blocked}
+    id_scheme: NX. part number / model code
+    id_regex: '^NX\.[A-Z0-9]{5}\.[0-9]{3}$'
+    blocks: "Akamai-style connection reset"
+  - slug: msi
+    name: MSI
+    priority: 9
+    catalogue_source: {type: html, url: "https://us.msi.com/Laptops", status: blocked, note: "403 Cloudflare"}
+    spec_source: {type: html, url: "https://us.msi.com/Laptop/<name>/Specification", status: blocked}
+    id_scheme: model code
+    id_regex: null
+    blocks: "403 even robots.txt"
+  - slug: samsung
+    name: Samsung
+    priority: 10
+    catalogue_source: {type: sitemap, url: "https://www.samsung.com/us/sitemap.xml", status: verified}
+    spec_source: {type: html, url: "https://www.samsung.com/us/computing/galaxy-books/", status: not-probed}
+    id_scheme: model code NP...-...US
+    id_regex: '^NP[0-9A-Z]{5,8}-[A-Z0-9]{3,6}US$'
+    blocks: none seen
+  - slug: razer
+    name: Razer
+    priority: 11
+    catalogue_source: {type: sitemap, url: "https://www.razer.com/sitemap.xml", status: verified, note: "points to api-p1.phoenix.razer.com Product-*.xml (SAP Hybris) sitemaps; per-locale"}
+    spec_source: {type: html, url: "https://www.razer.com/gaming-laptops/razer-blade-16", status: not-probed}
+    id_scheme: RZ09 SKU
+    id_regex: '^RZ09-[0-9A-Z]{4,}[A-Z0-9-]*$'
+    blocks: none seen
+  - slug: lg
+    name: LG gram
+    priority: 12
+    catalogue_source: {type: html, url: "https://www.lg.com/us/laptops", status: probed, note: "200, 1.8MB"}
+    spec_source: {type: html, url: "https://www.lg.com/us/laptops/<model>", status: not-probed}
+    id_scheme: model code
+    id_regex: '^[0-9]{2}Z[0-9]{2}[A-Z]-[A-Z0-9.]+$'
+    blocks: none seen
+  - slug: gigabyte
+    name: Gigabyte / AORUS
+    priority: 13
+    catalogue_source: {type: html, url: "https://www.gigabyte.com/Laptop", status: blocked, note: "403"}
+    spec_source: null
+    id_scheme: name + platform code
+    id_regex: null
+    blocks: "403 even robots.txt"
+  - slug: dynabook
+    name: Dynabook
+    priority: 14
+    catalogue_source: {type: html, url: "https://us.dynabook.com", status: not-probed}
+    spec_source: null
+    id_scheme: PMxxxx-xxxxxx
+    id_regex: null
+    blocks: "business-only, low US share"

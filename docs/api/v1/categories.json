@@ -273,7 +273,7 @@
  },
  {
   "id": "power-strips-demo",
-  "name": "Power strips",
+  "name": "Power strips (demo)",
   "description": "Fictional demonstration of a second category schema.",
   "count": 4,
   "demo": true,
@@ -385,5 +385,367 @@
     "column": false
    }
   ]
+ },
+ {
+  "id": "laptops",
+  "name": "Laptops",
+  "description": "US-market laptop configurations by manufacturer part number (Lenovo MTM, ASUS part/model code, Apple model).",
+  "count": 2419,
+  "demo": false,
+  "status": "accepted",
+  "schema": "laptops/schema.json",
+  "index": [
+   "laptops/index-0.json",
+   "laptops/index-1.json"
+  ],
+  "facets": "laptops/facets.json",
+  "products": "laptops/products.json",
+  "fields": [
+   {
+    "key": "gen.platform_variant",
+    "label": "Platform variant (Intel/AMD/Snapdragon, Lunar vs Arrow Lake)",
+    "group": "general",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": false
+   },
+   {
+    "key": "gen.region",
+    "label": "Region / SKU market",
+    "group": "general",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 30,
+    "column": false
+   },
+   {
+    "key": "cpu.model",
+    "label": "Processor model",
+    "group": "cpu",
+    "type": "text",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "gpu.model",
+    "label": "GPU",
+    "group": "gpu",
+    "type": "text",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "gpu.type",
+    "label": "Integrated or discrete",
+    "group": "gpu",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 20,
+    "column": false
+   },
+   {
+    "key": "gpu.tgp",
+    "label": "Discrete GPU TGP (incl. Dynamic Boost)",
+    "group": "gpu",
+    "type": "number",
+    "unit": "W",
+    "facet": true,
+    "priority": 30,
+    "column": false
+   },
+   {
+    "key": "mem.size",
+    "label": "Installed RAM",
+    "group": "memory",
+    "type": "number",
+    "unit": "GB",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "mem.soldered",
+    "label": "RAM soldered / on-package",
+    "group": "memory",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 30,
+    "column": false
+   },
+   {
+    "key": "mem.max",
+    "label": "Max RAM possible for this config",
+    "group": "memory",
+    "type": "number",
+    "unit": "GB",
+    "facet": true,
+    "priority": 50,
+    "column": false
+   },
+   {
+    "key": "stor.size",
+    "label": "Installed storage",
+    "group": "storage",
+    "type": "number",
+    "unit": "GB",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "stor.slots",
+    "label": "M.2 slot count (total/free)",
+    "group": "storage",
+    "type": "number",
+    "unit": null,
+    "facet": true,
+    "priority": 20,
+    "column": false
+   },
+   {
+    "key": "stor.soldered",
+    "label": "Storage soldered",
+    "group": "storage",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 50,
+    "column": false
+   },
+   {
+    "key": "disp.size",
+    "label": "Screen size",
+    "group": "display",
+    "type": "number",
+    "unit": "in",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "disp.panel_type",
+    "label": "Panel type (IPS/OLED/mini-LED)",
+    "group": "display",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 40,
+    "column": false
+   },
+   {
+    "key": "disp.nits_sdr",
+    "label": "Brightness typical SDR",
+    "group": "display",
+    "type": "number",
+    "unit": "nits",
+    "facet": true,
+    "priority": 50,
+    "column": false
+   },
+   {
+    "key": "disp.touch",
+    "label": "Touchscreen",
+    "group": "display",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 80,
+    "column": false
+   },
+   {
+    "key": "port.tb_usb4",
+    "label": "Thunderbolt/USB4 present (version)",
+    "group": "ports",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 20,
+    "column": false
+   },
+   {
+    "key": "pwr.battery_wh",
+    "label": "Battery capacity",
+    "group": "power",
+    "type": "number",
+    "unit": "Wh",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "phys.weight",
+    "label": "Weight (config-specific)",
+    "group": "physical",
+    "type": "number",
+    "unit": "kg",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/laptops/index-0.json",
+    "preview/laptops/index-1.json"
+   ],
+   "count": 2655,
+   "products": "preview/laptops/products/",
+   "only_preview": 236
+  }
+ },
+ {
+  "id": "power-strips",
+  "name": "Power strips & surge protectors",
+  "description": "Surge protectors and power strips by manufacturer model number: joules, clamping voltage, outlets, cord.",
+  "count": 538,
+  "demo": false,
+  "status": "accepted",
+  "schema": "power-strips/schema.json",
+  "index": [
+   "power-strips/index.json"
+  ],
+  "facets": "power-strips/facets.json",
+  "products": "power-strips/products.json",
+  "fields": [
+   {
+    "key": "type.kind",
+    "label": "Product kind",
+    "group": "type",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "type.ul1449_listed",
+    "label": "UL 1449 listed (Type 3 SPD)",
+    "group": "cert",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": false
+   },
+   {
+    "key": "surge.vpr_ln",
+    "label": "VPR line-neutral",
+    "group": "surge",
+    "type": "number",
+    "unit": "V",
+    "facet": true,
+    "priority": 10,
+    "column": false
+   },
+   {
+    "key": "surge.vpr_lg",
+    "label": "VPR line-ground",
+    "group": "surge",
+    "type": "number",
+    "unit": "V",
+    "facet": true,
+    "priority": 20,
+    "column": false
+   },
+   {
+    "key": "surge.vpr_max",
+    "label": "VPR worst mode (derived)",
+    "group": "surge",
+    "type": "number",
+    "unit": "V",
+    "facet": true,
+    "priority": 40,
+    "column": true
+   },
+   {
+    "key": "surge.joules",
+    "label": "Energy rating",
+    "group": "surge",
+    "type": "number",
+    "unit": "J",
+    "facet": true,
+    "priority": 50,
+    "column": true
+   },
+   {
+    "key": "safety.auto_shutoff",
+    "label": "Auto shut-off on protection failure",
+    "group": "safety",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": false
+   },
+   {
+    "key": "outlets.count",
+    "label": "AC outlets (total)",
+    "group": "outlets",
+    "type": "number",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "cord.length_ft",
+    "label": "Cord length",
+    "group": "cord",
+    "type": "number",
+    "unit": "ft",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "load.max_amps",
+    "label": "Max current",
+    "group": "load",
+    "type": "number",
+    "unit": "A",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "load.max_watts",
+    "label": "Max load",
+    "group": "load",
+    "type": "number",
+    "unit": "W",
+    "facet": true,
+    "priority": 20,
+    "column": false
+   },
+   {
+    "key": "usb.total_w",
+    "label": "USB total power",
+    "group": "usb",
+    "type": "number",
+    "unit": "W",
+    "facet": true,
+    "priority": 20,
+    "column": false
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/power-strips/index.json"
+   ],
+   "count": 511,
+   "products": "preview/power-strips/products/",
+   "only_preview": 341
+  }
  }
 ]

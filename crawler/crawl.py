@@ -283,7 +283,7 @@ def extract(url, text, feed=None):
         u = absolute(url, href)
         if u.lower().split("?")[0].endswith(".pdf") or (DOC_WORDS.search(t) and DOC_WORDS.search(u)):
             docs.setdefault(u, {"url": u, "text": t, "via": "link"})
-    blob_text = text + "\n".join(p.scripts) + (feed or {}).get("body_html", "")
+    blob_text = text + "\n".join(p.scripts) + ((feed or {}).get("body_html") or "")
     for u in PDF_RE.findall(blob_text.replace("\\/", "/")):
         u = absolute(url, u)
         docs.setdefault(u, {"url": u, "text": "", "via": "embedded"})

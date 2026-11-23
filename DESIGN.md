@@ -26,3 +26,26 @@ Plain static HTML/CSS/ES modules avoid a framework build dependency for a small 
 
 ## Verification
 Build checks every shipped .js/.mjs and executable inline script with node --check; it fails on any syntax error. Dataset smoke checks every emitted JSON, counts, IDs, schema keys and detail/index agreement. Browser smoke checks nonempty charger rows and Anker search when Playwright is available, plus responsive layout, keyboard access, compare and explicit state behavior during review. Keep tests at port 3999 and test the deployment subpath.
+
+## A4 schema and catalogue behavior
+
+Load the published category schema and every compact index shard for profile-driven categories. Use compact rows for search, filtering, grouping and pagination; fetch full records only for product inspection and comparison. Legacy chargers keep their compatible index. Hide `power-strips-demo` from catalogue navigation and route access; the real power-strip category replaces it in the UI without deleting dataset fixtures.
+
+Keep parent identity explicit. Group configurations using published parent IDs, and link to the parent record for inspection. A family is not a model and a model is not a purchasable configuration. Show configuration labels and differences in indexed facts, with exact configuration links for complete specs. Configure-to-order option axes remain option lists, never invented SKUs. Search and filters operate on the matching records before pagination.
+
+Core facts lead; important and detail tiers use labeled disclosures. Schema groups and labels organize tables and the column chooser. Per-port objects use semantic nested tables with units, while literal port statements stay readable list items. Preserve unknown subvalues and unsupported properties without inventing port capabilities. Conditions, alternatives and inherited provenance accompany the headline value. A missing, conflicted, not applicable or not published fact never becomes “No”.
+
+The comparison shelf precedes results, and pagination limits rendered catalogue rows. The URL preserves search, filters, columns, sort, page and selections through product/comparison return links. Compact action targets meet the 44px project target. Default columns can be restored directly from the grouped chooser.
+
+## Missing products, search misses and corrections
+
+There is no passive search logging, third-party analytics, remote collector or automatic issue creation. A zero-result search offers a product request; readers can also request a missing product from a category. The request is a draft until the reader reviews and submits it on GitHub. Explain at the action that GitHub issues are public and require a GitHub account; readers should include product information only.
+
+Build a transport-independent request payload with `category`, the query as typed, `query_norm`, an optional recognized `identifier_guess`, and the dataset `build`. The current transport is a prefilled GitHub issue form at `shrestha-pranav/specsheet`, using `.github/ISSUE_TEMPLATE/missing-product.yml` and the `missing-product` label. The form has a `payload` field plus optional brand, product URL and context. Do not attach browsing history, identifiers for the visitor, timestamps, IP addresses or unrelated filters. Normalization is for intake deduplication; retain the original spelling separately. Guess an identifier only when its format validates; never claim that a guessed identifier is an established product match.
+
+Field evidence offers a separate correction draft using `field-correction.yml`, with entity ID, field key, shown value and build; the reader supplies the proposed value and evidence URL before submission. Escape display data and URL-encode draft parameters. Opening an external draft sends only that chosen draft to GitHub, so no external request is made merely by searching or viewing a product.
+
+No local miss queue is enabled in this round. A miss is retained only in the current search/URL state; local storage remains reserved for the theme preference. This avoids retaining private queries without consent. A future optional local queue must be explicitly enabled, bounded, inspectable and clearable, with no background upload. Maintainer intake/deduplication and any future server transport are outside this static UI round; maintainers can process deliberately submitted issues using the contract payload.
+
+## Default sort and preview
+Default sort is spec coverage (core specs known / core specs) descending, reviewed rows before unreviewed ones, then brand and name: a thin model stub should not outrank a complete record just because its brand sorts first. Preview rows are opt-in (`preview=1` in the URL), badged "Unreviewed", values muted with dashed provenance, and always shown below, never instead of, the reviewed value.

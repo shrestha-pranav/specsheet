@@ -1,0 +1,1426 @@
+category: laptops
+version: 0.2
+identity:
+  levels:
+  - level: family
+    label: Product family
+    meaning: e.g. ThinkPad T14s Gen 6 (Intel); psref product key. Never passes specs down.
+    key_schemes:
+    - mfr_family
+    inherits: false
+  - level: model
+    label: Platform model
+    meaning: Machine Type / chassis + CPU platform (e.g. 83TD)
+    key_schemes:
+    - machine_type
+    - mfr_model
+    inherits: true
+  - level: configuration
+    label: Orderable configuration
+    meaning: Lenovo MTM / HP product number / Dell SKU / Apple model+BTO
+    key_schemes:
+    - mtm
+    - mfr_sku
+    inherits: true
+  - level: package
+    label: Retail package
+    meaning: Barcoded retail unit incl. region and charger
+    key_schemes:
+    - gtin
+    inherits: true
+  primary_key: 'Manufacturer part number naming one fixed config (Lenovo MTM, HP product number with #ABA suffix, Dell orderable
+    SKU, Apple model + BTO tuple); regional suffix is significant, never stripped.'
+  per_brand:
+    lenovo: MTM e.g. 83DK0002US; Machine Type = first 4 chars (model level)
+    hp: Product number e.g. 8Z4X1AV#ABA
+    dell: Model + orderable SKU
+    apple: Model number Axxxx + chip/RAM/SSD tuple
+    asus: Model code e.g. UX5406SA-xxx
+    framework: Edition SKU + chosen modules
+    microsoft: Part number per config
+  schemes:
+  - scheme: mtm
+    issuer: Lenovo
+    pattern: ^[0-9A-Z]{10}$
+    normalize: upper_strip_dashes
+    level: configuration
+  - scheme: machine_type
+    issuer: Lenovo
+    pattern: ^[0-9A-Z]{4}$
+    level: model
+  - scheme: mfr_sku
+    level: configuration
+  - scheme: mfr_model
+    level: model
+  - scheme: mfr_family
+    level: family
+  - scheme: gtin
+    issuer: GS1
+    level: package
+  variant_axes:
+  - mem.size
+  - stor.size
+  - disp.resolution
+  - disp.touch
+  - gen.color
+  - sw.os
+  - in.fingerprint
+  - wl.wwan
+  - in.webcam
+  - gen.region
+  model_defining:
+  - cpu.model
+  - gpu.model
+  - mem.soldered
+  - disp.size
+  - pwr.battery_wh
+  note: Platform variant (e.g. Lunar vs Arrow Lake) is model-level; see spec.level.
+groups:
+- id: general
+  label: General
+- id: cpu
+  label: Processor
+- id: gpu
+  label: Graphics / NPU
+- id: memory
+  label: Memory
+- id: storage
+  label: Storage
+- id: display
+  label: Display
+- id: ports
+  label: Ports & USB-C
+- id: power
+  label: Battery & charger
+- id: wireless
+  label: Wireless
+- id: input
+  label: Input, camera, security
+- id: physical
+  label: Physical
+- id: sw
+  label: OS & warranty
+specs:
+- key: gen.platform_variant
+  label: Platform variant (Intel/AMD/Snapdragon, Lunar vs Arrow Lake)
+  group: general
+  type: enum
+  unit: null
+  tier: core
+  facet: true
+  why: Weight, ports, wifi and RAM type differ by platform within one family
+  traps:
+  - Same family name, different hardware
+  sources:
+  - PSREF notes
+  example: Lunar Lake
+  aliases:
+  - id.platform_variant
+  level: model
+- key: gen.release_year
+  label: Release year
+  group: general
+  type: number
+  unit: null
+  tier: important
+  facet: true
+  why: Age
+  sources:
+  - spec page
+  example: 2026
+  aliases:
+  - id.release_year
+  level: configuration
+- key: gen.region
+  label: Region / SKU market
+  group: general
+  type: enum
+  unit: null
+  tier: core
+  facet: true
+  why: Adapters, warranty, keyboard layout, options vary by country
+  traps:
+  - 'PSREF: ''AC adapter offerings depend on the country'''
+  sources:
+  - PSREF notes, retailer
+  example: US
+  aliases:
+  - id.region
+  level: configuration
+  identity_role: variant_axis
+- key: gen.color
+  label: Color
+  group: general
+  type: enum
+  unit: null
+  tier: important
+  facet: true
+  why: Some colors only on some platforms
+  traps:
+  - Grey only for Arrow Lake; color changes weight
+  sources:
+  - PSREF Case Color
+  example: Grey
+  aliases:
+  - id.color
+  level: configuration
+  identity_role: variant_axis
+- key: gen.form_factor
+  label: Form factor
+  group: general
+  type: enum
+  unit: null
+  tier: important
+  facet: true
+  why: Clamshell/2-in-1/detachable
+  sources:
+  - spec page
+  example: clamshell
+  aliases:
+  - id.form_factor
+  level: configuration
+- key: gen.segment
+  label: Segment
+  group: general
+  type: enum
+  unit: null
+  tier: detail
+  facet: true
+  why: Business/consumer/gaming/workstation
+  sources:
+  - ''
+  example: business
+  aliases:
+  - id.segment
+  level: configuration
+- key: cpu.model
+  label: Processor model
+  group: cpu
+  type: text
+  unit: null
+  tier: core
+  facet: true
+  why: Primary perf driver
+  traps:
+  - Marketing says 'Core Ultra 7' w/o suffix; 256V vs 258V differ
+  sources:
+  - PSREF Processor table, Intel/AMD ARK
+  example: Intel Core Ultra 7 258V
+  level: model
+  identity_role: model_defining
+- key: cpu.cores_threads
+  label: Cores (P/E/LPE) and threads
+  group: cpu
+  type: text
+  unit: null
+  tier: important
+  facet: false
+  why: Cores (P/E/LPE) and threads
+  traps:
+  - Total cores hides P vs E
+  sources:
+  - PSREF, ARK
+  example: 8C/8T
+  level: model
+- key: cpu.boost_clock
+  label: Max boost clock
+  group: cpu
+  type: number
+  unit: GHz
+  tier: detail
+  facet: false
+  why: Max boost clock
+  traps:
+  - Boost is not sustained
+  sources:
+  - PSREF, ARK
+  example: 4.8
+  level: model
+- key: cpu.base_clock
+  label: Base clock
+  group: cpu
+  type: number
+  unit: GHz
+  tier: detail
+  facet: false
+  why: Base (P-core) clock as the manufacturer states it
+  traps:
+  - Hybrid CPUs state P-core and E-core clocks separately; this is the P-core base
+  sources:
+  - PSREF Processor cell, ARK
+  example: 2.0
+  level: model
+- key: cpu.cores
+  label: CPU cores
+  group: cpu
+  type: integer
+  unit: null
+  tier: important
+  facet: true
+  why: Total core count, split out of the processor cell
+  traps:
+  - Total cores hides P vs E split (kept in cpu.cores_threads)
+  sources:
+  - PSREF Processor cell, ARK
+  example: 8
+  level: model
+- key: cpu.threads
+  label: CPU threads
+  group: cpu
+  type: integer
+  unit: null
+  tier: detail
+  facet: false
+  why: Thread count, split out of the processor cell
+  traps: []
+  sources:
+  - PSREF Processor cell, ARK
+  example: 16
+  level: model
+- key: cpu.cache
+  label: CPU cache
+  group: cpu
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Cache as stated (L2/L3 split for AMD, Smart Cache total for Intel); literal, not summed
+  traps:
+  - Intel Smart Cache vs AMD L3 are not comparable totals
+  sources:
+  - PSREF Processor cell, ARK
+  example: 4MB L2 / 8MB L3
+  level: model
+- key: cpu.tdp_base
+  label: Base power (PBP/TDP)
+  group: cpu
+  type: number
+  unit: W
+  tier: important
+  facet: true
+  why: Sustained perf and fan noise
+  traps:
+  - Config-set cTDP varies per OEM chassis
+  sources:
+  - ARK; PSREF rarely
+  example: '17'
+  level: model
+- key: cpu.tdp_configured
+  label: OEM configured power limit (PL1/PL2)
+  group: cpu
+  type: range
+  unit: W
+  tier: important
+  facet: false
+  why: Same chip, different chassis limits
+  traps:
+  - Almost never published; reviews only
+  sources:
+  - reviews/BIOS
+  example: PL1 17 / PL2 37
+  level: model
+- key: cpu.vpro
+  label: vPro support
+  group: cpu
+  type: bool
+  unit: null
+  tier: detail
+  facet: true
+  why: Business mgmt
+  traps:
+  - Separate WLAN line items in PSREF
+  sources:
+  - PSREF
+  example: false
+  level: model
+- key: cpu.npu_tops
+  label: NPU TOPS
+  group: cpu
+  type: number
+  unit: TOPS
+  tier: important
+  facet: true
+  why: Copilot+ PC eligibility (>=40)
+  traps:
+  - Platform TOPS vs NPU-only; ASUS lists per CPU
+  sources:
+  - ASUS techspec, PSREF
+  example: 47
+  level: model
+- key: gpu.model
+  label: GPU
+  group: gpu
+  type: text
+  unit: null
+  tier: core
+  facet: true
+  why: Gaming/creative
+  traps:
+  - '''Intel Graphics'' vs ''Arc Graphics'' depends on CPU tier/RAM'
+  sources:
+  - spec page
+  example: Intel Arc 140V
+  level: model
+  identity_role: model_defining
+- key: gpu.type
+  label: Integrated or discrete
+  group: gpu
+  type: enum
+  unit: null
+  tier: core
+  facet: true
+  why: Integrated or discrete
+  sources:
+  - spec page
+  example: integrated
+  level: model
+- key: gpu.tgp
+  label: Discrete GPU TGP (incl. Dynamic Boost)
+  group: gpu
+  type: number
+  unit: W
+  tier: core
+  facet: true
+  why: Same RTX name differs by up to ~2x power
+  traps:
+  - Brand lists chip, hides TGP; sometimes lists 'up to'
+  sources:
+  - ASUS ROG/Lenovo Legion/HP Omen spec pages, NVIDIA product page
+  example: '115'
+  level: model
+- key: gpu.vram
+  label: Dedicated VRAM
+  group: gpu
+  type: number
+  unit: GB
+  tier: important
+  facet: true
+  why: Dedicated VRAM
+  traps:
+  - Shared memory counted as VRAM
+  sources:
+  - spec page
+  example: 8
+  level: model
+- key: gpu.mux
+  label: MUX switch / Advanced Optimus
+  group: gpu
+  type: bool
+  unit: null
+  tier: detail
+  facet: true
+  why: Gaming fps
+  traps:
+  - Rarely stated
+  sources:
+  - spec page
+  example: true
+  level: model
+- key: mem.size
+  label: Installed RAM
+  group: memory
+  type: number
+  unit: GB
+  tier: core
+  facet: true
+  why: Installed RAM
+  sources:
+  - PSREF, QuickSpecs
+  example: '32'
+  level: configuration
+  identity_role: variant_axis
+- key: mem.type
+  label: RAM type and speed
+  group: memory
+  type: text
+  unit: null
+  tier: core
+  facet: true
+  why: LPDDR5X vs DDR5 bandwidth
+  traps:
+  - Installed speed may run lower than rated (PSREF note 8533 runs 7467)
+  sources:
+  - PSREF Memory Type
+  example: LPDDR5X-8533
+  level: configuration
+- key: mem.soldered
+  label: RAM soldered / on-package
+  group: memory
+  type: enum
+  unit: null
+  tier: core
+  facet: true
+  why: Upgradability
+  traps:
+  - '''Up to 64GB'' listing hides that it cannot be upgraded'
+  sources:
+  - PSREF Max Memory/Slots, Dell manual Memory, Framework
+  example: soldered
+  level: configuration
+  identity_role: model_defining
+- key: mem.slots
+  label: SODIMM slots (total/free)
+  group: memory
+  type: object
+  unit: null
+  tier: core
+  facet: false
+  why: SODIMM slots (total/free)
+  traps:
+  - 'Mixed: soldered + 1 slot (T14 Gen 4)'
+  sources:
+  - PSREF Memory Slots
+  example: '0'
+  level: configuration
+- key: mem.max
+  label: Max RAM possible for this config
+  group: memory
+  type: number
+  unit: GB
+  tier: core
+  facet: true
+  why: Max RAM possible for this config
+  traps:
+  - PSREF per-platform; max across family misleading
+  sources:
+  - PSREF Max Memory
+  example: '32'
+  level: configuration
+- key: mem.channels
+  label: Memory channels
+  group: memory
+  type: enum
+  unit: null
+  tier: detail
+  facet: false
+  why: Single-channel halves bandwidth
+  traps:
+  - Config with 1 SODIMM
+  sources:
+  - PSREF
+  example: dual
+  level: configuration
+- key: mem.ecc
+  label: ECC
+  group: memory
+  type: bool
+  unit: null
+  tier: detail
+  facet: true
+  why: Workstation
+  sources:
+  - PSREF
+  example: false
+  level: configuration
+- key: stor.size
+  label: Installed storage
+  group: storage
+  type: number
+  unit: GB
+  tier: core
+  facet: true
+  why: Installed storage
+  traps:
+  - TB marketing; per-config
+  sources:
+  - spec page
+  example: '1000'
+  level: configuration
+  identity_role: variant_axis
+- key: stor.slots
+  label: M.2 slot count (total/free)
+  group: storage
+  type: number
+  unit: null
+  tier: core
+  facet: true
+  why: Upgrade path
+  traps:
+  - Often one slot only
+  sources:
+  - PSREF Storage Slot, manual
+  example: '1'
+  level: configuration
+- key: stor.form_factor
+  label: SSD form factor
+  group: storage
+  type: enum
+  unit: null
+  tier: important
+  facet: true
+  why: 2280 vs 2242 vs soldered
+  traps:
+  - Apple soldered NAND
+  sources:
+  - PSREF
+  example: M.2 2280
+  level: configuration
+- key: stor.pcie
+  label: SSD PCIe gen and lanes
+  group: storage
+  type: text
+  unit: null
+  tier: important
+  facet: true
+  why: Speed; gen depends on CPU series
+  traps:
+  - 'Slot gen differs by processor (U: 4.0, H/V: 5.0)'
+  sources:
+  - PSREF
+  example: PCIe 4.0 x4
+  level: configuration
+- key: stor.soldered
+  label: Storage soldered
+  group: storage
+  type: bool
+  unit: null
+  tier: core
+  facet: true
+  why: Storage soldered
+  traps:
+  - Apple, some thin models
+  sources:
+  - spec page
+  example: false
+  level: configuration
+- key: stor.opal
+  label: Self-encrypting (Opal)
+  group: storage
+  type: bool
+  unit: null
+  tier: detail
+  facet: false
+  why: Self-encrypting (Opal)
+  sources:
+  - PSREF
+  example: true
+  level: configuration
+- key: disp.size
+  label: Screen size
+  group: display
+  type: number
+  unit: in
+  tier: core
+  facet: true
+  why: Screen size
+  traps:
+  - Diagonal vs viewable
+  sources:
+  - spec
+  example: '14.0'
+  level: configuration
+  identity_role: model_defining
+- key: disp.resolution
+  label: Resolution
+  group: display
+  type: text
+  unit: null
+  tier: core
+  facet: true
+  why: Resolution
+  traps:
+  - Per-config option; ASUS lists several panels in one cell
+  sources:
+  - PSREF Display table, ASUS techspec
+  example: 2880x1800
+  level: configuration
+  identity_role: variant_axis
+- key: disp.refresh
+  label: Refresh rate
+  group: display
+  type: range
+  unit: Hz
+  tier: core
+  facet: true
+  why: Refresh rate
+  traps:
+  - VRR range vs max; 'up to'
+  sources:
+  - spec
+  example: '120'
+  level: configuration
+- key: disp.panel_type
+  label: Panel type (IPS/OLED/mini-LED)
+  group: display
+  type: enum
+  unit: null
+  tier: core
+  facet: true
+  why: Panel type (IPS/OLED/mini-LED)
+  traps:
+  - PSREF has 'IPS' with 45% NTSC panel vs OLED in same family
+  sources:
+  - PSREF
+  example: OLED
+  level: configuration
+- key: disp.nits_sdr
+  label: Brightness typical SDR
+  group: display
+  type: number
+  unit: nits
+  tier: core
+  facet: true
+  why: Brightness typical SDR
+  traps:
+  - Quoting HDR peak
+  sources:
+  - PSREF, ASUS
+  example: '400'
+  level: configuration
+- key: disp.nits_hdr
+  label: HDR peak brightness
+  group: display
+  type: number
+  unit: nits
+  tier: detail
+  facet: true
+  why: HDR peak brightness
+  sources:
+  - ASUS
+  example: '500'
+  level: configuration
+- key: disp.gamut
+  label: Color gamut (% sRGB/DCI-P3/NTSC)
+  group: display
+  type: text
+  unit: null
+  tier: core
+  facet: true
+  why: 45% NTSC ~ 63% sRGB is poor
+  traps:
+  - 'Unit mixing: NTSC vs sRGB vs P3'
+  sources:
+  - PSREF Color Gamut
+  example: 100% DCI-P3
+  level: configuration
+- key: disp.touch
+  label: Touchscreen
+  group: display
+  type: bool
+  unit: null
+  tier: core
+  facet: true
+  why: Touch changes panel, weight, glossy
+  traps:
+  - Option per config
+  sources:
+  - PSREF Touch
+  example: false
+  level: configuration
+  identity_role: variant_axis
+- key: disp.surface
+  label: Anti-glare or glossy
+  group: display
+  type: enum
+  unit: null
+  tier: important
+  facet: true
+  why: Anti-glare or glossy
+  traps:
+  - OLED glossy
+  sources:
+  - PSREF Surface
+  example: anti-glare
+  level: configuration
+- key: disp.aspect
+  label: Aspect ratio
+  group: display
+  type: enum
+  unit: null
+  tier: detail
+  facet: true
+  why: Aspect ratio
+  sources:
+  - PSREF
+  example: '16:10'
+  level: configuration
+- key: disp.vendor
+  label: Panel vendor / model id
+  group: display
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Panel vendor / model id
+  traps:
+  - Not published; panel lottery
+  sources:
+  - notebookcheck, BIOS/EDID
+  example: Samsung ATNA...
+  level: configuration
+- key: disp.contrast
+  label: Contrast ratio
+  group: display
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Contrast ratio
+  sources:
+  - PSREF
+  example: '800:1'
+  level: configuration
+- key: disp.certs
+  label: Display certs (HDR True Black, Dolby Vision, TUV)
+  group: display
+  type: list
+  unit: null
+  tier: detail
+  facet: false
+  why: Display certs (HDR True Black, Dolby Vision, TUV)
+  traps:
+  - Eye-care badges are low-info
+  sources:
+  - ASUS
+  example: VESA DisplayHDR True Black 500
+  level: configuration
+  items: text
+- key: port.usbc_list
+  label: 'USB-C ports: per port protocol, side, PD in/out W, DP alt'
+  group: ports
+  type: list
+  unit: null
+  tier: core
+  facet: false
+  why: Which port charges and drives displays
+  traps:
+  - Lists 'USB-C' without TB/USB4 vs 10Gbps vs 5Gbps; PD range e.g. 15-65W, DP only on some ports
+  sources:
+  - PSREF Standard Ports, Dell manual External ports, Apple specs
+  example:
+  - side: left
+    protocol: USB4
+    usb_gbps: 40
+    pd_in_w: 15-65
+    dp_alt: DP 2.1
+  items:
+    fields:
+    - key: side
+      type: enum
+      enum:
+      - left
+      - right
+      - rear
+      - unknown
+    - key: protocol
+      type: text
+    - key: usb_gbps
+      type: number
+      unit: Gbps
+    - key: pd_in_w
+      type: range
+      unit: W
+    - key: pd_out_w
+      type: number
+      unit: W
+    - key: dp_alt
+      type: text
+  level: model
+- key: port.tb_usb4
+  label: Thunderbolt/USB4 present (version)
+  group: ports
+  type: enum
+  unit: null
+  tier: core
+  facet: true
+  why: Docks, eGPU
+  traps:
+  - USB4 is not TB4 certified; TB5 vs 4
+  sources:
+  - PSREF, Apple specs
+  example: Thunderbolt 4
+  level: model
+- key: port.usbc_count
+  label: USB-C count
+  group: ports
+  type: number
+  unit: null
+  tier: important
+  facet: true
+  why: USB-C count
+  sources:
+  - ''
+  example: '2'
+  level: model
+- key: port.usba_count
+  label: USB-A count and speed
+  group: ports
+  type: integer
+  unit: null
+  tier: important
+  facet: true
+  why: USB-A count and speed
+  traps:
+  - Always-On port
+  sources:
+  - PSREF
+  example: '[5Gbps,5Gbps]'
+  level: configuration
+- key: port.video_out
+  label: HDMI/DP version and max res
+  group: ports
+  type: text
+  unit: null
+  tier: important
+  facet: true
+  why: HDMI/DP version and max res
+  traps:
+  - HDMI 2.1 port actually limited (4K/60 on PSREF)
+  sources:
+  - PSREF
+  example: HDMI 2.1 up to 4K60
+  level: configuration
+- key: port.ethernet
+  label: RJ45/Ethernet
+  group: ports
+  type: enum
+  unit: null
+  tier: important
+  facet: true
+  why: RJ45/Ethernet
+  traps:
+  - Dongle-only
+  sources:
+  - PSREF
+  example: none
+  level: configuration
+- key: port.card_reader
+  label: SD/microSD/smart card
+  group: ports
+  type: enum
+  unit: null
+  tier: detail
+  facet: true
+  why: SD/microSD/smart card
+  sources:
+  - PSREF
+  example: none
+  level: configuration
+- key: port.audio
+  label: 3.5mm jack
+  group: ports
+  type: bool
+  unit: null
+  tier: detail
+  facet: true
+  why: 3.5mm jack
+  sources:
+  - ''
+  example: true
+  level: configuration
+- key: port.charge_port
+  label: Dedicated charge port (barrel/MagSafe/USB-C)
+  group: ports
+  type: enum
+  unit: null
+  tier: important
+  facet: true
+  why: Dedicated charge port (barrel/MagSafe/USB-C)
+  traps:
+  - Proprietary vs USB-C charging
+  sources:
+  - Apple specs
+  example: usb-c
+  level: configuration
+- key: port.display_out_max
+  label: Max external displays
+  group: ports
+  type: text
+  unit: null
+  tier: important
+  facet: false
+  why: Max external displays
+  traps:
+  - Apple base chip limits
+  sources:
+  - Apple specs
+  example: 2 x 6K60
+  level: configuration
+- key: pwr.battery_wh
+  label: Battery capacity
+  group: power
+  type: number
+  unit: Wh
+  tier: core
+  facet: true
+  why: Battery capacity
+  traps:
+  - Marketing gives hours only
+  sources:
+  - PSREF, Apple specs
+  example: '58'
+  level: configuration
+  identity_role: model_defining
+- key: pwr.battery_life_claims
+  label: Vendor battery claims + test method
+  group: power
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Vendor battery claims + test method
+  traps:
+  - MobileMark vs JEITA vs video loop
+  sources:
+  - PSREF
+  example: 23.46 hr MobileMark 25
+  level: configuration
+- key: pwr.charger_w
+  label: Bundled charger wattage and type
+  group: power
+  type: text
+  unit: W
+  tier: core
+  facet: true
+  why: Bundled charger wattage and type
+  traps:
+  - Region-dependent; 'No adapter' option
+  sources:
+  - PSREF Power Adapter
+  example: 65W USB-C PD 3.0
+  level: configuration
+- key: pwr.max_pd_in
+  label: Max USB-C charge input
+  group: power
+  type: number
+  unit: W
+  tier: important
+  facet: false
+  why: Max USB-C charge input
+  sources:
+  - PSREF
+  example: 65
+  level: configuration
+- key: wl.wifi
+  label: Wi-Fi standard and chip
+  group: wireless
+  type: text
+  unit: null
+  tier: important
+  facet: true
+  why: Wi-Fi standard and chip
+  traps:
+  - Same family has AX211 or BE201; chip matters on Linux
+  sources:
+  - PSREF WLAN
+  example: Intel Wi-Fi 7 BE201
+  level: configuration
+- key: wl.bluetooth
+  label: Bluetooth version
+  group: wireless
+  type: text
+  unit: null
+  tier: detail
+  facet: true
+  why: Bluetooth version
+  sources:
+  - PSREF
+  example: '5.4'
+  level: configuration
+- key: wl.wwan
+  label: Cellular/WWAN option
+  group: wireless
+  type: enum
+  unit: null
+  tier: important
+  facet: true
+  why: Cellular/WWAN option
+  traps:
+  - '''upgradable'' antenna-ready vs installed'
+  sources:
+  - PSREF
+  example: none
+  level: configuration
+  identity_role: variant_axis
+- key: in.kb_backlit
+  label: Keyboard backlight
+  group: input
+  type: enum
+  unit: null
+  tier: important
+  facet: true
+  why: Keyboard backlight
+  traps:
+  - Per-config in PSREF
+  sources:
+  - PSREF
+  example: white
+  level: configuration
+- key: in.kb_layout
+  label: Keyboard layout/language
+  group: input
+  type: enum
+  unit: null
+  tier: detail
+  facet: true
+  why: Keyboard layout/language
+  traps:
+  - Region
+  sources:
+  - retailer
+  example: US ANSI
+  level: configuration
+- key: in.webcam
+  label: Webcam resolution
+  group: input
+  type: text
+  unit: null
+  tier: important
+  facet: true
+  why: Webcam resolution
+  traps:
+  - 720p vs 1080p per config
+  sources:
+  - PSREF Camera, Apple specs
+  example: 1080p
+  level: configuration
+  identity_role: variant_axis
+- key: in.ir_cam
+  label: IR camera (Windows Hello)
+  group: input
+  type: bool
+  unit: null
+  tier: important
+  facet: true
+  why: IR camera (Windows Hello)
+  sources:
+  - PSREF
+  example: true
+  level: configuration
+- key: in.fingerprint
+  label: Fingerprint reader
+  group: input
+  type: bool
+  unit: null
+  tier: important
+  facet: true
+  why: Fingerprint reader
+  traps:
+  - Option per config
+  sources:
+  - PSREF
+  example: true
+  level: configuration
+  identity_role: variant_axis
+- key: in.privacy
+  label: Privacy shutter / ePrivacy
+  group: input
+  type: bool
+  unit: null
+  tier: detail
+  facet: true
+  why: Privacy shutter / ePrivacy
+  sources:
+  - PSREF
+  example: true
+  level: configuration
+- key: in.speakers
+  label: Speakers/audio
+  group: input
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Speakers/audio
+  sources:
+  - ''
+  example: 4 speakers
+  level: configuration
+- key: in.tpm
+  label: Security chip (dTPM/Pluton)
+  group: input
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Security chip (dTPM/Pluton)
+  traps:
+  - Pluton only on one platform
+  sources:
+  - PSREF
+  example: dTPM 2.0
+  level: configuration
+- key: phys.weight
+  label: Weight (config-specific)
+  group: physical
+  type: number
+  unit: kg
+  tier: core
+  facet: true
+  why: Weight (config-specific)
+  traps:
+  - '''Starting at'' weight; touch/OLED/battery adds'
+  sources:
+  - PSREF Weight, Apple specs
+  example: '1.28'
+  level: configuration
+- key: phys.dimensions
+  label: Dimensions
+  group: physical
+  type: object
+  unit: mm
+  tier: important
+  facet: false
+  why: Dimensions
+  traps:
+  - Max thickness vs front
+  sources:
+  - PSREF
+  example: 313.6x219.4x19.75
+  level: model
+- key: phys.material
+  label: Chassis material
+  group: physical
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Chassis material
+  traps:
+  - Alu only on some platforms
+  sources:
+  - PSREF
+  example: aluminium
+  level: configuration
+- key: phys.repairability
+  label: Repairability (battery/ports replaceable)
+  group: physical
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Repairability (battery/ports replaceable)
+  sources:
+  - iFixit, Framework
+  example: modular
+  level: configuration
+- key: sw.os
+  label: Preinstalled OS
+  group: sw
+  type: enum
+  unit: null
+  tier: important
+  facet: true
+  why: Windows Home vs Pro; no-OS/Linux SKUs
+  traps:
+  - Pro costs more
+  sources:
+  - PSREF
+  example: Windows 11 Pro
+  level: configuration
+  identity_role: variant_axis
+- key: sw.warranty
+  label: Base warranty length and type
+  group: sw
+  type: text
+  unit: null
+  tier: important
+  facet: true
+  why: Base warranty length and type
+  traps:
+  - Onsite vs carry-in; battery 1yr in a 3yr
+  sources:
+  - PSREF Base Warranty
+  example: 1-year carry-in
+  level: configuration
+- key: sw.msrp
+  label: List price
+  group: sw
+  type: number
+  unit: USD
+  tier: important
+  facet: false
+  why: List price
+  traps:
+  - Dynamic
+  sources:
+  - retail
+  example: '1649'
+  level: configuration
+- key: cpu.ai_pc_category
+  label: AI PC category (Copilot+ PC)
+  group: cpu
+  type: enum
+  unit: null
+  tier: important
+  facet: true
+  why: Copilot+ eligibility
+  sources:
+  - PSREF models column "AI PC Category"
+  level: model
+- key: input.audio
+  label: Audio chip and speakers/mics
+  group: input
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Audio chip and speakers/mics
+  sources:
+  - PSREF models column "Audio Chip"/"Speakers"/"Microphone"
+  level: configuration
+- key: disp.color_calibration
+  label: Factory color calibration
+  group: display
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Creative buyers
+  sources:
+  - PSREF models column "Color Calibration"
+  level: configuration
+- key: disp.touch_type
+  label: Touch technology (OGS/points)
+  group: display
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Touch technology (OGS/points)
+  sources:
+  - PSREF models column "Touchscreen"
+  level: configuration
+- key: input.pen
+  label: Pen / stylus support
+  group: input
+  type: enum
+  unit: null
+  tier: important
+  facet: true
+  why: Included, upgradable or none
+  sources:
+  - PSREF models column "Pen"
+  level: configuration
+- key: input.touchpad
+  label: Touchpad type and size
+  group: input
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Touchpad type and size
+  sources:
+  - PSREF models column "Touchpad"
+  level: configuration
+- key: phys.surface_treatment
+  label: Surface treatment/finish
+  group: physical
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Surface treatment/finish
+  sources:
+  - PSREF models column "Surface Treatment"
+  level: configuration
+- key: port.docking
+  label: Docking support
+  group: ports
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Side docking connector vs USB-C docks
+  sources:
+  - PSREF models column "Docking"
+  level: configuration
+- key: input.security_other
+  label: Other security (privacy shutter, IR, etc.)
+  group: input
+  type: list
+  unit: null
+  tier: detail
+  facet: false
+  why: Other security (privacy shutter, IR, etc.)
+  sources:
+  - PSREF models column "Other Security"
+  level: configuration
+  items: text
+- key: sw.included_upgrade
+  label: Included warranty upgrade (CPN)
+  group: sw
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Included warranty upgrade (CPN)
+  sources:
+  - PSREF models column "Included Upgrade"
+  level: configuration
+- key: sw.certs
+  label: Certifications (MIL-STD, EPEAT, TUV, ErP)
+  group: sw
+  type: list
+  unit: null
+  tier: detail
+  facet: false
+  why: Certifications (MIL-STD, EPEAT, TUV, ErP)
+  sources:
+  - PSREF models column "Green Certifications"/"Mil-Spec Test"/"Other Certifications"
+  level: configuration
+  items: text
+- key: sw.end_of_support
+  label: End of support date
+  group: sw
+  type: date
+  unit: null
+  tier: important
+  facet: false
+  why: Update horizon
+  sources:
+  - PSREF models column "End of Support"
+  level: model
+- key: gen.announce_date
+  label: Announce date
+  group: general
+  type: date
+  unit: null
+  tier: detail
+  facet: false
+  why: Announce date
+  sources:
+  - PSREF models column "Announce Date"
+  level: model
+- key: gen.country_region
+  label: Countries/regions sold
+  group: general
+  type: list
+  unit: null
+  tier: important
+  facet: false
+  why: Countries/regions sold
+  sources:
+  - PSREF models column "Country/Region"
+  level: configuration
+  items: text
+- key: port.card_reader_type
+  label: Card reader type
+  group: ports
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Card reader type
+  sources:
+  - PSREF models column "Card Reader"
+  level: configuration
+- key: cpu.chipset
+  label: Chipset / platform controller
+  group: cpu
+  type: text
+  unit: null
+  tier: important
+  facet: true
+  why: Determines IO lanes, USB4/TB, Wi-Fi/PCIe gen, memory support
+  traps:
+  - PSREF often says only "SoC platform" (no separate PCH); then value = not_applicable/SoC, not unknown
+  - Mobile PCH name (e.g. HM770) rarely in marketing
+  sources:
+  - PSREF models column "Chipset"
+  - Intel/AMD ARK
+  example: Intel SoC (System on Chip) platform
+  level: model
+profile_format: specsheet.category-profile/1
+market: US
+status: pilot

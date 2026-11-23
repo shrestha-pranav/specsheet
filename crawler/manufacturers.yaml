@@ -53,3 +53,16 @@ manufacturers:
     discovery: sitemap
     sitemaps: [https://www.belkin.com/sitemap_index.xml]
     product_url_regex: '^https://www\.belkin\.com/p/[^?#]+\.html$'
+  # --- added by A2 (power strips round, 2026-11-22); all verified products.json 200 ---
+  - slug: byjasco          # Jasco: GE + Philips (Accell/SPS*) + Woods-style power strips, ~SKU 5-digit / SPS####
+    name: Jasco (GE, Philips power accessories)
+    base: https://www.byjasco.com
+    discovery: shopify
+  - slug: furman
+    name: Furman (Legrand AV)
+    base: https://www.furmanpower.com
+    discovery: shopify
+  - slug: austere
+    name: Austere
+    base: https://austere.com
+    discovery: shopify

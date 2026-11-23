@@ -1,0 +1,21 @@
+{
+  "_doc": "Built-in unit registry. Claims store values in the spec's canonical unit; factor/offset convert a unit TO its base (value_base = value*factor + offset). Category profiles add more under units.custom.",
+  "units": {
+    "W":   {"base": "W", "factor": 1},     "kW":  {"base": "W", "factor": 1000},
+    "V":   {"base": "V", "factor": 1},     "mV":  {"base": "V", "factor": 0.001},
+    "A":   {"base": "A", "factor": 1},     "mA":  {"base": "A", "factor": 0.001},
+    "Wh":  {"base": "Wh", "factor": 1},    "mAh": {"base": "mAh", "factor": 1},
+    "J":   {"base": "J", "factor": 1},
+    "mm":  {"base": "m", "factor": 0.001}, "cm": {"base": "m", "factor": 0.01}, "m": {"base": "m", "factor": 1},
+    "in":  {"base": "m", "factor": 0.0254},"ft": {"base": "m", "factor": 0.3048},
+    "g":   {"base": "kg", "factor": 0.001},"kg": {"base": "kg", "factor": 1},
+    "lb":  {"base": "kg", "factor": 0.45359237}, "oz": {"base": "kg", "factor": 0.028349523125},
+    "Hz":  {"base": "Hz", "factor": 1},    "GHz": {"base": "Hz", "factor": 1e9}, "MHz": {"base": "Hz", "factor": 1e6},
+    "nit": {"base": "nit", "factor": 1},
+    "GB":  {"base": "B", "factor": 1e9},   "TB": {"base": "B", "factor": 1e12}, "GiB": {"base": "B", "factor": 1073741824},
+    "Gbps":{"base": "bit/s", "factor": 1e9}, "Mbps": {"base": "bit/s", "factor": 1e6},
+    "degC":{"base": "K", "factor": 1, "offset": 273.15},
+    "dB":  {"base": "dB", "factor": 1},    "TOPS": {"base": "TOPS", "factor": 1},
+    "USD": {"base": "USD", "factor": 1},   "px": {"base": "px", "factor": 1}, "%": {"base": "%", "factor": 1}
+  }
+}

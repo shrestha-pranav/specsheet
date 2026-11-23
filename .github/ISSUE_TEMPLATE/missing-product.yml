@@ -1,0 +1,27 @@
+name: Request a missing product
+description: Request an exact product, model, or configuration for the catalogue.
+title: "Missing product: "
+labels: [missing-product]
+body:
+  - type: markdown
+    attributes:
+      value: "Review before submitting: GitHub issues are public. Include product information only, not personal information. Opening this form does not submit a request."
+  - type: textarea
+    id: payload
+    attributes:
+      label: Catalogue request
+      description: Category, original query, normalized query, identifier guess, and dataset build supplied by the catalogue.
+    validations:
+      required: true
+  - type: input
+    id: brand
+    attributes:
+      label: Brand (optional)
+  - type: input
+    id: evidence_url
+    attributes:
+      label: Manufacturer or product URL (optional)
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional product details (optional)

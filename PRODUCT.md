@@ -27,7 +27,7 @@ Home category picker; searchable, sortable, configurable category table; grouped
 Name: specsheet. Voice: precise, trustworthy, dense but calm, like a well-made reference work. Unknown is never no. Provenance is first-class.
 
 ## Evidence on Hand
-Legacy charger JSON in `data/gan-chargers/`, with uneven field-level provenance, unverified identity crosswalks and notes. These remain unreviewed pilot records. A small fictional power-strip dataset will demonstrate schema independence; it is not buying advice or verified product evidence. No product photography or manuals are supplied.
+Legacy charger JSON in `data/gan-chargers/`, with uneven field-level provenance, unverified identity crosswalks and notes, remains an unreviewed pilot. Published laptops include US configurations and model/family records; published power strips contain real product data. These are unreviewed manufacturer claims, not independent verification. The fictional power-strip demo remains a dataset fixture but is hidden from the catalogue. Media and documents are links when supplied by the published records.
 
 ## Product Principles
 - Preserve uncertainty and original identifiers.

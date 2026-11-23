@@ -1,0 +1,171 @@
+# Power strips / surge protectors (US). Probed 2026-11-22; statuses updated after round 2.
+# priority 1 = crawl first, 2 = good, 3 = thin/skip. in_crawler = present in crawler/manufacturers.yaml
+manufacturers:
+- slug: tripplite
+  name: Tripp Lite (Eaton)
+  priority: 1
+  catalogue: https://tripplite.eaton.com/en_sitemap.xml (6618 product URLs ending ~SKU; ~250 strip/surge)
+  spec: 'https://assets.tripplite.com/product-pdfs/en/<sku-lowercase>.pdf (4-5 page datasheet, ~60 labelled rows: joules, UL1449 let-through, cord AWG/length, outlets, breaker)'
+  id_regex: ^(TLP|TLM|ISOBAR|IBAR|SPS|PS|RS|SK|DRS|AV|SU|HT)[A-Z0-9-]*$|^[0-9][A-Z0-9]{2,6}$ (Waber)
+  blocks: 'tripplite.eaton.com robots Crawl-delay 15 and product pages 302 to www.eaton.com, which resets non-browser TLS (curl/WebFetch time out). assets.tripplite.com: no robots, no block.'
+  adapter: crawler/adapters/tripplite.py
+  status: 'done: adapter v2 (contract), full strip/surge set crawled'
+  counts: 249 datasheets, 3882 claims, 0 missing
+- slug: apc
+  name: APC (Schneider)
+  priority: 2
+  catalogue: https://www.apc.com/us/en/sitemap.xml
+  spec: product pages /us/en/product/<SKU>/ + datasheet PDFs
+  id_regex: ^P[0-9A-Z]{2,}[A-Z0-9-]*$ (P11VNT3, PH6U4, PE6U3)
+  blocks: Akamai 403 to curl on every path incl. sitemap. Needs browser-grade fetch (coordinator approval) - defer.
+  status: blocked (Akamai 403); defer
+- slug: cyberpower
+  name: CyberPower
+  priority: 1
+  catalogue: 'https://www.cyberpowersystems.com/wp-json/wp/v2/product?per_page=100&page=N (1456 products, X-WP-Total; product_cat ids: Power Strips 245, Multi-Pack Surge 6966, Rackbar Surge 213, Desktop
+    Power 240, General Power 239)'
+  spec: 'same REST JSON: structured pa_* attributes (pa_joules, pa_outlets-quantity, pa_cord-length, pa_amps, pa_surge-suppression, pa_certifications, pa_usb-ports, pa_color); product-sitemap*.xml as fallback'
+  id_regex: ^(CSB|CSP|CSHB|CST|P|B|MP)[0-9A-Z]+$ (CSB7012, CSP1208U, P1208U)
+  blocks: none; robots allows all. Cheapest structured source of the round -> next adapter.
+  adapter: null
+  status: 'done: adapter v1 (contract) on WP REST'
+  counts: 293 products (13 consumer categories), 2546 claims, 232 datasheet PDFs of 638 linked resources
+- slug: belkin
+  name: Belkin
+  priority: 2
+  catalogue: sitemap-variant_products_us_001.xml (already in crawler)
+  spec: product page spec tables
+  id_regex: ^(BSV|BE|SRA|F9|BP)[A-Z0-9]+(-[A-Z0-9]+)?$ (BSV804TT, BE112230-08)
+  blocks: none seen
+  in_crawler: true
+  note: strips already in raw/belkin
+  status: already in raw/ (crawl.py)
+- slug: anker
+  name: Anker
+  priority: 2
+  catalogue: sitemap (already in crawler)
+  spec: product page
+  id_regex: ^A[0-9]{4}[A-Z0-9]*$ (A9131)
+  blocks: none seen
+  in_crawler: true
+  note: strips already in raw/anker
+  status: already in raw/ (crawl.py)
+- slug: ugreen
+  name: UGREEN
+  priority: 3
+  catalogue: us.ugreen.com products.json (already in crawler)
+  spec: Shopify body_html
+  id_regex: ^[0-9]{5}$
+  blocks: none seen
+  in_crawler: true
+  status: already in raw/ (crawl.py)
+- slug: baseus
+  name: Baseus
+  priority: 3
+  catalogue: baseus.com products.json (already in crawler)
+  spec: Shopify body_html
+  id_regex: ^(P|CW|CP|PS)[A-Z0-9-]+$
+  blocks: none seen
+  in_crawler: true
+  status: already in raw/ (crawl.py)
+- slug: byjasco
+  name: Jasco (GE, Philips power accessories)
+  priority: 1
+  catalogue: https://www.byjasco.com/products.json?limit=250&page=N (250+ products, ~61 strips/surge)
+  spec: Shopify body_html + variant barcode
+  id_regex: ^([0-9]{5}|SPS[0-9A-Z]+(/[0-9]+)?)$ (GE 85780, Philips SPS3413G/37)
+  blocks: none seen
+  in_crawler: added this round
+  status: crawled with crawl.py (shopify)
+- slug: furman
+  name: Furman (Legrand AV)
+  priority: 2
+  catalogue: https://www.furmanpower.com/products.json (65 products, ~45 conditioners/strips)
+  spec: Shopify body_html + PDFs
+  id_regex: ^(M|PST|SS|AC|P|CN|F)-?[0-9A-Za-z+-]+$ (M-8x2, PST-2+6)
+  blocks: none seen
+  in_crawler: added this round
+  status: crawled with crawl.py (shopify)
+- slug: austere
+  name: Austere
+  priority: 3
+  catalogue: https://austere.com/products.json (18 products, 5 strips)
+  spec: Shopify body_html
+  id_regex: ^[35]S-[A-Z0-9]+-US[0-9]$ (3S-PS4-US2)
+  blocks: none seen
+  in_crawler: added this round
+  status: crawled with crawl.py (shopify)
+- slug: panamax
+  name: Panamax (Legrand AV)
+  priority: 3
+  catalogue: https://www.panamaxfurman.com
+  spec: pages
+  id_regex: ^(MR|MD|PM|M)[0-9A-Z-]+$ (MR4300)
+  blocks: host unreachable from roxy (000)
+  status: not started
+- slug: kasa
+  name: Kasa (TP-Link)
+  priority: 2
+  catalogue: https://www.tp-link.com/us/sitemap.xml (1 MB, product URLs); kasasmart.com sitemap = category pages only
+  spec: tp-link.com/us/.../<model>/#specifications
+  id_regex: ^(HS|KP|EP|ES)[0-9]{3}[A-Z]?(\(US\))?$ (HS300, KP303)
+  blocks: none seen
+  status: not started
+- slug: amazon-basics
+  name: Amazon Basics
+  priority: 3
+  catalogue: no manufacturer catalogue; Amazon listings only
+  spec: listing bullets; 'Item model number' field is the real model
+  id_regex: ASIN ^B0[A-Z0-9]{8}$ is NOT the model
+  blocks: amazon dp pages 404/captcha to curl; robots restrictive
+  status: not started
+- slug: monster
+  name: Monster
+  priority: 3
+  catalogue: monsterproducts.com (200, not Shopify)
+  spec: html
+  id_regex: ^MP [A-Z0-9 ]+$ (MP EXP 800G)
+  blocks: none seen
+  note: thin, licensed brand
+  status: not started
+- slug: legrand
+  name: Legrand / Wiremold
+  priority: 2
+  catalogue: https://www.legrand.us/sitemap.xml (index); wiremold.com 200
+  spec: Wiremold spec pages
+  id_regex: ^(WP|UL|CM|W|A)[A-Z0-9]+$ (UL20FB)
+  blocks: none seen
+  status: not started
+- slug: woods-southwire
+  name: Woods / Southwire
+  priority: 3
+  catalogue: https://www.southwire.com/sitemap.xml
+  spec: product pages
+  id_regex: ^[0-9]{5}( ?[A-Z]+)?$ (41546)
+  blocks: none seen
+  status: not started
+- slug: wemo-eve
+  name: Wemo (discontinued) / Eve
+  priority: 3
+  catalogue: wemo.com unreachable; evehome.com 200 not Shopify
+  spec: html
+  id_regex: 'Eve: 10EBO8301-style'
+  blocks: none seen
+  note: smart strips, low volume
+  status: not started
+- slug: cable-matters
+  name: Cable Matters
+  priority: 3
+  catalogue: cablematters.com (ASP.NET, no products.json)
+  spec: html
+  id_regex: ^[0-9]{3}-[0-9]{3}$ style
+  blocks: no machine catalogue found
+  status: not started
+- slug: certification
+  name: UL Product iQ / UL Online Certifications Directory
+  priority: 2
+  catalogue: https://productiq.ulprospector.com (403 anonymous; free account)
+  spec: 'listing: model, standard (UL 1449 surge, UL 1363 relocatable taps), file no. E-xxxxxx; no electrical spec sheet'
+  id_regex: file number E-xxxxxx
+  blocks: 403 anonymous; Intertek ETL directory hosts unreachable/403
+  status: not started

@@ -1,0 +1,942 @@
+#!/usr/bin/env python3
+"""raw/ + data/ (decisions, id registry) -> working store state/specsheet.sqlite. ARCHITECTURE 15.4/15.5/15.8.
+
+  python3 -I scripts/import.py [--db PATH] [--data DIR] [--reparse] [--source ID ... --db OTHER] [--seed-ids OLD.sqlite]
+
+The sqlite is a PROJECTION: deleting it and re-running reproduces the same entity ids, links, claims and review states, because
+the only other inputs are git-tracked: data/_ids/registry.jsonl (anchor -> id, append-only), data/_ids/tombstones.jsonl,
+data/decisions/policies.yaml (versioned auto-accept policies) and data/decisions/ledger.jsonl (human decisions).
+--source restricts ingestion and therefore REFUSES to overwrite the default store (write a scratch --db instead).
+
+Identity (scripts/identity.py, review P0-3): matching on scoped keys (scheme, issuer, normalised value, market, level). A package
+GTIN is an alias that never merges models/configurations; GTINs are check-digit validated (invalid -> raw alias only); a GTIN on
+two unrelated entities is an identity_conflict (excluded from lookup). An observation whose keys hit two existing entities is
+quarantined unless the ledger approved that merge. Every mint/attach/quarantine/proposal is an identity_events row.
+Links: source-stated hierarchy (PSREF MT/product, ASUS model column, page-listed variants) is approved by policy
+rel/source-stated-hierarchy@1; suffix inference (power-strip colour/pack/OEM suffixes) only PROPOSES a relation.
+Claims (review P0-2): the full validated claim document is stored (`doc`), plus indexed key/conditions/kind/measurement, the
+profile-normalised value (normalize.py; review P1-5) and review_state/decision from the ledger or a policy (decisions.py).
+Claim ids are content hashes over stable evidence identity (source id, ref, locator, key, value, unit, conditions, kind,
+measurement, extractor name) - not over record-local source tokens or the extractor version.
+Regional Lenovo MTMs (review P1-6): every observed MTM is kept in `regional_observations` (+ `coverage`), evidence by reference
+(snapshot + MTM in raw/); only US MTMs become published entities for now.
+"""
+import argparse, collections, hashlib, json, os, re, sqlite3, sys, time
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "crawler" / "adapters"))
+sys.path.insert(0, str(ROOT / "scripts"))
+import jsonschema  # noqa: E402
+import yaml  # noqa: E402
+import _contract as C  # noqa: E402
+import _cpu  # noqa: E402
+import registry  # noqa: E402
+import identity as I  # noqa: E402
+import normalize as N  # noqa: E402
+from decisions import Decisions  # noqa: E402
+
+DB_DEFAULT = ROOT / "state" / "specsheet.sqlite"
+COLORS = ["DBL", "HPK", "BK", "GY", "WH", "PK", "TL", "BLK", "WHT"]
+COLORS_TL = ["CW", "B", "W"]
+PACKS = ["MP2", "MP3", "MP4", "2PK", "3PK", "4PK", "5PK", "6PK", "10PK"]
+STAGE_FIX = {"mapping": "table"}     # pre-schema stage names emitted by older import code
+
+
+def slug(v):
+    return re.sub(r"[^a-z0-9]+", "-", str(v).lower()).strip("-")
+
+
+def canon(obj):
+    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+
+
+def canon_cond(c):
+    return {k: (sorted(v, key=str) if isinstance(v, list) else v) for k, v in sorted((c or {}).items())}
+
+
+class Ent:
+    def __init__(self, category, kind, brand):
+        self.id = None; self.idhint = None; self.category = category; self.kind = kind; self.brand = brand; self.name = None
+        self.parent = None; self.family = None
+        self.keys = set()        # scoped keys (identity.key tuples)
+        self.idents = {}         # (scheme, norm|raw) -> ident dict (published identifiers, key + alias)
+        self.aliases = {}
+        self.claims = []         # (claim, obs) obs = (source_id, ref, snapshot)
+        self.absences = []
+        self.srcs = {}           # snapshot -> source dict
+        self.extra = {}
+        self.lifecycle = None
+        self.documents = []
+        self.obs = set()
+        self.rels = []           # (type, target Ent, method)
+
+
+class World:
+    def __init__(self, category, dec, events):
+        self.category, self.dec, self.events = category, dec, events
+        self.ents, self.index = [], {}
+        self.quarantine = []
+
+    def anchors(self, keys):
+        return sorted(I.anchor(self.category, k) for k in keys)
+
+    def get(self, kind, brand, keys, obs):
+        """Scoped-key match at this level. Two different hits = conflicting strong identifiers -> quarantine (None)."""
+        ks = [k for k in keys if k is not None]
+        hits = []
+        for k in ks:
+            e = self.index.get(k)
+            if e is not None and e not in hits:
+                hits.append(e)
+        if len(hits) > 1:
+            allk = set(ks) | {k for h in hits for k in h.keys}
+            if self.dec.merge_allowed(self.anchors(allk)):
+                for h in hits[1:]:
+                    self.merge(hits[0], h, obs)
+                hits = hits[:1]
+            else:
+                q = {"kind": kind, "keys": self.anchors(ks), "hits": [self.anchors(h.keys) for h in hits], "obs": obs}
+                self.quarantine.append(q)
+                self.events.append(("quarantine", self.category, None, self.anchors(ks), obs, {"hits": q["hits"]}))
+                return None
+        if hits:
+            e = hits[0]
+            new = [k for k in ks if k not in e.keys]
+            if new:
+                self.events.append(("attach_key", self.category, e, self.anchors(new), obs, {}))
+        else:
+            e = Ent(self.category, kind, brand)
+            self.ents.append(e)
+            self.events.append(("create", self.category, e, self.anchors(ks), obs, {"kind": kind}))
+        for k in ks:
+            self.index[k] = e; e.keys.add(k)
+        if obs:
+            e.obs.add(obs)
+        return e
+
+    def merge(self, a, b, obs):
+        """Ledger-approved merge only: fold b into a, keep b's attachments (reversible via a split decision + replay)."""
+        self.events.append(("merge", self.category, a, self.anchors(b.keys), obs, {}))
+        a.keys |= b.keys; a.obs |= b.obs
+        for k, v in b.idents.items():
+            a.idents.setdefault(k, v)
+        a.aliases.update(b.aliases); a.claims += b.claims; a.absences += b.absences
+        a.srcs.update(b.srcs); a.documents += b.documents; a.rels += b.rels
+        for k, v in b.extra.items():
+            a.extra.setdefault(k, v)
+        a.parent = a.parent or b.parent; a.family = a.family or b.family; a.name = a.name or b.name
+        for k in b.keys:
+            self.index[k] = a
+        self.ents.remove(b)
+
+
+def K(scheme, value, brand, level, market=None):
+    return I.key(scheme, value, brand, market, level)
+
+
+def add_ident(e, i, role=None, level=None):
+    scheme = i["scheme"]
+    nv = I.norm_value(scheme, i["value"], e.brand)
+    valid = nv is not None
+    d = {"scheme": scheme, "value": nv if valid else str(i["value"]), "value_raw": str(i.get("value_raw", i["value"])),
+         "issuer": "GS1" if scheme == "gtin" else (i.get("issuer") or e.brand), "market": i.get("market"),
+         "package_level": level or i.get("package_level") or "unverified", "role": (role or i.get("role") or "alias") if valid else "alias",
+         "valid": valid}
+    if scheme == "gtin":
+        d["package_level"] = "package"; d["role"] = "alias"     # a GTIN names a trade item (package), never the model/config
+    k = (scheme, d["value"])
+    old = e.idents.get(k)
+    if old is None or (old["role"] == "alias" and d["role"] == "key"):
+        e.idents[k] = d
+    return k
+
+
+def add_src(e, pr, rec, sid="s1"):
+    s = next((x for x in pr["sources"] if x["id"] == sid), None) or {"id": sid, "url": rec["url"], "tier": "manufacturer"}
+    e.srcs.setdefault(rec["snapshot"], {"url": s["url"], "tier": s.get("tier", "manufacturer"), "label": s.get("label") or s.get("title"),
+                                       "snapshot": rec["snapshot"], "retrieved_at": rec.get("fetched_at")})
+
+
+def obs_of(sid, rec):
+    return (sid, str(rec["ref"]), rec["snapshot"])
+
+
+def attach_claims(pr, rec, sid, resolve, default=None):
+    n = 0
+    for c in pr["claims"]:
+        e = resolve(c.get("locator") or {}) or default
+        if e is None:
+            continue
+        add_src(e, pr, rec)
+        e.claims.append((c, obs_of(sid, rec)))
+        n += 1
+    return n
+
+
+def link(child, typ, parent, method):
+    if child is not None and parent is not None and child is not parent and not any(r[0] == typ and r[1] is parent for r in child.rels):
+        child.rels.append((typ, parent, method))
+
+
+# ----------------------------------------------------------------------------- per-source resolvers
+def do_lenovo(world, meta, sid, rec, pr, extra, stats):
+    brand = meta["brand"]
+    ob = obs_of(sid, rec)
+    pk = next(i for i in pr["identifiers"] if i["scheme"] == "mfr_model")
+    title = next((a["text"] for a in pr["aliases"]), pk["value"])
+    fam = world.get("family", brand, [K("x_lenovo_product", pk["value"], brand, "family")], ob)
+    if fam is None:
+        return
+    fam.name = title; fam.idhint = f"{brand}-{slug(pk['value'])}"; fam.aliases[title] = "marketing_name"; add_src(fam, pr, rec)
+    add_ident(fam, dict(pk, scheme="x_lenovo_product"), role="key", level="family")
+    by_mtm, mts = {}, {}
+    ids = pr["identifiers"]
+    for n, i in enumerate(ids):
+        if i["scheme"] == "x_lenovo_machine_type":
+            mt = world.get("model", brand, [K("x_lenovo_machine_type", i["value"], brand, "model")], ob)
+            if mt is None:
+                continue
+            mt.idhint = f"{brand}-{i['value'].lower()}"; mt.name = f"{title} ({i['value']})"
+            link(mt, "member_of_family", fam, "adapter:lenovo-psref"); mt.family = fam
+            add_ident(mt, i, role="key", level="model"); add_src(mt, pr, rec); mts[i["value"]] = mt
+        elif i["scheme"] == "mtm":
+            e = world.get("configuration", brand, [K("mtm", i["value"], brand, "configuration")], ob)
+            if e is None:
+                continue
+            e.idhint = f"{brand}-{i['value'].lower()}"; e.name = title; e.family = fam
+            mt = mts.get(i["value"][:4]) or world.get("model", brand, [K("x_lenovo_machine_type", i["value"][:4], brand, "model")], ob)
+            if mt is not None and mt.idhint is None:
+                mt.idhint = f"{brand}-{i['value'][:4].lower()}"; mt.name = f"{title} ({i['value'][:4]})"
+                link(mt, "member_of_family", fam, "adapter:lenovo-psref"); mt.family = fam
+                add_ident(mt, {"scheme": "x_lenovo_machine_type", "value": i["value"][:4]}, role="key", level="model")
+            link(e, "configuration_of", mt, "adapter:lenovo-psref")
+            add_ident(e, i, role="key", level="configuration")
+            nxt = ids[n + 1] if n + 1 < len(ids) else None
+            if nxt and nxt["scheme"] == "gtin":
+                add_ident(e, nxt)
+            e.lifecycle = "current"; e.aliases[title] = "marketing_name"; add_src(e, pr, rec)
+            by_mtm[i["value"]] = e
+    stats["claims_adapter"] += attach_claims(pr, rec, sid, lambda loc: by_mtm.get(loc.get("mtm")))
+    groups = collections.Counter(m[:8] for m, _, _ in extra["nonus"])
+    for us, e in by_mtm.items():
+        e.extra["regional_mtms"] = groups.get(us[:8], 0)
+    stats["nonus_mtms"] += len(extra["nonus"]); stats["us_mtms"] += len(by_mtm); stats["lenovo_all_mtms"] += extra["total"]
+    stats["regional"] += [(m, m[:8], m[:4], fam, c, g, rec["snapshot"]) for m, g, c in extra["nonus"]]
+    for m in by_mtm:
+        stats["regional"].append((m, m[:8], m[:4], fam, "US", None, rec["snapshot"]))
+    colmap, emitted = world.psref, world.psref_emitted
+    for col, cnt in extra["columns"].items():
+        if col not in emitted:
+            stats["psref_cols"][col] += cnt
+    for row in extra["us_rows"]:
+        e = by_mtm.get(row.get("Model"))
+        if e is None:
+            continue
+        for col, key in colmap.items():
+            if col in emitted:
+                continue
+            v = (row.get(col) or "").strip() if isinstance(row.get(col), str) else ""
+            if v:
+                c = C.claim(row["Model"], key, v, None, v, "s1", "import.py+psref-mapping@1", "table", rec["fetched_at"],
+                            locator={"mtm": row["Model"], "column": col})
+                e.claims.append((c, ob)); stats["claims_psref_map"] += 1
+
+
+def do_asus(world, meta, sid, rec, pr, extra, stats):
+    brand = meta["brand"]
+    ob = obs_of(sid, rec)
+    title = next((a["text"] for a in pr["aliases"]), rec["ref"])
+    fam = world.get("family", brand, [K("x_asus_series", rec["ref"], brand, "family")], ob)
+    if fam is None:
+        return
+    fam.idhint = f"{brand}-{slug(rec['ref'])}"; fam.name = title; fam.aliases[title] = "marketing_name"; add_src(fam, pr, rec)
+    add_ident(fam, {"scheme": "x_asus_series", "value": rec["ref"], "issuer": "asus"}, role="key", level="family")
+    by = {}
+    ids = pr["identifiers"]
+    n = 0
+    while n < len(ids):
+        i = ids[n]
+        if i["scheme"] == "mfr_model" and i.get("package_level") == "model":
+            e = world.get("model", brand, [K("mfr_model", i["value"], brand, "model")], ob)
+            if e is not None:
+                e.idhint = f"{brand}-{slug(i['value'])}"; e.name = title; e.family = fam; e.lifecycle = "current"
+                link(e, "member_of_family", fam, "adapter:asus-us")
+                add_ident(e, i, role="key", level="model"); add_src(e, pr, rec); e.aliases[title] = "marketing_name"
+                by[("model_code", i["value"])] = e
+        elif i["scheme"] == "mfr_sku":
+            keys = [K("mfr_sku", i["value"], brand, "configuration")]
+            nxt = ids[n + 1] if n + 1 < len(ids) else None
+            pair = nxt if nxt and nxt["scheme"] == "mfr_model" and nxt.get("package_level") == "configuration" else None
+            if pair:
+                keys.append(K("mfr_model", pair["value"], brand, "configuration"))
+            e = world.get("configuration", brand, keys, ob)
+            if e is not None:
+                e.idhint = f"{brand}-{slug(i['value'])}"; e.name = title; e.family = fam; e.lifecycle = "current"
+                link(e, "member_of_family", fam, "adapter:asus-us")
+                add_ident(e, i, role="key", level="configuration"); add_src(e, pr, rec); e.aliases[title] = "marketing_name"
+                if pair:
+                    add_ident(e, pair, role="key", level="configuration"); stats["asus_sku_model_pairs"] += 1
+                by[("sku", i["value"])] = e
+            if pair:
+                n += 1
+        n += 1
+    stats["claims_adapter"] += attach_claims(pr, rec, sid, lambda loc: by.get(("model_code", loc.get("model_code"))) if loc.get("model_code") else by.get(("sku", loc.get("sku"))))
+
+
+def do_apple(world, meta, sid, rec, pr, extra, stats):
+    brand = meta["brand"]
+    ob = obs_of(sid, rec)
+    title = next((a["text"] for a in pr["aliases"]), rec["ref"])
+    models = [i for i in pr["identifiers"] if i["scheme"] == "mfr_model"]
+    if not models:
+        return
+    e = world.get("model", brand, [K("mfr_model", i["value"], brand, "model") for i in models], ob)
+    if e is None:
+        return
+    e.idhint = f"{brand}-{slug(models[0]['value'])}"; e.name = title; e.lifecycle = "current"; e.aliases[title] = "marketing_name"; add_src(e, pr, rec)
+    e.extra["page_scope"] = [i["value"] for i in models]    # one support page covers these ids; not proof they are one platform
+    for i in pr["identifiers"]:
+        if i["scheme"] == "mfr_model":
+            add_ident(e, i, role="key", level="model")
+        elif i["scheme"] == "mfr_sku":
+            add_ident(e, i, role="alias", level="configuration")   # part-number templates (xx/A): patterns, not orderable configs
+    stats["claims_adapter"] += attach_claims(pr, rec, sid, lambda loc: e, e)
+
+
+def do_generic(world, meta, sid, rec, pr, extra, stats):
+    """dell-us, microsoft-surface, framework-us, samsung-us, razer-us: model-level key identifier (carries `series`) -> model under a
+    family; configuration-level mfr_sku (carries `parent`) -> configuration. Claims resolve by locator.sku / locator.model_code."""
+    brand = meta["brand"]
+    ob = obs_of(sid, rec)
+    title = next((a["text"] for a in pr["aliases"] if a["kind"] == "marketing_name"), None) or next((a["text"] for a in pr["aliases"]), rec["ref"])
+    models, configs, last = {}, {}, None
+    ids = pr["identifiers"]
+    for i in ids:
+        if i.get("package_level") == "model" and i.get("role", "key") == "key":
+            series = i.get("series") or rec["ref"]
+            fam = world.get("family", brand, [K("x_series", series, brand, "family")], ob)
+            if fam is not None:
+                fam.idhint = fam.idhint or f"{brand}-{slug(series)}"; fam.name = fam.name or title; add_src(fam, pr, rec)
+                fam.aliases.setdefault(title, "marketing_name")
+                add_ident(fam, {"scheme": "x_series", "value": series}, role="key", level="family")
+            e = world.get("model", brand, [K(i["scheme"], i["value"], brand, "model")], ob)
+            if e is None:
+                continue
+            e.idhint = e.idhint or f"{brand}-{slug(i['value'])}"; e.name = e.name or title; e.family = fam; e.lifecycle = "current"
+            link(e, "member_of_family", fam, f"adapter:{sid}")
+            add_ident(e, i, role="key", level="model"); add_src(e, pr, rec)
+            for a in pr["aliases"]:
+                if a["kind"] in ("marketing_name", "retail_slug"):
+                    e.aliases.setdefault(a["text"], a["kind"])
+            models[i["value"]] = e
+    for i in ids:
+        if i.get("package_level") == "configuration" and i.get("role", "key") == "key" and i["scheme"] == "mfr_sku":
+            e = world.get("configuration", brand, [K("mfr_sku", i["value"], brand, "configuration")], ob)
+            if e is None:
+                last = None
+                continue
+            par = models.get(i.get("parent")) or (next(iter(models.values())) if len(models) == 1 else None)
+            e.idhint = e.idhint or f"{brand}-{slug(i['value'])}"; e.name = e.name or (par.name if par else title); e.lifecycle = "current"
+            link(e, "configuration_of", par, f"adapter:{sid}"); e.family = e.family or (par.family if par else None)
+            add_ident(e, i, role="key", level="configuration"); add_src(e, pr, rec)
+            configs[i["value"]] = last = e
+        elif i.get("package_level") == "configuration" and i.get("role") == "alias" and last is not None:
+            add_ident(last, i, role="alias")
+    stats["claims_adapter"] += attach_claims(pr, rec, sid, lambda loc: configs.get(loc.get("sku")) if loc.get("sku") else models.get(loc.get("model_code")))
+    e0 = next(iter(models.values()), None)
+    if e0 is not None:
+        e0.absences += [(a, ob) for a in pr["absences"]]
+    stats["configs"] += len(configs); stats["models"] += len(models)
+    for lab in (pr["fingerprints"].get("unmapped_labels") or {}):
+        stats["labels"][(world.category, brand, lab)] += 1
+        stats["label_example"].setdefault((world.category, brand, lab), str(pr["fingerprints"]["unmapped_labels"][lab])[:80])
+
+
+def do_strip(world, meta, sid, rec, pr, extra, stats):
+    brand = meta["brand"]
+    ob = obs_of(sid, rec)
+    m = next((i for i in pr["identifiers"] if i["scheme"] == "mfr_model"), None)
+    if m is None:
+        stats["no_model"] += 1
+        return
+    ids = pr["identifiers"]
+    cfgs, model_gtins, last = [], [], None
+    for i in ids:
+        if i["scheme"] == "mfr_sku" and i.get("package_level") == "configuration":
+            cfgs.append([i, []]); last = cfgs[-1]
+        elif i["scheme"] == "gtin":
+            (last[1] if last is not None else model_gtins).append(i)
+    e = world.get("model", brand, [K("mfr_model", m["value"], brand, "model")], ob)     # GTINs are NOT merge keys (package level)
+    if e is None:
+        return
+    e.idhint = e.idhint or f"{brand}-{slug(m['value'])}"
+    for i in ids:
+        if i["scheme"] == "mfr_sku" and i.get("package_level") == "configuration":
+            continue
+        if i["scheme"] == "gtin" and cfgs and i not in model_gtins:
+            continue
+        add_ident(e, i, role="key" if i["scheme"] == "mfr_model" else "alias", level="model" if i["scheme"] == "mfr_model" else None)
+    for a in pr["aliases"]:
+        e.aliases.setdefault(a["text"], a["kind"])
+    e.name = e.name or next((a["text"] for a in pr["aliases"] if a["kind"] == "marketing_name"), None) or m["value"]
+    add_src(e, pr, rec)
+    e.documents += pr.get("documents", [])
+    e.absences += [(a, ob) for a in pr["absences"]]
+    if (extra or {}).get("discontinued"):
+        e.lifecycle = "discontinued"
+    target = e
+    for sku, gts in cfgs:
+        ce = world.get("configuration", brand, [K("mfr_sku", sku["value"], brand, "configuration")], ob)
+        if ce is None:
+            continue
+        ce.idhint = ce.idhint or f"{brand}-{slug(sku['value'])}"; ce.name = ce.name or e.name
+        link(ce, "configuration_of", e, f"page-variants:{sid}")
+        add_ident(ce, sku, role="key", level="configuration"); add_src(ce, pr, rec); ce.aliases.setdefault(e.name, "marketing_name")
+        vi = (pr["fingerprints"].get("variants") or {}).get(sku["value"])
+        if vi:
+            ce.extra["variant"] = {"axis": vi["axis"], "value": vi["value"]}
+        for g in gts:
+            add_ident(ce, g)
+        stats["configs"] += 1
+        if (pr["fingerprints"] or {}).get("claims_on") == "configuration":
+            target = ce; ce.extra["claims_own_page"] = True
+    stats["claims_adapter"] += attach_claims(pr, rec, sid, lambda loc: target, target)
+    for lab, raw in (pr["fingerprints"].get("unmapped") or {}).items():
+        stats["labels"][(world.category, brand, lab)] += 1
+        stats["label_example"].setdefault((world.category, brand, lab), str(raw)[:80])
+        stats["label_values"].setdefault((world.category, brand, lab), []).append((e, str(raw), ob, rec["fetched_at"]))
+
+
+# ----------------------------------------------------------------------------- label mapping (research/<cat>/label-mapping.yaml)
+def _n(raw):
+    m = re.search(r"-?\d[\d,]*\.?\d*", raw or "")
+    if not m:
+        return None
+    v = float(m.group(0).replace(",", ""))
+    return int(v) if v == int(v) else v
+
+
+def _clean(raw):
+    return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", (raw or "").replace("&nbsp;", " "))).strip()
+
+
+def _dims(raw, order):
+    m = re.match(r"\s*([\d.]+)\s*x\s*([\d.]+)\s*x\s*([\d.]+)", raw or "")
+    if not m:
+        return None
+    return dict(zip(order, [float(x) for x in m.groups()]), unit="in")
+
+
+def _usb_types(raw):
+    a = re.search(r"(\d+)\s*(?:Type |USB-?)A", raw or "", re.I)
+    c = re.search(r"(\d+)\s*(?:Type |USB-?)C", raw or "", re.I)
+    d = {k: int(m.group(1)) for k, m in (("a", a), ("c", c)) if m}
+    return d or None
+
+
+TRANSFORMS = {
+    "num": _n,
+    "dollars": lambda r: (lambda m: int(m.group(1).replace(",", "")) if m else None)(re.search(r"\$\s?(\d[\d,]*)", _clean(r))),
+    "yesno": lambda r: True if _clean(r).lower().startswith(("yes", "y")) else False if _clean(r).lower().startswith(("no", "none")) else None,
+    "text": lambda r: _clean(r) or None,
+    "dims_hwd_in": lambda r: _dims(r, "hwd"),
+    "dims_whd_in": lambda r: _dims(r, "whd"),
+    "plug_style": lambda r: ("right_angle" if re.search(r"right[- ]angle|angled|offset", r, re.I) else "flat" if re.search(r"flat", r, re.I) else
+                             "pivot" if re.search(r"pivot|rotat|swivel", r, re.I) else "straight" if re.search(r"straight", r, re.I) else None),
+    "listing_marks": lambda r: [m for m, rx in (("UL", r"(?<![A-Za-z])c?UL(?![A-Za-z])"), ("ETL", r"\bETL\b"), ("CSA", r"\bCSA\b")) if re.search(rx, r)] or None,
+    "switch": lambda r: ("none" if re.search(r"^(no|none)\b|no power switch", _clean(r), re.I) else "per_outlet" if re.search(r"each outlet|per outlet|individual", r, re.I) else
+                         "per_group" if re.search(r"group|bank", r, re.I) else "master" if re.search(r"switch|on/off|^yes", r, re.I) else None),
+    "usb_types": _usb_types,
+    "usb_c_count": lambda r: ({"c": _n(r)} if _n(r) else None),
+    "emi": lambda r: (False if _clean(r).lower() in ("no", "none", "n/a") else True if _clean(r) else None),
+    "material": lambda r: ("plastic" if "plastic" in r.lower() else "metal" if "metal" in r.lower() else None),
+    "keyhole": lambda r: (["keyhole"] if _clean(r).lower().startswith("yes") else None),
+    "pd_yesno": lambda r: (["PD"] if _clean(r).lower().startswith("yes") else None),
+}
+
+
+def load_label_rules(cat):
+    p = ROOT / "research" / cat / "label-mapping.yaml"
+    if not p.exists():
+        return []
+    out = []
+    for r in yaml.safe_load(p.read_text())["rules"]:
+        r = dict(r)
+        r["_rx"] = re.compile(r["re"], re.I) if "re" in r else None
+        out.append(r)
+    return out
+
+
+def rule_for(rules, brand, label):
+    for r in rules:
+        if r.get("brands") and brand not in r["brands"]:
+            continue
+        if (r["_rx"] is not None and r["_rx"].search(label)) or r.get("label") == label:
+            return r
+
+
+def apply_label_rules(cat, st, rules, keys, ignored_rows):
+    for (c, brand, label), n in list(st["labels"].items()):
+        r = rule_for(rules, brand, label)
+        if r is None:
+            continue
+        if "ignore" in r:
+            ignored_rows.append((c, brand, label, r["ignore"], n))
+            del st["labels"][(c, brand, label)]
+            continue
+        if r["maps_to"] not in keys:
+            continue
+        fn, bad, skipped = TRANSFORMS[r["transform"]], 0, 0
+        skip = re.compile(r["skip_values"], re.I) if r.get("skip_values") else None
+        for e, raw, ob, observed in st["label_values"].get((c, brand, label), []):
+            if skip and skip.search(_clean(raw)):
+                skipped += 1
+                continue
+            v = fn(raw)
+            if v is None:
+                bad += 1
+                continue
+            ent = next((k[1] for k in e.idents if k[0] == "mfr_model"), e.idhint)
+            cl = C.claim(ent, r["maps_to"], v, r.get("unit"), _clean(raw)[:300], "s1", "import.py+label-mapping@1", "table", observed,
+                         locator={"label": label}, quote=f"{label}: {_clean(raw)}")
+            e.claims.append((cl, ob)); st["claims_label_map"] += 1
+        if skipped:
+            ignored_rows.append((c, brand, label, "value is a placeholder/absence ('" + r["skip_values"] + "'): no claim written", skipped))
+        if bad:
+            st["labels"][(c, brand, label)] = bad
+            st["label_example"][(c, brand, label)] = "value not parsed by transform " + r["transform"] + ": " + st["label_example"].get((c, brand, label), "")
+        else:
+            del st["labels"][(c, brand, label)]
+
+
+def strip_variants(world, stats):
+    """Documented cosmetic/pack/OEM suffixes -> PROPOSED relations only (review P0-3): kind/parent change only after a human
+    approve_relation ledger line. Brand scoped; the base model must exist."""
+    bybrand = collections.defaultdict(dict)
+    for e in world.ents:
+        k = next((k for k in e.idents if k[0] == "mfr_model" and e.idents[k]["role"] == "key"), None)
+        if k and e.kind == "model":
+            bybrand[e.brand][I.norm_value("mfr_model", k[1], e.brand)] = e
+    for brand, models in bybrand.items():
+        for nm, e in sorted(models.items(), key=lambda kv: (-len(kv[0]), kv[0])):
+            for typ, axis, sfxs in (("same_configuration", "oem", ["OEM"]), ("package_of", "pack", PACKS),
+                                    ("variant_of", "color", COLORS + (COLORS_TL if brand == "tripplite" else []))):
+                hit = next((s for s in sfxs if nm.endswith(s) and nm[:-len(s)] in models and models[nm[:-len(s)]] is not e), None)
+                if not hit:
+                    continue
+                link(e, typ, models[nm[:-len(hit)]], f"suffix:{brand}")
+                e.extra["variant"] = {"suffix": hit, "axis": axis}
+                stats[f"suffix_proposals_{axis}"] += 1
+                world.events.append(("propose_relation", world.category, e, [], None, {"type": typ, "suffix": hit}))
+                break
+
+
+# ----------------------------------------------------------------------------- profile + mapping
+_PROFILE_SCHEMA = json.loads((ROOT / "schemas" / "category-profile.schema.json").read_text())
+_RECORD_SCHEMA = json.loads((ROOT / "schemas" / "record.schema.json").read_text())
+CLAIM_VALIDATOR = jsonschema.Draft202012Validator({"$schema": _RECORD_SCHEMA.get("$schema"), "$defs": _RECORD_SCHEMA["$defs"], "$ref": "#/$defs/claim"})
+
+
+def load_profile(cat):
+    p = yaml.safe_load((ROOT / "research" / cat / "spec-profile.yaml").read_text())
+    errs = sorted(jsonschema.Draft202012Validator(_PROFILE_SCHEMA).iter_errors(p), key=lambda e: list(e.path))
+    if errs:
+        raise SystemExit(f"research/{cat}/spec-profile.yaml violates category-profile.schema.json: " + "; ".join(e.message[:120] for e in errs[:5]))
+    keys = {s["key"]: s for s in p["specs"]}
+    al = {}
+    for s in p["specs"]:
+        for a in s.get("aliases", []) or []:
+            al[a] = s["key"]
+    return p, keys, al
+
+
+def load_psref(keys):
+    m = yaml.safe_load((ROOT / "research" / "laptops" / "psref-mapping.yaml").read_text())["mapping"]
+    single, multi, ignored, ident = {}, {}, set(), set()
+    uses = collections.Counter(k for v in m.values() for k in (v.get("maps_to") or []))
+    for col, v in m.items():
+        if "ignored" in v:
+            ignored.add(col)
+        elif "maps_to" in v:
+            ks = [k for k in v["maps_to"] if k in keys]
+            if len(ks) == 1 and len(v["maps_to"]) == 1 and uses[ks[0]] == 1:
+                single[col] = ks[0]
+            else:
+                multi[col] = v["maps_to"]
+        else:
+            ident.add(col)
+    return single, multi, ignored, ident
+
+
+def schema(con):
+    con.executescript("""
+    CREATE TABLE meta(k TEXT PRIMARY KEY, v TEXT);
+    CREATE TABLE observations(snapshot TEXT, source_id TEXT, ref TEXT, adapter TEXT, fetched_at TEXT, url TEXT, n_claims INT, n_identifiers INT);
+    CREATE TABLE entities(id TEXT PRIMARY KEY, category TEXT, kind TEXT, brand TEXT, brand_name TEXT, name TEXT, parent_id TEXT, family_id TEXT,
+                          lifecycle TEXT, market TEXT, extra TEXT);
+    CREATE TABLE identifiers(entity_id TEXT, scheme TEXT, value TEXT, value_raw TEXT, issuer TEXT, market TEXT, package_level TEXT, role TEXT,
+                             valid INT, disputed INT DEFAULT 0);
+    CREATE TABLE aliases(entity_id TEXT, text TEXT, kind TEXT);
+    CREATE TABLE entity_sources(entity_id TEXT, sid TEXT, url TEXT, tier TEXT, label TEXT, snapshot TEXT, retrieved_at TEXT);
+    CREATE TABLE claims(id TEXT, entity_id TEXT, key TEXT, mapped_key TEXT, status TEXT, kind TEXT, cond TEXT, mmode TEXT, value TEXT,
+                        norm_ok INT, norm_value TEXT, display TEXT, unit TEXT, raw TEXT, source TEXT, source_id TEXT, ref TEXT, snapshot TEXT,
+                        locator TEXT, observed_at TEXT, extractor TEXT, review TEXT, decision TEXT, supersedes TEXT, doc TEXT,
+                        PRIMARY KEY(entity_id, id));
+    CREATE TABLE invalid_claims(category TEXT, source_id TEXT, key TEXT, error TEXT, n INT, example TEXT);
+    CREATE TABLE absences(entity_id TEXT, key TEXT, status TEXT, reason TEXT, source TEXT);
+    CREATE TABLE documents(entity_id TEXT, url TEXT, kind TEXT, label TEXT);
+    CREATE TABLE relations(entity_id TEXT, type TEXT, target_id TEXT, status TEXT, method TEXT, decision TEXT);
+    CREATE TABLE identity_events(seq INT, event TEXT, category TEXT, entity_id TEXT, anchors TEXT, source_id TEXT, ref TEXT, snapshot TEXT, detail TEXT);
+    CREATE TABLE quarantine(category TEXT, kind TEXT, keys TEXT, hits TEXT, source_id TEXT, ref TEXT, snapshot TEXT);
+    CREATE TABLE identity_conflicts(category TEXT, scheme TEXT, value TEXT, entity_ids TEXT, reason TEXT);
+    CREATE TABLE attachments(entity_id TEXT, source_id TEXT, ref TEXT, snapshot TEXT);
+    CREATE TABLE regional_observations(mtm TEXT, config8 TEXT, machine_type TEXT, family_id TEXT, country TEXT, gtin_raw TEXT, gtin TEXT, snapshot TEXT);
+    CREATE TABLE coverage(source_id TEXT, k TEXT, v TEXT);
+    CREATE TABLE ignored_labels(category TEXT, source_id TEXT, label TEXT, reason TEXT, n INT);
+    CREATE TABLE unmapped(category TEXT, source_id TEXT, key TEXT, what TEXT, n INT, example TEXT);
+    CREATE INDEX i_claims ON claims(entity_id, mapped_key); CREATE INDEX i_ident ON identifiers(scheme, value); CREATE INDEX i_ent ON entities(category, kind);
+    CREATE INDEX i_rel ON relations(entity_id);
+    """)
+
+
+def stable_cid(source_id, ref, c, key):
+    body = {"src": source_id, "ref": ref, "key": key, "status": c["status"], "value": c.get("value"), "unit": c.get("unit"),
+            "cond": canon_cond(c.get("conditions")), "kind": c.get("kind"), "meas": c.get("measurement"), "loc": c.get("locator") or {},
+            "ex": ((c.get("method") or {}).get("extractor") or "").split("@")[0]}
+    return "c_" + hashlib.sha256(canon(body).encode()).hexdigest()[:16]
+
+
+CPU_KEYS = {"model": "cpu.model", "cores": "cpu.cores", "threads": "cpu.threads", "base_clock": "cpu.base_clock",
+            "boost_clock": "cpu.boost_clock", "cache": "cpu.cache", "cores_threads": "cpu.cores_threads"}
+
+
+def cpu_split(c, cid, keys):
+    """Literal processor claim -> derived claims (same source/locator). The split cpu.model supersedes the literal one."""
+    parts = _cpu.parse(c.get("value"))
+    out = []
+    for f, k in CPU_KEYS.items():
+        if f not in parts or k not in keys:
+            continue
+        if f == "model" and parts[f] == c.get("value"):
+            continue
+        d = {"id": None, "key": k, "status": "known", "kind": c.get("kind", "official"), "value": parts[f], "unit": "GHz" if "clock" in f else None,
+             "raw": c.get("raw"), "source": "s1", "method": {"stage": "derive", "extractor": "import.py+cpu-split@1"},
+             "observed_at": c.get("observed_at"), "review": {"state": "candidate"}, "derived_from": [cid],
+             "locator": dict(c.get("locator") or {}, split=f)}
+        if f == "model":
+            d["supersedes"] = cid
+        out.append(d)
+    return out
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--source", action="append")
+    ap.add_argument("--reparse", action="store_true")
+    ap.add_argument("--db", default=str(DB_DEFAULT))
+    ap.add_argument("--data", default=str(ROOT / "data"), help="git-tracked decisions + id registry (tests point this at a copy)")
+    ap.add_argument("--seed-ids", help="one-off: seed an empty registry from a pre-registry sqlite so published ids do not change")
+    ap.add_argument("--reverse-sources", action="store_true", help="test: ingest sources in reverse order (ids must not change)")
+    ap.add_argument("--no-mint", action="store_true", help="test: never append to the id registry (replay must not need new ids)")
+    a = ap.parse_args()
+    if a.source and Path(a.db).resolve() == DB_DEFAULT.resolve():
+        raise SystemExit("--source builds a partial store; it may not replace state/specsheet.sqlite. Pass --db <scratch path>.")
+    t0 = time.time()
+    data = Path(a.data)
+    dec = Decisions(data)
+    reg = I.IdRegistry(data / "_ids" / "registry.jsonl", data / "_ids" / "tombstones.jsonl", readonly=bool(a.source) or a.no_mint)
+    cats = sorted({m["category"] for m in registry.SOURCES.values()})
+    profiles = {c: load_profile(c) for c in cats}
+    unitsets = {c: N.units(profiles[c][0]) for c in cats}
+    single, multi, ignored, ident = load_psref(profiles["laptops"][1])
+    import lenovo_psref
+    emitted = set(lenovo_psref.COLMAP)
+    stats, worlds, obs_rows, events = {}, {}, [], []
+    srcs = list(registry.SOURCES.items())
+    if a.reverse_sources:
+        srcs.reverse()
+    for sid, meta in srcs:
+        if a.source and sid not in a.source:
+            continue
+        st = collections.defaultdict(int)
+        st["regional"] = []; st["psref_cols"] = collections.Counter(); st["labels"] = collections.Counter(); st["label_example"] = {}; st["label_values"] = {}
+        stats[sid] = st
+        cat = meta["category"]
+        w = worlds.setdefault(cat, World(cat, dec, events))
+        w.psref, w.psref_emitted = single, emitted
+        disc = {}
+        dp = ROOT / "raw" / sid / "discovery.json"
+        if dp.exists():
+            d = json.loads(dp.read_text())
+            disc = {r["key"]: dict(r, **(r.get("hints") or {})) for r in d.get("refs", [])}
+            st["discovery_complete"] = int(bool(d.get("complete")))
+        n = 0
+        for rec, pr, extra in registry.iter_observations(sid, reparse=a.reparse):
+            n += 1
+            if sid == "cyberpower":
+                extra = {"discontinued": bool((disc.get(rec["ref"]) or {}).get("discontinued"))}
+            fn = {"lenovo-psref": do_lenovo, "asus-us": do_asus, "apple-support": do_apple}.get(sid) or (do_strip if cat == "power-strips" else do_generic)
+            fn(w, meta, sid, rec, pr, extra, st)
+            obs_rows.append((rec["snapshot"], sid, str(rec["ref"]), rec["adapter"], rec["fetched_at"], rec["url"], len(pr["claims"]), len(pr["identifiers"])))
+        st["observations"] = n
+        print(f"{sid}: {n} observations", file=sys.stderr)
+    ignored_rows = []
+    rules = {c: load_label_rules(c) for c in worlds}
+    for sid, st in stats.items():
+        cat = registry.SOURCES[sid]["category"]
+        if rules.get(cat):
+            apply_label_rules(cat, st, rules[cat], profiles[cat][1], ignored_rows)
+    for cat, w in worlds.items():
+        if cat == "power-strips":
+            strip_variants(w, stats.get("tripplite") or next(iter(stats.values())))
+
+    # ------------------------------------------------------------------ ids: registry first, then deterministic mint
+    seed = {}
+    if a.seed_ids and not reg.by_anchor:
+        old = sqlite3.connect(a.seed_ids)
+        for eid, cat, scheme, value, brand, kind in old.execute(
+                "SELECT e.id, e.category, i.scheme, i.value, e.brand, e.kind FROM identifiers i JOIN entities e ON e.id=i.entity_id WHERE i.role='key'"):
+            if cat == "laptops" and brand == "lenovo" and kind == "family" and scheme == "mfr_model":
+                scheme = "x_lenovo_product"          # pre-registry importer keyed Lenovo families on the PSREF ProductKey as mfr_model
+            k = I.key(scheme, value, brand, None, kind)
+            if k:
+                seed[I.anchor(cat, k)] = eid
+    taken, minted, reused, id_conflicts = set(seed.values()), 0, 0, []
+    pending = []
+    for cat, w in worlds.items():
+        for e in w.ents:
+            anchors = w.anchors(e.keys)
+            hit = reg.lookup(anchors)
+            if len(hit) > 1:
+                id_conflicts.append((cat, hit, anchors))
+                events.append(("id_conflict", cat, e, anchors, None, {"ids": hit}))
+            if hit and hit[0] not in taken:
+                e.id = hit[0]; taken.add(e.id); reused += 1
+                reg.add(e.id, anchors, cat, e.kind)
+            else:
+                pending.append((cat, I.LEVELS.get(e.kind, 9), anchors[0] if anchors else "", e, anchors))
+    for cat, _lvl, _a0, e, anchors in sorted(pending, key=lambda t: (t[0], t[1], len(t[2]), t[2])):
+        base = e.idhint or f"{e.brand}-{slug(next(iter(e.idents.values()))['value'] if e.idents else 'unnamed')}"
+        sd = next((seed[x] for x in anchors if x in seed), None)
+        if sd and sd not in reg.ids and re.match(r"^[a-z0-9][a-z0-9-]{1,95}$", sd):
+            e.id = sd; reg.ids.add(sd); reg.add(sd, anchors, cat, e.kind)
+        else:
+            if a.no_mint:
+                raise SystemExit(f"--no-mint: entity {anchors[:2]} has no registered id (replay would remint)")
+            e.id = reg.mint(base, anchors, cat, e.kind, taken)
+        taken.add(e.id); minted += 1
+        events.append(("mint", cat, e, anchors, None, {"id": e.id}))
+
+    # ------------------------------------------------------------------ relations: decide (ledger > policy > proposed); apply approved structure
+    rel_rows = []
+    for cat, w in worlds.items():
+        for e in w.ents:
+            e.parent = None
+            for typ, tgt, method in e.rels:
+                st_, did = dec.relation_state(e.id, typ, tgt.id, method)
+                if any(dec.vetoed(x, y) for x in w.anchors(e.keys) for y in w.anchors(tgt.keys)):
+                    st_, did = "rejected", "split-veto"
+                rel_rows.append((e.id, typ, tgt.id, st_, method, did))
+                if st_ != "approved":
+                    continue
+                if typ in ("configuration_of", "package_of", "variant_of") and e.parent is None:
+                    e.parent = tgt
+                    if method.startswith("suffix:"):
+                        e.kind = {"package_of": "package", "variant_of": "configuration"}.get(typ, e.kind)
+                elif typ == "member_of_family" and e.family is None:
+                    e.family = tgt
+    rel_ok = {(r[0], r[1], r[2]) for r in rel_rows if r[3] == "approved"}
+
+    def famid(e):
+        if e.family is not None and (e.id, "member_of_family", e.family.id) in rel_ok:
+            return e.family.id
+        seen = set(); p = e.parent
+        while p is not None and p.id not in seen:
+            seen.add(p.id)
+            if p.family is not None and (p.id, "member_of_family", p.family.id) in rel_ok:
+                return p.family.id
+            p = p.parent
+        return None
+
+    # ------------------------------------------------------------------ gtin conflicts (one GTIN on unrelated entities)
+    gt = collections.defaultdict(set)
+    for cat, w in worlds.items():
+        for e in w.ents:
+            for (scheme, v), d in e.idents.items():
+                if scheme == "gtin" and d["valid"]:
+                    gt[(cat, v)].add(e)
+    disputed, conflict_rows = set(), []
+    for (cat, v), es in gt.items():
+        if len(es) > 1:
+            lineage = lambda e: {e.id} | ({e.parent.id} if e.parent else set())
+            if any(not (lineage(x) & lineage(y)) for x in es for y in es if x is not y):
+                disputed.add((cat, v))
+                conflict_rows.append((cat, "gtin", v, json.dumps(sorted(x.id for x in es)), "one GTIN on unrelated entities: review"))
+                events.append(("gtin_conflict", cat, None, [f"{cat}|gtin|GS1|{v}|"], None, {"ids": sorted(x.id for x in es)}))
+
+    # ------------------------------------------------------------------ write
+    dbp = Path(a.db); dbp.parent.mkdir(parents=True, exist_ok=True)
+    tmp = dbp.with_suffix(".tmp")
+    if tmp.exists():
+        tmp.unlink()
+    con = sqlite3.connect(tmp); schema(con)
+    unmapped = collections.Counter(); unmapped_ex = {}
+    invalid = collections.Counter(); invalid_ex = {}
+    out_counts = collections.defaultdict(collections.Counter)
+    review_counts = collections.defaultdict(collections.Counter)
+    digest = hashlib.sha256()
+    brand_names = {m["brand"]: m["brand_name"] for m in registry.SOURCES.values()}
+    for cat in sorted(worlds):
+        w = worlds[cat]
+        _, keys, al = profiles[cat]
+        U = unitsets[cat]
+        for e in sorted(w.ents, key=lambda x: x.id):
+            market = "US" if any(v["market"] == "US" for v in e.idents.values()) else None
+            con.execute("INSERT INTO entities VALUES (?,?,?,?,?,?,?,?,?,?,?)", (e.id, cat, e.kind, e.brand, brand_names.get(e.brand, e.brand), e.name,
+                        e.parent.id if e.parent else None, famid(e), e.lifecycle, market, json.dumps(e.extra, sort_keys=True)))
+            out_counts[cat][e.kind] += 1
+            digest.update(canon(["e", e.id, e.kind, e.parent.id if e.parent else None]).encode())
+            for v in e.idents.values():
+                con.execute("INSERT INTO identifiers VALUES (?,?,?,?,?,?,?,?,?,?)", (e.id, v["scheme"], v["value"], v["value_raw"], v["issuer"], v["market"],
+                            v["package_level"], v["role"], int(v["valid"]), int((cat, v["value"]) in disputed and v["scheme"] == "gtin")))
+            for t, k in e.aliases.items():
+                con.execute("INSERT INTO aliases VALUES (?,?,?)", (e.id, t, k))
+            for ob in sorted(e.obs):
+                con.execute("INSERT INTO attachments VALUES (?,?,?,?)", (e.id,) + ob)
+            sids = {}
+            for snap, s in sorted(e.srcs.items(), key=lambda kv: (kv[1]["url"], kv[0])):
+                sids[snap] = f"s{len(sids) + 1}"
+                con.execute("INSERT INTO entity_sources VALUES (?,?,?,?,?,?,?)", (e.id, sids[snap], s["url"], s["tier"], s["label"], snap, s["retrieved_at"]))
+            tier_of = {snap: s["tier"] for snap, s in e.srcs.items()}
+            seen, rows = set(), []
+            work = list(e.claims)
+            states = {}
+            i = 0
+            while i < len(work):
+                c, ob = work[i]; i += 1
+                sid, ref, snap = ob
+                loc = c.get("locator") or {}
+                k = c["key"]; mk = k if k in keys else al.get(k)
+                if cat == "laptops" and loc.get("column") in single and single[loc["column"]] != mk:
+                    if mk is not None:
+                        unmapped[(cat, f"{k} -> {single[loc['column']]}")] += 1; unmapped_ex.setdefault((cat, f"{k} -> {single[loc['column']]}"), "adapter key overridden by psref-mapping.yaml: " + loc["column"])
+                    mk = single[loc["column"]]
+                if mk is None:
+                    unmapped[(cat, k)] += 1; unmapped_ex.setdefault((cat, k), (c.get("raw") or "")[:80])
+                cid = c.get("_cid") or stable_cid(sid, ref, c, mk or k)
+                if cid in seen:
+                    continue
+                seen.add(cid)
+                spec = keys.get(mk) if mk else None
+                ok, nv, nx = N.normalise(spec, c, U) if spec else (False, None, {})
+                doc = {"id": cid, "key": mk or k, "status": c["status"], "kind": c.get("kind") or "official", "source": sids.get(snap, "s1"),
+                       "method": {"stage": STAGE_FIX.get((c.get("method") or {}).get("stage"), (c.get("method") or {}).get("stage") or "adapter"),
+                                  "extractor": (c.get("method") or {}).get("extractor") or "unknown@0"},
+                       "observed_at": c.get("observed_at") or "1970-01-01T00:00:00Z"}
+                for f in ("unit", "raw", "quote", "locator", "measurement", "derived_from", "via_relation", "confidence", "supersedes", "extracted_at"):
+                    if c.get(f) is not None:
+                        doc[f] = c[f]
+                if c.get("conditions"):
+                    doc["conditions"] = canon_cond(c["conditions"])
+                if c["status"] == "known":
+                    doc["value"] = nv if ok else c.get("value")
+                    if ok and spec.get("unit"):
+                        doc["unit"] = spec["unit"]
+                ctx = {"source_id": sid, "extractor": doc["method"]["extractor"], "key": mk or k, "spec_type": (spec or {}).get("type"), "kind": doc["kind"], "tier": tier_of.get(snap, "manufacturer"),
+                       "status": c["status"], "normalized": ok}
+                state, did = dec.claim_state(cid, ctx) if mk else ("candidate", None)
+                if doc["method"]["extractor"].startswith("import.py+cpu-split") and state == "accepted" and did and did.startswith("claim/"):
+                    parent_state = states.get((c.get("derived_from") or [None])[0])
+                    if parent_state != "accepted":
+                        state, did = "candidate", None
+                doc["review"] = {"state": state, "by": did}
+                errs = list(CLAIM_VALIDATOR.iter_errors(doc))
+                if errs:
+                    msg = errs[0].message[:120]
+                    invalid[(cat, sid, mk or k, msg)] += 1; invalid_ex.setdefault((cat, sid, mk or k, msg), canon(doc)[:200])
+                    continue
+                states[cid] = state
+                review_counts[cat][state] += 1
+                rows.append((cid, e.id, k, mk, c["status"], doc["kind"], canon(doc.get("conditions") or {}), (c.get("measurement") or {}).get("mode"),
+                             json.dumps(c.get("value")), int(ok), json.dumps(nv) if ok else None, canon(nx) if nx else None, doc.get("unit"), c.get("raw"), doc["source"],
+                             sid, ref, snap, canon(loc), doc["observed_at"], doc["method"]["extractor"], state, did, c.get("supersedes"), canon(doc)))
+                if state == "accepted":
+                    digest.update(canon(["c", e.id, cid, mk, nv if ok else None]).encode())
+                elif state == "rejected":
+                    digest.update(canon(["r", e.id, cid]).encode())
+                if cat == "laptops" and mk == "cpu.model" and not c.get("derived_from"):
+                    for d in cpu_split(c, cid, keys):
+                        d["_cid"] = stable_cid(sid, ref, d, d["key"])
+                        work.append((d, ob))
+            con.executemany("INSERT INTO claims VALUES (" + ",".join("?" * 25) + ")", rows)
+            for ab, ob in e.absences:
+                mk = ab["key"] if ab["key"] in keys else al.get(ab["key"])
+                st_ = ab.get("status") or "not_published"
+                if st_ not in ("unknown", "not_published", "not_applicable"):
+                    st_ = "not_yet_extracted"     # blocked / ambiguous / not attempted: never 'not published'
+                con.execute("INSERT INTO absences VALUES (?,?,?,?,?)", (e.id, mk or ab["key"], st_, ab.get("reason"), sids.get(ob[2], "s1")))
+            seen_d = set()
+            for d in e.documents:
+                if d["url"] not in seen_d:
+                    seen_d.add(d["url"]); con.execute("INSERT INTO documents VALUES (?,?,?,?)", (e.id, d["url"], d.get("kind"), d.get("label")))
+    for r in sorted(rel_rows):
+        digest.update(canon(["l"] + list(r[:4])).encode())
+    con.executemany("INSERT INTO relations VALUES (?,?,?,?,?,?)", sorted(rel_rows))
+    ev_rows = []
+    for n, (ev, cat, e, anchors, ob, detail) in enumerate(events):
+        ob = ob or (None, None, None)
+        ev_rows.append((n, ev, cat, e.id if e is not None else None, json.dumps(anchors), ob[0], ob[1], ob[2], json.dumps(detail, sort_keys=True)))
+    con.executemany("INSERT INTO identity_events VALUES (?,?,?,?,?,?,?,?,?)", ev_rows)
+    for cat, w in worlds.items():
+        for q in w.quarantine:
+            ob = q["obs"] or (None, None, None)
+            con.execute("INSERT INTO quarantine VALUES (?,?,?,?,?,?,?)", (cat, q["kind"], json.dumps(q["keys"]), json.dumps(q["hits"]), ob[0], ob[1], ob[2]))
+    con.executemany("INSERT INTO identity_conflicts VALUES (?,?,?,?,?)", conflict_rows + [(c, "id_registry", "", json.dumps(h), "anchors map to several registered ids: " + ",".join(an[:3])) for c, h, an in id_conflicts])
+    cov = []
+    for sid, st in stats.items():
+        for (mtm, c8, mt, fam, country, graw, snap) in st["regional"]:
+            con.execute("INSERT INTO regional_observations VALUES (?,?,?,?,?,?,?,?)", (mtm, c8, mt, fam.id if fam else None, country, graw,
+                        I.norm_gtin(graw) if graw else None, snap))
+        if st["regional"]:
+            regions = collections.Counter(r[4] or "?" for r in st["regional"])
+            cov += [(sid, "mtms_observed", str(len(st["regional"]))), (sid, "mtms_published_scope", str(st["us_mtms"])),
+                    (sid, "regions", json.dumps(dict(regions.most_common()))), (sid, "regional_claims_materialised", "no (US only; evidence by reference: snapshot + MTM)")]
+        cov += [(sid, "observations", str(st["observations"])), (sid, "discovery_complete", str(st.get("discovery_complete", "unknown")))]
+    con.executemany("INSERT INTO coverage VALUES (?,?,?)", cov)
+    um_rows = []
+    for (cat, k), n in sorted(unmapped.items(), key=lambda kv: -kv[1]):
+        um_rows.append((cat, "adapters", k, "adapter_key_overridden_by_psref_mapping" if " -> " in k else "claim_key_not_in_profile", n, unmapped_ex[(cat, k)]))
+    for sid, st in stats.items():
+        for (cat, brand, lab), n in st["labels"].items():
+            um_rows.append((cat, sid, lab, "source_label_not_mapped_by_adapter", n, st["label_example"].get((cat, brand, lab))))
+        for col, n in st["psref_cols"].items():
+            if col in ident:
+                continue
+            if col in ignored:
+                um_rows.append(("laptops", sid, col, "psref_column_ignored_by_mapping", n, None))
+            elif col in multi:
+                um_rows.append(("laptops", sid, col, "psref_column_multi_target_needs_parser", n, ",".join(multi[col])))
+            elif col not in single:
+                um_rows.append(("laptops", sid, col, "psref_column_not_in_psref_mapping", n, None))
+    con.executemany("INSERT INTO unmapped VALUES (?,?,?,?,?,?)", um_rows)
+    con.executemany("INSERT INTO invalid_claims VALUES (?,?,?,?,?,?)", [k + (n, invalid_ex[k]) for k, n in invalid.items()])
+    con.executemany("INSERT INTO ignored_labels VALUES (?,?,?,?,?)", ignored_rows)
+    con.executemany("INSERT INTO observations VALUES (?,?,?,?,?,?,?,?)", obs_rows)
+    meta_rows = {"built_at": time.strftime("%FT%TZ", time.gmtime()), "sources": json.dumps(sorted(stats)), "accepted_digest": digest.hexdigest(),
+                 "policies": json.dumps([p["id"] for p in dec.claim_policies + dec.relation_policies]), "ledger_lines": str(dec.lines),
+                 "profiles": json.dumps({c: str(profiles[c][0]["version"]) for c in cats}), "scope": "partial" if a.source else "full"}
+    con.executemany("INSERT INTO meta VALUES (?,?)", list(meta_rows.items()))
+    con.commit(); con.close()
+    os.replace(tmp, dbp)
+    flushed = reg.flush()
+    print(json.dumps({"db": str(dbp), "seconds": round(time.time() - t0, 1), "accepted_digest": digest.hexdigest(),
+                      "entities": {c: dict(v) for c, v in out_counts.items()}, "claims_review": {c: dict(v) for c, v in review_counts.items()},
+                      "ids": {"reused": reused, "new": minted, "registry_lines_appended": flushed, "id_conflicts": len(id_conflicts)},
+                      "identity": {"quarantined_observations": sum(len(w.quarantine) for w in worlds.values()), "gtin_conflicts": len(conflict_rows),
+                                   "relations": dict(collections.Counter(f"{r[3]}:{r[4].split(':')[0]}" for r in rel_rows))},
+                      "invalid_claims": sum(invalid.values()), "unmapped_rows": len(um_rows), "ignored_label_rows": len(ignored_rows)}, indent=1))
+
+
+if __name__ == "__main__":
+    main()

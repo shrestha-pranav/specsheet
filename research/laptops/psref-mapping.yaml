@@ -1,0 +1,198 @@
+source: raw/lenovo-psref/products/*/models.jsonl
+columns: 56
+mapping:
+  Model:
+    identifier: identifier:mtm
+  Machine Type:
+    identifier: identifier:machine_type
+  Product:
+    identifier: identifier:mfr_family (name alias)
+  EAN / UPC / JAN:
+    identifier: identifier:gtin
+  Processor:
+    maps_to:
+    - cpu.model
+    - cpu.cores_threads
+    - cpu.boost_clock
+  AI PC Category:
+    maps_to:
+    - cpu.ai_pc_category
+  NPU:
+    maps_to:
+    - cpu.npu_tops
+  Graphics:
+    maps_to:
+    - gpu.model
+    - gpu.type
+    - gpu.vram
+  Chipset:
+    maps_to:
+    - cpu.chipset
+    note: value "... SoC platform" = no separate chipset
+  Memory:
+    maps_to:
+    - mem.size
+    - mem.type
+    - mem.soldered
+  Memory Slots:
+    maps_to:
+    - mem.slots
+    - mem.channels
+  Max Memory:
+    maps_to:
+    - mem.max
+  Storage:
+    maps_to:
+    - stor.size
+    - stor.form_factor
+    - stor.pcie
+  Storage Slot:
+    maps_to:
+    - stor.slots
+    - stor.form_factor
+    - stor.pcie
+  Max Storage Support:
+    maps_to:
+    - stor.slots
+  Card Reader:
+    maps_to:
+    - port.card_reader
+    - port.card_reader_type
+  Audio Chip:
+    maps_to:
+    - input.audio
+  Speakers:
+    maps_to:
+    - in.speakers
+    - input.audio
+  Microphone:
+    maps_to:
+    - input.audio
+  Camera:
+    maps_to:
+    - in.webcam
+    - in.ir_cam
+    - in.privacy
+  Battery:
+    maps_to:
+    - pwr.battery_wh
+  Power Adapter:
+    maps_to:
+    - pwr.charger_w
+    - pwr.max_pd_in
+  Display:
+    maps_to:
+    - disp.size
+    - disp.resolution
+    - disp.refresh
+    - disp.panel_type
+    - disp.nits_sdr
+    - disp.gamut
+    - disp.surface
+    - disp.certs
+    - disp.touch
+  Touchscreen:
+    maps_to:
+    - disp.touch
+    - disp.touch_type
+  Screen-to-Body Ratio:
+    ignored: marketing ratio
+  Color Calibration:
+    maps_to:
+    - disp.color_calibration
+  Pen:
+    maps_to:
+    - input.pen
+  Keyboard:
+    maps_to:
+    - in.kb_backlit
+    - in.kb_layout
+  Touchpad:
+    maps_to:
+    - input.touchpad
+  Dimensions (WxDxH):
+    maps_to:
+    - phys.dimensions
+  Weight:
+    maps_to:
+    - phys.weight
+  Case Color:
+    maps_to:
+    - gen.color
+  Case Material:
+    maps_to:
+    - phys.material
+  Surface Treatment:
+    maps_to:
+    - phys.surface_treatment
+  Operating System:
+    maps_to:
+    - sw.os
+  Bundled Software:
+    ignored: trial software, low value
+  WLAN + Bluetooth:
+    maps_to:
+    - wl.wifi
+    - wl.bluetooth
+  WWAN:
+    maps_to:
+    - wl.wwan
+  Ethernet:
+    maps_to:
+    - port.ethernet
+  Standard Ports:
+    maps_to:
+    - port.usbc_list
+    - port.tb_usb4
+    - port.usbc_count
+    - port.usba_count
+    - port.video_out
+    - port.audio
+    - port.card_reader
+  Docking:
+    maps_to:
+    - port.docking
+  Security Chip:
+    maps_to:
+    - in.tpm
+  Fingerprint Reader:
+    maps_to:
+    - in.fingerprint
+  Other Security:
+    maps_to:
+    - input.security_other
+    - in.ir_cam
+    - in.privacy
+  Base Warranty:
+    maps_to:
+    - sw.warranty
+  Included Upgrade:
+    maps_to:
+    - sw.included_upgrade
+  Bundled Accessories:
+    ignored: accessory list (maybe a package spec later)
+  Green Certifications:
+    maps_to:
+    - sw.certs
+  Mil-Spec Test:
+    maps_to:
+    - sw.certs
+  Other Certifications:
+    maps_to:
+    - sw.certs
+  Region:
+    maps_to:
+    - gen.region
+  Country/Region:
+    maps_to:
+    - gen.country_region
+  TopSeller:
+    ignored: Lenovo sales flag
+  End of Support:
+    maps_to:
+    - sw.end_of_support
+  Announce Date:
+    maps_to:
+    - gen.announce_date
+  _withdrawn:
+    ignored: crawl flag (status/revision, not a spec)

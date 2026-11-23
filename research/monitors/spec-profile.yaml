@@ -1,0 +1,1788 @@
+profile_format: specsheet.category-profile/1
+category: monitors
+version: 0.1.0
+label: Computer monitors
+market: US
+status: draft
+scope: Standalone computer monitors (IPS/VA/TN/OLED/Mini-LED), gaming, office, creator, portable, ultrawide. Excludes TVs,
+  laptop panels, all-in-ones.
+identity:
+  levels:
+  - level: family
+    label: Product line
+    meaning: e.g. LG UltraGear OLED 27GR95; Dell UltraSharp U32xx
+    key_schemes:
+    - mfr_family
+    inherits: false
+  - level: model
+    label: Model number
+    meaning: Marketed model incl. suffix (27GR95QE-B, U3224KB, LS27DG602SNXZA)
+    key_schemes:
+    - mfr_model
+    inherits: true
+  - level: revision
+    label: Hardware revision
+    meaning: Silent board/panel/firmware change under the same model number (rear label REV, panel part, EDID product ID)
+    key_schemes:
+    - hw_rev
+    - edid_id
+    inherits: true
+  - level: package
+    label: Orderable SKU / regional package
+    meaning: Dell 210-xxxx, retailer or region code, color; GTIN
+    key_schemes:
+    - mfr_sku
+    - gtin
+    inherits: true
+  primary_key: Manufacturer model number INCLUDING regional/market suffix (LG -B, Samsung trailing region letters like ZA/XZA,
+    Dell orderable 210-code); when a hardware revision is known, (model, hw_rev). Retail titles are aliases only.
+  per_brand:
+    dell: Model U3224KB / S2725DS; orderable SKU 210-BHBZ; rear label REV A0x (hw revision)
+    lg: Model e.g. 27GR95QE-B; -B = US market/black, suffix varies by region (e.g. 27GR95QE-B.AUS)
+    samsung: LS27DG602SNXZA (LS + size/line + trailing region code; XZA = US); sometimes pure 'G60SF' family name
+    asus: PG27AQDM; retailer SKUs 90LM0..; Ver. on label
+    msi: MAG 274QRF QD E2; E2 = revision/generation suffix
+    gigabyte: M32U; 'rev. 1.0/2.0' on box
+    benq: EW3280U; MOBIUZ EX2710Q; 9H.xxxxx.xxx SKUs
+    viewsonic: VX2758-2KP-MHD; VS-code on label
+    aoc: Q27G3XMN/BK; suffix after slash = color/region
+    acer: XB273K V5; UM.HX3AA.V01 = orderable (V-suffix = gen)
+    hp: Product 6G4Z4AA#ABA (#ABA = US)
+    lenovo: MTM 63B0GAC1US; ThinkVision P27h-30
+  schemes:
+  - scheme: mfr_family
+    level: family
+  - scheme: mfr_model
+    level: model
+    normalize: upper_strip_spaces
+  - scheme: hw_rev
+    level: revision
+    alias_only: false
+  - scheme: edid_id
+    level: revision
+    pattern: ^[A-Z]{3}[0-9A-F]{4}$
+  - scheme: mfr_sku
+    level: package
+  - scheme: gtin
+    issuer: GS1
+    level: package
+  variant_axes:
+  - gen.region
+  - gen.color
+  - panel.vendor
+  - panel.part_number
+  - gen.hw_revision
+  model_defining:
+  - gen.size_class
+  - res.native
+  - panel.technology
+  - gen.form_factor
+  note: 'Panel vendor/part varies at revision level: same model number can ship different panel generations. Specs the maker
+    does not print are filled from reviews as conflicting claims tagged with revision when known.'
+units:
+  system: us_customary
+  display:
+    mm: in
+    kg: lb
+conditions:
+- id: overdrive
+  label: Overdrive setting
+  type: enum
+  enum:
+  - 'off'
+  - normal
+  - fast
+  - fastest
+- id: refresh_hz
+  label: Refresh rate used
+  type: number
+  unit: Hz
+- id: hdr_window_pct
+  label: HDR test window size
+  type: number
+  unit: '%'
+- id: brightness_pct
+  label: Brightness setting
+  type: number
+  unit: '%'
+- id: port
+  label: Input port
+  type: text
+- id: firmware
+  label: Firmware
+  type: text
+groups:
+- id: general
+  label: General & identity
+  order: 0
+- id: panel
+  label: Panel
+  order: 1
+- id: res
+  label: Resolution & refresh
+  order: 2
+- id: motion
+  label: Response & motion
+  order: 3
+- id: hdr
+  label: HDR & brightness
+  order: 4
+- id: color
+  label: Color
+  order: 5
+- id: flicker
+  label: Flicker & eye comfort
+  order: 6
+- id: video_in
+  label: Video inputs
+  order: 7
+- id: usbc
+  label: USB-C, hub & KVM
+  order: 8
+- id: ergo
+  label: Stand & mounting
+  order: 9
+- id: power
+  label: Power
+  order: 10
+- id: support
+  label: Warranty & support
+  order: 11
+specs:
+- key: gen.brand
+  label: Brand
+  group: general
+  type: enum
+  unit: null
+  tier: core
+  facet: true
+  why: Filter/ident
+  level: family
+  sources:
+  - Manufacturer spec page
+  example: LG
+  enum_open: true
+- key: gen.size_class
+  label: Size class (marketed diagonal)
+  group: general
+  type: number
+  unit: in
+  tier: core
+  facet:
+    kind: range
+    bins:
+    - 24
+    - 27
+    - 32
+    - 34
+    - 40
+    - 49
+    column: true
+  why: Primary buying filter
+  level: model
+  traps:
+  - Marketed 27 vs real viewable 26.5 (LG 27GR95QE); ultrawide curved size is arc length
+  sources:
+  - Manufacturer spec page
+  example: 27
+  identity_role: model_defining
+- key: gen.viewable_diag
+  label: Viewable diagonal
+  group: general
+  type: number
+  unit: in
+  tier: detail
+  facet: false
+  why: Real size
+  level: model
+  traps:
+  - Often rounded up in the name
+  sources:
+  - Manufacturer spec page
+  example: 26.5
+- key: gen.release_year
+  label: Release year
+  group: general
+  type: integer
+  unit: null
+  tier: important
+  facet: true
+  why: Age
+  level: model
+  sources:
+  - Announce date; retailer
+  example: 2024
+- key: gen.hw_revision
+  label: Hardware revision / version
+  group: general
+  type: text
+  unit: null
+  tier: core
+  facet: false
+  why: Same model number can ship different panel/scaler/board; the only handle on silent changes
+  level: revision
+  traps:
+  - Rarely printed on spec pages; lives on rear label (Dell 'REV A01', Samsung 'ID'/'Ver.', ASUS 'Ver.')
+  - LG '-B' suffix = US-market SKU in a family sold as e.g. 27GR95QE (no suffix) elsewhere
+  - Reviewers (TFTCentral, RTINGS) sometimes note units differ
+  sources:
+  - Rear label photo; FCC ID filing; user manual; review notes
+  example: A01
+  identity_role: variant_axis
+- key: gen.region
+  label: Regional SKU / market
+  group: general
+  type: enum
+  unit: null
+  tier: core
+  facet: true
+  why: Specs, plugs, warranty differ by region
+  level: package
+  sources:
+  - Manufacturer spec page
+  example: US
+  identity_role: variant_axis
+  enum:
+  - US
+  - CA
+  - EU
+  - UK
+  - APAC
+  - other
+  enum_open: true
+- key: gen.color
+  label: Chassis color
+  group: general
+  type: enum
+  unit: null
+  tier: detail
+  facet: false
+  why: Variant axis
+  level: package
+  sources:
+  - Manufacturer spec page
+  example: Black
+  enum_open: true
+  identity_role: variant_axis
+- key: gen.segment
+  label: Segment
+  group: general
+  type: enum
+  unit: null
+  tier: important
+  facet: true
+  why: Gaming / office / creator / business
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: gaming
+  enum:
+  - gaming
+  - office
+  - creator
+  - business
+  - portable
+  - tv-hybrid
+  enum_open: true
+- key: gen.form_factor
+  label: Form factor
+  group: general
+  type: enum
+  unit: null
+  tier: important
+  facet: true
+  why: Flat / curved / ultrawide / portable
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: flat
+  enum:
+  - flat
+  - curved
+  - ultrawide-flat
+  - ultrawide-curved
+  - super-ultrawide
+  - portable
+  - dual-screen
+  enum_open: true
+  identity_role: model_defining
+- key: gen.curvature
+  label: Curvature radius
+  group: general
+  type: text
+  unit: null
+  tier: important
+  facet: false
+  why: Comfort
+  level: model
+  traps:
+  - R number only; lower = tighter
+  sources:
+  - Manufacturer spec page
+  example: 1800R
+- key: gen.msrp_launch
+  label: Launch MSRP
+  group: general
+  type: number
+  unit: USD
+  tier: detail
+  facet: false
+  why: Context
+  level: model
+  sources:
+  - Press release; mfr store
+  example: 999
+- key: gen.eol
+  label: Discontinued / successor
+  group: general
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Revision tracking
+  level: model
+  sources:
+  - Mfr site; reviews
+  example: Replaced by 27GX790A
+- key: panel.technology
+  label: Panel technology
+  group: panel
+  type: enum
+  unit: null
+  tier: core
+  facet: true
+  why: Biggest image-quality driver
+  level: model
+  traps:
+  - '''Nano IPS'',''Fast IPS'',''ADS'' are IPS-type marketing names; ''IPS Black'' is a contrast class not a tech'
+  - OLED subpixel type (WOLED vs QD-OLED) rarely in headline specs
+  - Mini-LED product pages say 'IPS' and hide the backlight type
+  sources:
+  - Manufacturer spec page
+  example: WOLED
+  enum:
+  - IPS
+  - IPS Black
+  - Nano IPS
+  - Fast IPS
+  - Fast IPS Black
+  - VA
+  - Fast VA
+  - TN
+  - WOLED
+  - QD-OLED
+  - Tandem OLED
+  - Mini-LED IPS
+  - Mini-LED VA
+  - Mini-LED QD
+  - other
+  enum_open: true
+  identity_role: model_defining
+- key: panel.subpixel
+  label: Subpixel layout / coating
+  group: panel
+  type: enum
+  unit: null
+  tier: important
+  facet: true
+  why: Text fringing; gen-3 QD-OLED & WOLED-4th-subpixel (RGWB) texts differ
+  level: model
+  traps:
+  - Almost never in official specs; RTINGS/TFTCentral measure it
+  sources:
+  - RTINGS; TFTCentral; Reddit teardowns
+  example: RWBG
+  enum:
+  - RGB stripe
+  - RWBG
+  - triangular QD-OLED
+  - BGR
+  - pentile
+  - other
+  enum_open: true
+- key: panel.surface
+  label: Screen surface
+  group: panel
+  type: enum
+  unit: null
+  tier: important
+  facet: true
+  why: Glare vs matte; OLED glossy traps
+  level: model
+  traps:
+  - '''Anti-glare'' vs ''glossy'' only in fine print; QD-OLED raises blacks in light rooms'
+  sources:
+  - Manufacturer spec page
+  example: glossy
+  enum:
+  - matte
+  - glossy
+  - semi-glossy
+  - anti-glare light
+  - unspecified
+- key: panel.vendor
+  label: Panel maker
+  group: panel
+  type: enum
+  unit: null
+  tier: core
+  facet: true
+  why: 'Panel lottery: same model number, different maker / generation'
+  level: revision
+  traps:
+  - Never printed on spec pages; found in service manual, panel-ID tools, EDID, teardown, DisplaySpecifications
+  sources:
+  - RTINGS review; TFTCentral; EDID; panelook; user teardown
+  example: LG Display
+  identity_role: variant_axis
+  enum:
+  - LG Display
+  - Samsung Display
+  - AUO
+  - Innolux
+  - BOE
+  - CSOT
+  - HKC
+  - Sharp
+  - Tianma
+  - other
+  enum_open: true
+- key: panel.part_number
+  label: Panel part number
+  group: panel
+  type: text
+  unit: null
+  tier: important
+  facet: false
+  why: Pins down panel generation (e.g. LM270WQ...)
+  level: revision
+  traps:
+  - Hardware revisions swap panel part; EDID manufacturer/product ID may differ per revision
+  sources:
+  - EDID dump; service manual; review
+  example: LM270WQ1-SSA1
+  identity_role: variant_axis
+- key: panel.generation
+  label: Panel generation / series
+  group: panel
+  type: text
+  unit: null
+  tier: important
+  facet: false
+  why: e.g. QD-OLED gen 3, WOLED MLA
+  level: revision
+  traps:
+  - Marketing '4th gen' counts differ by maker
+  sources:
+  - Review sites
+  - Press release
+  example: Gen 3 QD-OLED
+- key: panel.bit_depth
+  label: Panel bit depth (native/FRC)
+  group: panel
+  type: enum
+  unit: null
+  tier: core
+  facet: true
+  why: 8-bit+FRC marketed as 10-bit
+  level: model
+  traps:
+  - '''1.07 billion colors'' = 10-bit incl. FRC; ''16.7M'' = 8-bit'
+  sources:
+  - Manufacturer spec page
+  example: 10-bit
+  enum:
+  - 6-bit+FRC
+  - 8-bit
+  - 8-bit+FRC
+  - 10-bit
+  identity_role: none
+- key: panel.color_depth_marketed
+  label: Marketed color count
+  group: panel
+  type: enum
+  unit: null
+  tier: detail
+  facet: false
+  why: Cross-check bit depth
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 1.07B
+  enum:
+  - 16.7M
+  - 1.07B
+  - other
+  enum_open: true
+- key: panel.viewing_angle
+  label: Viewing angle H/V
+  group: panel
+  type: text
+  unit: deg
+  tier: detail
+  facet: false
+  why: Marketing comparability
+  level: model
+  traps:
+  - 178/178 for nearly every panel
+  sources:
+  - Manufacturer spec page
+  example: 178/178
+- key: panel.uniformity_spec
+  label: Uniformity compensation / factory calibration
+  group: panel
+  type: bool
+  unit: null
+  tier: detail
+  facet: false
+  why: Creator monitors
+  level: model
+  traps:
+  - Delta E < 2 'factory calibrated' often typical not guaranteed; check report included
+  sources:
+  - Manufacturer spec page
+  example: true
+- key: res.native
+  label: Native resolution
+  group: res
+  type: text
+  unit: null
+  tier: core
+  facet: true
+  why: Pixel count
+  level: model
+  traps:
+  - Must be native panel, not max input (8K input on 4K panel)
+  sources:
+  - Manufacturer spec page
+  example: 2560x1440
+  identity_role: model_defining
+- key: res.width_px
+  label: Width px
+  group: res
+  type: integer
+  unit: px
+  tier: important
+  facet: false
+  why: Derived
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 2560
+- key: res.height_px
+  label: Height px
+  group: res
+  type: integer
+  unit: px
+  tier: important
+  facet: false
+  why: Derived
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 1440
+- key: res.ppi
+  label: Pixel density
+  group: res
+  type: number
+  unit: ppi
+  tier: important
+  facet:
+    kind: range
+  why: Sharpness
+  level: model
+  sources:
+  - Derived; Dell lists
+  example: 109
+- key: res.aspect
+  label: Aspect ratio
+  group: res
+  type: enum
+  unit: null
+  tier: important
+  facet: true
+  why: Ultrawide
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: '16:9'
+  enum:
+  - '16:9'
+  - '16:10'
+  - '3:2'
+  - '21:9'
+  - '32:9'
+  - '4:3'
+  - other
+  enum_open: true
+- key: res.refresh_native
+  label: 'Refresh rate: native (no overclock)'
+  group: res
+  type: number
+  unit: Hz
+  tier: core
+  facet:
+    kind: range
+    bins:
+    - 60
+    - 75
+    - 120
+    - 144
+    - 165
+    - 240
+    - 360
+    - 480
+    column: true
+  why: Marketed number often includes OC
+  level: model
+  traps:
+  - Listed 'OC' ('165Hz OC') = native 144; may not work on all inputs
+  sources:
+  - Manufacturer spec page
+  example: 240
+  required: true
+- key: res.refresh_max
+  label: 'Refresh rate: max (incl OC)'
+  group: res
+  type: number
+  unit: Hz
+  tier: important
+  facet: false
+  why: Marketed headline
+  level: model
+  traps:
+  - Can need DP only / lower color depth
+  sources:
+  - Manufacturer spec page
+  example: 240
+- key: res.refresh_dual_mode
+  label: Dual-mode (resolution/refresh switch)
+  group: res
+  type: list
+  unit: null
+  tier: important
+  facet: false
+  why: e.g. 4K 240 / FHD 480 modes
+  level: model
+  traps:
+  - Second mode usually reduced resolution; UI hidden in OSD
+  sources:
+  - Manufacturer spec page
+  example:
+  - 4K@240
+  - FHD@480
+  items: text
+- key: res.vrr_types
+  label: VRR support
+  group: res
+  type: list
+  unit: null
+  tier: core
+  facet:
+    kind: multi
+  why: FreeSync / G-Sync / Adaptive-Sync
+  level: model
+  traps:
+  - '''G-Sync Compatible'' certification varies by revision; true G-Sync (module) is a different product'
+  - '''FreeSync'' alone = no LFC guarantee'
+  sources:
+  - Manufacturer spec page
+  example:
+  - FreeSync Premium Pro
+  - G-Sync Compatible
+  items: enum
+- key: res.vrr_range
+  label: VRR range (min-max Hz)
+  group: res
+  type: range
+  unit: Hz
+  tier: important
+  facet: false
+  why: Low end flicker / LFC
+  level: model
+  traps:
+  - Range often per input; OLED VRR flicker below ~80 Hz
+  sources:
+  - AMD FreeSync page; NVIDIA list; RTINGS
+  example:
+  - 48
+  - 240
+- key: res.hdmi_vrr_ok
+  label: VRR over HDMI
+  group: res
+  type: bool
+  unit: null
+  tier: detail
+  facet: false
+  why: Consoles
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: true
+- key: motion.gtg_marketed
+  label: Response time (marketed)
+  group: motion
+  type: number
+  unit: ms
+  tier: core
+  facet: false
+  why: Headline number
+  level: model
+  traps:
+  - GtG in 'fastest' mode at overdrive; MPRT 1 ms = backlight strobing; 'faster than 1ms' ranges
+  sources:
+  - Manufacturer spec page
+  example: 0.03
+- key: motion.gtg_basis
+  label: Response time basis
+  group: motion
+  type: enum
+  unit: null
+  tier: core
+  facet: true
+  why: Know what number means
+  level: model
+  traps:
+  - Dell quotes 5ms 'Fast mode' vs 8 normal
+  sources:
+  - Manufacturer spec page
+  example: GtG
+  enum:
+  - GtG
+  - MPRT
+  - unspecified
+  - BtW
+  - Fast mode GtG
+  - Normal mode GtG
+  - other
+  enum_open: true
+- key: motion.gtg_measured
+  label: Measured avg GtG
+  group: motion
+  type: number
+  unit: ms
+  tier: important
+  facet: false
+  why: Independent truth
+  level: model
+  traps:
+  - Depends on overdrive setting and refresh; keep as conditioned claims
+  sources:
+  - RTINGS; TFTCentral; Hardware Unboxed
+  example: 4.3
+  conditions:
+  - overdrive
+  - refresh_hz
+- key: motion.overshoot
+  label: Overshoot at fastest setting
+  group: motion
+  type: number
+  unit: '%'
+  tier: detail
+  facet: false
+  why: Overdrive artifacts
+  level: model
+  sources:
+  - RTINGS; TFTCentral
+  example: 12
+- key: motion.bfi
+  label: Backlight strobing / BFI
+  group: motion
+  type: bool
+  unit: null
+  tier: important
+  facet: true
+  why: Motion clarity
+  level: model
+  traps:
+  - Often unavailable with VRR; reduces brightness
+  sources:
+  - Manufacturer spec page
+  example: true
+- key: motion.input_lag
+  label: Input lag
+  group: motion
+  type: number
+  unit: ms
+  tier: important
+  facet: false
+  why: Competitive play
+  level: model
+  traps:
+  - Native vs OC/VRR-on differ
+  sources:
+  - RTINGS; TFTCentral
+  example: 4
+  conditions:
+  - refresh_hz
+- key: hdr.vesa_tier
+  label: VESA DisplayHDR tier (certified)
+  group: hdr
+  type: enum
+  unit: null
+  tier: core
+  facet: true
+  why: HDR claim vs cert
+  level: model
+  traps:
+  - '''HDR10'', ''HDR400'', ''HDR Ready'' are not certification; only ''DisplayHDR N'' badge + displayhdr.org list counts'
+  - DisplayHDR 400 needs no local dimming and only 250 nits
+  - Cert is per model; revision/panel change may not be recertified
+  sources:
+  - displayhdr.org Certified Products list (by company+model)
+  example: DisplayHDR 600
+  enum:
+  - none
+  - DisplayHDR 400
+  - DisplayHDR 500
+  - DisplayHDR 600
+  - DisplayHDR 1000
+  - DisplayHDR 1400
+  - DisplayHDR True Black 400
+  - DisplayHDR True Black 500
+  - DisplayHDR True Black 600
+  - DisplayHDR True Black 1000
+  - DisplayHDR True Black 1400
+  required: true
+  identity_role: none
+- key: hdr.formats
+  label: HDR formats supported
+  group: hdr
+  type: list
+  unit: null
+  tier: important
+  facet: false
+  why: HDR10 / HLG / Dolby Vision
+  level: model
+  traps:
+  - '''HDR10'' means input accepted, nothing about quality'
+  sources:
+  - Manufacturer spec page
+  example:
+  - HDR10
+  items: enum
+- key: hdr.marketed_label
+  label: HDR marketing label
+  group: hdr
+  type: text
+  unit: null
+  tier: important
+  facet: false
+  why: Catches uncertified claims
+  level: model
+  traps:
+  - '''HDR 400'' with no ''DisplayHDR'' = uncertified'
+  sources:
+  - Manufacturer spec page
+  example: HDR10
+- key: hdr.peak_marketed
+  label: Peak brightness (marketed HDR)
+  group: hdr
+  type: number
+  unit: nit
+  tier: important
+  facet: true
+  why: Headline
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 1000
+- key: hdr.peak_measured_2pct
+  label: Measured peak, 2% window
+  group: hdr
+  type: number
+  unit: nit
+  tier: important
+  facet: false
+  why: Real HDR highlight
+  level: model
+  sources:
+  - RTINGS; TFTCentral
+  example: 1000
+  conditions:
+  - hdr_window_pct
+- key: hdr.peak_measured_10pct
+  label: Measured peak, 10% window
+  group: hdr
+  type: number
+  unit: nit
+  tier: important
+  facet: false
+  why: Real HDR
+  level: model
+  sources:
+  - RTINGS
+  example: 800
+  conditions:
+  - hdr_window_pct
+- key: hdr.sustained_full
+  label: Measured full-screen/sustained HDR
+  group: hdr
+  type: number
+  unit: nit
+  tier: important
+  facet: false
+  why: 'ABL: OLED dims at large windows'
+  level: model
+  sources:
+  - RTINGS; TFTCentral
+  example: 250
+  conditions:
+  - hdr_window_pct
+- key: hdr.sdr_typ
+  label: SDR brightness typical
+  group: hdr
+  type: number
+  unit: nit
+  tier: core
+  facet:
+    kind: range
+    bins:
+    - 250
+    - 300
+    - 400
+    - 500
+    - 600
+  why: Daily brightness
+  level: model
+  traps:
+  - '''Typical'' vs ''minimum'' distinction (Dell lists typ); OLED APL-dependent'
+  sources:
+  - Manufacturer spec page
+  example: 450
+  required: true
+- key: hdr.sdr_min
+  label: SDR brightness minimum
+  group: hdr
+  type: number
+  unit: nit
+  tier: detail
+  facet: false
+  why: Guaranteed
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 360
+- key: hdr.dimming_type
+  label: Local dimming type
+  group: hdr
+  type: enum
+  unit: null
+  tier: core
+  facet: true
+  why: Contrast engine
+  level: model
+  traps:
+  - '''Local Dimming'' on 400-class = a handful of edge zones or just global'
+  sources:
+  - Manufacturer spec page
+  example: mini-LED FALD
+  enum:
+  - none
+  - edge-lit
+  - edge-lit zones
+  - FALD
+  - mini-LED FALD
+  - self-emissive
+- key: hdr.dimming_zones
+  label: Local dimming zones
+  group: hdr
+  type: integer
+  unit: null
+  tier: core
+  facet:
+    kind: range
+    bins:
+    - 1
+    - 8
+    - 100
+    - 500
+    - 1000
+    - 2000
+  why: Blooming control
+  level: model
+  traps:
+  - Absent on spec pages; marketing says 'thousands of LEDs' vs zones; zone counts can differ by size within a family
+  sources:
+  - Mfr; RTINGS; TFTCentral; displayhdr list
+  example: 1152
+- key: hdr.contrast_static
+  label: Static contrast
+  group: hdr
+  type: text
+  unit: null
+  tier: important
+  facet: false
+  why: Native
+  level: model
+  traps:
+  - '''Dynamic/ DCR'' 100M:1 is meaningless; OLED infinite'
+  sources:
+  - Manufacturer spec page
+  example: '2000:1'
+- key: hdr.black_level
+  label: Measured black level
+  group: hdr
+  type: number
+  unit: nit
+  tier: detail
+  facet: false
+  why: Verify claim
+  level: model
+  sources:
+  - RTINGS
+  example: 0.05
+- key: hdr.burnin_warranty
+  label: OLED burn-in warranty
+  group: hdr
+  type: text
+  unit: null
+  tier: important
+  facet: false
+  why: OLED risk
+  level: model
+  traps:
+  - Warranty may exclude static content / region differs
+  sources:
+  - Warranty page
+  example: 3 yr incl. burn-in
+- key: hdr.oled_care
+  label: OLED protection features
+  group: hdr
+  type: list
+  unit: null
+  tier: detail
+  facet: false
+  why: Burn-in mitigation
+  level: model
+  sources:
+  - Manufacturer spec page
+  example:
+  - pixel shift
+  - pixel refresh
+  items: text
+- key: color.srgb
+  label: sRGB coverage
+  group: color
+  type: number
+  unit: '%'
+  tier: important
+  facet: true
+  why: Gamut
+  level: model
+  traps:
+  - Coverage vs volume vs 'typical'
+  sources:
+  - Manufacturer spec page
+  example: 100
+- key: color.dci_p3
+  label: DCI-P3 coverage
+  group: color
+  type: number
+  unit: '%'
+  tier: core
+  facet:
+    kind: range
+    bins:
+    - 80
+    - 90
+    - 95
+    - 98
+  why: Wide gamut
+  level: model
+  traps:
+  - By area (CIE1976 u'v') vs volume vs 1931 xy; 'NTSC 72%' ≠ sRGB; 'typical' 98.5% may be a different measure than RTINGS
+    3D measurement
+  sources:
+  - Manufacturer spec page
+  example: 98.5
+  required: true
+- key: color.adobe_rgb
+  label: Adobe RGB coverage
+  group: color
+  type: number
+  unit: '%'
+  tier: important
+  facet: false
+  why: Print/photo
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 99
+- key: color.rec2020
+  label: Rec.2020 coverage
+  group: color
+  type: number
+  unit: '%'
+  tier: detail
+  facet: false
+  why: Gamut
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 76
+- key: color.gamut_basis
+  label: Gamut measure basis
+  group: color
+  type: enum
+  unit: null
+  tier: important
+  facet: false
+  why: Interpret % values
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: CIE1976
+  enum:
+  - CIE1976
+  - CIE1931
+  - volume
+  - typical
+  - minimum
+  - unspecified
+- key: color.factory_cal
+  label: Factory calibration (delta E)
+  group: color
+  type: text
+  unit: null
+  tier: important
+  facet: false
+  why: Pro color
+  level: model
+  traps:
+  - dE<2 average, not max; report may be per unit only on some SKUs
+  sources:
+  - Manufacturer spec page
+  example: dE<2
+- key: color.hw_lut
+  label: Hardware calibration / 3D LUT
+  group: color
+  type: bool
+  unit: null
+  tier: detail
+  facet: false
+  why: Pro workflows
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: true
+- key: color.srgb_mode
+  label: sRGB clamp mode
+  group: color
+  type: bool
+  unit: null
+  tier: important
+  facet: false
+  why: OLED/WG users
+  level: model
+  traps:
+  - Locks brightness/ missing on some
+  sources:
+  - Manufacturer spec page
+  example: true
+- key: flk.pwm
+  label: PWM dimming
+  group: flicker
+  type: enum
+  unit: null
+  tier: core
+  facet: true
+  why: Eye strain
+  level: model
+  traps:
+  - '''Flicker-free'' certs (TUV) may be at default brightness only; measured by RTINGS'
+  sources:
+  - RTINGS; Notebookcheck; TFTCentral
+  example: none
+  enum:
+  - none
+  - low-freq
+  - high-freq
+  - unknown
+- key: flk.pwm_freq
+  label: PWM frequency
+  group: flicker
+  type: number
+  unit: Hz
+  tier: detail
+  facet: false
+  why: Sensitive users
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 240
+  conditions:
+  - brightness_pct
+- key: flk.cert
+  label: Eye-comfort certification
+  group: flicker
+  type: list
+  unit: null
+  tier: detail
+  facet: false
+  why: TUV Flicker Free etc
+  level: model
+  sources:
+  - Manufacturer spec page
+  example:
+  - TUV Low Blue Light
+  items: text
+- key: vin.ports
+  label: Video inputs (per port)
+  group: video_in
+  type: list
+  unit: null
+  tier: core
+  facet: false
+  why: Which port gives full refresh
+  level: model
+  traps:
+  - HDMI 2.1 label does not imply 48 Gbps FRL (many are 24/32 Gbps or HDMI 2.0 FRL-lite)
+  - DP 1.4 w/o DSC cannot do 4K240; 'DP 2.1' may be UHBR10 only
+  - Only one of several ports may do max Hz
+  sources:
+  - Manufacturer spec page / datasheet PDF
+  - user manual 'supported resolutions' table
+  example:
+  - name: HDMI1
+    type: HDMI
+    version: '2.1'
+    max_res_hz: 2560x1440@240
+  items:
+    id_field: name
+    fields:
+    - key: name
+      type: text
+    - key: type
+      type: enum
+      enum:
+      - HDMI
+      - DisplayPort
+      - mini DisplayPort
+      - USB-C
+      - Thunderbolt
+      - DVI
+      - VGA
+    - key: version
+      type: text
+    - key: bandwidth
+      type: text
+    - key: max_res_hz
+      type: text
+    - key: vrr
+      type: bool
+    - key: hdr
+      type: bool
+    - key: dsc
+      type: bool
+- key: vin.hdmi_count
+  label: HDMI ports
+  group: video_in
+  type: integer
+  unit: null
+  tier: important
+  facet: true
+  why: Console/PC count
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 2
+- key: vin.dp_count
+  label: DisplayPort ports
+  group: video_in
+  type: integer
+  unit: null
+  tier: important
+  facet: true
+  why: Count
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 1
+- key: vin.dp_version
+  label: DisplayPort version
+  group: video_in
+  type: text
+  unit: null
+  tier: core
+  facet: true
+  why: Bandwidth
+  level: model
+  traps:
+  - DP 2.1 UHBR10/13.5/20 differ 2x
+  sources:
+  - Manufacturer spec page
+  example: '1.4'
+- key: vin.hdmi_version
+  label: HDMI version
+  group: video_in
+  type: text
+  unit: null
+  tier: core
+  facet: true
+  why: Bandwidth
+  level: model
+  traps:
+  - Per port; HDMI 2.1 without FRL 48G
+  sources:
+  - Manufacturer spec page
+  example: '2.1'
+- key: vin.hdmi_bw
+  label: HDMI bandwidth
+  group: video_in
+  type: number
+  unit: Gbps
+  tier: important
+  facet: false
+  why: Real HDMI 2.1
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 48
+- key: vin.dsc
+  label: DSC support
+  group: video_in
+  type: bool
+  unit: null
+  tier: important
+  facet: true
+  why: High-res high Hz
+  level: model
+  traps:
+  - DSC sometimes disables features (Picture-by-Picture, some GPU/driver combos)
+  sources:
+  - Manufacturer spec page
+  example: true
+- key: vin.sync_out
+  label: Video out / daisy chain
+  group: video_in
+  type: bool
+  unit: null
+  tier: detail
+  facet: false
+  why: Multi-monitor
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: true
+- key: vin.input_lag_note
+  label: Max Hz per input with HDR
+  group: video_in
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Port caveats
+  level: model
+  traps:
+  - Manual-only
+  sources:
+  - User manual
+  example: HDMI1 240Hz, DP 240Hz
+- key: usb.usbc_inputs
+  label: USB-C video input count
+  group: usbc
+  type: integer
+  unit: null
+  tier: core
+  facet: true
+  why: Single-cable laptops
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 1
+- key: usb.usbc_pd_w
+  label: USB-C upstream PD power
+  group: usbc
+  type: number
+  unit: W
+  tier: core
+  facet:
+    kind: range
+    bins:
+    - 0
+    - 15
+    - 65
+    - 90
+    - 100
+    - 140
+  why: Charge laptop over cable
+  level: model
+  traps:
+  - 'Dell U3224KB: Thunderbolt 4 140 W EPR (select models); a ''90W'' port may share power with downstream'
+  - Many gaming monitors 65W or 15W only
+  - Real PD maybe lower with hub load
+  sources:
+  - Manufacturer spec page
+  example: 140
+  required: true
+- key: usb.usbc_alt_dp
+  label: USB-C DP Alt Mode version
+  group: usbc
+  type: text
+  unit: null
+  tier: important
+  facet: false
+  why: Bandwidth over C
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: DP 1.4
+- key: usb.thunderbolt
+  label: Thunderbolt version
+  group: usbc
+  type: enum
+  unit: null
+  tier: important
+  facet: true
+  why: Daisy-chain, dock
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: TB4
+  enum:
+  - none
+  - TB3
+  - TB4
+  - TB5
+  - USB4
+- key: usb.upstream
+  label: USB upstream (hub) version
+  group: usbc
+  type: text
+  unit: null
+  tier: important
+  facet: false
+  why: Hub speed
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: USB 3.2 Gen2
+- key: usb.downstream
+  label: USB downstream ports (type/speed/charging W)
+  group: usbc
+  type: list
+  unit: null
+  tier: important
+  facet: false
+  why: Hub and peripheral charging
+  level: model
+  traps:
+  - Downstream C ports often 15 W only
+  sources:
+  - Manufacturer spec page
+  example:
+  - type: C
+    speed: 10Gbps
+    charge_w: 15
+  items:
+    fields:
+    - key: type
+      type: enum
+      enum:
+      - A
+      - C
+    - key: speed
+      type: text
+    - key: charge_w
+      type: number
+      unit: W
+- key: usb.kvm
+  label: Built-in KVM
+  group: usbc
+  type: bool
+  unit: null
+  tier: core
+  facet: true
+  why: Two-computer desk
+  level: model
+  traps:
+  - Auto-KVM only with specific upstream; PBP+KVM may be mutually exclusive
+  sources:
+  - Manufacturer spec page
+  example: true
+- key: usb.ethernet
+  label: Ethernet port
+  group: usbc
+  type: enum
+  unit: null
+  tier: important
+  facet: true
+  why: Dock replacement
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 2.5GbE
+  enum:
+  - none
+  - 1GbE
+  - 2.5GbE
+  - 5GbE
+- key: usb.pbp_pip
+  label: PBP / PIP
+  group: usbc
+  type: bool
+  unit: null
+  tier: important
+  facet: false
+  why: Two sources
+  level: model
+  traps:
+  - PBP may cap refresh / disable VRR
+  sources:
+  - Manufacturer spec page
+  example: true
+- key: usb.audio
+  label: Audio (speakers, headphone out)
+  group: usbc
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Convenience
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 2x14W speakers
+- key: usb.webcam
+  label: Built-in webcam
+  group: usbc
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Conferencing
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 4K HDR
+- key: ergo.adjust
+  label: Stand adjustments
+  group: ergo
+  type: list
+  unit: null
+  tier: important
+  facet:
+    kind: multi
+  why: Ergonomics
+  level: model
+  traps:
+  - Tilt-only stands on cheap gaming; 'height' range varies
+  sources:
+  - Manufacturer spec page
+  example:
+  - tilt
+  - swivel
+  - height
+  - pivot
+  items: enum
+  enum_open: true
+- key: ergo.height_range
+  label: Height adjustment range
+  group: ergo
+  type: number
+  unit: mm
+  tier: detail
+  facet: false
+  why: Fit
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 160
+- key: ergo.tilt_range
+  label: Tilt range
+  group: ergo
+  type: range
+  unit: deg
+  tier: detail
+  facet: false
+  why: Fit
+  level: model
+  sources:
+  - Manufacturer spec page
+  example:
+  - -5
+  - 21
+- key: ergo.vesa
+  label: VESA mount
+  group: ergo
+  type: enum
+  unit: null
+  tier: important
+  facet: true
+  why: Arm compat
+  level: model
+  traps:
+  - Dell hides VESA behind cover; curved/ultrawide may need adapter; some stands proprietary
+  sources:
+  - Manufacturer spec page
+  example: 100x100
+  enum:
+  - none
+  - 75x75
+  - 100x100
+  - 200x100
+  - 200x200
+  - 400x400
+  - other
+  enum_open: true
+- key: ergo.dims_with_stand
+  label: Dimensions with stand
+  group: ergo
+  type: object
+  unit: mm
+  tier: detail
+  facet: false
+  why: Desk fit
+  level: model
+  sources:
+  - Manufacturer spec page
+  example:
+    w: 613
+    h: 531
+    d: 237
+  fields:
+  - key: w
+    type: number
+  - key: h
+    type: number
+  - key: d
+    type: number
+- key: ergo.weight
+  label: Weight with stand
+  group: ergo
+  type: number
+  unit: kg
+  tier: detail
+  facet: false
+  why: Arm
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 9.5
+- key: ergo.weight_panel
+  label: Weight panel only
+  group: ergo
+  type: number
+  unit: kg
+  tier: detail
+  facet: false
+  why: VESA arm rating
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 8.6
+- key: pwr.typical
+  label: Typical power
+  group: power
+  type: number
+  unit: W
+  tier: important
+  facet: false
+  why: Operating cost
+  level: model
+  traps:
+  - Test condition (brightness 200 nit) varies
+  sources:
+  - Energy Star / mfr
+  example: 40
+- key: pwr.max
+  label: Maximum power
+  group: power
+  type: number
+  unit: W
+  tier: detail
+  facet: false
+  why: PSU/brownout
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 120
+- key: pwr.standby
+  label: Standby / off power
+  group: power
+  type: number
+  unit: W
+  tier: detail
+  facet: false
+  why: Idle drain
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 0.3
+- key: pwr.energy_star
+  label: ENERGY STAR certified
+  group: power
+  type: bool
+  unit: null
+  tier: detail
+  facet: false
+  why: Efficiency
+  level: model
+  sources:
+  - energystar.gov product finder (by model)
+  example: true
+- key: pwr.external_adapter
+  label: External power brick
+  group: power
+  type: bool
+  unit: null
+  tier: detail
+  facet: false
+  why: Desk
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: false
+- key: sup.warranty_years
+  label: Warranty length
+  group: support
+  type: number
+  unit: year
+  tier: important
+  facet: true
+  why: Lifetime cost
+  level: model
+  sources:
+  - Manufacturer spec page
+  example: 3
+- key: sup.dead_pixel
+  label: Dead/bright-pixel policy
+  group: support
+  type: text
+  unit: null
+  tier: core
+  facet: false
+  why: Zero-bright-pixel vs ISO 9241-307 class
+  level: model
+  traps:
+  - Most brands follow ISO class 2 (a few defects OK); Dell Premium Panel Exchange = 1 bright pixel; OLED burn-in often excluded
+  sources:
+  - Warranty PDF; Dell Premium Panel Exchange page
+  example: Premium Panel Exchange
+- key: sup.firmware_current
+  label: Latest firmware version
+  group: support
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Features fixed/added (e.g. DSC, VRR)
+  level: revision
+  traps:
+  - Firmware versions differ between HW revisions; some updates are one-way
+  sources:
+  - Support download page
+  example: M2T104
+- key: sup.fcc_id
+  label: FCC ID / regulatory model
+  group: support
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Revision lookup
+  level: revision
+  sources:
+  - Rear label; fccid.io
+  example: BCG-...
