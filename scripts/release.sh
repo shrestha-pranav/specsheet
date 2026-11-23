@@ -49,7 +49,7 @@ git worktree remove --force "$wt"; git branch -D "$tmpbranch" >/dev/null; trap -
 if [ "$dry" = 1 ]; then
   echo "DRY RUN: local gh-pages = $new (orphan, single commit). Nothing pushed or committed on main. To publish:"
   echo "  git push --force origin gh-pages"
-  echo "  git add -A  # docs/api is gitignored && git commit -m \"$msg\" && git push origin main"
+  echo "  git add -A && git commit -m \"$msg\" && git push origin main"
   exit 0
 fi
 git push -q --force origin gh-pages

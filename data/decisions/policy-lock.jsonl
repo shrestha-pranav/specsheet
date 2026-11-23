@@ -23,3 +23,8 @@
 {"at": "2026-11-23T13:27:52Z", "id": "claim/mfr-power-banks-structured@1", "sha256": "sha256:70276646c76072573dd5bd53068db890479621b4f6da144c635dc907a4c1b184"}
 {"at": "2026-11-23T13:31:06Z", "id": "claim/mfr-robovac-structured@1", "sha256": "sha256:4ec767d1c91a3dce7bfea01cf9480a6f73f010419fc2c3cc065fa76271504dc8"}
 {"at": "2026-11-23T13:32:42Z", "id": "claim/mfr-power-banks-structured@2", "sha256": "sha256:ce694d4842726808806272b10332c862cd2030387f9e19455a75f0d71b3db1d6"}
+{"at": "2026-11-23T14:29:17Z", "id": "claim/mfr-power-banks-structured@3", "sha256": "sha256:61062c0080055afb3ce3a2d3316f937548f8680e1b5a174f4e9f32e7688ebd40"}
+{"at": "2026-11-23T14:29:17Z", "id": "claim/mfr-robovac-structured@2", "sha256": "sha256:f2188bc44cb3ab7b7c489936871fd3d5999bd495470b8d3058c258d92dc478fa"}
+{"at": "2026-11-23T14:29:17Z", "id": "claim/dcl-matter-certified@1", "sha256": "sha256:320b73b312f55755f256aac08e6730fd0783d262cacda894af25962286dec0fd"}
+{"at": "2026-11-23T14:30:51Z", "id": "claim/mfr-robovac-structured@3", "sha256": "sha256:af3e550574ef414526e6e9ad3dda39b872a53bf1ef0c2c2335eb113fbae09dd0"}
+{"at": "2026-11-23T14:36:34Z", "id": "claim/mfr-robovac-structured@4", "sha256": "sha256:1e1aa38539074dc0b079f2cf7c6df8969bc833c0393e669d40eb78e2110c28cb"}

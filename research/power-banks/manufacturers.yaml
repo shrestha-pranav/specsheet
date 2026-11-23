@@ -27,15 +27,15 @@ manufacturers:
     gives: [SKU item number, capacity 'mAh/3.6V/Wh' on the table template, per-port output, input, display, protocols, weight, dimensions]
     lacks: [the Amazon-attribute template gives only capacity + colour; label model number (PB205) not printed]
   baseus:
-    status: viable             # Shopify products.json 200 (241 products, 64 power banks). Specs are images; rated capacity only in FAQ prose; model number (PPAD...) not on the store, store SKU E00327xx = colour SKU. Low structure.
+    status: unstructured       # 2026-11-23 r2: products.json 200 (58 power-bank pages). Electrical specs are images; body_html 'Specs' = Amazon-attribute template ('Voltage: volts'); old lines print SKU PPAD050101 (colour-suffixed), new lines (EnerFill/PicoGo/EnerGeek) only a colour SKU E0028H03 with the model (FC41) in the title. Only 3/58 pages had a capacity row. Adapter not built.
   ecoflow:
-    status: viable             # Shopify us.ecoflow.com/products.json 200 (18 RAPID power banks). Variant SKU EF-R35W10K3IN1-B-USAMZ; specs in prose + FAQ (nominal vs rated explained), Wh on all 18 pages. Good 6th adapter.
+    status: adapter            # shopify_powerbanks2.py EcoflowPowerbanks, raw/ecoflow-us-powerbanks (15 pages, all 200). pdp-specs blocks. 4 pages carry a SIBLING's spec block ('Specs - <other name>') -> absence; unnamed blocks accepted only when every mAh/W figure in the title matches. 8/15 with specs. Model = EF- SKU stem (EF-RAPID25K140W); no model number printed.
   sharge:
-    status: viable             # Shopify sharge.com/products.json 200 (32 power banks). body_html marketing only; spec block not inspected.
+    status: adapter            # shopify_powerbanks2.py ShargePowerbanks, raw/sharge-us-powerbanks (24 pages, all 200). Accordion spec rows incl. 'Product Model' (P3, E3, X3, M8...). 12 pages print no model row or two models ('M6/M7', 'P7 / P7U', 5K/10K page) -> not minted. Typos in labels ('Prodcut Model', 'Toatl Output').
   mophie:
-    status: viable             # Shopify www.mophie.com/products.json 200 (149 'powerstation' handles incl. many LMTD colourways); SKU = numeric part number 401123961. Spec table not inspected.
+    status: adapter            # shopify_powerbanks2.py MophiePowerbanks, raw/mophie-us-powerbanks (23 core pages; LMTD/MLB/Red Bull/Gallery/Signature skins not discovered). pdp-spec rows: Battery mAh, Weight (lbs), Dimensions (in), Output (one W figure -> out.max_output_w). No model printed: model = the page's single 9-digit part number (JSON-LD sku 401109564).
   kuxiu:
-    status: viable             # Shopify kuxiu.com/products.json 200 (16, semi-solid-state S-series). body_html has chemistry text.
+    status: adapter            # shopify_powerbanks2.py KuxiuPowerbanks, raw/kuxiu-us-powerbanks (14 pages = 8 models, colour pages share the model row). h6/p rows: Model, Battery Type, Battery Capacity, Rated Capacity, USB-C in/out PDOs, Wireless Output. S-series 2S packs ('5000mAh 7.7VDC (38.5Wh)') -> Wh only. K1 page lists two models ('K1 ; K1 Pro') -> not minted.
   satechi:
     status: viable             # Shopify, 2 power banks only.
   zendure:

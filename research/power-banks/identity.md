@@ -11,6 +11,10 @@ Levels follow spec-profile.yaml: family > model > configuration (colour SKU) > p
 | INIU | iniu-us-powerbanks | 'Product Model' in Tech Specs: P63-E1, P50-E1, B41 (fallback: model token in the handle) | Shopify variant SKU | title |
 | CUKTECH | cuktech-us-powerbanks | 'Model:' in SPEC: PB200N, P23, PB100P | - | "CUKTECH 15 Power Bank" (number = line, not model) |
 | UGREEN | ugreen-us-powerbanks | 'SKU' in Specs = UGREEN's 5-digit item number (25188, 90597A) | Shopify variant SKU (colour) | title; label model (PB205-style) is not on the store |
+| EcoFlow | ecoflow-us-powerbanks | no model printed: the stem shared by the page's EF- variant SKUs, colour + region suffix stripped: EF-RAPID25K140W (EF-RAPID25K140W-S-US/-G-US/-B-US); >1 stem = absence | variant SKU | title "EcoFlow RAPID Power Bank (25,000mAh, 170W)" |
+| SHARGE | sharge-us-powerbanks | 'Product Model' row: P3, E3, X3, M8 ('M6/M7', 'P7 / P7U' = two models -> not minted; 5K/10K pages not minted) | variant SKU YDD-SG-SX3-HEI | title |
+| KUXIU | kuxiu-us-powerbanks | 'Model' row: S4, B08, K1 Ultra (colour pages print the same model -> one entity, two refs; 'K1 ; K1 Pro' page not minted) | variant SKU S4-10000mAh-Black | title |
+| mophie | mophie-us-powerbanks | no model printed: the page's single 9-digit part number (JSON-LD sku 401109564); licensed/limited skins not discovered | - | title "Powerstation Pro 20K Fabric Power Bank" |
 
 ## Rules
 1. **Colour = same model.** Every colour/edition SKU of one model number is an alias (configuration level) of that model, never its own model.

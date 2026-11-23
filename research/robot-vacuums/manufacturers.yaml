@@ -29,15 +29,28 @@ manufacturers:
     gives: [Freo Z10 Turbo only: suction, battery, mop lift, LDS navigation, robot/dock dimensions and weight]
     lacks: [7 of 8 pages (Flow, Flow 2, Freo 20, Freo 20 Edge, Freo S, Freo X10 Pro, Freo X Plus) have marketing sections only, no spec rows]
   mova:
-    status: unstructured       # https://us.mova-tech.com/products.json 200 (167 products, ~18 robot models, Dreame material codes 010204AA...). Page spec/compare
-                               # table is filled client-side (Vue template '[[ prod.title ]]'); body_html is prose with Pa figures. Not built.
+    status: adapter            # crawler/adapters/mova_robovac.py  raw/mova-us-robovac  (17 models, 15 with specs; r2 2026-11-23)
+    how: "us.mova.tech/products.json (Shopify) -> 'Robot Vacuum' with SKU, refurbished/Live Only dropped. Specs: the product page's server-rendered
+      JSON island <script id=ProductData-...comparison...> (entry whose url = own handle only; competitors have url null) + /pages/compare-robot-vacuum
+      hidden <input class=...one-structre-item> items (48 row labels from the group structures, one 'v1 ## v2 ...' column per handle; read only when
+      the count matches)."
+    lacks: [V70 Ultra Complete, Z70 Ultra Roller Complete (not on the compare page, no island entry), runtime, noise, dimensions/weight]
   ecovacs:
-    status: unstructured       # www.ecovacs.com/us robots 200; /us/sitemap.xml 'Cannot GET' (404); category page links 1 product (JS-rendered list);
-                               # DEEBOT X12s product page 200 (100 KB) is marketing only, no spec rows in HTML. Spec data likely an XHR API: not probed.
+    status: adapter            # crawler/adapters/ecovacs_robovac.py (v2)  raw/ecovacs-us-robovac  (48 models from 59 main_goods; 8 empty spec_list)
+    how: "www.ecovacs.com/us/shop/deebot-robotic-vacuum-cleaner?page=N (robots explicitly allows '*/deebot-robotic-vacuum-cleaner?page=*'; every other
+      '?page=' is disallowed; the stdlib robotparser ignores '*' rules, so this was checked by hand). Next.js __NEXT_DATA__ productData.list (12/page).
+      Product page __NEXT_DATA__ pageData.spec_list = grouped labelled rows (units in the label) - the shop API response, server-rendered."
+    gives: [suction Pa, battery mAh, dustbin L, nav type (dToF/LDS; 'TrueMapping' stays unknown), obstacle sensors, mop type, robot/station tanks,
+      mop lift mm, obstacle crossing mm, dock flags (auto-empty, mop wash, warm water + temp, hot-air dry, detergent, plumbed), robot + station
+      dimensions/weight, noise and runtime per mode (preview only)]
+    note: "The list 'model' field is unreliable (OZT3MXP, 'N8 PRO;D-AS01'): model = head of the product name. 'Care' plan pages fold into the robot."
   irobot:
-    status: viable_unverified  # robots 200 (only search/cart/account disallowed); sitemap_0-product.xml lists 42 en_US products, 2 robots; category pages
-                               # render products client-side. Product page /en_US/<slug>/C975020.html 200 with a thin Specifications list (box/robot
-                               # dimensions, weight, battery type) and a REAL model code in the URL (C975020 = Roomba Combo j9+). Discovery is the gap.
+    status: adapter            # crawler/adapters/irobot_robovac.py (v2)  raw/irobot-us-robovac  (30 model codes, all with specs)
+    how: "Discovery = the grid XHR the category page calls: /on/demandware.store/Sites-iRobotUS-Site/en_US/Search-UpdateGrid?cgid=us-products-plp
+      &start=N&sz=24 (robots only disallows '*/search?'). Detail = Product-Variation?pid=<CODE>&quantity=1 JSON (productName, upc, master id,
+      colour variation, pdpSpecs HTML). Colour codes sharing a URL slug (X285020/X285220) = one model."
+    gives: [robot weight/dimensions, dock dimensions/weight, battery mAh (10 of 30), bin/tank mL (one)]
+    lacks: [suction (only '4X more suction'), navigation, runtime, noise]
   eufy:
     status: unstructured       # https://us.eufy.com/products.json 200 (210 products, ~5 RoboVac with T-code SKUs T210M111 = real model numbers);
                                # product page 200 has no spec table in HTML (reviews + prose). www.eufy.com/products.json 404.
@@ -53,7 +66,10 @@ evidence_sources:
   energy_star: "No ENERGY STAR product category for vacuums (analyst judgment; the ENERGY STAR product finder was not re-checked this round)."
   fcc: "Same constraints as routers (research/routers/manufacturers.yaml): fcc.gov EAS 403 (Akamai), fcc.report Cloudflare; fccid.io device pages fetchable
     but no terms located, so a few lookups only. Not used this round. FCC ID is alias_only (identity.md)."
-  matter_dcl: "CSA Distributed Compliance Ledger REST (on.dcl.csa-iot.org /dcl/model/models) is the certification-grade source for smart.matter (vendor id +
-    product id + productName). Not probed this round; it would add claim_basis third_party_certified rows."
+  matter_dcl: "ADAPTER (csa_dcl_robovac.py, r2): on.dcl.csa-iot.org REST, deviceTypeId 116 = Robotic Vacuum Cleaner: 276 rows (Dreame 175, Dyson 42,
+    eufy 12, Bosch 11, Ecovacs 10 all named 'Floor Cleaning Robot', SwitchBot 7, Tapo 6, DJI 6, iRobot 3, Narwal 2, Roborock 1 generic). compliance-info
+    status 2 + cDCertificateId = certified. Only rows whose productName equals a US-store model name of the same brand are used (31 rows, 26 certified):
+    ledger names include regional/kit variants and generic names, so they never mint models. iRobot rows (Roomba Combo 10 Max) are not matched because
+    iRobot models are keyed by code."
   independent_tests: "RTINGS / Vacuum Wars sealed-inlet suction and dB-at-1m are the 'measured' basis the profile reserves (claim kind measured,
     claim_basis independent_measured). Terms/robots not checked; not collected."

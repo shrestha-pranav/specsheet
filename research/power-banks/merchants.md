@@ -10,3 +10,12 @@ Retail listings are aliases only (team rule). Nothing below was scraped.
 | CPSC recalls API | viable, not built | saferproducts.gov REST JSON works without a key; model numbers are in free text. Planned key `safety.recall`. |
 | FCC ID | not probed | only wireless (Qi/Qi2) packs have grants; fcc.gov EAS was 403 (Akamai) in the routers round. |
 | WPC Qi certified database | not probed | would verify out.wireless_standard qi2 / qi2_2 claims. |
+
+## Round 2 (A2, 2026-11-23): maker stores added
+| source | status | notes |
+|---|---|---|
+| us.ecoflow.com | adapter (ecoflow-us-powerbanks) | Shopify; spec sections are copied between sibling pages (4/15 name another product) - only name-matched or title-consistent blocks are read. |
+| sharge.com | adapter (sharge-us-powerbanks) | Shopify; accordion spec rows with 'Product Model'. |
+| kuxiu.com | adapter (kuxiu-us-powerbanks) | Shopify; metafield spec grid with 'Model'. |
+| www.mophie.com | adapter (mophie-us-powerbanks) | Shopify; thin Technical Specifications table; ~210 licensed/limited skin pages excluded at discovery. |
+| www.baseus.com | unstructured (no adapter) | specs as images + Amazon-attribute template; colour SKUs only on new lines. |

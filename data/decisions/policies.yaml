@@ -348,33 +348,168 @@ claim_policies:
       cuktech-us-powerbanks: *pbkeys2
       ugreen-us-powerbanks: *pbkeys2
     require_normalized: true
-- id: claim/mfr-robovac-structured@1
+- id: claim/mfr-power-banks-structured@3
   since: '2026-11-23'
-  rationale: 'Robot vacuums, the manufacturer''s own labelled spec rows on its US store: Dreame Specifications block (four label/value templates; a
-    two-model comparison column only when its header names this model, dreame_robovac@1), Roborock ''Specifications:'' rows (roborock_robovac@1),
-    Narwal Specifications rows (narwal_robovac@1). Per source: only the listed keys, only values that normalise to the profile type. Suction stays a
-    manufacturer claim with its basis condition (claim_basis mfr_in_house_lab / mfr_unstated / third_party_certified from the page disclaimer); it is
-    trusted as "what the maker states", never as comparable performance. nav.type / nav.obstacle_sensors / mop.type are keyword classes of the labelled
-    cell (unknown vocabulary -> no claim; trademarks such as Pathfinder stay unknown). Robot dimensions/weight outside physical bounds (robot+dock cells)
-    are not emitted. NOT accepted (preview candidates): Roborock Key-Features/title-derived suction, hot-water and dock flags; free text (main brush
-    type, voice control); marketing counts (nav.ai_object_types); single-instance runtime/noise until their mode/basis wording is audited.'
+  supersedes: claim/mfr-power-banks-structured@2
+  rationale: 'Power banks, manufacturer-owned spec tables. @3 = @2 unchanged (Anker, Belkin, INIU, CUKTECH, UGREEN: same extractors, fingerprints,
+    per-source keys) plus EcoFlow, SHARGE, KUXIU and mophie US Shopify store spec blocks (shopify_powerbanks2: ecoflow/sharge/kuxiu/mophie_powerbanks@1),
+    same capacity rules as @2 (cell mAh never from a series-pack row, Wh only as printed, two printed figures -> the lower). mophie ''Output'' (port
+    count + one W figure, per-port vs total unstated) is out.max_output_w like Belkin ''Wattage''. Identity note: EcoFlow pages print no model number
+    (model = the shared EF- SKU stem, colour/region stripped, as the Anker/Belkin SKU-stem precedent) and mophie''s is the JSON-LD 9-digit part number;
+    SHARGE/KUXIU use the printed model row. NOT accepted (preview): wireless W, display, prose/title-derived fields, as in @2.'
   audit:
-    by: A1+A2 robot vacuums
+    by: A2 robovac+powerbank sources r2
     at: '2026-11-23'
-    evidence: Parsed all 84 model bundles (41 Dreame, 35 Roborock, 8 Narwal); spot-checked suction, battery, tanks, obstacle crossing (single-step
-      figure), robot height and dock tanks against the stored literals; 0 invalid claims, all accepted keys normalise.
+    evidence: 76 new pages parsed (EcoFlow 15, SHARGE 24, KUXIU 14, mophie 23); pages naming two models or two capacities are not minted; spot-checked
+      capacities, port tables and weights against stored literals.
     parsers:
-      dreame_robovac@1: sha256:1edc479c58c8de26fd80
-      roborock_robovac@1: sha256:253896199530aa5695d3
-      narwal_robovac@1: sha256:6e0ef0e0b072bb790496
+      anker_powerbanks@1: sha256:1c94708f6143fd550bc2
+      belkin_powerbanks@1: sha256:da7880ba96b779b0fe97
+      iniu_powerbanks@1: sha256:646c55efdbdd21c94ba5
+      cuktech_powerbanks@1: sha256:646c55efdbdd21c94ba5
+      ugreen_powerbanks@1: sha256:646c55efdbdd21c94ba5
+      ecoflow_powerbanks@1: sha256:5bf36d402e7a7d30b5d5
+      sharge_powerbanks@1: sha256:5bf36d402e7a7d30b5d5
+      kuxiu_powerbanks@1: sha256:5bf36d402e7a7d30b5d5
+      mophie_powerbanks@1: sha256:5bf36d402e7a7d30b5d5
   approval:
     state: pending
     by: null
     at: null
     note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
   match:
-    extractors: [dreame_robovac@1, roborock_robovac@1, narwal_robovac@1]
-    source_ids: [dreame-us-robovac, roborock-us-robovac, narwal-us-robovac]
+    extractors: [anker_powerbanks@1, belkin_powerbanks@1, cuktech_powerbanks@1, iniu_powerbanks@1, ugreen_powerbanks@1, ecoflow_powerbanks@1,
+      sharge_powerbanks@1, kuxiu_powerbanks@1, mophie_powerbanks@1]
+    source_ids: [anker-us-powerbanks, belkin-us-powerbanks, cuktech-us-powerbanks, iniu-us-powerbanks, ugreen-us-powerbanks, ecoflow-us-powerbanks,
+      sharge-us-powerbanks, kuxiu-us-powerbanks, mophie-us-powerbanks]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys:
+      anker-us-powerbanks:
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.builtin_cable
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - pd.max_fixed_voltage
+      - pd.pps
+      - phys.dimensions
+      - phys.weight
+      belkin-us-powerbanks:
+      - cap.class_mah
+      - out.cable_note
+      - out.max_output_w
+      - out.usb_a_count
+      - out.usb_c_count
+      - phys.dimensions
+      iniu-us-powerbanks: &pbkeys3
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      cuktech-us-powerbanks: *pbkeys3
+      ugreen-us-powerbanks: *pbkeys3
+      ecoflow-us-powerbanks:
+      - cap.cell_mah
+      - cap.energy_wh
+      - in.max_w
+      - out.max_single_port_w
+      - out.max_total_w
+      - phys.dimensions
+      - phys.weight
+      sharge-us-powerbanks:
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      kuxiu-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - phys.dimensions
+      - phys.weight
+      mophie-us-powerbanks:
+      - cap.cell_mah
+      - out.max_output_w
+      - phys.dimensions
+      - phys.weight
+    require_normalized: true
+- id: claim/mfr-robovac-structured@2
+  since: '2026-11-23'
+  supersedes: claim/mfr-robovac-structured@1
+  rationale: 'Robot vacuums, the manufacturer''s own labelled spec rows. @2 = @1 unchanged (Dreame / Roborock / Narwal US stores, same extractors,
+    fingerprints and per-source keys) plus three sources: ECOVACS US shop __NEXT_DATA__ spec_list rows read per (group, label), units from the label
+    (ecovacs_robovac@1); iRobot Product-Variation JSON pdpSpecs ''Details'' rows, units from the label, axis markers map L/W/D/H (an unmarked robot
+    triple maps its smallest axis to height: with the 200-450 mm footprint and 50-150 mm height bounds that is unambiguous), irobot_robovac@1; MOVA
+    product-page comparison JSON island entry whose url is the product''s own handle, plus the store''s compare page column for that handle, read only
+    when its value count equals the 48 row labels (mova_robovac@1). Same rules as @1: only listed keys, only normalised values, suction stays a
+    manufacturer claim with claim_basis mfr_unstated (no basis printed by these three), robot dims/weight outside physical bounds not emitted.
+    NOT accepted (preview candidates): ECOVACS runtime / noise rows (mode-labelled but single-source, same reason as @1), voice control, ''TBC'' /
+    lower-bound cells (not normalised at all).'
+  audit:
+    by: A2 robovac+powerbank sources r2
+    at: '2026-11-23'
+    evidence: Parsed all fetched bundles (ECOVACS 48 models from 59 main_goods, 8 with an empty spec_list; iRobot 30 model codes from the
+      us-products-plp grid; MOVA 17 models, 15 with comparison data). Spot-checked suction, battery, tanks, dock flags, wash temperature, robot
+      dimensions axis mapping and weights against stored literals.
+    parsers:
+      dreame_robovac@1: sha256:1edc479c58c8de26fd80
+      roborock_robovac@1: sha256:253896199530aa5695d3
+      narwal_robovac@1: sha256:6e0ef0e0b072bb790496
+      ecovacs_robovac@1: sha256:bdd37a320c0eb765a018
+      irobot_robovac@1: sha256:a20b8cec0489032944ae
+      mova_robovac@1: sha256:ce4d85ef5900179118d7
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors: [dreame_robovac@1, roborock_robovac@1, narwal_robovac@1, ecovacs_robovac@1, irobot_robovac@1, mova_robovac@1]
+    source_ids: [dreame-us-robovac, roborock-us-robovac, narwal-us-robovac, ecovacs-us-robovac, irobot-us-robovac, mova-us-robovac]
     kinds: [official]
     tiers: [manufacturer]
     statuses: [known]
@@ -387,6 +522,268 @@ claim_policies:
       roborock-us-robovac: [bat.capacity_mah, phys.robot_height_mm, phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions]
       narwal-us-robovac: [clean.suction_pa, bat.capacity_mah, mop.lifting, mop.lift_height_mm, mop.extending, nav.type, phys.robot_height_mm,
         phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions, phys.dock_weight_g]
+      ecovacs-us-robovac:
+      - bat.capacity_mah
+      - clean.dustbin_ml
+      - clean.suction_pa
+      - dock.clean_tank_ml
+      - dock.dirty_tank_ml
+      - dock.dust_bag_ml
+      - dock.hot_air_dry
+      - dock.hot_water_wash
+      - dock.mop_wash
+      - dock.plumbed_refill_drain
+      - dock.self_empty
+      - dock.solution_dispense
+      - dock.wash_water_temp_c
+      - mop.auto_refill_from_dock
+      - mop.lift_height_mm
+      - mop.lifting
+      - mop.robot_tank_ml
+      - mop.type
+      - nav.obstacle_crossing_mm
+      - nav.obstacle_sensors
+      - nav.type
+      - phys.dock_dimensions
+      - phys.dock_weight_g
+      - phys.robot_dimensions
+      - phys.robot_height_mm
+      - phys.robot_weight_g
+      irobot-us-robovac:
+      - bat.capacity_mah
+      - clean.dustbin_ml
+      - mop.robot_tank_ml
+      - phys.dock_dimensions
+      - phys.dock_weight_g
+      - phys.robot_dimensions
+      - phys.robot_height_mm
+      - phys.robot_weight_g
+      mova-us-robovac:
+      - bat.capacity_mah
+      - clean.dirt_detection
+      - clean.dustbin_ml
+      - clean.main_brush_lifting
+      - clean.side_brush_extending
+      - clean.side_brush_lifting
+      - clean.suction_pa
+      - dock.clean_tank_ml
+      - dock.dirty_tank_ml
+      - dock.dust_bag_ml
+      - dock.hot_air_dry
+      - dock.hot_water_wash
+      - dock.mop_dry
+      - dock.plumbed_refill_drain
+      - dock.solution_dispense
+      - dock.wash_water_temp_c
+      - dock.washboard_self_clean
+      - mop.auto_removal
+      - mop.extending
+      - mop.lift_height_mm
+      - mop.lifting
+      - mop.robot_tank_ml
+      - mop.type
+      - nav.obstacle_crossing_mm
+      - nav.obstacle_sensors
+      - nav.type
+      - phys.robot_height_mm
+    require_normalized: true
+- id: claim/mfr-robovac-structured@3
+  since: '2026-11-23'
+  supersedes: claim/mfr-robovac-structured@2
+  rationale: 'Robot vacuums, the manufacturer''s own labelled spec rows. @3 = @2 with the ECOVACS and iRobot parsers fixed (fingerprints.unmapped was a list; import needs a label->example map; no claim changed) before any release. @2 = @1 unchanged (Dreame / Roborock / Narwal US stores, same extractors,
+    fingerprints and per-source keys) plus three sources: ECOVACS US shop __NEXT_DATA__ spec_list rows read per (group, label), units from the label
+    (ecovacs_robovac@1); iRobot Product-Variation JSON pdpSpecs ''Details'' rows, units from the label, axis markers map L/W/D/H (an unmarked robot
+    triple maps its smallest axis to height: with the 200-450 mm footprint and 50-150 mm height bounds that is unambiguous), irobot_robovac@1; MOVA
+    product-page comparison JSON island entry whose url is the product''s own handle, plus the store''s compare page column for that handle, read only
+    when its value count equals the 48 row labels (mova_robovac@1). Same rules as @1: only listed keys, only normalised values, suction stays a
+    manufacturer claim with claim_basis mfr_unstated (no basis printed by these three), robot dims/weight outside physical bounds not emitted.
+    NOT accepted (preview candidates): ECOVACS runtime / noise rows (mode-labelled but single-source, same reason as @1), voice control, ''TBC'' /
+    lower-bound cells (not normalised at all).'
+  audit:
+    by: A2 robovac+powerbank sources r2
+    at: '2026-11-23'
+    evidence: Parsed all fetched bundles (ECOVACS 48 models from 59 main_goods, 8 with an empty spec_list; iRobot 30 model codes from the
+      us-products-plp grid; MOVA 17 models, 15 with comparison data). Spot-checked suction, battery, tanks, dock flags, wash temperature, robot
+      dimensions axis mapping and weights against stored literals.
+    parsers:
+      dreame_robovac@1: sha256:1edc479c58c8de26fd80
+      roborock_robovac@1: sha256:253896199530aa5695d3
+      narwal_robovac@1: sha256:6e0ef0e0b072bb790496
+      ecovacs_robovac@1: sha256:452326a7ac0a85a723f1
+      irobot_robovac@1: sha256:97f7ed37fb01c5d31934
+      mova_robovac@1: sha256:ce4d85ef5900179118d7
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors: [dreame_robovac@1, roborock_robovac@1, narwal_robovac@1, ecovacs_robovac@1, irobot_robovac@1, mova_robovac@1]
+    source_ids: [dreame-us-robovac, roborock-us-robovac, narwal-us-robovac, ecovacs-us-robovac, irobot-us-robovac, mova-us-robovac]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys:
+      dreame-us-robovac: [clean.suction_pa, clean.dustbin_ml, clean.main_brush_lifting, clean.side_brush_extending, clean.side_brush_lifting,
+        clean.dirt_detection, mop.type, mop.lifting, mop.lift_height_mm, mop.auto_removal, mop.extending, mop.robot_tank_ml, mop.auto_refill_from_dock,
+        nav.type, nav.obstacle_sensors, nav.obstacle_crossing_mm, bat.capacity_mah, dock.self_empty, dock.dust_bag_ml, dock.mop_wash, dock.hot_water_wash,
+        dock.wash_water_temp_c, dock.hot_air_dry, dock.mop_dry, dock.washboard_self_clean, dock.solution_dispense, dock.clean_tank_ml, dock.dirty_tank_ml,
+        smart.matter, phys.robot_height_mm, phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions, phys.dock_weight_g]
+      roborock-us-robovac: [bat.capacity_mah, phys.robot_height_mm, phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions]
+      narwal-us-robovac: [clean.suction_pa, bat.capacity_mah, mop.lifting, mop.lift_height_mm, mop.extending, nav.type, phys.robot_height_mm,
+        phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions, phys.dock_weight_g]
+      ecovacs-us-robovac:
+      - bat.capacity_mah
+      - clean.dustbin_ml
+      - clean.suction_pa
+      - dock.clean_tank_ml
+      - dock.dirty_tank_ml
+      - dock.dust_bag_ml
+      - dock.hot_air_dry
+      - dock.hot_water_wash
+      - dock.mop_wash
+      - dock.plumbed_refill_drain
+      - dock.self_empty
+      - dock.solution_dispense
+      - dock.wash_water_temp_c
+      - mop.auto_refill_from_dock
+      - mop.lift_height_mm
+      - mop.lifting
+      - mop.robot_tank_ml
+      - mop.type
+      - nav.obstacle_crossing_mm
+      - nav.obstacle_sensors
+      - nav.type
+      - phys.dock_dimensions
+      - phys.dock_weight_g
+      - phys.robot_dimensions
+      - phys.robot_height_mm
+      - phys.robot_weight_g
+      irobot-us-robovac:
+      - bat.capacity_mah
+      - clean.dustbin_ml
+      - mop.robot_tank_ml
+      - phys.dock_dimensions
+      - phys.dock_weight_g
+      - phys.robot_dimensions
+      - phys.robot_height_mm
+      - phys.robot_weight_g
+      mova-us-robovac:
+      - bat.capacity_mah
+      - clean.dirt_detection
+      - clean.dustbin_ml
+      - clean.main_brush_lifting
+      - clean.side_brush_extending
+      - clean.side_brush_lifting
+      - clean.suction_pa
+      - dock.clean_tank_ml
+      - dock.dirty_tank_ml
+      - dock.dust_bag_ml
+      - dock.hot_air_dry
+      - dock.hot_water_wash
+      - dock.mop_dry
+      - dock.plumbed_refill_drain
+      - dock.solution_dispense
+      - dock.wash_water_temp_c
+      - dock.washboard_self_clean
+      - mop.auto_removal
+      - mop.extending
+      - mop.lift_height_mm
+      - mop.lifting
+      - mop.robot_tank_ml
+      - mop.type
+      - nav.obstacle_crossing_mm
+      - nav.obstacle_sensors
+      - nav.type
+      - phys.robot_height_mm
+    require_normalized: true
+- id: claim/mfr-robovac-structured@4
+  since: '2026-11-23'
+  rationale: 'Robot vacuums: covers the version-bumped ECOVACS and iRobot parsers (ecovacs_robovac@2, irobot_robovac@2; v2 only changes the shape of
+    fingerprints.unmapped, claims are unchanged) with exactly the per-source keys and rules of claim/mfr-robovac-structured@3. @2 and @3 stay active
+    (locked; governance keeps only @1 ids in retired_policies) and still cover Dreame / Roborock / Narwal / MOVA; their ecovacs/irobot @1 entries match
+    no current extractor. Additive, not a supersession: consolidate in the next re-issue after the Codex category review.'
+  audit:
+    by: A2 robovac+powerbank sources r2
+    at: '2026-11-23'
+    evidence: Re-parsed all 48 ECOVACS and 30 iRobot bundles under v2; claim keys/values identical to the v1 parse (only the extractor id changed).
+    parsers:
+      ecovacs_robovac@2: sha256:bc381035d9c654e1abfa
+      irobot_robovac@2: sha256:70bbaddac79c9f5fc8be
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors: [ecovacs_robovac@2, irobot_robovac@2]
+    source_ids: [ecovacs-us-robovac, irobot-us-robovac]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys:
+      ecovacs-us-robovac:
+      - bat.capacity_mah
+      - clean.dustbin_ml
+      - clean.suction_pa
+      - dock.clean_tank_ml
+      - dock.dirty_tank_ml
+      - dock.dust_bag_ml
+      - dock.hot_air_dry
+      - dock.hot_water_wash
+      - dock.mop_wash
+      - dock.plumbed_refill_drain
+      - dock.self_empty
+      - dock.solution_dispense
+      - dock.wash_water_temp_c
+      - mop.auto_refill_from_dock
+      - mop.lift_height_mm
+      - mop.lifting
+      - mop.robot_tank_ml
+      - mop.type
+      - nav.obstacle_crossing_mm
+      - nav.obstacle_sensors
+      - nav.type
+      - phys.dock_dimensions
+      - phys.dock_weight_g
+      - phys.robot_dimensions
+      - phys.robot_height_mm
+      - phys.robot_weight_g
+      irobot-us-robovac:
+      - bat.capacity_mah
+      - clean.dustbin_ml
+      - mop.robot_tank_ml
+      - phys.dock_dimensions
+      - phys.dock_weight_g
+      - phys.robot_dimensions
+      - phys.robot_height_mm
+      - phys.robot_weight_g
+    require_normalized: true
+- id: claim/dcl-matter-certified@1
+  since: '2026-11-23'
+  rationale: 'Robot vacuums, smart.matter = true from the CSA Matter Distributed Compliance Ledger (on.dcl.csa-iot.org): a robotic-vacuum model row
+    (deviceTypeId 116) with a compliance record in status 2 (certified) and a certificate id (csa_dcl_robovac@1). Rows are attached only to a US-store
+    model of the same brand whose name matches the ledger productName exactly after normalisation (no new US models from ledger names). Only true
+    is ever claimed: a registered-but-uncertified model is an absence, never false.'
+  audit:
+    by: A2 robovac+powerbank sources r2
+    at: '2026-11-23'
+    evidence: 276 ledger robovac rows; 31 matched to Dreame / Narwal US-store model names; 26 with a certified compliance record (cert ids quoted).
+    parsers:
+      csa_dcl_robovac@1: sha256:a612bcd1b7e9a16ebe35
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors: [csa_dcl_robovac@1]
+    source_ids: [csa-dcl-robovac]
+    kinds: [official]
+    tiers: [certifier]
+    statuses: [known]
+    keys:
+      csa-dcl-robovac: [smart.matter]
     require_normalized: true
 relation_policies:
 - id: rel/source-stated-hierarchy@2
@@ -718,3 +1115,44 @@ retired_policies:
       ugreen-us-powerbanks: *pbkeys1
     require_normalized: true
   retired: {at: '2026-11-23', superseded_by: claim/mfr-power-banks-structured@2, reason: 'parser fix before any release (wattage computed from V x A); meaning frozen as first locked'}
+- id: claim/mfr-robovac-structured@1
+  since: '2026-11-23'
+  rationale: 'Robot vacuums, the manufacturer''s own labelled spec rows on its US store: Dreame Specifications block (four label/value templates; a
+    two-model comparison column only when its header names this model, dreame_robovac@1), Roborock ''Specifications:'' rows (roborock_robovac@1),
+    Narwal Specifications rows (narwal_robovac@1). Per source: only the listed keys, only values that normalise to the profile type. Suction stays a
+    manufacturer claim with its basis condition (claim_basis mfr_in_house_lab / mfr_unstated / third_party_certified from the page disclaimer); it is
+    trusted as "what the maker states", never as comparable performance. nav.type / nav.obstacle_sensors / mop.type are keyword classes of the labelled
+    cell (unknown vocabulary -> no claim; trademarks such as Pathfinder stay unknown). Robot dimensions/weight outside physical bounds (robot+dock cells)
+    are not emitted. NOT accepted (preview candidates): Roborock Key-Features/title-derived suction, hot-water and dock flags; free text (main brush
+    type, voice control); marketing counts (nav.ai_object_types); single-instance runtime/noise until their mode/basis wording is audited.'
+  audit:
+    by: A1+A2 robot vacuums
+    at: '2026-11-23'
+    evidence: Parsed all 84 model bundles (41 Dreame, 35 Roborock, 8 Narwal); spot-checked suction, battery, tanks, obstacle crossing (single-step
+      figure), robot height and dock tanks against the stored literals; 0 invalid claims, all accepted keys normalise.
+    parsers:
+      dreame_robovac@1: sha256:1edc479c58c8de26fd80
+      roborock_robovac@1: sha256:253896199530aa5695d3
+      narwal_robovac@1: sha256:6e0ef0e0b072bb790496
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors: [dreame_robovac@1, roborock_robovac@1, narwal_robovac@1]
+    source_ids: [dreame-us-robovac, roborock-us-robovac, narwal-us-robovac]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys:
+      dreame-us-robovac: [clean.suction_pa, clean.dustbin_ml, clean.main_brush_lifting, clean.side_brush_extending, clean.side_brush_lifting,
+        clean.dirt_detection, mop.type, mop.lifting, mop.lift_height_mm, mop.auto_removal, mop.extending, mop.robot_tank_ml, mop.auto_refill_from_dock,
+        nav.type, nav.obstacle_sensors, nav.obstacle_crossing_mm, bat.capacity_mah, dock.self_empty, dock.dust_bag_ml, dock.mop_wash, dock.hot_water_wash,
+        dock.wash_water_temp_c, dock.hot_air_dry, dock.mop_dry, dock.washboard_self_clean, dock.solution_dispense, dock.clean_tank_ml, dock.dirty_tank_ml,
+        smart.matter, phys.robot_height_mm, phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions, phys.dock_weight_g]
+      roborock-us-robovac: [bat.capacity_mah, phys.robot_height_mm, phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions]
+      narwal-us-robovac: [clean.suction_pa, bat.capacity_mah, mop.lifting, mop.lift_height_mm, mop.extending, nav.type, phys.robot_height_mm,
+        phys.robot_dimensions, phys.robot_weight_g, phys.dock_dimensions, phys.dock_weight_g]
+    require_normalized: true
+  retired: {at: '2026-11-23', superseded_by: claim/mfr-robovac-structured@2, reason: 'three sources added (ECOVACS, iRobot, MOVA); meaning frozen as locked'}

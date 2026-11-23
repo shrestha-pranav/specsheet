@@ -11994,3 +11994,155 @@
 {"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|QREVO CURV 2 FLOW|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-qrevo-curv-2-flow", "kind": "model"}
 {"anchors": ["v2|robot-vacuums|model|mfr_model|roborock|S8 MAXV ULTRA RDS|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "roborock-s8-maxv-ultra-rds", "kind": "model"}
 {"anchors": ["v2|robot-vacuums|model|mfr_model|dreame|X60 MAX ULTRA COMPLETE|"], "at": "2026-11-23T13:29:37Z", "category": "robot-vacuums", "id": "dreame-x60-max-ultra-complete", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|kuxiu|K2|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "kuxiu-k2", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|kuxiu|S2|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "kuxiu-s2", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|kuxiu|S3|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "kuxiu-s3", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|kuxiu|S4|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "kuxiu-s4", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|kuxiu|B08|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "kuxiu-b08", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|kuxiu|B10|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "kuxiu-b10", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|sharge|C1|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "sharge-c1", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|sharge|C3|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "sharge-c3", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|sharge|E3|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "sharge-e3", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|sharge|E4|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "sharge-e4", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|sharge|M3|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "sharge-m3", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|sharge|M8|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "sharge-m8", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|sharge|P1|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "sharge-p1", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|sharge|P2|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "sharge-p2", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|sharge|P3|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "sharge-p3", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|sharge|P4|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "sharge-p4", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|sharge|X3|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "sharge-x3", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|sharge|X6|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "sharge-x6", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|kuxiu|K1 PRO|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "kuxiu-k1-pro", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|kuxiu|K1 ULTRA|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "kuxiu-k1-ultra", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401109558|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401109558", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401109559|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401109559", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401109560|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401109560", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401109563|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401109563", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401109564|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401109564", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401109565|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401109565", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401111350|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401111350", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401114324|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401114324", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401114325|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401114325", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401114326|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401114326", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401114327|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401114327", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401114328|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401114328", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401114329|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401114329", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401116631|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401116631", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401118236|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401118236", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401118237|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401118237", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401118238|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401118238", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401118239|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401118239", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401121529|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401121529", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401121696|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401121696", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401121698|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401121698", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|mophie|401122024|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "mophie-401122024", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ecoflow|EF-RP45W10K|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "ecoflow-ef-rp45w10k", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ecoflow|EF-RP45W20K|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "ecoflow-ef-rp45w20k", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ecoflow|EF-RAPID5000|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "ecoflow-ef-rapid5000", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ecoflow|EF-RP27KGEEK|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "ecoflow-ef-rp27kgeek", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ecoflow|EF-R35W10K3IN1|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "ecoflow-ef-r35w10k3in1", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ecoflow|EF-RAPIDPRO20K|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "ecoflow-ef-rapidpro20k", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ecoflow|EF-RAPIDPRO27K|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "ecoflow-ef-rapidpro27k", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ecoflow|EF-RAPIDQI1-5K|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "ecoflow-ef-rapidqi1-5k", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ecoflow|EF-RAPID25K100W|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "ecoflow-ef-rapid25k100w", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ecoflow|EF-RAPID25K140W|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "ecoflow-ef-rapid25k140w", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ecoflow|EF-RAPIDQI1-10K|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "ecoflow-ef-rapidqi1-10k", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ecoflow|EF-RAPIDQI2-10K|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "ecoflow-ef-rapidqi2-10k", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ecoflow|EF-RP45W10K3IN1|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "ecoflow-ef-rp45w10k3in1", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ecoflow|EF-RAPIDQI2.2-10K|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "ecoflow-ef-rapidqi2-2-10k", "kind": "model"}
+{"anchors": ["v2|power-banks|model|mfr_model|ecoflow|EF-RAPIDPRO67W10K3IN1|"], "at": "2026-11-23T14:31:11Z", "category": "power-banks", "id": "ecoflow-ef-rapidpro67w10k3in1", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|mova|S10|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "mova-s10", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|mova|E30 PRO|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "mova-e30-pro", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|C755020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-c755020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|C975020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-c975020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|G181220|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-g181220", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|G185020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-g185020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|G284020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-g284020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|G285020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-g285020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|I517020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-i517020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|I557020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-i557020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|J517020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-j517020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|J955020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-j955020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|L124020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-l124020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|N184020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-n184020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|N185020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-n185020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|N186020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-n186020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|N285020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-n285020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|Q314020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-q314020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|Q352020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-q352020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|R285020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-r285020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|W155020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-w155020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|W255020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-w255020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|X085020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-x085020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|X184020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-x184020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|X185020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-x185020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|X186020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-x186020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|X285020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-x285020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|Y014020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-y014020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|Y054020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-y054020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|Y314020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-y314020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|Y351420|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-y351420", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|irobot|Y352020|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "irobot-y352020", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|mova|E40 ULTRA|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "mova-e40-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|mova|MOBIUS 60|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "mova-mobius-60", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|mova|P20 ULTRA|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "mova-p20-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|mova|P50 ULTRA|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "mova-p50-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|mova|S70 ROLLER|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "mova-s70-roller", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|mova|E30 PRO PLUS|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "mova-e30-pro-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|mova|P10 PRO ULTRA|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "mova-p10-pro-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|mova|P50 PRO ULTRA|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "mova-p50-pro-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|mova|P70 PRO ULTRA|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "mova-p70-pro-ultra", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT N79W|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-n79w", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T30C|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t30c", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T30S|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t30s", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT N8 PRO|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-n8-pro", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT N8 PLUS|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-n8-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T30S AI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t30s-ai", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT X1 OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-x1-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT X1 PLUS|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-x1-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT X2 OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-x2-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT N10 PLUS|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-n10-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT N20 PLUS|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-n20-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT N30 OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-n30-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T10 OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t10-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T10 PLUS|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t10-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T20 OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t20-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T30S PRO|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t30s-pro", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T80 OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t80-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T90 OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t90-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT X2 COMBO|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-x2-combo", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|mova|P10 PRO ULTRA GEN2|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "mova-p10-pro-ultra-gen2", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|mova|V50 ULTRA COMPLETE|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "mova-v50-ultra-complete", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|mova|V70 ULTRA COMPLETE|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "mova-v70-ultra-complete", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT N20E PLUS|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-n20e-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T80S OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t80s-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T90S OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t90s-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|mova|Z60 ULTRA ROLLER SA|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "mova-z60-ultra-roller-sa", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T30S COMBO|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t30s-combo", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT N8 PRO PLUS|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-n8-pro-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT X5 PRO OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-x5-pro-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT X8 PRO OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-x8-pro-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT X9 PRO OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-x9-pro-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT N20 PRO PLUS|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-n20-pro-plus", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT N30 PRO OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-n30-pro-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT OZMO T8 AIVI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-ozmo-t8-aivi", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T50 PRO OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t50-pro-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T90 MAX OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t90-max-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T90 PRO OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t90-pro-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT X11 PRO OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-x11-pro-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT X12 PRO OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-x12-pro-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT X9S PRO OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-x9s-pro-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T50S PRO OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t50s-pro-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T90S PRO OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t90s-pro-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT X11S PRO OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-x11s-pro-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT X12S PRO OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-x12s-pro-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T90S ULTRA OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t90s-ultra-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT X11 OMNICYCLONE|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-x11-omnicyclone", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT X12 OMNICYCLONE|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-x12-omnicyclone", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|mova|Z60 ULTRA ROLLER COMPLETE|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "mova-z60-ultra-roller-complete", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|mova|Z70 ULTRA ROLLER COMPLETE|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "mova-z70-ultra-roller-complete", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T50 MAX PRO OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t50-max-pro-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT X11S OMNICYCLONE|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-x11s-omnicyclone", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT X12S OMNICYCLONE|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-x12s-omnicyclone", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T90 MAX PLUS OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t90-max-plus-omni", "kind": "model"}
+{"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T30S COMBO COMPLETE|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t30s-combo-complete", "kind": "model"}

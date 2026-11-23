@@ -29,3 +29,12 @@ Levels follow spec-profile.yaml: family > model > configuration (colour / pack S
 - **Retail titles are aliases only** and are unreliable: they repeat a suction figure from a different generation and carry colour/bundle words.
 - **Cross-brand twins** (MOVA is a Dreame sister brand with the same 010204AA material-code scheme; Yeedi is an Ecovacs brand) are NOT merged: a
   `possible_match` needs a human. No stem links are enabled (features: []).
+
+## Round 2 (2026-11-23, A2)
+- **iRobot**: mfr_model = the iRobot model code in the URL / PID (X285020, C975020), the strongest identifier in this category. Colour codes on the same
+  slug (X285220 white) are configuration `mfr_sku` aliases with option = colour; UPC = gtin alias; the marketing name is an alias. Robot-only vs
+  robot + dock bundles have different codes and are different models (Y314020 vs Y354020/Y351420).
+- **ECOVACS**: no regulatory code on the US shop. mfr_model = head of the shop's product name (DEEBOT T80 OMNI), '+' -> PLUS, colour and 'Care'
+  (care-plan page) dropped; the shop SKU (OZT80) and UPC are aliases. T30S COMBO / COMBO COMPLETE (robot + handheld) stay separate models.
+- **MOVA**: as Dreame (shared material-code scheme 010201AA...): model name, SKUs as aliases; 'Live Only' and refurbished pages are dropped.
+- **CSA DCL**: x_dcl_vid_pid alias + certifier_listing alias on the matched US model; the ledger never mints a model.
