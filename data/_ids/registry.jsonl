@@ -12146,3 +12146,98 @@
 {"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT X12S OMNICYCLONE|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-x12s-omnicyclone", "kind": "model"}
 {"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T90 MAX PLUS OMNI|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t90-max-plus-omni", "kind": "model"}
 {"anchors": ["v2|robot-vacuums|model|mfr_model|ecovacs|DEEBOT T30S COMBO COMPLETE|"], "at": "2026-11-23T14:31:11Z", "category": "robot-vacuums", "id": "ecovacs-deebot-t30s-combo-complete", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|anker|A1720|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "anker-a1720", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|anker|A1721|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "anker-a1721", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|anker|A1722|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "anker-a1722", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|anker|A1723|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "anker-a1723", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|anker|A1725|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "anker-a1725", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|anker|A1726|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "anker-a1726", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|anker|A1727|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "anker-a1727", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|anker|A1729|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "anker-a1729", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|anker|A1751|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "anker-a1751", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|anker|A1756|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "anker-a1756", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|anker|A1760|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "anker-a1760", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|anker|A1761|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "anker-a1761", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|anker|A1763|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "anker-a1763", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|anker|A1765|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "anker-a1765", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|anker|A1772|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "anker-a1772", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|anker|A1781|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "anker-a1781", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|anker|A1782|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "anker-a1782", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|anker|A1783|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "anker-a1783", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|anker|A1790|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "anker-a1790", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|HF1|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-hf1", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|HF2|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-hf2", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|AC2A|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-ac2a", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|AC60|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-ac60", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|AC70|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-ac70", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|EB3A|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-eb3a", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|EL10|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-el10", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|PS72|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-ps72", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|AC180|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-ac180", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|AC240|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-ac240", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|AC50B|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-ac50b", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|AC50P|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-ac50p", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|AC70P|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-ac70p", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|EB70S|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-eb70s", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|EL300|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-el300", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|EL30M|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-el30m", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|EL400|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-el400", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|EP500|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-ep500", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|ecoflow|EFD3M|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "ecoflow-efd3m", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|AC180P|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-ac180p", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|AC180T|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-ac180t", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|AC200L|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-ac200l", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|AC200P|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-ac200p", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|EL100M|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-el100m", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|EL30V2|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-el30v2", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|ecoflow|EFD3MP|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "ecoflow-efd3mp", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|ecoflow|ZMR600|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "ecoflow-zmr600", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|ecoflow|ZMR610|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "ecoflow-zmr610", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|ecoflow|ZMR620|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "ecoflow-zmr620", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|AC200PL|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-ac200pl", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|APEX200|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-apex200", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|APEX300|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-apex300", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|EL100V2|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-el100v2", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|EL200V2|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-el200v2", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|PR100V2|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-pr100v2", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|PR200V2|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-pr200v2", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|22004|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-22004", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|22070|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-22070", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|23000|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-23000", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|31901|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-31901", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|36100|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-36100", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|36200|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-36200", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|36201|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-36201", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|36300|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-36300", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|36400|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-36400", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|36500|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-36500", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|36900|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-36900", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|37000|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-37000", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|37100|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-37100", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|37200|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-37200", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|37300|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-37300", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|37500|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-37500", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|38000|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-38000", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|38002|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-38002", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|38004|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-38004", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|38300|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-38300", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|goal_zero|38400|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "goal-zero-38400", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|AC200MAX|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-ac200max", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|EP500PRO|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-ep500pro", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|ecoflow|EFDELTA3|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "ecoflow-efdelta3", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|bluetti|PIONEERNA|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "bluetti-pioneerna", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|ecoflow|EFDELTA3C|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "ecoflow-efdelta3c", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|ecoflow|EFDELTA3P|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "ecoflow-efdelta3p", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|ecoflow|EFDELTA3U|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "ecoflow-efdelta3u", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|ecoflow|EFRIVER600|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "ecoflow-efriver600", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|ecoflow|EFDELTA2MAX|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "ecoflow-efdelta2max", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|ecoflow|EFDELTAPRO3|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "ecoflow-efdeltapro3", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|ecoflow|EFDELTA3UPLUS|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "ecoflow-efdelta3uplus", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|ecoflow|DELTAPRO-1600W|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "ecoflow-deltapro-1600w", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|jackery|HOMEPOWER 3000|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "jackery-homepower-3000", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|jackery|EXPLORER 300 V2|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "jackery-explorer-300-v2", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|jackery|EXPLORER 1000 V2|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "jackery-explorer-1000-v2", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|jackery|EXPLORER 2000 V2|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "jackery-explorer-2000-v2", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|jackery|EXPLORER 1000 PLUS|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "jackery-explorer-1000-plus", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|jackery|EXPLORER 5000 PLUS|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "jackery-explorer-5000-plus", "kind": "model"}
+{"anchors": ["v2|power-stations|model|mfr_model|jackery|EXPLORER 1500 ULTRA|"], "at": "2026-11-23T18:34:07Z", "category": "power-stations", "id": "jackery-explorer-1500-ultra", "kind": "model"}

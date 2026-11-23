@@ -1,0 +1,698 @@
+profile_format: specsheet.category-profile/1
+category: power-stations
+version: 0.1.0
+label: Portable power stations
+market: US
+status: draft
+scope: Battery power stations with a built-in AC inverter sold in the US (EcoFlow RIVER/DELTA, Anker SOLIX C/F/PowerHouse, Jackery Explorer /
+  HomePower, BLUETTI AC/EB/Elite/Apex, Goal Zero Yeti), including backpack and DC-only stations sold as power stations. Excludes USB power banks
+  (power-banks), expansion batteries sold alone, inverter-only modules that need a separate battery (BLUETTI AC300/AC500, EcoFlow DELTA Pro Ultra
+  inverter), whole-home systems (E10, EP900) and every solar-generator / kit bundle (packages, never models).
+identity:
+  levels:
+  - level: family
+    label: Product line
+    meaning: EcoFlow DELTA 3 / RIVER 2, Anker SOLIX C / F series, Jackery Explorer / HomePower, BLUETTI Elite / AC, Goal Zero Yeti X. Browse only.
+    key_schemes: [mfr_family]
+    inherits: false
+  - level: model
+    label: Model
+    meaning: 'The station itself under the maker''s model number or unit SKU: EcoFlow EFDELTA3P, Anker A1763, BLUETTI AC180P, Goal Zero 36300,
+      Jackery "Explorer 1000 v2" (no label model printed). Colour variants are the same model.'
+    key_schemes: [mfr_model]
+    inherits: true
+  - level: configuration
+    label: Colour / unit SKU
+    meaning: Colour or regional SKU of one model (EcoFlow EFD3M-G-US grey, Jackery 21-0001-000432 Dune White, BLUETTI EL30V2-US-PK pink).
+    key_schemes: [mfr_sku]
+    inherits: true
+  - level: package
+    label: Bundle / GTIN
+    meaning: Station + solar panel(s), + extra battery, + charger, + bag, 2-packs. Own SKU (EcoFlow D3P-220, BLUETTI AC180P-2-62, Anker B17631A9)
+      and price; NEVER the station model and never a source of the station's specs.
+    key_schemes: [gtin]
+    inherits: true
+  primary_key: Manufacturer model number or unit SKU of the station alone (identity.md has the per-brand rule). Retail titles and "Solar Generator"
+    bundle names are aliases; a page whose unit variants name two models is an absence.
+  per_brand:
+    ecoflow: unit-variant SKU stem, region/colour stripped (EFDELTA3P from EFDELTA3P-US; ZMR620 from ZMR620-B-US)
+    anker: 5-character model shared by the unit variants (A1763 from A17631A1); B1xxxx / G1xxxx SKUs are bundles
+    bluetti: SKU stem before the market token (AC180P from AC180P-UN-GY-ID-SPFUS-00); MODEL-<n>-<code> SKUs are bundles
+    jackery: station name in the spec drop-down heading (Explorer 1000 v2); item numbers 21-0001-xxxxxx are colour aliases; JE-xxxx label model
+      only where printed (alias)
+    goal_zero: 5-digit item number (36300 = Yeti 1500X), must equal the page's SKU row; R suffix = open box (not discovered)
+  schemes:
+  - {scheme: mfr_family, level: family}
+  - {scheme: mfr_model, level: model, normalize: upper_strip_spaces}
+  - {scheme: mfr_sku, level: configuration, normalize: upper_keep_slash}
+  - {scheme: mfr_label_model, level: model, normalize: upper_strip_spaces, alias_only: true}
+  - {scheme: gtin, issuer: GS1, level: package}
+  variant_axes: [gen.color]
+  model_defining: [cap.energy_wh, out.ac_continuous_w]
+  note: A different capacity or inverter rating is a different model even under a near-identical name (EcoFlow DELTA 3 vs DELTA 3 Plus vs
+    DELTA 3 Classic; BLUETTI AC180 vs AC180P are one spec block on one page -> not attributable). Unknown stays unknown.
+units:
+  system: us_customary
+  display: {mm: in, kg: lb}
+  custom:
+  - {unit: h, base: h, factor: 1}
+  - {unit: ms, base: s, factor: 0.001}
+  - {unit: cycles, base: cycles, factor: 1}
+  - {unit: Ah, base: Ah, factor: 1}
+conditions:
+- {id: retention_pct, label: Capacity retained at end of rated cycles, type: number, unit: '%', description: 'Basis of bat.cycle_life: 4000 cycles to 80 % and 4000 cycles to 70 % are different claims (Jackery prints 70 %).'}
+- {id: charge_to_pct, label: Charged to, type: number, unit: '%', description: 'Basis of recharge times: 0-80 % vs 0-100 %. A time without it is an unresolved preview claim.'}
+- {id: charger, label: Charger / input used, type: text, description: 'The printed charger or input the time was quoted with (AC Fast Charge, 600W Power Supply).'}
+- {id: backup_mode, label: Backup mode, type: enum, enum: [ups, eps, aps], description: 'Maker term for the switchover: UPS (online/near-zero), EPS (emergency), Goal Zero APS. Basis of ups.switchover_ms.'}
+- {id: voltage_basis, label: Solar voltage basis, type: enum, enum: [voc, operating, unstated], description: 'Whether the window is open-circuit voltage (Voc), the MPPT operating range, or not stated.'}
+- {id: port, label: Input port, type: text, description: 'The solar input a window or figure belongs to when a station has several (8mm vs HPP, High-PV vs Low-PV).'}
+- {id: ac_charge_mode, label: AC charge mode, type: text, description: Turbo / ultra fast / standard / low speed AC charging; figures under different modes are not one headline.}
+- {id: extra_batteries, label: Extra batteries attached, type: number, description: Number of extra batteries an expanded capacity is quoted with.}
+- {id: idle_mode, label: Idle state, type: enum, enum: [ac_on, standby, unstated], description: What is switched on while the idle draw is measured.}
+groups:
+- {id: general, label: General & identity, order: 0}
+- {id: capacity, label: Capacity, order: 1}
+- {id: ac, label: AC output, order: 2}
+- {id: dc, label: DC & USB output, order: 3}
+- {id: input, label: Charging inputs, order: 4}
+- {id: battery, label: Battery & lifespan, order: 5}
+- {id: backup, label: Backup / UPS, order: 6}
+- {id: expansion, label: Expandability, order: 7}
+- {id: safety, label: Certification, order: 8}
+- {id: phys, label: Physical, order: 9}
+specs:
+- key: gen.brand
+  label: Brand
+  group: general
+  type: enum
+  unit: null
+  tier: core
+  why: Filter
+  level: family
+  enum: [ecoflow, anker, jackery, bluetti, goal_zero, dji]
+  enum_open: true
+  facet: {kind: enum, column: true}
+  sources: [Manufacturer store page]
+  example: ecoflow
+- key: gen.color
+  label: Colour
+  group: general
+  type: list
+  unit: null
+  tier: detail
+  why: Colour SKUs are the same model
+  level: configuration
+  facet: false
+  sources: [Store variant option]
+  example: [Grey]
+- key: gen.warranty_years
+  label: Warranty
+  group: general
+  type: integer
+  unit: null
+  tier: important
+  why: 2 vs 5 years on a $1,000+ battery
+  level: model
+  facet: false
+  traps:
+  - '''3+2 Years'' / ''5-Year (3 standard + 2 on app registration)'' is conditional: kept as an unresolved literal, never 5'
+  sources:
+  - 'Spec table ''Warranty'' row'
+  example: 5
+- key: conn.wireless
+  label: App connectivity
+  group: general
+  type: list
+  unit: null
+  tier: detail
+  why: App control, firmware updates, remote monitoring
+  level: model
+  facet: false
+  sources:
+  - 'Spec table ''Connectivity'' / ''Wireless Connection'' row'
+  example: [wifi, bluetooth]
+- key: cap.energy_wh
+  label: Rated capacity
+  group: capacity
+  type: number
+  unit: Wh
+  tier: core
+  required: true
+  why: The headline number and the basis of runtime; it is the rated pack energy, not what reaches an AC load
+  level: model
+  facet: {kind: range, bins: [300, 1000, 2000, 3000, 5000], column: true}
+  traps:
+  - 'Rated (nominal pack) energy. Usable AC energy is typically 80-90 % of it (inverter loss, BMS reserve); never derived here'
+  - Jackery prints the pack basis next to it ('30.4Ah/35.2V DC (1070 Wh)'); the Ah and V go to cap.pack_ah / cap.pack_voltage_v, never multiplied
+  - A cell with two Wh figures ('1,152Wh (AC180) / 1,440Wh (AC180P)', '403Wh-2,015Wh') is unresolved; a block that splits values per model is not attributed at all
+  - Older Goal Zero 'Peak Capacity' rows are not rated capacity (left unmapped)
+  sources:
+  - 'Spec table ''Capacity'' / ''Rated Capacity'' / ''Pack capacity'' / ''Battery Capacity'''
+  example: 1024
+- key: cap.usable_wh
+  label: Usable (AC) energy
+  group: capacity
+  type: number
+  unit: Wh
+  tier: important
+  why: What a load actually gets; only when the maker labels a figure usable/available
+  level: model
+  facet: false
+  traps:
+  - 'Never computed from rated Wh x an assumed efficiency; bench ''usable'' figures are measured (independent tier), not this key'
+  sources: [Spec row labelled usable / available capacity (rare); manual]
+  example: 900
+- key: cap.pack_voltage_v
+  label: Pack nominal voltage
+  group: capacity
+  type: number
+  unit: V
+  tier: detail
+  why: 12 V-class (NMC 3S) vs 48-51.2 V LFP packs; efficiency and expansion compatibility
+  level: model
+  facet: false
+  sources:
+  - 'Capacity cell basis (''51.2V, 29.4Ah'')'
+  example: 51.2
+- key: cap.pack_ah
+  label: Pack capacity (Ah at pack voltage)
+  group: capacity
+  type: number
+  unit: Ah
+  tier: detail
+  why: Capacity basis printed with the Wh
+  level: model
+  facet: false
+  traps:
+  - 'Ah at the PACK voltage, not at 12 V or 3.2 V; Goal Zero''s ''Single cell equivalent capacity 421Ah @ 3.6V'' is a third basis and is not stored here'
+  sources: [Capacity cell basis]
+  example: 29.4
+- key: out.ac_continuous_w
+  label: AC continuous output (all outlets)
+  group: ac
+  type: number
+  unit: W
+  tier: core
+  required: true
+  why: The largest load the inverter runs indefinitely, shared by every AC outlet
+  level: model
+  facet: {kind: range, bins: [300, 1000, 1800, 2400, 3600], column: true}
+  traps:
+  - Taken only from the AC row tagged total/rated/continuous, or the block's single AC row with one W figure; several untagged AC W figures stay unresolved
+  - X-Boost / Power Lifting / 'Max Device(s) Power' is a resistive-load voltage-drop mode, NOT continuous output (out.ac_boost_w)
+  - Surge/peak (out.ac_surge_w) lasts milliseconds to seconds
+  sources:
+  - 'Spec table ''AC Output'' (''6 outlets, 1800W total''), ''AC Total Output'' (''1500W Rated''), ''AC Rated Output'', ''AC Continuous Output'''
+  example: 1800
+- key: out.ac_surge_w
+  label: AC surge / peak
+  group: ac
+  type: number
+  unit: W
+  tier: important
+  why: Motor and compressor start-up (fridges, pumps, tools)
+  level: model
+  facet: false
+  traps:
+  - 'Duration is almost never printed; Jackery ''Surge peak'' and EcoFlow ''Surge'' may not be the same test'
+  sources:
+  - 'AC output row ''(Surge 3600W)'', ''AC Surge Output'', ''Surge Power'''
+  example: 3600
+- key: out.ac_boost_w
+  label: Boost mode (resistive loads)
+  group: ac
+  type: number
+  unit: W
+  tier: detail
+  why: Kettles/heaters run at reduced voltage above the rating; not a continuous rating
+  level: model
+  facet: false
+  sources:
+  - 'EcoFlow ''Max Device(s) Power (with X-Boost)'', BLUETTI ''Lifting Power'' / ''Power Lifting'''
+  example: 2200
+- key: out.ac_outlets
+  label: AC outlets
+  group: ac
+  type: integer
+  unit: null
+  tier: core
+  why: How many plugs at once
+  level: model
+  facet: {kind: range, bins: [2, 4, 6]}
+  traps:
+  - 'Summed only over rows that print a count (''4 x NEMA 5-20R ; 1 x TT-30R''); a NEMA row without a count makes the total unresolved'
+  sources: [AC output rows]
+  example: 6
+- key: out.ac_voltage
+  label: AC output voltage
+  group: ac
+  type: text
+  unit: null
+  tier: important
+  why: 120 V only vs 120/240 V (well pumps, dryers, L14-30 home inlets)
+  level: model
+  facet: false
+  sources: [AC output rows]
+  example: 120V/240V
+- key: out.ac_waveform
+  label: Inverter waveform
+  group: ac
+  type: enum
+  unit: null
+  tier: important
+  why: Modified-sine inverters buzz and hurt motors and some chargers
+  level: model
+  enum: [pure_sine, modified_sine]
+  facet: {kind: enum}
+  traps:
+  - 'Only from the AC / ''Inverter Type'' row stating ''pure sine wave'' (negations rejected); never from marketing copy; absence stays unknown, not modified'
+  sources:
+  - 'BLUETTI ''Inverter Type'', Goal Zero AC row'
+  example: pure_sine
+- key: out.usb_c_count
+  label: USB-C ports
+  group: dc
+  type: integer
+  unit: null
+  tier: important
+  why: Laptops and phones without the AC inverter's idle loss
+  level: model
+  facet: {kind: range, bins: [1, 2, 3, 4]}
+  sources: [USB-C output row(s)]
+  example: 2
+- key: out.usb_c_max_w
+  label: Best single USB-C port
+  group: dc
+  type: number
+  unit: W
+  tier: important
+  why: Whether a laptop charges at full speed from DC
+  level: model
+  facet: {kind: range, bins: [30, 60, 100, 140]}
+  traps:
+  - '''2 ports, 140W Max'' and ''2x 140W'' do not say per-port or shared: unresolved unless ''per port''/''each'' is printed or one port is listed alone'
+  sources: [USB-C output row(s)]
+  example: 100
+- key: out.usb_a_count
+  label: USB-A ports
+  group: dc
+  type: integer
+  unit: null
+  tier: detail
+  why: Legacy devices
+  level: model
+  facet: false
+  sources: [USB-A output row(s)]
+  example: 2
+- key: out.car_w
+  label: 12 V car outlet
+  group: dc
+  type: number
+  unit: W
+  tier: detail
+  why: Fridges and CPAP on 12 V skip the inverter
+  level: model
+  facet: false
+  traps:
+  - 'Only a printed W figure (126W Max); never V x A; ''Total'' / shared-with-Anderson rows stay unresolved'
+  sources: [Car output row]
+  example: 126
+- key: out.wireless_w
+  label: Wireless charging pad
+  group: dc
+  type: number
+  unit: W
+  tier: detail
+  why: Some BLUETTI units have a Qi pad
+  level: model
+  facet: false
+  sources: [Wireless charging row]
+  example: 15
+- key: out.ports
+  label: DC / USB port table
+  group: dc
+  type: list
+  unit: null
+  tier: detail
+  why: Per-port inventory
+  level: model
+  facet: false
+  items:
+    id_field: name
+    fields:
+    - {key: name, type: text, label: Port}
+    - {key: type, type: enum, enum: [usb_c, usb_a, car, dc, wireless], label: Type}
+    - {key: count, type: integer, label: Count}
+    - {key: max_w, type: number, unit: W, label: Max W per port}
+  display: {kind: object_table}
+  traps:
+  - 'max_w is set only when the figure is per port; "Total Combined" rows are not ports and no cross-port total is published'
+  sources: [Output rows]
+  example: [{name: USB-C Output, type: usb_c, count: 2, max_w: 100}]
+- key: in.ac_w
+  label: AC charging input
+  group: input
+  type: number
+  unit: W
+  tier: core
+  why: Wall recharge speed
+  level: model
+  conditions: [ac_charge_mode]
+  facet: {kind: range, bins: [300, 600, 1000, 1500, 2000], column: true}
+  traps: [Turbo / standard / low-speed figures are separate conditional claims (no headline pick); Jackery prints only amps (no W -> nothing)]
+  sources:
+  - 'Spec table ''AC Charging'' / ''AC Input'' / ''AC Power Input (Turbo Mode)'''
+  example: 1500
+- key: in.solar_w
+  label: Max solar input (combined)
+  group: input
+  type: number
+  unit: W
+  tier: core
+  why: Off-grid recharge speed
+  level: model
+  facet: {kind: range, bins: [200, 500, 1000, 2000], column: true}
+  traps:
+  - "'500W Max*2' is a per-port figure (in.solar_port_w x in.solar_ports): the combined maximum is NOT 1000 unless printed ('dual port 1,000W', '2600W total', 'Double to 400W', 'Total Combined DC/Solar Input')"
+  - Several solar inputs without a printed total stay unresolved
+  sources: [Solar input row(s)]
+  example: 1000
+- key: in.solar_port_w
+  label: Solar input per port
+  group: input
+  type: number
+  unit: W
+  tier: detail
+  why: Panel array sizing per port
+  level: model
+  facet: false
+  sources: [Solar row printing a per-port figure x N]
+  example: 500
+- key: in.solar_ports
+  label: Solar input ports
+  group: input
+  type: integer
+  unit: null
+  tier: detail
+  why: Two arrays vs one
+  level: model
+  facet: false
+  sources: [Solar row]
+  example: 2
+- key: in.solar_voltage
+  label: Solar input voltage window
+  group: input
+  type: range
+  unit: V
+  tier: important
+  why: Decides how many panels can go in series (Voc must stay under the max, and in cold weather Voc rises)
+  level: model
+  conditions: [voltage_basis, port]
+  basis_conditions: [voltage_basis]
+  facet: false
+  traps:
+  - 'Voc limit vs MPPT operating range are different bases; EcoFlow prints ''11V-60V'' unlabelled (basis unstated); stations with two solar ports get one claim per port'
+  sources: [Solar input row]
+  example: {min: 11, max: 60}
+- key: in.car_w
+  label: Car (12 V socket) charging input
+  group: input
+  type: number
+  unit: W
+  tier: detail
+  why: Recharge while driving
+  level: model
+  facet: false
+  traps:
+  - 'EcoFlow ''Car Charging 800W'' is the Alternator Charger accessory rate, not the socket: figures above 400 W stay unresolved'
+  sources: [Car charging row]
+  example: 100
+- key: in.max_w
+  label: Max combined input (AC + solar)
+  group: input
+  type: number
+  unit: W
+  tier: detail
+  why: Fastest possible recharge
+  level: model
+  facet: false
+  sources:
+  - 'BLUETTI ''Max Input'', ''AC + Solar'' rows'
+  example: 1440
+- key: in.recharge_ac_h
+  label: Recharge time (AC)
+  group: input
+  type: range
+  unit: h
+  tier: important
+  why: Turnaround before the next outage
+  level: model
+  conditions: [charge_to_pct, charger]
+  basis_conditions: [charge_to_pct]
+  facet: false
+  traps:
+  - '0-80 % times are quoted to look fast; without a printed range the time is unresolved; turbo vs standard chargers are separate conditional rows'
+  sources:
+  - 'Recharge time rows (Goal Zero ''0-80%: 0.8 hrs'', ''RECHARGE CHARGE TIMES (0-100%)'')'
+  example: {min: 0.8, max: 0.8}
+- key: in.recharge_solar_h
+  label: Recharge time (solar)
+  group: input
+  type: range
+  unit: h
+  tier: detail
+  why: Depends on array size and sun; only comparable with the stated panel
+  level: model
+  conditions: [charge_to_pct, charger]
+  basis_conditions: [charge_to_pct]
+  facet: false
+  sources: [Recharge time rows]
+  example: {min: 3, max: 3}
+- key: in.recharge_car_h
+  label: Recharge time (car)
+  group: input
+  type: range
+  unit: h
+  tier: detail
+  why: Road-trip planning
+  level: model
+  conditions: [charge_to_pct, charger]
+  basis_conditions: [charge_to_pct]
+  facet: false
+  sources: [Recharge time rows]
+  example: {min: 12, max: 12.5}
+- key: in.passthrough
+  label: Pass-through charging
+  group: input
+  type: bool
+  unit: null
+  tier: detail
+  why: Use while charging
+  level: model
+  facet: false
+  traps:
+  - 'Only a labelled ''Pass-through Charging: Yes'' row; absence is unknown'
+  sources:
+  - 'BLUETTI ''Pass-through Charging'''
+  example: true
+- key: bat.chemistry
+  label: Cell chemistry
+  group: battery
+  type: enum
+  unit: null
+  tier: core
+  why: LFP lasts 3000-6000 cycles and is safer; NMC is lighter but ages faster; sodium-ion works colder
+  level: model
+  enum: [lfp, nmc, li_ion, sodium_ion, semi_solid]
+  facet: {kind: enum, column: true}
+  traps:
+  - 'Only from a labelled chemistry/type row; ''Li-ion'' alone stays li_ion (NMC not assumed)'
+  sources:
+  - 'Spec table ''Battery Chemistry'' / ''Cell Chemistry'' / ''Type'''
+  example: lfp
+- key: bat.cycle_life
+  label: Rated cycle life
+  group: battery
+  type: integer
+  unit: cycles
+  tier: core
+  why: Long-term value
+  level: model
+  conditions: [retention_pct]
+  basis_conditions: [retention_pct]
+  facet: {kind: range, bins: [500, 2000, 3000, 4000, 6000]}
+  traps:
+  - '''4000 cycles to 70%+'' (Jackery) and ''4000 cycles to 80%'' (EcoFlow) are different claims; a count without retention is unresolved'
+  - 'Rated at 25 C full cycles; not a warranty'
+  sources:
+  - 'Spec table ''Cycle Life'' / ''Life Cycles'' / ''Battery Lifespan to 80%'''
+  example: 4000
+- key: ups.switchover_ms
+  label: UPS / EPS switchover time
+  group: backup
+  type: number
+  unit: ms
+  tier: important
+  why: Desktops and CPAP drop on a long switchover; <10-20 ms is the usual PC tolerance
+  level: model
+  conditions: [backup_mode]
+  basis_conditions: [backup_mode]
+  facet: false
+  traps:
+  - '''<10ms'' is an upper bound; EPS and UPS are maker terms, not a certification (no UL 1778); kept with backup_mode'
+  sources:
+  - 'Spec table ''UPS'' / ''UPS Switch Time'' / Goal Zero ''Automatic Power Switching'''
+  example: 10
+- key: ups.supported
+  label: UPS / EPS function
+  group: backup
+  type: bool
+  unit: null
+  tier: important
+  why: Seamless backup when the grid drops
+  level: model
+  conditions: [backup_mode]
+  facet: {kind: enum}
+  traps:
+  - 'Affirmative only (a printed switchover time or ''Yes''); absence is unknown, never false'
+  sources: [UPS row]
+  example: true
+- key: idle.draw_w
+  label: Idle draw (self-consumption)
+  group: backup
+  type: number
+  unit: W
+  tier: important
+  why: An idle inverter can burn 10-30 W, i.e. 250-700 Wh/day
+  level: model
+  conditions: [idle_mode]
+  basis_conditions: [idle_mode]
+  facet: false
+  traps: [Almost never on store pages; manuals and bench tests; AC-on vs standby differ by 10x]
+  sources:
+  - 'Manual PDF, spec row ''Self-consumption'' / ''No-load'' (rare)'
+  example: 15
+- key: exp.expandable
+  label: Expandable with extra batteries
+  group: expansion
+  type: bool
+  unit: null
+  tier: core
+  why: Buy now, grow capacity later
+  level: model
+  facet: {kind: enum}
+  traps:
+  - 'true only from an expansion row naming compatible batteries / ''Yes''; false only from a labelled row whose value is just ''No'' (Goal Zero ''Chainable: No''); Goal Zero ''Expansion Module Port'' is a module bay, not battery expansion'
+  sources:
+  - 'Spec table ''Extra Battery'' / ''Expansion'' / ''Chainable'''
+  example: true
+- key: exp.batteries
+  label: Compatible extra batteries
+  group: expansion
+  type: list
+  unit: null
+  tier: important
+  why: Which battery model to buy (and whether an older one works)
+  level: model
+  facet: false
+  traps:
+  - 'EcoFlow DELTA 3 Plus lists DELTA 2/3/Pro 3 batteries ''via an Alternator Charger XT150 Output Cable'' (a charging path, not native expansion): kept literal in raw'
+  sources: [Extra battery row]
+  example: [DELTA 2 Max Smart Extra Battery]
+- key: exp.max_batteries
+  label: Max extra batteries
+  group: expansion
+  type: integer
+  unit: null
+  tier: detail
+  why: Expansion ceiling
+  level: model
+  facet: false
+  sources:
+  - 'Extra battery row ''up to two'''
+  example: 2
+- key: exp.max_wh
+  label: Max expanded capacity
+  group: expansion
+  type: number
+  unit: Wh
+  tier: important
+  why: Ceiling with extra batteries
+  level: model
+  conditions: [extra_batteries]
+  facet: false
+  traps:
+  - 'Quoted per configuration (''12kWh (2 x DP3 Extra Battery)'' single unit vs ''36kWh ... Up to 48kWh'' system): several figures stay unresolved'
+  sources:
+  - 'Spec table ''Expandable Capacity'''
+  example: 12000
+- key: cert.marks
+  label: Certification marks (as listed)
+  group: safety
+  type: list
+  unit: null
+  tier: detail
+  why: What the maker claims; verify in UL Product iQ
+  level: model
+  facet: false
+  traps:
+  - '''UL Standard'' is not a listing; ''UL2743'' must name the standard'
+  sources:
+  - 'Spec table ''Certifications'''
+  example: [UL2743, FCC ID, CE]
+- key: cert.ul2743
+  label: UL 2743 (portable power packs)
+  group: safety
+  type: bool
+  unit: null
+  tier: core
+  why: The US safety standard for portable power stations
+  level: model
+  facet: {kind: enum}
+  traps: [Affirmative only, from a certification row naming UL 2743 without negation/pending; never false from absence; maker claim until checked in UL Product iQ]
+  sources:
+  - 'Spec table ''Certifications''; UL Product iQ (planned)'
+  example: true
+- key: cert.ul9540
+  label: UL 9540 (energy storage system)
+  group: safety
+  type: bool
+  unit: null
+  tier: important
+  why: Required by many US jurisdictions for home-installed ESS
+  level: model
+  facet: {kind: enum}
+  traps:
+  - 'Affirmative only from a certification row; title text (''(UL9540 Certificated)'') is not read'
+  sources:
+  - 'Spec table ''Certifications'''
+  example: true
+- key: phys.weight
+  label: Weight
+  group: phys
+  type: number
+  unit: kg
+  tier: core
+  why: Portable ranges from 3 kg to 50+ kg
+  level: model
+  facet: {kind: range, bins: [5, 10, 20, 30, 50], column: true}
+  traps: [Metric figure preferred when both are printed; a lbs row beside a kg row is skipped (no rounding conflict)]
+  sources:
+  - 'Spec table ''Weight'' / ''Net Weight'''
+  example: 12.5
+- key: phys.dimensions
+  label: Dimensions
+  group: phys
+  type: object
+  unit: mm
+  tier: detail
+  why: Trunk / shelf fit
+  level: model
+  fields:
+  - {key: w, type: number}
+  - {key: d, type: number}
+  - {key: h, type: number}
+  facet: false
+  sources:
+  - 'Spec table ''Dimensions'''
+  example: {w: 398, d: 202, h: 283.6, unit: mm}

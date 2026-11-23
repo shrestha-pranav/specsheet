@@ -21,7 +21,7 @@ const context = vm.createContext({
   matchMedia:()=>({matches:false,addEventListener(){}}),
   fetch:async url => {requests.push(url); try { const body = await json(url.split('?')[0]); return {ok:true,json:async()=>body}; } catch (error) { if (error.code === 'ENOENT') return {ok:false,status:404}; throw error; }}
 });
-const names = ['categories','indexFor','detailFor','displayValue','initialState','categoryStateQuery','productUrl','validatedReturnQuery','returnWithIds','matchFacet','missingIssueUrl','correctionIssueUrl','renderTable','renderProduct','renderCompare','previewOverlay','revisionsMarkup','searchRows','extractIdentifiers','differingFields','cellValue','compareUrl','configTable','evidenceMarkup','valueWithContext'];
+const names = ['facetControl','methodsDiffer','methodsFlag','categories','indexFor','detailFor','displayValue','initialState','categoryStateQuery','productUrl','validatedReturnQuery','returnWithIds','matchFacet','missingIssueUrl','correctionIssueUrl','renderTable','renderProduct','renderCompare','previewOverlay','revisionsMarkup','searchRows','extractIdentifiers','differingFields','cellValue','compareUrl','configTable','evidenceMarkup','valueWithContext'];
 const source = await readFile(resolve(root, 'docs/app.js'), 'utf8');
 assert(source.includes('  renderRoute();\n})();'), 'Application bootstrap changed; update harness');
 vm.runInContext(source.replace('  renderRoute();\n})();', `  globalThis.test = {${names.join(',')}};\n})();`), context);
@@ -162,6 +162,43 @@ assert.equal(ui.revisionsMarkup(rcat, {specs:{}}), '');
   const unspec = ui.valueWithContext(tp.specs['wifi.ofdma'], await fieldOf('routers', 'wifi.ofdma'), tp.sources);
   assert.match(all, /Applies to all hardware revisions/); assert.match(unspec, /Revision not specified/);
   assert.doesNotMatch(pwHtml + hdrHtml + synth + all, /\[object Object\]|undefined/);
+}
+
+// Round 5 UI: port table, LiDAR facet alias, methods-differ labels.
+{
+  const pb = categories.find(c=>c.id === 'power-banks'); Object.assign(pb, await json('api/v1/power-banks/schema.json'));
+  const rv = categories.find(c=>c.id === 'robot-vacuums'); Object.assign(rv, await json('api/v1/robot-vacuums/schema.json'));
+  const portsField = pb.fields.find(f=>f.key === 'out.ports');
+  const pbRec = await json('api/v1/power-banks/products/iniu-p73-e1.json');
+  const portHtml = ui.displayValue(pbRec.specs['out.ports'], portsField);
+  assert.match(portHtml, /port-table/); assert.match(portHtml, /<th scope="col">Connector<\/th>/); assert.match(portHtml, /Wireless/); assert.match(portHtml, /15 W/); assert.match(portHtml, /5V3A 9V3A/);
+  assert.equal((portHtml.match(/<table/g)||[]).length, 1); assert.doesNotMatch(portHtml, /\[object Object\]|undefined/);
+  assert(pb.fields.some(f=>f.label === 'All-ports simultaneous output') && pb.fields.some(f=>f.label === 'Best single-port output'), 'New field labels published');
+  const navField = rv.fields.find(f=>f.key === 'nav.type');
+  const navRow = v => ({specs:{'nav.type':{status:'known',value:v}}});
+  assert.equal(ui.matchFacet(navRow('dtof'), navField, {'f_nav.type_value':'lidar'}), true, 'LiDAR filter includes dToF');
+  assert.equal(ui.matchFacet(navRow('lidar'), navField, {'f_nav.type_value':'dtof'}), false, 'dToF filter stays strict');
+  assert.equal(ui.matchFacet(navRow('vslam_camera'), navField, {'f_nav.type_value':'lidar'}), false);
+  assert.match(ui.facetControl ? ui.facetControl(navField, [], {filters:{}}) : 'lidar (incl. dtof)', /lidar \(incl\. dtof\)/);
+  const suction = rv.fields.find(f=>f.key === 'clean.suction_pa'), runtime = rv.fields.find(f=>f.key === 'bat.runtime_min');
+  const k = (value, basis) => ({status:'known', value, basis});
+  assert.equal(ui.methodsDiffer([k(30000,{claim_basis:'mfr_in_house_lab'}), k(25000,{claim_basis:'mfr_unstated'})], suction), true);
+  assert.equal(ui.methodsDiffer([k(30000,{claim_basis:'mfr_unstated'}), k(25000,{})], suction), false, 'Missing basis equals unstated');
+  assert.equal(ui.methodsDiffer([k(30000,{claim_basis:'mfr_in_house_lab'}), k(25000,{claim_basis:'mfr_in_house_lab'})], suction), false);
+  assert.equal(ui.methodsDiffer([k(180,{claim_basis:'mfr_unstated',power_mode:'quiet'}), k(200,{claim_basis:'mfr_unstated',power_mode:'max'})], runtime), true, 'power_mode counts for runtime');
+  assert.equal(ui.methodsDiffer([k(1,{claim_basis:'mfr_unstated'}), k(2,{claim_basis:'mfr_in_house_lab'})], {key:'x',conditions:[]}), false, 'Only claim_basis/power_mode fields');
+  assert.match(ui.methodsFlag([k(1,{claim_basis:'mfr_in_house_lab'}), k(2,{})], suction), /methods differ/);
+  await ui.renderCompare(rv, new URLSearchParams({ids:'dreame-aqua10-roller-ae,dreame-aqua10-roller'}), 0);
+  const rvCmp = element('#comparison-table').innerHTML;
+  assert.match(rvCmp, /methods-flag/); assert.match(rvCmp, /manufacturer in-house lab/);
+  const rvRows = await ui.indexFor(rv);
+  const pair = ['dreame-aqua10-roller-ae','dreame-aqua10-roller'].map(id => rvRows.find(r=>r.id === id));
+  pair[0].specs['clean.suction_pa'] = {...pair[0].specs['clean.suction_pa'], basis:{claim_basis:'mfr_in_house_lab'}};
+  const st = ui.initialState(rv, new URLSearchParams('cols=clean.suction_pa')); st.ids = pair.map(r=>r.id);
+  element('#results-table'); ui.renderTable(rv, pair, st, '', {found:{identifiers:[],terms:[],matches:new Map()}, total:2, baseCount:2, compared:pair});
+  assert.match(element('#results-table').innerHTML, /methods-flag/, 'Grid marks selected products whose basis differs');
+  ui.renderTable(rv, pair, {...st, ids:[]}, '', {found:{identifiers:[],terms:[],matches:new Map()}, total:2, baseCount:2, compared:[]});
+  assert.doesNotMatch(element('#results-table').innerHTML, /methods-flag/, 'No label without a comparison');
 }
 
 const beforeIssue = requests.length;

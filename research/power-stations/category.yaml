@@ -1,0 +1,34 @@
+name: Portable power stations
+description: 'Portable power stations by manufacturer model number / unit SKU (EcoFlow EFDELTA3P, Anker SOLIX A1763, BLUETTI AC180P, Goal Zero
+  36300, Jackery Explorer 1000 v2): rated Wh (usable kept apart), continuous vs surge vs boost AC output, outlets and waveform, LFP/NMC with
+  cycle life to a stated retention, AC/solar/car input with the solar voltage window, recharge time with its charge range, UPS switchover,
+  extra batteries, UL 2743 (affirmative only). Sources: EcoFlow, Anker SOLIX, BLUETTI, Jackery, Goal Zero US store spec tables.'
+columns:
+- cap.energy_wh
+- out.ac_continuous_w
+- in.ac_w
+- in.solar_w
+- bat.chemistry
+- phys.weight
+features:
+- stem_links
+stem:
+  cut_at:
+  - /
+  strip_market_suffix: false
+brand_aliases:
+  goal zero: goal_zero
+  goalzero: goal_zero
+  anker solix: anker
+brand_names:
+  ecoflow: EcoFlow
+  anker: Anker
+  jackery: Jackery
+  bluetti: BLUETTI
+  goal_zero: Goal Zero
+  dji: DJI
+# importer 'model' needs an explicit identity scope (review 2 risk 4). All five sources are US storefronts; the key is (brand, normalised model)
+# with market NOT in the key (models are the maker's global unit SKUs / model numbers). Two different STATED markets are quarantined, never merged.
+identity_scope:
+  cross_market_brands: "*"
+  market_scoped_brands: []

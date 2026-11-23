@@ -1,0 +1,33 @@
+# A2 discovery, power stations (US). Probed 2026-11-23 with the shared crawler client UA ("specsheet-crawler/0.1" + repo URL), robots honoured,
+# <=1 req/s per host, no spoofing, no Bright Data. status: adapter = built+run; viable = probed OK, not built; blocked; unstructured.
+manufacturers:
+  ecoflow:
+    status: adapter            # crawler/adapters/shopify_powerstations.py EcoflowStations, raw/ecoflow-us-stations (18 pages, all 200)
+    how: "Shopify https://us.ecoflow.com/products.json (318 products) -> titles with 'Portable Power Station', bundles dropped; page h2 'Specs' pdp-specs-title/content rows + /products/<h>.json variants."
+    gives: [unit SKU stem, rated Wh, AC total + surge + X-Boost, outlets, USB/car ports, AC/solar/car input, solar window, LFP, cycles to 80 %, UPS ms, extra batteries, weight, dims]
+    lacks: [usable Wh, idle draw, certification rows; RIVER 2 Pro + RIVER (600) pages have no spec section; 4 'Series' / dual pages are absences]
+  anker:
+    status: adapter            # crawler/adapters/ankersolix_stations.py, raw/ankersolix-us-stations (33 pages, all 200; 11 are accessories/absences)
+    how: "www.ankersolix.com (anker.com/products/a17xx redirects there); /products.json 404 (headless). /collections/power-stations handles -> product page __NEXT_DATA__ product.variants[].metafields.specs {label,value}."
+    gives: [A17xx model, AC rated + surge, outlets, AC input modes, MPPT solar W + window, chemistry, lifespan to 80 %, expansion, UPS switch time, weight, dims]
+    lacks: [8 pages (521-era PowerHouse 522/555, C1000X, C200X, C300X, A1729/A1756) have no specs metafield; S2000/S5000 SKUs are AS2xxxx (not minted)]
+  bluetti:
+    status: adapter            # shopify_powerstations.py BluettiStations, raw/bluetti-us-stations (40 pages = 34 models)
+    how: "Shopify https://www.bluettipower.com/products.json (437 products) -> 'Power Station' titles without '+'; uk-grid label/value rows under h4 sections."
+    gives: [SKU-stem model, Wh, AC total + surge + lifting, waveform, AC turbo/standard input, solar W + Voc window, LFP + cycles, UL2743 cert row, pass-through, weight]
+    lacks: [12 newer pages (Elite 10/30/100/200/300/400, Apex 200/300, Pioneer Na) render Tech Specs client-side: no rows in HTML; recharge times have no charge range]
+  jackery:
+    status: adapter            # shopify_powerstations.py JackeryStations, raw/jackery-us-stations (44 pages -> 7 models)
+    how: "Shopify https://www.jackery.com/products.json (191 products) -> Explorer/HomePower pages; per-variant pdp-specs-v5 blocks, drop-down per item."
+    gives: [station name, Wh with pack Ah/V, AC rated + surge, outlets, USB PDOs, DC 8mm window + 'Double to' total, LFP, cycles to 70 %, UPS ms]
+    lacks: [30 pages use templates without spec rows in HTML (HomePower 1000/2000 Plus v2/3600, Explorer 240/600/1500 v2, 100 Plus); AC input printed in A only; label model (JE-) printed once]
+  goal_zero:
+    status: adapter            # shopify_powerstations.py GoalzeroStations, raw/goalzero-us-stations (22 pages -> 21 models)
+    how: "Shopify https://www.goalzero.com/products.json (399 products) -> product_type 'Portable Power Station', open box/cases dropped; accordion li rows (Yeti X/Lithium) or functional-specs columns (new LFP Yeti)."
+    gives: [5-digit item number (cross-checked with SKU row), pack Wh (V, Ah), AC continuous/surge, waveform, ports, HPP/8mm solar windows, combined solar total, recharge times 0-80/0-100 %, NMC/LFP + cycles, APS ms]
+    lacks: [Yeti PRO 8000 page = PRO 4000 + Tank (package -> absence); USB counts printed in labels ('USB-C QC (30 W x 2)') stay unresolved]
+  dji:
+    status: unstructured       # store.dji.com and www.dji.com: /products.json 404 (not Shopify), robots allows product pages; DJI Power 1000/2000 specs live on www.dji.com/power-*/specs (prose tables). Not built this round.
+evidence_sources:
+  ul_product_iq: "UL 2743 listing verification (cert.ul2743 is a maker claim until checked). Not probed this round."
+  bench_tests: "Usable Wh / idle draw are measured (independent tier). category-survey links (capytoolkit, wildsmartgear) are vendor-ish; not used."

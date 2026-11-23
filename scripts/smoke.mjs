@@ -217,4 +217,19 @@ for (const category of categories) {
 }
 for (const [key, list] of Object.entries(lookup)) for (const id of list) assert(allPublished.has(id), `lookup ${key} -> unpublished ${id}`);
 assert.equal(total, categories.reduce((sum, category) => sum + category.count, 0));
+
+// Round 5 UI contract: the frontend shell relies on these published facts (data is not changed by the shell).
+{
+  const sch = async id => parse(join(root, id, 'schema.json'));
+  const pb = (await sch('power-banks')).fields, rv = (await sch('robot-vacuums')).fields;
+  const f = (list, key) => list.find(x => x.key === key);
+  assert.deepEqual(f(pb, 'out.ports').items.fields.map(x => x.key), ['name','type','direction','max_w','fixed_pdos','pps'], 'port table columns');
+  assert.equal(f(pb, 'out.max_total_w').label, 'All-ports simultaneous output');
+  assert.equal(f(pb, 'out.max_single_port_w').label, 'Best single-port output');
+  assert(['lidar','dtof'].every(v => f(rv, 'nav.type').enum.includes(v)), 'LiDAR alias needs lidar and dtof enum values');
+  for (const key of ['clean.suction_pa','bat.runtime_min','noise.db']) assert(f(rv, key).conditions.includes('claim_basis'), `${key} carries claim_basis`);
+  for (const key of ['bat.runtime_min','noise.db']) assert(f(rv, key).conditions.includes('power_mode'), `${key} carries power_mode`);
+  const rvRows = await parse(join(root, 'robot-vacuums', 'products', 'dreame-aqua10-roller.json'));
+  assert(rvRows.specs['clean.suction_pa'].basis?.claim_basis, 'suction basis present in detail records');
+}
 console.log(`Static dataset smoke passed: ${total} products across ${categories.length} categories; ${parsedJsonFiles} JSON files parsed`);

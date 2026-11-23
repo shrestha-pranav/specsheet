@@ -202,6 +202,14 @@
       : typeof part === 'object' && part.min != null && part.max != null ? escapeHtml(`${part.min}–${part.max}${unit ? ` ${unit}` : ''}`)
       : typeof part === 'object' ? escapeHtml(JSON.stringify(part))
       : escapeHtml(`${part}${typeof part === 'number' && unit ? ` ${unit}` : ''}`);
+    if (presentation?.kind === 'object_table' && field?.key === 'out.ports' && Array.isArray(value)) {
+      const connector = {usb_c:'USB-C', usb_a:'USB-A', cable_c:'USB-C cable', cable_lightning:'Lightning cable', wireless:'Wireless', ac:'AC', dc:'DC'};
+      const dash = '<span class="val-unknown">—</span>';
+      const rows = value.map(item => { const port = item && typeof item === 'object' ? item : {};
+        const pdo = [port.fixed_pdos ? `<span class="pdo-line">${escapeHtml(port.fixed_pdos)}</span>` : '', port.pps ? `<span class="pdo-line">PPS ${escapeHtml(port.pps)}</span>` : ''].join('');
+        return `<tr><td>${port.name ? escapeHtml(port.name) : dash}${port.direction && port.direction !== 'out' ? ` <small class="muted">(${port.direction === 'in' ? 'input' : 'in/out'})</small>` : ''}</td><td>${port.type ? escapeHtml(connector[port.type] || port.type) : dash}</td><td class="num">${typeof port.max_w === 'number' ? `${port.max_w} W` : dash}</td><td>${pdo || dash}</td></tr>`; }).join('');
+      return `<table class="nested-spec-table port-table"><thead><tr><th scope="col">Port</th><th scope="col">Connector</th><th scope="col">Max W</th><th scope="col">PDO / PPS</th></tr></thead><tbody>${rows}</tbody></table>`;
+    }
     if (presentation?.kind === 'object_table' && Array.isArray(value)) {
       const columns = presentation.columns || [];
       return `<table class="nested-spec-table"><thead><tr>${columns.map(column => `<th scope="col">${escapeHtml(column.label)}</th>`).join('')}</tr></thead><tbody>${value.map(item => `<tr>${columns.map(column => { const part = item && typeof item === 'object' ? item[column.key] : null; return `<td>${part === null || part === undefined || part === '' ? '<span class="val-unknown">Unknown</span>' : escapeHtml(typeof part === 'number' ? `${part}${column.unit ? ` ${column.unit}` : ''}` : String(part))}</td>`; }).join('')}</tr>`).join('')}</tbody></table>`;
@@ -242,7 +250,7 @@
     if (typeof value === 'number') return field?.unit ? `${Math.abs(value) >= 1000 ? value.toLocaleString('en-US') : value} ${field.unit}` : String(value);
     return String(value);
   };
-  const basisLabels = {power_basis:{label:'Power basis',values:{energy_star_on_mode:'ENERGY STAR on-mode test',energy_star_sleep:'ENERGY STAR sleep-mode test'}}, cts_version:{label:'DisplayHDR CTS'}, cache_state:{label:'Cache state',values:{in_slc_cache:'in SLC cache'}}};
+  const basisLabels = {power_basis:{label:'Power basis',values:{energy_star_on_mode:'ENERGY STAR on-mode test',energy_star_sleep:'ENERGY STAR sleep-mode test'}}, cts_version:{label:'DisplayHDR CTS'}, cache_state:{label:'Cache state',values:{in_slc_cache:'in SLC cache'}}, claim_basis:{label:'Claim basis',values:{mfr_in_house_lab:'manufacturer in-house lab',mfr_unstated:'unstated',mfr_reported_certified:'manufacturer-reported certification',third_party_certified:'third-party certified',independent_measured:'independent measurement'}}, power_mode:{label:'Mode',values:{quiet:'quiet',standard:'standard',max:'max',unstated:'unstated'}}};
   const modeLabels = {negotiated:'negotiated', sustained:'sustained', peak:'peak', advertised_by_device:'advertised by device'};
   const kindLabels = {official:'Manufacturer-stated', measured:'Measured', derived:'Derived', reported:'Reported'};
   const basisText = basis => Object.entries(basis || {}).map(([key, value]) => { const meta = basisLabels[key]; return `${meta?.label || key.replaceAll('_', ' ')}: ${key === 'cts_version' ? `v${value}` : (meta?.values?.[value] || String(value).replaceAll('_', ' '))}`; });
@@ -354,6 +362,15 @@
   const returnUrl = (category, query) => categoryUrl(category.id, query ? `?${query}` : '');
   const withPreview = (category, query, preview) => { if (!preview || !category.preview) return query; const state = initialState(category, new URLSearchParams(query)); state.preview = true; return categoryStateQuery(state); };
   const returnWithIds = (category, query, ids) => { const state = initialState(category, new URLSearchParams(query)); state.ids = ids; return categoryStateQuery(state); };
+  // Facet aliases live in the shell, not the data: a LiDAR filter must also match dToF (a kind of LiDAR). Keyed by field key, then selected value.
+  const FACET_ALIASES = {'nav.type': {lidar: ['lidar', 'dtof']}};
+  const aliasLabel = (field, option) => { const extra = (FACET_ALIASES[field.key]?.[option] || []).filter(value => value !== option); return extra.length ? `${option} (incl. ${extra.join(', ')})` : option; };
+  // Measurement-method conditions: figures with a different claim basis or operating mode are not like-for-like.
+  const METHOD_DEFAULTS = {claim_basis: 'mfr_unstated', power_mode: 'unstated'};
+  const methodKeys = field => (field?.conditions || []).filter(key => Object.hasOwn(METHOD_DEFAULTS, key));
+  const methodValue = (spec, key) => spec?.basis?.[key] ?? METHOD_DEFAULTS[key];
+  const methodsDiffer = (specs, field) => { const known = specs.filter(isKnown); return known.length > 1 && methodKeys(field).some(key => new Set(known.map(spec => methodValue(spec, key))).size > 1); };
+  const methodsFlag = (specs, field) => { const parts = methodKeys(field).map(key => { const labels = [...new Set(specs.filter(isKnown).map(spec => methodValue(spec, key)))].map(value => basisLabels[key]?.values?.[value] || value); return labels.length > 1 ? `${basisLabels[key]?.label || key}: ${labels.join(' vs ')}` : ''; }).filter(Boolean); return `<small class="methods-flag" title="${escapeHtml(parts.join('; ') || 'Measurement methods differ')}">methods differ</small>`; };
   const facetKey = (field, suffix = 'value') => `f_${field.key}_${suffix}`;
   const groupLabel = (category, id) => category.groups?.find(group => group.id === id)?.label || id;
   const facetControl = (field, rows, state) => {
@@ -369,7 +386,7 @@
     if (field.type === 'bool') return `<div class="filter-field"><label for="facet-${field.key}">${label}</label><select id="facet-${field.key}" data-filter="${key}"><option value="">Any</option><option value="yes" ${value === 'yes' ? 'selected' : ''}>Yes</option><option value="no" ${value === 'no' ? 'selected' : ''}>No</option><option value="unknown" ${value === 'unknown' ? 'selected' : ''}>Unknown</option></select></div>`;
     if (field.type === 'enum') {
       const options = field.enum || field.options || [...new Set(rows.map(row => specObject(row, field.key)).filter(isKnown).map(s => s.value).filter(v => typeof v === 'string'))].sort();
-      return `<div class="filter-field"><label for="facet-${field.key}">${label}</label><select id="facet-${field.key}" data-filter="${key}"><option value="">Any</option>${options.map(option => `<option value="${escapeHtml(option)}" ${option === state.filters[key] ? 'selected' : ''}>${escapeHtml(option)}</option>`).join('')}<option value="__unknown" ${value === '__unknown' ? 'selected' : ''}>Unknown</option></select></div>`;
+      return `<div class="filter-field"><label for="facet-${field.key}">${label}</label><select id="facet-${field.key}" data-filter="${key}"><option value="">Any</option>${options.map(option => `<option value="${escapeHtml(option)}" ${option === state.filters[key] ? 'selected' : ''}>${escapeHtml(aliasLabel(field, option))}</option>`).join('')}<option value="__unknown" ${value === '__unknown' ? 'selected' : ''}>Unknown</option></select></div>`;
     }
     return `<div class="filter-field"><label for="facet-${field.key}">${label}</label><input id="facet-${field.key}" type="search" data-filter="${key}" value="${value}" placeholder="Contains…"></div>`;
   };
@@ -405,7 +422,7 @@
     if (query === '__unknown' || (field.type === 'bool' && query === 'unknown')) return !isKnown(spec);
     if (!isKnown(spec)) return false;
     if (field.type === 'bool') return spec.value === (query === 'yes');
-    if (field.type === 'enum') return spec.value === query;
+    if (field.type === 'enum') return (FACET_ALIASES[field.key]?.[query] || [query]).includes(spec.value);
     return formatRaw(spec.value, field).toLocaleLowerCase().includes(query.toLocaleLowerCase());
   };
   const coverage = row => { const parts = Object.values(row.completeness || {}); const total = parts.reduce((n, p) => n + p[1], 0); return total ? parts.reduce((n, p) => n + p[0], 0) / total : 0; };
@@ -519,6 +536,15 @@
       state.ids = state.ids.filter(id => id !== button.dataset.remove);
       update();
     });
+    // The listing index carries values only; claim basis / mode come from the detail record of the 2-4 products picked for comparison.
+    const methodFields = category.fields.filter(field => methodKeys(field).length);
+    function enrichCompared() {
+      if (!methodFields.length || state.ids.length < 2) return;
+      const pending = selectedRows(rows, state).filter(row => !row.methodsLoaded);
+      if (!pending.length) return;
+      pending.forEach(row => { row.methodsLoaded = true; });
+      Promise.all(pending.map(row => detailFor(category.id, row.id).then(record => { for (const field of methodFields) { const detail = record.specs?.[field.key]; if (detail?.basis && row.specs[field.key]?.status === 'known') row.specs[field.key] = {...row.specs[field.key], basis: detail.basis}; } }).catch(() => {}))).then(() => { if (sequence === routeSequence) update(); });
+    }
     function update() {
       const active = document.activeElement;
       const focus = active?.closest('#results-table') ? {kind: active.dataset.select ? 'select' : 'sort', value: active.dataset.select || active.dataset.sort} :
@@ -544,11 +570,12 @@
       const groupInfo = grouped ? new Map(pageUnits.filter(unit => unit.members[0].kind === 'configuration' && unit.members[0].parent_id).map(unit => [unit.members[0].id, {parent:unit.key, name:unit.members[0].name, matching:unit.members.length, total:configTotals.get(unit.key) || unit.members.length}])) : null;
       main.querySelector('#result-count').textContent = `${filtered.length} of ${rows.length} products${state.preview ? ' (accepted plus unreviewed candidates)' : ''}${grouped ? `, in ${units.length} ${units.length === 1 ? 'group' : 'groups'}` : ''}${pages > 1 ? `. Page ${state.page} of ${pages}` : ''}`;
       const query = categoryStateQuery(state);
-      renderTable(category, pageUnits.flatMap(unit => unit.members), state, query, {found, total:rows.length, hiddenByFilters:base.length - filtered.length, baseCount:base.length, groupInfo});
+      renderTable(category, pageUnits.flatMap(unit => unit.members), state, query, {found, total:rows.length, hiddenByFilters:base.length - filtered.length, baseCount:base.length, groupInfo, compared:selectedRows(rows, state)});
       main.querySelector('#pagination').innerHTML = pages > 1 ? `<nav class="pagination" aria-label="Result pages"><button type="button" data-dir="prev" data-page="${state.page - 1}" ${state.page === 1 ? 'disabled' : ''}>Previous</button><span>Page ${state.page} of ${pages}</span><button type="button" data-dir="next" data-page="${state.page + 1}" ${state.page === pages ? 'disabled' : ''}>Next</button></nav>` : '';
       renderShelf(category, rows, state, query);
       main.querySelector('#selection-status').textContent = `${state.ids.length} selected. ${state.ids.length >= 4 ? 'Maximum of 4; remove one to add another.' : state.ids.length >= 2 ? 'Compare products available.' : 'Choose 2 to 4 products to compare.'}`;
       persistCategoryState(category, state);
+      enrichCompared();
       if (focus?.kind === 'select') [...main.querySelectorAll('[data-select]')].find(input => input.dataset.select === focus.value)?.focus();
       if (focus?.kind === 'sort') [...main.querySelectorAll('[data-sort]')].find(button => button.dataset.sort === focus.value)?.focus();
       if (focus?.kind === 'shelf') ([...main.querySelectorAll('#compare-shelf [data-remove]')].find(button => button.dataset.remove === focus.value) || main.querySelector('#compare-shelf [data-remove]') || search).focus();
@@ -585,12 +612,15 @@
     const columnHeader = (key, label, cls = '') => `<th scope="col" class="${cls}" aria-sort="${state.sort === key ? (state.dir === 'asc' ? 'ascending' : 'descending') : 'none'}"><button type="button" data-sort="${escapeHtml(key)}">${escapeHtml(label)} ${state.sort === key ? (state.dir === 'asc' ? '↑' : '↓') : ''}</button></th>`;
     const target = main.querySelector('#results-table');
     if (!rows.length) { target.innerHTML = emptyState(category, state, {found:{identifiers:[], terms:[]}, total:rows.length, baseCount:0, ...ctx}); return; }
+    const compared = ctx.compared || [];
+    const methodDiff = new Set(compared.length > 1 ? fields.filter(f => methodKeys(f).length && methodsDiffer(compared.map(r => specObject(r, f.key)), f)).map(f => f.key) : []);
+    const cellHtml = (row, f) => cellValue(category, row, f) + (methodDiff.has(f.key) && state.ids.includes(row.id) && isKnown(specObject(row, f.key)) ? ' ' + methodsFlag(compared.map(r => specObject(r, f.key)), f) : '');
     const body = rows.map(row => {
       const info = ctx.groupInfo?.get(row.id);
       const groupHeader = info ? `<tr class="model-group"><th colspan="${fields.length + 4}" scope="rowgroup">Configurations of <a href="${productUrl(category.id, info.parent, query)}">${escapeHtml(info.name)}</a> <span class="muted">(${info.matching} matching of ${info.total} configurations)</span></th></tr>` : '';
       const why = ctx.found?.matches.get(row.id)?.why;
       const parentLine = row.kind === 'configuration' && row.parent_id ? `<small class="entity-kind">Configuration of <a href="${productUrl(category.id, row.parent_id, query)}">${escapeHtml(row.name)} (model)</a></small>` : row.kind ? `<small class="entity-kind">${escapeHtml(row.kind[0].toUpperCase() + row.kind.slice(1))}</small>` : '';
-      return `${groupHeader}<tr class="${state.ids.includes(row.id) ? 'selected' : ''}${row.unreviewed ? ' unreviewed' : ''}"><td class="select-cell"><input type="checkbox" data-select="${escapeHtml(row.id)}" aria-label="Select ${escapeHtml(row.name)} ${escapeHtml(row.model || '')} for comparison" ${state.ids.includes(row.id) ? 'checked' : ''} ${state.ids.length >= 4 && !state.ids.includes(row.id) ? 'disabled' : ''}></td><td class="col-brand">${escapeHtml(row.brand)}</td><td class="name-cell"><span class="brand-compact">${escapeHtml(row.brand)}</span><a href="${productUrl(category.id, row.id, query)}">${escapeHtml(row.name)}</a> ${demoBadge(row)}${row.unreviewed ? ` ${unreviewedBadge}` : ''}<span class="code id-compact">${escapeHtml(row.model || '—')}</span>${row.variant_label ? `<small class="variant-label">${escapeHtml(row.variant_label)}</small>` : ''}${parentLine}${why ? `<small class="match-why">${escapeHtml(why)}</small>` : ''}</td><td class="code col-model">${escapeHtml(row.model || '—')}</td>${fields.map(f => `<td class="${['number','integer'].includes(f.type) ? 'num' : ''}">${cellValue(category, row, f)}</td>`).join('')}</tr>`;
+      return `${groupHeader}<tr class="${state.ids.includes(row.id) ? 'selected' : ''}${row.unreviewed ? ' unreviewed' : ''}"><td class="select-cell"><input type="checkbox" data-select="${escapeHtml(row.id)}" aria-label="Select ${escapeHtml(row.name)} ${escapeHtml(row.model || '')} for comparison" ${state.ids.includes(row.id) ? 'checked' : ''} ${state.ids.length >= 4 && !state.ids.includes(row.id) ? 'disabled' : ''}></td><td class="col-brand">${escapeHtml(row.brand)}</td><td class="name-cell"><span class="brand-compact">${escapeHtml(row.brand)}</span><a href="${productUrl(category.id, row.id, query)}">${escapeHtml(row.name)}</a> ${demoBadge(row)}${row.unreviewed ? ` ${unreviewedBadge}` : ''}<span class="code id-compact">${escapeHtml(row.model || '—')}</span>${row.variant_label ? `<small class="variant-label">${escapeHtml(row.variant_label)}</small>` : ''}${parentLine}${why ? `<small class="match-why">${escapeHtml(why)}</small>` : ''}</td><td class="code col-model">${escapeHtml(row.model || '—')}</td>${fields.map(f => `<td class="${['number','integer'].includes(f.type) ? 'num' : ''}">${cellHtml(row, f)}</td>`).join('')}</tr>`;
     }).join('');
     target.innerHTML = `<div class="table-scroll" role="region" aria-label="Product comparison table" tabindex="0"><table><thead><tr><th scope="col" class="select-head">Select</th>${columnHeader('brand','Brand','col-brand')}${columnHeader('name','Product','name-head')}${columnHeader('model', modelLabel(category), 'col-model')}${fields.map(f => columnHeader(f.key, f.label)).join('')}</tr></thead><tbody>${body}</tbody></table></div>`;
   }
@@ -764,7 +794,8 @@
           if (differencesOnly && !claimDiff && !candidateDiff) { if (evidenceDiff) evidenceOnly++; return ''; }
           rowCount++;
           const flag = claimDiff ? ' <span class="diff-flag">Claims differ</span>' : candidateDiff ? ' <span class="diff-flag candidate">Unreviewed candidates differ</span>' : evidenceDiff ? ' <span class="diff-flag evidence">Same value, different evidence</span>' : '';
-          return `<tr class="${claimDiff ? 'different' : candidateDiff ? 'candidate-different' : evidenceDiff ? 'evidence-different' : ''}"><th scope="row">${escapeHtml(field.label)}${flag}</th>${cells.map((spec, index) => `<td>${records[index].previewOnly ? previewMark(valueWithContext(spec, field, records[index].sources)) : valueWithContext(spec, field, records[index].sources) + previewOverlay(records[index], field.key, field)}<div class="evidence-cell">${evidenceMarkup(records[index], spec)}</div></td>`).join('')}</tr>`;
+          const methods = methodsDiffer(cells, field) ? methodsFlag(cells, field) : '';
+          return `<tr class="${claimDiff ? 'different' : candidateDiff ? 'candidate-different' : evidenceDiff ? 'evidence-different' : ''}"><th scope="row">${escapeHtml(field.label)}${flag}</th>${cells.map((spec, index) => `<td>${records[index].previewOnly ? previewMark(valueWithContext(spec, field, records[index].sources)) : valueWithContext(spec, field, records[index].sources) + previewOverlay(records[index], field.key, field)}${methods && isKnown(spec) ? ` ${methods}` : ''}<div class="evidence-cell">${evidenceMarkup(records[index], spec)}</div></td>`).join('')}</tr>`;
         }).filter(Boolean).join('');
         return items ? `<tr class="group-row"><th colspan="${records.length + 1}" scope="colgroup">${escapeHtml(groupLabel(category,group))}</th></tr>${items}` : '';
       }).join('');

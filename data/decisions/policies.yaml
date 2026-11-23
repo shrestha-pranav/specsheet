@@ -1154,6 +1154,192 @@ claim_policies:
       csa-dcl-robovac:
       - smart.matter
     require_normalized: true
+- id: claim/mfr-power-stations-structured@1
+  since: '2026-11-23'
+  rationale: 'Portable power stations, manufacturer-owned US store spec tables (EcoFlow, BLUETTI, Jackery, Goal Zero, Anker SOLIX). Only labelled spec
+    rows are read (never prose or titles) and review-3 rules hold from the start: (1) no negation-blind keyword enums: waveform, chemistry, UPS,
+    expandability and UL 2743 / UL 9540 come only from their own labelled rows with an affirmative phrase, false only from a row whose value is just
+    No; (2) totals only with explicit membership: AC continuous = the AC row tagged total/rated/continuous (or the single AC row with one W figure),
+    combined solar input only from a printed total/dual-port/Double-to figure or one unmultiplied figure, best single USB-C only from a figure printed
+    for one port or per port, no cross-port sum; (3) capacity bases separate: rated pack Wh, usable Wh (labelled only), pack V and Ah are distinct keys,
+    two Wh figures in a cell are unresolved, Wh is never computed; (4) conditions carry each basis: cycle life retention_pct, recharge charge_to_pct +
+    charger, UPS backup_mode, solar window voltage_basis (+ port), AC input ac_charge_mode, expanded Wh extra_batteries; (5) conflict-aware grouping:
+    unit variants vs package variants (solar/battery/charger bundles are never aliases or spec sources), several unit SKU stems = absence, Jackery
+    per-variant blocks kept apart (230 V blocks skipped), a block that splits values per model or names another product = absence. exp.batteries
+    (name extraction) is deliberately NOT accepted.'
+  audit:
+    by: A1+A2 power stations
+    at: '2026-11-23'
+    evidence: Parsed every stored page of the five sources; spot-checked one table per model (team/reports/2026-11-23-a12-power-stations.md);
+      helper fixtures in tests/test_power_stations.py.
+    parsers:
+      ankersolix_stations@1: sha256:1801fa626c3cdf2dbef9
+      bluetti_stations@1: sha256:ffaf6370748d1b8fd1da
+      ecoflow_stations@1: sha256:ffaf6370748d1b8fd1da
+      goalzero_stations@1: sha256:ffaf6370748d1b8fd1da
+      jackery_stations@1: sha256:ffaf6370748d1b8fd1da
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  match:
+    extractors:
+    - ankersolix_stations@1
+    - bluetti_stations@1
+    - ecoflow_stations@1
+    - goalzero_stations@1
+    - jackery_stations@1
+    source_ids:
+    - ecoflow-us-stations
+    - bluetti-us-stations
+    - jackery-us-stations
+    - goalzero-us-stations
+    - ankersolix-us-stations
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    keys:
+      ecoflow-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - conn.wireless
+      - exp.expandable
+      - exp.max_batteries
+      - exp.max_wh
+      - gen.warranty_years
+      - in.ac_w
+      - in.car_w
+      - in.solar_port_w
+      - in.solar_ports
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_boost_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      bluetti-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - cert.marks
+      - cert.ul2743
+      - conn.wireless
+      - exp.expandable
+      - gen.warranty_years
+      - in.ac_w
+      - in.max_w
+      - in.passthrough
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_boost_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ac_waveform
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - out.wireless_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      jackery-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - gen.warranty_years
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      goalzero-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - cert.marks
+      - exp.expandable
+      - gen.warranty_years
+      - in.ac_w
+      - in.recharge_ac_h
+      - in.recharge_solar_h
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ac_waveform
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      ankersolix-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - conn.wireless
+      - exp.expandable
+      - exp.max_batteries
+      - exp.max_wh
+      - gen.warranty_years
+      - in.ac_w
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
 relation_policies:
 - id: rel/source-stated-hierarchy@2
   since: '2026-11-23'
