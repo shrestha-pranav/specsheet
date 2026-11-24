@@ -153,20 +153,20 @@ claim_policies:
     keys: [hdr.vesa_tier]
     statuses: [known]
     require_normalized: true
-- id: claim/mfr-ssd-structured@3
+- id: claim/mfr-ssd-structured@4
   since: '2026-11-24'
-  supersedes: claim/mfr-ssd-structured@2
-  rationale: 'Same keys, sources, kinds and up-to speed rule as @2, re-issued for sandisk_ssd@2 -> @3 and teamgroup_ssd@2 -> @3. The one change (crawler/adapters/_ssdprose.py): hw.nand_type, hw.nand_vendor, hw.controller, hw.controller_vendor and hw.dram_type are also read from an explicit affirmative sentence of the product page about the drive (''built with ... BiCS TLC 3D CBA NAND'', ''PHISON PS5027-E27T control chip'', ''supports ... Host Memory Buffer (HMB)''), quote kept as raw, only where the spec table is silent for that SKU. Hedged/comparative sentences, two values on one page and silence write nothing; a bare ''DRAM-less'' is not mapped. TEAMGROUP ''DRAM Cache: NO'' + a stated HMB = dramless_hmb.'
+  supersedes: claim/mfr-ssd-structured@3
+  rationale: 'Same keys, sources, kinds and rules as @3, re-issued for sandisk_ssd@3 -> @4 and teamgroup_ssd@3 -> @4 (both import crawler/adapters/_ssdprose.py). The one change: an explicit page sentence that calls the drive DRAM-less and says nothing about HMB now writes hw.dram_type = dramless (new profile value: HMB unstated; hw.hmb_support stays unknown, never assumed). A hedged/comparative sentence still says nothing, except the self-description ''this DRAM-less drive ...'' (its comparison is about another attribute). A sentence naming HMB still writes dramless_hmb; two values on a page = nothing.'
   audit:
-    by: A2 coverage r2
+    by: A2 coverage r3
     at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD): sandisk +160 (nand_type 85, nand_vendor 71, controller_vendor 4), teamgroup +78/-4 (4 dramless_none -> dramless_hmb on G50 EVO)'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r3.md; claim diff old (git worktree of HEAD) vs new parsers over every stored snapshot: sandisk +22 hw.dram_type=dramless (SN7100S 16, SN7100 4, SN7100X 2), 0 removed; teamgroup 0 changes'
     parsers:
-      sandisk_ssd@3: 'sha256:a17c54f651dda1d59873'
-      teamgroup_ssd@3: 'sha256:0ff6acf0cbf3f80f83d8'
+      sandisk_ssd@4: 'sha256:05de40f98b4ac34391f0'
+      teamgroup_ssd@4: 'sha256:8e46fb3a4a5c7bbf19b4'
   approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [sandisk_ssd@3, teamgroup_ssd@3]
+    extractors: [sandisk_ssd@4, teamgroup_ssd@4]
     source_ids: [sandisk-us-ssd, teamgroup-us-ssd]
     kinds: [official]
     tiers: [manufacturer]
@@ -1068,22 +1068,19 @@ claim_policies:
       asus-us-monitors: [flk.pwm, usb.usbc_pd_w]
       lg-us: [flk.pwm]
       lenovo-psref-monitors: [flk.pwm]
-- id: claim/mfr-ssd-kingston@1
+- id: claim/mfr-ssd-kingston@2
   since: '2026-11-24'
-  rationale: 'Kingston client SSDs from Kingston''s own datasheet PDFs (kingston_ssd@1; product pages are Cloudflare-blocked, the datasheets are not,
-    research/ssds/merchants.md). Per configuration = orderable part number, tied to its Specifications block by form factor; per-capacity rows only
-    when the row names that capacity. Speeds are the datasheet figures, accepted like claim/mfr-ssd-structured@3 (no cache_state condition is
-    inferred). NAND ''3D'' alone, a generic ''Gen 4x4 NVMe controller'' and a missing DRAM row write nothing. Only the listed keys.'
+  supersedes: claim/mfr-ssd-kingston@1
+  rationale: 'Same keys and rules as @1 for kingston_ssd@1 -> @2. The parser now also reads the older two-column datasheet layout (NV2, NV1, A2000: upper-case SPECIFICATIONS, label lines or ''>>Label value'', part numbers in the right column cut off before rows are read) into the same rows; per-capacity rows written as ''X MB/s (250GB)'' or two ''CAP - value'' pairs on one line are split per capacity. Output for the six current-layout datasheets is byte-identical to @1.'
   audit:
-    by: A2 coverage r2
+    by: A2 coverage r3
     at: '2026-11-24'
-    evidence: 'six of nine seeded datasheets parsed (KC3000, FURY Renegade, FURY Renegade G5, NV3, A400, XS2000; 25 part numbers, spot-checked
-      against the PDFs); NV2/NV1/A2000 use an older two-column layout and yield nothing. team/reports/2026-11-24-a2-coverage-r2.md'
+    evidence: 'claim diff old (git worktree of HEAD) vs new over all 9 stored datasheets: +132 claims, 0 removed, all on SNV2S (5 part numbers), SNVS (4), SA2000M8 (3); spot-checked against the PDFs (NV2 250GB 3,000/1,300 MB/s 80TBW; A2000 3D TLC, 5-year warranty). NV2/NV1 print NAND ''3D'' only and no DRAM row: those stay unknown.'
     parsers:
-      kingston_ssd@1: 'sha256:121f49289440b7fa99f3'
+      kingston_ssd@2: 'sha256:7642be0126681cbc4120'
   approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [kingston_ssd@1]
+    extractors: [kingston_ssd@2]
     source_ids: [kingston-us-ssd]
     kinds: [official]
     tiers: [manufacturer]
@@ -1092,15 +1089,61 @@ claim_policies:
     keys:
       kingston-us-ssd: [end.mtbf, end.tbw, end.warranty_years, gen.capacity, gen.device_class, gen.form_factor, hw.controller, hw.controller_vendor,
         hw.dram_type, hw.nand_type, if.pcie_gen, if.pcie_lanes, if.protocol, if.usb_standard, perf.seq_read, perf.seq_write, therm.temp_operating]
-relation_policies:
-- id: rel/source-stated-hierarchy@3
+- id: claim/mfr-routers-direct@1
   since: '2026-11-24'
-  supersedes: rel/source-stated-hierarchy@2
-  rationale: 'Same rules as @2 with the parser versions bumped (lenovo_monitors@1 -> @2, sandisk_ssd@2 -> @3, teamgroup_ssd@2 -> @3: none of the bumps touches identifiers, so the links are unchanged) plus ONE new rule: adapter:kingston-us-ssd member_of_family/configuration_of from kingston_ssd@1 (part number -> part-number stem, as stated in the Kingston datasheet). Suffix/stem inference still never covered.'
+  rationale: 'Ubiquiti UniFi gateways + access points from techspecs.ui.com (ubiquiti_routers@1: the page''s labelled technicalSpecification tree, per-band rows are children named by their band) and GL.iNet routers from the Specifications table of their own store pages (glinet_routers@1; comparison tables on the same page are never read). Only the listed keys, only values that normalise. Per-band streams only from an NxN band row, widths only from that band''s ''(BWnnn)'' max-rate row, has_6ghz only True. hw.soc_vendor only where the maker names the vendor (GL.iNet ''MediaTek Quad-core''), hw.soc_model only from an explicit part (IPQ6000, MT7981B); Ubiquiti names CPU cores (''Cortex-A53''), never the SoC, so it writes cores/GHz only. Ubiquiti port.lan_count = Port Layout total minus the stated default WAN ports (console/MGMT excluded). gen.device_type from the maker''s own classification (URL section / Shopify product_type). port.poe is the maker''s power-method / PoE-budget text.'
   audit:
-    by: A2 coverage r2
+    by: A2 coverage r3
     at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD)'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r3.md; 53 Ubiquiti + 45 GL.iNet pages parsed (35 GL.iNet with a spec table), spot-checked UDR7, U7-Pro, UDM-Beast, EF-Core, GL-MT6000, GL-BE9300, GL-MT3000 against the pages'
+    parsers:
+      ubiquiti_routers@1: 'sha256:138542eeff2a206ce032'
+      glinet_routers@1: 'sha256:0cc737c8a6fbac3f78a1'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [ubiquiti_routers@1, glinet_routers@1]
+    source_ids: [ubiquiti-us-routers, glinet-us-routers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      ubiquiti-us-routers: [gen.device_type, gen.product_line, hw.cpu_cores, hw.cpu_ghz, hw.flash_mb, hw.ram_mb, hw.soc_model, hw.soc_vendor, isp.ipv6,
+        mesh.coverage_sqft, mesh.supported, phys.dimensions, phys.weight, port.lan_count, port.lan_max_mbps, port.multigig_count, port.poe,
+        port.wan_lan_configurable, port.wan_speed_mbps, port.wan_type, pwr.max_w, sw.vpn_client, sw.vpn_server, sw.wireguard, wifi.band_count,
+        wifi.generation, wifi.has_6ghz, wifi.max_width_5_mhz, wifi.max_width_6_mhz, wifi.mu_mimo, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_6_mbps,
+        wifi.streams_24, wifi.streams_5, wifi.streams_6, wifi.wpa3]
+      glinet-us-routers: [gen.device_type, hw.cpu_cores, hw.cpu_ghz, hw.flash_mb, hw.ram_mb, hw.soc_model, hw.soc_vendor, phys.dimensions, phys.weight,
+        port.lan_count, port.lan_max_mbps, port.multigig_count, port.usb_count, port.usb_standard, port.wan_lan_configurable, port.wan_speed_mbps,
+        wifi.generation, wifi.has_6ghz, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_6_mbps]
+- id: claim/mfr-monitor-benq@1
+  since: '2026-11-24'
+  rationale: 'BenQ US monitor spec pages (benq_monitors@1: server-rendered spec-container name/detail rows, one model per page). flk.pwm = none ONLY from an affirmative ''Flicker-free Technology: Yes'' row, stored as the maker''s declaration with the literal quoted (same meaning as claim/monitor-flicker-label-map@1: TUV flicker-free may be tested at default brightness only; never a measurement; No/blank/silence writes nothing). usb.usbc_pd_w only from the ''Power Delivery(USB C / Thunderbolt)'' row or an upstream ''USB C(PowerDelivery NNW, ...)'' port label with exactly one figure; downstream charging ports never count; two figures (''35W / 96W'') write nothing. Panel type only IPS/VA/TN/QD-OLED/WOLED as printed; refresh = the maximum stated.'
+  audit:
+    by: A2 coverage r3
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r3.md; 136 spec pages, 134 parsed (2 are editions/bundles without one model code); flk.pwm 122, usb.usbc_pd_w 68; spot-checked EX2710S, PD2706U, GW2490'
+    parsers:
+      benq_monitors@1: 'sha256:f308344e2cec95880ec1'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [benq_monitors@1]
+    source_ids: [benq-us-monitors]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      benq-us-monitors: [ergo.vesa, flk.cert, flk.pwm, gen.size_class, panel.technology, pwr.max, res.height_px, res.refresh_max, res.width_px, usb.usbc_pd_w]
+relation_policies:
+- id: rel/source-stated-hierarchy@4
+  since: '2026-11-24'
+  supersedes: rel/source-stated-hierarchy@3
+  rationale: 'Same rules as @3 with three parser versions bumped (sandisk_ssd@4 -> @4, teamgroup_ssd@4 -> @4: hw.dram_type prose only; kingston_ssd@2 -> @2: older datasheet layout, the same part number -> part-number stem links for the new NV2/NV1/A2000 part numbers). No identifier logic changed; no new method.'
+  audit:
+    by: A2 coverage r3
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r3.md; identifier diff old vs new: sandisk/teamgroup unchanged, kingston +12 part numbers (3 new stems)'
     parsers:
       lenovo_psref@2: 'sha256:ec6a55f8081086820989'
       asus@1: 'sha256:628db32b5ba83fa291c6'
@@ -1110,9 +1153,9 @@ relation_policies:
       samsung@1: 'sha256:d0e9cabff53a15285159'
       lenovo_monitors@2: 'sha256:ed0431bb405523a78915'
       samsung_ssd@2: 'sha256:a6cbc9077c793c287d62'
-      sandisk_ssd@3: 'sha256:a17c54f651dda1d59873'
-      teamgroup_ssd@3: 'sha256:0ff6acf0cbf3f80f83d8'
-      kingston_ssd@1: 'sha256:121f49289440b7fa99f3'
+      sandisk_ssd@4: 'sha256:05de40f98b4ac34391f0'
+      teamgroup_ssd@4: 'sha256:8e46fb3a4a5c7bbf19b4'
+      kingston_ssd@2: 'sha256:7642be0126681cbc4120'
       tplink_routers@2: 'sha256:c7318e9238be7635b158'
       crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'
   approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
@@ -1143,13 +1186,13 @@ relation_policies:
     parsers: [samsung_ssd@2]
   - method: adapter:sandisk-us-ssd
     types: [member_of_family, configuration_of]
-    parsers: [sandisk_ssd@3]
+    parsers: [sandisk_ssd@4]
   - method: adapter:teamgroup-us-ssd
     types: [member_of_family, configuration_of]
-    parsers: [teamgroup_ssd@3]
+    parsers: [teamgroup_ssd@4]
   - method: adapter:kingston-us-ssd
     types: [member_of_family, configuration_of]
-    parsers: [kingston_ssd@1]
+    parsers: [kingston_ssd@2]
   - method: adapter:tplink-us-routers
     types: [variant_of]
     parsers: [tplink_routers@2]
@@ -3188,3 +3231,122 @@ retired_policies:
     types: [contains]
     parsers: [narwal_robovac@2+bundles@2]
   retired: {at: '2026-11-24', superseded_by: rel/bundle-contents@3, reason: 'station extractors bumped @2 -> @3 (r7 shared _powerbank); @2 meaning frozen as locked'}
+- id: claim/mfr-ssd-structured@3
+  since: '2026-11-24'
+  supersedes: claim/mfr-ssd-structured@2
+  rationale: 'Same keys, sources, kinds and up-to speed rule as @2, re-issued for sandisk_ssd@2 -> @3 and teamgroup_ssd@2 -> @3. The one change (crawler/adapters/_ssdprose.py): hw.nand_type, hw.nand_vendor, hw.controller, hw.controller_vendor and hw.dram_type are also read from an explicit affirmative sentence of the product page about the drive (''built with ... BiCS TLC 3D CBA NAND'', ''PHISON PS5027-E27T control chip'', ''supports ... Host Memory Buffer (HMB)''), quote kept as raw, only where the spec table is silent for that SKU. Hedged/comparative sentences, two values on one page and silence write nothing; a bare ''DRAM-less'' is not mapped. TEAMGROUP ''DRAM Cache: NO'' + a stated HMB = dramless_hmb.'
+  audit:
+    by: A2 coverage r2
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD): sandisk +160 (nand_type 85, nand_vendor 71, controller_vendor 4), teamgroup +78/-4 (4 dramless_none -> dramless_hmb on G50 EVO)'
+    parsers:
+      sandisk_ssd@3: 'sha256:a17c54f651dda1d59873'
+      teamgroup_ssd@3: 'sha256:0ff6acf0cbf3f80f83d8'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [sandisk_ssd@3, teamgroup_ssd@3]
+    source_ids: [sandisk-us-ssd, teamgroup-us-ssd]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    keys: [gen.capacity, gen.device_class, gen.form_factor, gen.weight, if.pcie_gen, if.pcie_lanes, if.protocol, if.nvme_version, if.usb_standard, if.usb_connector,
+      hw.controller, hw.controller_vendor, hw.dram_type, hw.dram_size, hw.dram_gen, hw.nand_type, hw.nand_vendor, perf.seq_read, perf.seq_write, perf.rand_read_iops_qd1,
+      perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption,
+      therm.temp_operating, port.drop]
+    require_normalized: true
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-ssd-structured@4, reason: 'parser bumps sandisk_ssd@4 / teamgroup_ssd@4 (_ssdprose: bare DRAM-less = dramless); @3 meaning frozen as locked'}
+- id: claim/mfr-ssd-kingston@1
+  since: '2026-11-24'
+  rationale: 'Kingston client SSDs from Kingston''s own datasheet PDFs (kingston_ssd@1; product pages are Cloudflare-blocked, the datasheets are not,
+    research/ssds/merchants.md). Per configuration = orderable part number, tied to its Specifications block by form factor; per-capacity rows only
+    when the row names that capacity. Speeds are the datasheet figures, accepted like claim/mfr-ssd-structured@3 (no cache_state condition is
+    inferred). NAND ''3D'' alone, a generic ''Gen 4x4 NVMe controller'' and a missing DRAM row write nothing. Only the listed keys.'
+  audit:
+    by: A2 coverage r2
+    at: '2026-11-24'
+    evidence: 'six of nine seeded datasheets parsed (KC3000, FURY Renegade, FURY Renegade G5, NV3, A400, XS2000; 25 part numbers, spot-checked
+      against the PDFs); NV2/NV1/A2000 use an older two-column layout and yield nothing. team/reports/2026-11-24-a2-coverage-r2.md'
+    parsers:
+      kingston_ssd@1: 'sha256:121f49289440b7fa99f3'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [kingston_ssd@1]
+    source_ids: [kingston-us-ssd]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      kingston-us-ssd: [end.mtbf, end.tbw, end.warranty_years, gen.capacity, gen.device_class, gen.form_factor, hw.controller, hw.controller_vendor,
+        hw.dram_type, hw.nand_type, if.pcie_gen, if.pcie_lanes, if.protocol, if.usb_standard, perf.seq_read, perf.seq_write, therm.temp_operating]
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-ssd-kingston@2, reason: 'parser bump kingston_ssd@2 (older two-column datasheet layout); @1 meaning frozen as locked'}
+- id: rel/source-stated-hierarchy@3
+  since: '2026-11-24'
+  supersedes: rel/source-stated-hierarchy@2
+  rationale: 'Same rules as @2 with the parser versions bumped (lenovo_monitors@1 -> @2, sandisk_ssd@2 -> @3, teamgroup_ssd@2 -> @3: none of the bumps touches identifiers, so the links are unchanged) plus ONE new rule: adapter:kingston-us-ssd member_of_family/configuration_of from kingston_ssd@1 (part number -> part-number stem, as stated in the Kingston datasheet). Suffix/stem inference still never covered.'
+  audit:
+    by: A2 coverage r2
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD)'
+    parsers:
+      lenovo_psref@2: 'sha256:ec6a55f8081086820989'
+      asus@1: 'sha256:628db32b5ba83fa291c6'
+      dell@1: 'sha256:13cd4d61b81c005021b6'
+      surface@1: 'sha256:80cd87b7b1b87d6969e9'
+      razer@1: 'sha256:8752d0e2f07ae8b46ff2'
+      samsung@1: 'sha256:d0e9cabff53a15285159'
+      lenovo_monitors@2: 'sha256:ed0431bb405523a78915'
+      samsung_ssd@2: 'sha256:a6cbc9077c793c287d62'
+      sandisk_ssd@3: 'sha256:a17c54f651dda1d59873'
+      teamgroup_ssd@3: 'sha256:0ff6acf0cbf3f80f83d8'
+      kingston_ssd@1: 'sha256:121f49289440b7fa99f3'
+      tplink_routers@2: 'sha256:c7318e9238be7635b158'
+      crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  rules:
+  - method: adapter:lenovo-psref
+    types: [member_of_family, configuration_of]
+    parsers: [lenovo_psref@2]
+  - method: adapter:asus-us
+    types: [member_of_family]
+    parsers: [asus@1]
+  - method: adapter:dell-us
+    types: [member_of_family]
+    parsers: [dell@1]
+  - method: adapter:microsoft-surface
+    types: [member_of_family, configuration_of]
+    parsers: [surface@1]
+  - method: adapter:razer-us
+    types: [member_of_family, configuration_of]
+    parsers: [razer@1]
+  - method: adapter:samsung-us
+    types: [member_of_family, configuration_of]
+    parsers: [samsung@1]
+  - method: adapter:lenovo-psref-monitors
+    types: [package_of]
+    parsers: [lenovo_monitors@2]
+  - method: adapter:samsung-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [samsung_ssd@2]
+  - method: adapter:sandisk-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [sandisk_ssd@3]
+  - method: adapter:teamgroup-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [teamgroup_ssd@3]
+  - method: adapter:kingston-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [kingston_ssd@1]
+  - method: adapter:tplink-us-routers
+    types: [variant_of]
+    parsers: [tplink_routers@2]
+  - method: page-variants:anker
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:baseus
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:belkin
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  retired: {at: '2026-11-24', superseded_by: rel/source-stated-hierarchy@4, reason: 'parser bumps sandisk_ssd@4, teamgroup_ssd@4, kingston_ssd@2; @3 meaning frozen as locked'}

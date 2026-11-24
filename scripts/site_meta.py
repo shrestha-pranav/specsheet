@@ -56,7 +56,8 @@ def llms_txt(site):
              f"- [Categories]({base}/api/v1/categories.json): category list with counts",
              f"- [Identifier lookup]({base}/api/v1/lookup/identifiers.json): GTIN / model number to product id",
              f"- Per category: `{base}/api/v1/<category>/index-N.json` (rows), `facets.json`, `schema.json`, `products/<id>.json` (full record with per-value sources)",
-             f"- [Data contract]({base}/api/v1/README.md)", ""]
+             f"- [Data contract]({base}/api/v1/README.md)",
+             f"- [Killer-query presets]({base}/api/v1/presets.json): ready-made questions (filters and columns as data), each with its measured fill and a pass/fail gate; a failing preset is a data gap, not an empty answer", ""]
     cats = categories()
     if cats:
         lines += ["## Categories", ""] + [f"- {c['id']}: {c['name']} ({c['count']} products)" for c in cats] + [""]

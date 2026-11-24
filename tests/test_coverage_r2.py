@@ -24,7 +24,8 @@ class SsdProse(unittest.TestCase):
         self.assertEqual((r["hw.controller"][0], r["hw.controller_vendor"][0], r["hw.nand_type"][0]), ("Phison PS5027-E27T", "phison", "tlc"))
         self.assertEqual(SP.extract("<p>T-FORCE G70 Pro / G70 PCIe 4.0 SSD use InnoGrit controller solutions by default.</p>")["claims"], {})
         self.assertEqual(SP.extract("<p>nCache 2.0 uses a combination of both SLC and TLC flash blocks to improve endurance.</p>")["claims"], {})
-        self.assertEqual(SP.extract("<p>A vertically integrated DRAM-less design for laptops and desktops.</p>")["claims"], {}, "bare DRAM-less says neither HMB nor none")
+        r = SP.extract("<p>A vertically integrated DRAM-less design for laptops and desktops.</p>")["claims"]   # r3: bare DRAM-less = dramless (HMB unstated)
+        self.assertEqual(r["hw.dram_type"][0], "dramless", "bare DRAM-less says neither HMB nor none")
         r = SP.extract("<p>Built with 3D QLC NAND flash memory, the SSD supports SLC Caching and Host Memory Buffer (HMB) technologies.</p>")["claims"]
         self.assertEqual((r["hw.nand_type"][0], r["hw.dram_type"][0]), ("qlc", "dramless_hmb"))
         c = SP.extract("<p>Built with Sandisk TLC 3D NAND for gamers.</p><p>Get cost-efficient QLC 3D NAND storage today.</p>")

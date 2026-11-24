@@ -13,6 +13,8 @@ parse    : pure over `pdftotext -layout`. Each 'Specifications [form factor]' bl
            form factor in the two headers (or to the only block); its capacity = the block's listed capacity within 10% of the number in the part
            number ('1T0' -> 1024GB on a 1024GB-list datasheet). Per-capacity rows ('512GB – 7,000/3,900MB/s', '2TB - 4TB – ...' ranges) are applied
            per configuration; a row that does not name the capacity writes nothing for it.
+v2 (coverage r3): legacy_blocks() reads the older two-column layout (upper-case SPECIFICATIONS, label lines or '>>Label value', PART NUMBERS in
+           the right column) into the same rows; v1 output for the six current-layout datasheets is unchanged.
 Traps    : 'NAND 3D' says nothing about bits per cell (no hw.nand_type); 'Gen 4x4 NVMe controller' names no controller (no hw.controller); a missing
            'DRAM Cache' row is silence, not DRAM-less; TBW in PB ('1.6PBW', '1.0PB') converted to TB as printed x1000; speeds are the datasheet's
            figures, 'up to' kept in raw.
@@ -26,7 +28,7 @@ import _ssd as S
 import _lt as L
 import _run
 
-ID, VERSION, SOURCE = "kingston_ssd", 1, "kingston-us-ssd"
+ID, VERSION, SOURCE = "kingston_ssd", 2, "kingston-us-ssd"
 CATEGORIES = {"ssds"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.kingston.com/datasheets/"
@@ -87,6 +89,56 @@ def blocks(txt):
     return specs, [p for p in parts if p["pns"]]
 
 
+LEGACY_LABELS = re.compile(r"^(?:>>\s*)?(Form factor|Interface|Capacities|Controller|NAND|Nand|DRAM cache|Encrypted|Sequential read\s*/\s*write|"
+                           r"Random 4K read\s*/\s*write|Total Bytes Written \(TBW\)|Endurance(?: \(Total Bytes Written\))?|Power consumption|"
+                           r"Storage temperature|Operating temperature|Dimensions|Weight|Vibration operating|Vibration non-operating|MTBF|"
+                           r"Life expectancy|Warranty\s*/\s*support)\s*\d?(?=\s|$)", re.I)
+
+
+def legacy_blocks(txt):
+    """Older two-column datasheets (NV2, NV1, A2000): an upper-case 'SPECIFICATIONS' heading, the label on its own line or '>>Label value',
+    values on the following lines, the 'PART NUMBERS' list in the right-hand column. The right column (col >= 100: part numbers, footnotes)
+    is cut off before labels/values are read; part numbers are collected from the whole block. -> same shape as blocks(), one spec block."""
+    lines = txt.splitlines()
+    i = next((k for k, l in enumerate(lines) if l.strip() == "SPECIFICATIONS"), None)
+    if i is None:
+        return [], []
+    rows, last, pns = {}, None, []
+    for ln in lines[i + 1:]:
+        pns += re.findall(r"\b([A-Z0-9]{3,12}/\d+[GT]\d?)\b", ln)
+        left = ln[:100].strip()
+        if not left:
+            continue
+        if re.match(r"^\d\.\s", left) or left.startswith(("The SSD is designed", "This SSD is designed")):
+            break
+        m = LEGACY_LABELS.match(left)
+        if m:
+            last = re.sub(r"\s+", " ", m[1].lower()).replace(" / ", "/").replace("read / write", "read/write")
+            last = {"endurance": "endurance (total bytes written)", "nand": "nand"}.get(last, last)
+            rest = left[m.end():].strip()
+            rows.setdefault(last, [])
+            if rest:
+                rows[last].append(rest)
+            continue
+        if last:
+            for part in re.split(r"\s{3,}|\t+", left):
+                part = part.strip()
+                if not part:
+                    continue
+                # 'X MB/s (250GB)' / '(500GB-2TB)' -> 'CAP – X' (the per_cap shape); 'CAP – a CAP – b' on one line -> two rows
+                pm = re.match(r"^(.+?)\s*\(\s*" + CAP + r"(?:\s*-\s*" + CAP + r")?\s*\)$", part)
+                if pm:
+                    part = f"{pm[2]}{pm[3]}" + (f" - {pm[4]}{pm[5]}" if pm[4] else "") + f" – {pm[1]}"
+                multi = re.findall(CAP + r"\s*[-–—]\s*(?:" + CAP + r"\s*[-–—]\s*)?(.+?)(?=\s+\d+(?:\.\d+)?\s*(?:GB|TB)\s*[-–—]|$)", part)
+                if len(multi) > 1:
+                    for a, b, c, d, v in multi:
+                        rows[last].append(f"{a}{b}" + (f" - {c}{d}" if c else "") + f" – {v.strip()}")
+                else:
+                    rows[last].append(part)
+    spec = {"ff": None, "rows": rows}
+    return ([spec], [{"ff": None, "head": "PART NUMBERS", "pns": list(dict.fromkeys(pns))}]) if rows and pns else ([], [])
+
+
 def per_cap(lines, caps):
     """'512GB – 7,000/3,900MB/s' / '2TB - 4TB – x' / '4096GB – 8192GB - up to x' -> {capacity_gb: value text}; unprefixed single line -> all."""
     out = {}
@@ -116,6 +168,8 @@ def parse_text(snap, txt):
     pr.sources = [L.source(snap, "Kingston datasheet " + snap.ref.key)]
     title = next((l.strip() for l in txt.splitlines() if l.strip()), snap.ref.key)
     specs, parts = blocks(txt)
+    if not specs or not parts:
+        specs, parts = legacy_blocks(txt)          # v2: older two-column layout (NV2 / NV1 / A2000)
     if not specs or not parts:
         pr.absences.append({"key": "*", "reason": "no Specifications / Part Numbers block", "source": "s1"})
         return pr

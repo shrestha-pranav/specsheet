@@ -17,6 +17,8 @@ Traps    : 'Endurance (TBW)' prints '600units' (it is TB written); Random Read/W
            appear under two orderable suffixes (-00BCA0 vs -00CDD0 on the 8TB SN850X): a candidate revision signal, recorded not decided.
 v3 (2026-11-24): NAND type/vendor, controller (vendor) and HMB from explicit page-prose statements (_ssdprose.py), quote kept as raw,
            only where the spec table is silent for that SKU.
+v4 (coverage r3): version bump for _ssdprose.py: a bare 'DRAM-less' sentence about the drive (no HMB in it) = hw.dram_type `dramless`
+           (HMB unstated, hw.hmb_support left unknown). Nothing else changed.
 """
 import gzip, re, sys, time
 from pathlib import Path
@@ -27,7 +29,7 @@ import _lt as L
 import _ssdprose as SP
 import _run
 
-ID, VERSION, SOURCE = "sandisk_ssd", 3, "sandisk-us-ssd"
+ID, VERSION, SOURCE = "sandisk_ssd", 4, "sandisk-us-ssd"
 CATEGORIES = {"ssds"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.sandisk.com"

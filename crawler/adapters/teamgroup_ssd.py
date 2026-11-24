@@ -15,6 +15,8 @@ Traps    : read/write 'up to' speeds differ per capacity (512GB write 2,500 vs 4
            'Terabyte Written 1200TBW' is TB; controller/NAND vendor are never in the table (some pages name them in prose).
 v3 (2026-11-24): NAND type, controller (vendor) and HMB from explicit page-prose statements (_ssdprose.py), quote kept as raw, only where
            the table is silent; 'DRAM Cache: NO' + a stated HMB = dramless_hmb.
+v4 (coverage r3): version bump for _ssdprose.py: a bare 'DRAM-less' sentence about the drive (no HMB in it) = hw.dram_type `dramless`
+           (HMB unstated, hw.hmb_support left unknown). Nothing else changed.
 """
 import gzip, re, sys, time
 from pathlib import Path
@@ -25,7 +27,7 @@ import _lt as L
 import _ssdprose as SP
 import _run
 
-ID, VERSION, SOURCE = "teamgroup_ssd", 3, "teamgroup-us-ssd"
+ID, VERSION, SOURCE = "teamgroup_ssd", 4, "teamgroup-us-ssd"
 CATEGORIES = {"ssds"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.teamgroupinc.com"

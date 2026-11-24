@@ -4,11 +4,12 @@ Only three facts, and only when the page states them about the drive itself:
   hw.nand_type (+ hw.nand_vendor when the same sentence names SanDisk/BiCS)   'built with ... BiCS TLC 3D CBA NAND', '3D QLC NAND flash'
   hw.controller / hw.controller_vendor                                      'PHISON PS5027-E27T control chip', 'IG5666 controller chip from InnoGrit',
                                                                             'in-house controller', 'SMI controller'
-  hw.dram_type = dramless_hmb (HMB stated) | dram ('equipped with DRAM Cache')
+  hw.dram_type = dramless_hmb (HMB stated) | dram ('equipped with DRAM Cache') | dramless (a bare 'DRAM-less': HMB unstated, never assumed)
 Rules: the quote (the sentence) is kept as the claim's raw literal; a hedged or comparative sentence ('by default', 'whereas', 'previous generation',
 two models in one sentence, cache-mix descriptions such as 'SLC ... and TLC flash blocks') says nothing; two different values for one key on the page
-= conflict, nothing written for that key (listed in the result's `conflicts`); silence writes nothing. A bare 'DRAM-less' is NOT mapped: the profile
-enum separates dramless_hmb from dramless_none and a bare 'DRAM-less' says neither.
+= conflict, nothing written for that key (listed in the result's `conflicts`); silence writes nothing. A bare 'DRAM-less' (no HMB in the same
+sentence) = `dramless` (A1 answer, coverage r3): it says neither dramless_hmb nor dramless_none, so hw.hmb_support stays unknown. A page that
+says 'DRAM-less' in one sentence and 'HMB' in another yields dramless_hmb only through the HMB sentence; the two values conflict -> nothing.
 """
 import html, re
 
@@ -24,6 +25,8 @@ CTRL = [(re.compile(r"\bPHISON\s+((?:PS\d{4}-)?E\d{2}T?)\b", re.I), lambda m: f"
         (re.compile(r"\bin-house controller", re.I), None, "in_house")]
 HMB = re.compile(r"\bHost Memory Buffer\b|\bHMB\b")
 DRAM_YES = re.compile(r"\bequipped with (?:a )?DRAM cache\b", re.I)
+DRAMLESS = re.compile(r"\bDRAM[- ]?less\b", re.I)
+SELF_DRAMLESS = re.compile(r"\bthis DRAM[- ]?less (?:drive|SSD)\b", re.I)
 
 
 def page_text(h):
@@ -40,6 +43,10 @@ def extract(h):
     found = {}
     for s in sentences(page_text(h)):
         if HEDGE.search(s):
+            # the one exception: 'this DRAM-less drive ...' names the drive itself; the sentence's comparison ('over the previous generation')
+            # is about another attribute, so only the DRAM-less self-description is read from it (and only if HMB is not mentioned)
+            if SELF_DRAMLESS.search(s) and not HMB.search(s):
+                found.setdefault("hw.dram_type", {}).setdefault("dramless", s[:300])
             continue
         q = s[:300]
         for m in NAND.finditer(s):
@@ -55,6 +62,8 @@ def extract(h):
             found.setdefault("hw.dram_type", {}).setdefault("dramless_hmb", q)
         elif DRAM_YES.search(s):
             found.setdefault("hw.dram_type", {}).setdefault("dram", q)
+        elif DRAMLESS.search(s):
+            found.setdefault("hw.dram_type", {}).setdefault("dramless", q)
     out, conflicts = {}, []
     for k, vals in found.items():
         if len(vals) == 1:

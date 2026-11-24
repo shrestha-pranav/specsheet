@@ -335,8 +335,88 @@
     missTimer = setTimeout(() => { lastMiss = text; try { navigator.sendBeacon(`${SITE.api_origin.replace(/\/$/, '')}/v1/miss`, new Blob([JSON.stringify({category:categoryId, q:text})], {type:'text/plain'})); } catch { /* best effort */ } }, 1500);
   };
 
+  // Interest events (measurement-plan.md section 2): one anonymous JSON event each, text/plain so sendBeacon needs no preflight. No cookies, no ids,
+  // no product ids. Off (a silent no-op) until site.json sets api_origin, exactly like the miss beacon.
+  let currentCategory = '';
+  const unknownSeen = new Set();
+  const sendEvent = (event, category, fields = {}) => {
+    if (!SITE.api_origin || typeof navigator === 'undefined' || !navigator.sendBeacon) return false;
+    try { return navigator.sendBeacon(`${SITE.api_origin.replace(/\/$/, '')}/v1/event`, new Blob([JSON.stringify({event, ...(category ? {category} : {}), ...fields})], {type:'text/plain'})); } catch { return false; }
+  };
+  // At most one spec_unknown_shown per key per page view (route render); keys are schema keys, never values.
+  const noteUnknown = (categoryId, key) => { const id = `${categoryId}|${key}`; if (unknownSeen.has(id)) return; unknownSeen.add(id); sendEvent('spec_unknown_shown', categoryId, {key}); };
+  const HOSTNAME = /^(?=.{1,100}$)[a-z0-9-]+(\.[a-z0-9-]+)+$/;
+  main.addEventListener('click', event => {
+    const link = event.target.closest?.('a[href]');
+    if (!link) return;
+    if (link.hasAttribute('data-request') || /^https:\/\/github\.com\/[^/]+\/[^/]+\/issues\/new/.test(link.href)) { sendEvent('request_click', currentCategory || link.dataset.category || ''); return; }
+    if (link.closest('.evidence-cell, .pdo-section, .value-cell, details')) {
+      const url = safeUrl(link.href);
+      const host = url ? new URL(url).hostname.toLowerCase() : '';
+      if (url && !new URL(url).hostname.endsWith('github.com') && HOSTNAME.test(host)) sendEvent('source_click', currentCategory, {domain: host});
+    }
+  });
+  // Killer-query presets: definitions in docs/presets.json, measured by scripts/presets.py into api/v1/presets.json (fill gate computed at build time).
+  let presetsPromise;
+  let presetData = {presets:[], renderers:{}};
+  const loadPresets = () => presetsPromise ||= getJson('api/v1/presets.json').then(data => { presetData = data; return data; }).catch(() => presetData);
+  const presetById = (category, id) => id ? presetData.presets.find(item => item.id === id && item.category === category.id) : null;
+  const pct = fraction => `${Math.floor(fraction * 1000) / 10}%`;   // floored to 0.1: 79.6% must never read as 80%
+  const brandList = (brands, total) => { const names = brands.map(item => item.brand); return names.length ? `${names.join(', ')}${total > names.length ? ` and ${total - names.length} more` : ''}` : ''; };
+  const fillRequestUrl = preset => `${issueBase()}?${new URLSearchParams({title:`Data request: ${preset.gate.label} (${preset.category_name})`})}`;
+  const presetCard = preset => {
+    const gate = preset.gate, href = `#/category/${encoded(preset.category)}`;
+    if (!gate.passes) return `<article class="preset-card help" data-preset="${escapeHtml(preset.id)}"><h3>${escapeHtml(preset.title)}</h3><p class="preset-fill"><strong>Help fill this: ${gate.known} of ${gate.total} known</strong> for “${escapeHtml(gate.label)}” (${pct(gate.fill)}; needs ${pct(gate.min_fill)}).</p>${gate.missing_brands?.length ? `<p class="muted">No value yet for: ${escapeHtml(brandList(gate.missing_brands, gate.missing_brand_count))}.</p>` : ''}<p class="preset-links"><a data-request data-category="${escapeHtml(preset.category)}" href="${escapeHtml(fillRequestUrl(preset))}" target="_blank" rel="noopener noreferrer">Help fill this</a> <a href="${href}?preset=${encoded(preset.id)}">See what we have</a></p></article>`;
+    const c = preset.count;
+    return `<article class="preset-card" data-preset="${escapeHtml(preset.id)}"><h3><a href="${href}?preset=${encoded(preset.id)}">${escapeHtml(preset.title)}</a></h3><p class="preset-fill"><strong>${c.matches} ${c.matches === 1 ? 'match' : 'matches'}</strong>${c.maybe ? `, ${c.maybe} more unknown, might match` : ''}</p><p class="muted">${gate.known} of ${gate.total} known for “${escapeHtml(gate.label)}” (${pct(gate.fill)})${gate.uncovered_brands?.length ? `. No value yet for ${escapeHtml(gate.uncovered_brands.map(item => item.brand).join(', '))}` : ''}.</p></article>`;
+  };
+  const presetGallery = data => data.presets?.length ? `<section class="preset-gallery" aria-labelledby="preset-heading"><h2 id="preset-heading">Questions we can answer</h2><p class="muted">A question is answered only when at least ${pct(data.default_min_fill ?? 0.8)} of the products have the field it depends on. Otherwise we ask for help filling it instead of showing a mostly-unknown table.</p><div class="preset-grid">${data.presets.map(presetCard).join('')}</div></section>` : '';
+  // Samsung-45-W style verdict from the per-port PDO table. Unknown is never no: a port that does not list PPS is unknown unless the product states no PPS.
+  const parsePps = text => String(text || '').split(';').map(part => { const m = part.match(/([\d.]+)\s*-\s*([\d.]+)\s*V\s*([\d.]+)\s*A/i); return m ? {lo:Number(m[1]), hi:Number(m[2]), amps:Number(m[3])} : null; }).filter(Boolean);
+  const pdoPortVerdict = (port, cfg, productPps) => {
+    if (!port.pps) return productPps === false ? 'no' : 'unknown';
+    const ranges = parsePps(port.pps);
+    if (!ranges.length) return 'unknown';
+    return ranges.some(range => range.lo <= cfg.v_lo && range.hi >= cfg.v_hi && range.amps >= cfg.min_amps) ? 'yes' : 'no';
+  };
+  const pdoVerdict = (record, cfg) => {
+    const spec = specObject(record, 'out.ports');
+    const ports = (isKnown(spec) && Array.isArray(spec.value) ? spec.value : []).filter(port => port.direction !== 'in' && port.type !== 'wireless');
+    const pps = specObject(record, 'pd.pps');
+    const productPps = isKnown(pps) ? pps.value : undefined;
+    const verdicts = ports.map(port => pdoPortVerdict(port, cfg, productPps));
+    const overall = verdicts.includes('yes') ? 'yes' : (ports.length && verdicts.every(item => item === 'no')) ? 'no' : 'unknown';
+    return {ports, verdicts, overall};
+  };
+  const pillLabel = {yes:'Yes', no:'No', unknown:'Unknown'};
+  const pdoSection = (record, cfg) => {
+    const spec = specObject(record, 'out.ports');
+    if (!isKnown(spec) || !Array.isArray(spec.value)) return `<section class="detail-section pdo-section"><h2>${escapeHtml(cfg.label)}</h2><p><span class="pill unknown">Unknown</span> No per-port output table is recorded for this product, so this cannot be judged. Unknown is not “No”.</p></section>`;
+    const verdict = pdoVerdict(record, cfg);
+    const cell = value => value ? escapeHtml(value) : '<span class="val-unknown">Unknown</span>';
+    const rows = verdict.ports.map((port, index) => `<tr><th scope="row">${escapeHtml(port.name || 'Port')}</th><td>${escapeHtml(port.type || '')}</td><td>${port.max_w == null ? '<span class="val-unknown">Unknown</span>' : `${escapeHtml(port.max_w)} W`}</td><td>${cell(port.fixed_pdos)}</td><td>${cell(port.pps)}</td><td><span class="pill ${verdict.verdicts[index]}">${pillLabel[verdict.verdicts[index]]}</span></td></tr>`).join('');
+    return `<section class="detail-section pdo-section"><h2>Power delivery by port</h2><p><span class="pill ${verdict.overall}">${escapeHtml(cfg.label)}: ${pillLabel[verdict.overall]}</span> <span class="muted">${escapeHtml(cfg.rule)}.</span></p><div class="table-scroll" role="region" aria-label="Power delivery by port" tabindex="0"><table class="pdo-table"><thead><tr><th scope="col">Port</th><th scope="col">Type</th><th scope="col">Max</th><th scope="col">Fixed PDOs</th><th scope="col">PPS ranges</th><th scope="col">${escapeHtml(cfg.label)}</th></tr></thead><tbody>${rows || '<tr><td colspan="6">No output ports recorded.</td></tr>'}</tbody></table></div></section>`;
+  };
+  // Size grid (TVs): one row per size class, summarising panel type, dimming zones and 4K120 ports of the models at that size. Unknown stays a count, never a blank.
+  const gridConfig = category => { const cfg = presetData.renderers?.size_grid; return cfg && cfg.categories.includes(category.id) && category.fields.some(field => field.key === cfg.size_key) ? cfg : null; };
+  const tally = (labels) => { const counts = new Map(); labels.forEach(label => counts.set(label, (counts.get(label) || 0) + 1)); return [...counts.entries()].sort((a, b) => (a[0] === 'unknown') - (b[0] === 'unknown') || b[1] - a[1]); };
+  const rangeText = (values) => { if (!values.length) return ''; const lo = Math.min(...values), hi = Math.max(...values); return lo === hi ? String(lo) : `${lo} to ${hi}`; };
+  const sizeGridRows = (rows, cfg) => {
+    const sizes = new Map();
+    for (const row of rows) { const spec = specObject(row, cfg.size_key); const size = isKnown(spec) ? Number(spec.value) : null; if (!sizes.has(size)) sizes.set(size, []); sizes.get(size).push(row); }
+    return [...sizes.entries()].sort((a, b) => (a[0] === null) - (b[0] === null) || a[0] - b[0]).map(([size, members]) => {
+      const panel = tally(members.map(row => { const parts = cfg.panel_keys.map(key => specObject(row, key)).filter(isKnown).map(spec => String(spec.value)); return parts.length ? parts.join(' / ') : 'unknown'; }));
+      const numeric = key => { const known = members.map(row => specObject(row, key)).filter(isKnown).map(spec => Number(spec.value)).filter(Number.isFinite); return {known, unknown:members.length - known.length}; };
+      return {size, count:members.length, panel, zones:numeric(cfg.zone_key), hdmi:numeric(cfg.hdmi_key)};
+    });
+  };
+  const gridCell = ({known, unknown}) => `${known.length ? `<strong>${rangeText(known)}</strong>` : ''}${known.length ? ` <span class="muted">(${known.length} known)</span>` : ''}${unknown ? `${known.length ? '<br>' : ''}<span class="val-unknown">${unknown} unknown</span>` : ''}`;
+  const sizeGridMarkup = (rows, cfg) => `<div class="table-scroll" role="region" aria-label="Panel type by size" tabindex="0"><table class="size-grid"><thead><tr><th scope="col">Size</th><th scope="col">Models</th><th scope="col">Panel type</th><th scope="col">Dimming zones</th><th scope="col">4K120 HDMI ports</th></tr></thead><tbody>${sizeGridRows(rows, cfg).map(item => `<tr><th scope="row">${item.size === null ? 'Size unknown' : `${item.size} in`}</th><td class="num">${item.count}</td><td>${item.panel.map(([label, n]) => `<span class="${label === 'unknown' ? 'val-unknown' : 'panel-label'}">${escapeHtml(label)}</span> <span class="muted">x${n}</span>`).join('<br>')}</td><td>${gridCell(item.zones)}</td><td>${gridCell(item.hdmi)}</td></tr>`).join('')}</tbody></table></div><p class="muted">Each row summarises the models recorded at that size. “Unknown” means no value is recorded, not “none”.</p>`;
+
   async function renderRoute() {
     const sequence = ++routeSequence;
+    unknownSeen.clear();
+    currentCategory = '';
     const route = parseRoute();
     setLoading('Loading catalogue…');
     await loadSite();
@@ -344,6 +424,8 @@
     if (PAGE_TITLES[route.kind] && !route.parts.length) { await renderPage(route.kind, sequence); return; }
     try {
       const all = await categories();
+      if (sequence !== routeSequence) return;
+      await loadPresets();
       if (sequence !== routeSequence) return;
       if (route.kind === 'home') { renderHome(all); main.focus(); return; }
       const category = categoryCache.get(route.parts[0]);
@@ -355,6 +437,7 @@
         if (moved && categoryCache.get(moved)) { location.replace(`#/${[route.kind, moved, ...route.parts.slice(1)].map(encoded).join('/')}${location.hash.includes('?') ? location.hash.slice(location.hash.indexOf('?')) : ''}`); return; }
         main.innerHTML = errorPanel('Category not found', 'This category is not in the current static dataset.'); return;
       }
+      currentCategory = category.id;
       if (category.schema && !category.schemaLoaded) {
         const schema = await getJson(`api/v1/${category.schema}`);
         if (sequence !== routeSequence) return;
@@ -375,7 +458,7 @@
 
   function renderHome(all) {
     setTitle('Catalogue');
-    main.innerHTML = `<section class="lead-panel"><h1>Product specifications, with context.</h1><p>Search across brands, inspect the exact variant, and see where each recorded fact came from. Start with a category.</p></section><section aria-labelledby="cat-heading"><h2 id="cat-heading">Browse categories</h2><div class="category-list">${all.map(category => `<a class="category-row" href="${categoryUrl(category.id)}"><span><strong>${escapeHtml(category.name)}</strong> ${demoBadge(category)}<p>${escapeHtml(category.description)}</p></span><span class="count-pill">${category.count} ${category.count === 1 ? 'product' : 'products'} →</span></a>`).join('')}</div></section><p class="muted" style="margin-top:25px;max-width:72ch">Records marked “Accepted into catalogue” have a recorded review decision about their source claims; that is not independent testing. Legacy pilot records and unreviewed candidates are labelled as such. “Unknown” means no value is recorded, not “No”.</p>`;
+    main.innerHTML = `<section class="lead-panel"><h1>Product specifications, with context.</h1><p>Search across brands, inspect the exact variant, and see where each recorded fact came from. Start with a category.</p></section>${presetGallery(presetData)}<section aria-labelledby="cat-heading"><h2 id="cat-heading">Browse categories</h2><div class="category-list">${all.map(category => `<a class="category-row" href="${categoryUrl(category.id)}"><span><strong>${escapeHtml(category.name)}</strong> ${demoBadge(category)}<p>${escapeHtml(category.description)}</p></span><span class="count-pill">${category.count} ${category.count === 1 ? 'product' : 'products'} →</span></a>`).join('')}</div></section><p class="muted" style="margin-top:25px;max-width:72ch">Records marked “Accepted into catalogue” have a recorded review decision about their source claims; that is not independent testing. Legacy pilot records and unreviewed candidates are labelled as such. “Unknown” means no value is recorded, not “No”.</p>`;
   }
 
   function initialState(category, params) {
@@ -390,10 +473,18 @@
         if (params.has(key)) filters[key] = params.get(key);
       }
     }
-    return {q: params.get('q') || '', brand: params.get('brand') || '', filters,
-      sort: ['coverage','brand','name','model',...category.fields.map(f => f.key)].includes(params.get('sort')) ? params.get('sort') : 'coverage',
-      dir: params.has('dir') ? (params.get('dir') === 'desc' ? 'desc' : 'asc') : (params.get('sort') && params.get('sort') !== 'coverage' ? 'asc' : 'desc'),
-      preview: params.get('preview') === '1' && !!category.preview, certonly: params.get('certonly') === '1' && !!category.certification_only?.index?.length, view: params.get('view') === 'grouped' ? 'grouped' : 'flat', cols, ids, page:Math.max(1, Number.parseInt(params.get('page') || '1', 10) || 1)};
+    // A preset opened from its card (no explicit cols yet) seeds filters/columns/sort/view once; the URL is then explicit, so edits stick. A preset that
+    // fails its fill gate seeds nothing: its page shows the help-fill panel above the ordinary, unfiltered table.
+    const preset = presetById(category, params.get('preset'));
+    const seed = preset?.gate.passes && !params.has('cols');
+    if (seed) for (const [key, value] of Object.entries(preset.filters || {})) filters[key] = value;
+    const presetCols = seed ? (preset.columns || []).filter(key => available.has(key)) : [];
+    const presetSort = seed && preset.sort && ['coverage','brand','name','model',...category.fields.map(f => f.key)].includes(preset.sort.key) ? preset.sort : null;
+    if (seed && presetCols.length) cols.splice(0, cols.length, ...presetCols);
+    return {preset: preset?.id || '', maybe: params.get('maybe') === '1', q: params.get('q') || '', brand: params.get('brand') || '', filters,
+      sort: presetSort ? presetSort.key : ['coverage','brand','name','model',...category.fields.map(f => f.key)].includes(params.get('sort')) ? params.get('sort') : 'coverage',
+      dir: presetSort ? (presetSort.dir === 'desc' ? 'desc' : 'asc') : params.has('dir') ? (params.get('dir') === 'desc' ? 'desc' : 'asc') : (params.get('sort') && params.get('sort') !== 'coverage' ? 'asc' : 'desc'),
+      preview: params.get('preview') === '1' && !!category.preview, certonly: params.get('certonly') === '1' && !!category.certification_only?.index?.length, view: ['grouped','sizegrid'].includes(params.get('view')) ? params.get('view') : (seed && preset.view === 'sizegrid' ? 'sizegrid' : 'flat'), cols, ids, page:Math.max(1, Number.parseInt(params.get('page') || '1', 10) || 1)};
   }
   function categoryStateQuery(state) {
     const params = new URLSearchParams();
@@ -402,7 +493,9 @@
     for (const [key, value] of Object.entries(state.filters)) if (value) params.set(key, value);
     if (state.preview) params.set('preview', '1');
     if (state.certonly) params.set('certonly', '1');
-    if (state.view === 'grouped') params.set('view', 'grouped');
+    if (state.view !== 'flat') params.set('view', state.view);
+    if (state.preset) params.set('preset', state.preset);
+    if (state.maybe) params.set('maybe', '1');
     if (state.sort !== 'coverage') params.set('sort', state.sort);
     if (state.dir !== (state.sort === 'coverage' ? 'desc' : 'asc')) params.set('dir', state.dir);
     params.set('cols', state.cols.join(','));
@@ -482,6 +575,10 @@
     if (field.type === 'enum') return (FACET_ALIASES[field.key]?.[query] || [query]).includes(spec.value);
     return formatRaw(spec.value, field).toLocaleLowerCase().includes(query.toLocaleLowerCase());
   };
+  // A filter is "active" when it has a value; a row whose field is unknown is neither a match nor a mismatch for it (unknown is never no).
+  const facetActive = (field, filters) => Object.keys(filters).some(key => key.startsWith(`f_${field.key}_`) && filters[key] && !['unknown','__unknown'].includes(filters[key]));
+  const unknownBlocks = (row, field, filters) => facetActive(field, filters) && !isKnown(specObject(row, field.key));
+  const facetPass = (row, fields, filters, lenient) => fields.every(field => matchFacet(row, field, filters) || (lenient && unknownBlocks(row, field, filters)));
   const coverage = row => { const parts = Object.values(row.completeness || {}); const total = parts.reduce((n, p) => n + p[1], 0); return total ? parts.reduce((n, p) => n + p[0], 0) / total : 0; };
   const getSortValue = (row, key) => {
     if (key === 'coverage') return coverage(row);
@@ -519,7 +616,12 @@
     for (const row of rows) if (row.kind === 'configuration' && row.parent_id) configTotals.set(row.parent_id, (configTotals.get(row.parent_id) || 0) + 1);
     const hasConfigs = configTotals.size > 0;
     const droppedNote = droppedIds.length ? `${droppedIds.length} selected ${droppedIds.length === 1 ? 'product was' : 'products were'} removed from your selection because ${category.preview && !state.preview ? 'unreviewed candidate rows are off' : 'not in this catalogue'}.` : '';
-    main.innerHTML = `${crumb([{name:category.name}])}<div class="page-head"><h1>${escapeHtml(category.name)} ${demoBadge(category)}</h1><p class="intro">${escapeHtml(category.description)} ${escapeHtml(reviewNote(category))} Open a product to inspect its sources and uncertainty.</p></div><div class="catalogue-layout"><aside class="filter-rail"><details open><summary>Filters</summary>${certonlyControl(category, state)}${previewControl(category, state, rows)}${filterMarkup(category, rows, state)}</details></aside><section class="catalogue-results" aria-label="Products"><div class="results-head"><label class="search-field" for="product-search">Search name, brand, identifier or a pasted retail title<input id="product-search" type="search" placeholder="Search products…" value="${escapeHtml(state.q)}" autocomplete="off"></label><div><h2>Compare the facts</h2><p>Choose 2–4 products to compare.</p></div></div><div class="results-tools"><span class="meta" id="result-count" role="status"></span><label class="sort-control">Sort <select id="sort-select" aria-label="Sort products"><option value="coverage">Most complete first</option><option value="brand">Brand</option><option value="name">Product name</option><option value="model">${escapeHtml(modelLabel(category))}</option><option value="__column" disabled>Column (use header)</option></select></label>${hasConfigs ? `<label class="sort-control">View <select id="view-select" aria-label="Result view"><option value="flat" ${state.view === 'flat' ? 'selected' : ''}>Flat list</option><option value="grouped" ${state.view === 'grouped' ? 'selected' : ''}>Grouped by model</option></select></label>` : ''}<details class="column-menu"><summary>Choose columns</summary><div class="column-options"><button type="button" id="reset-columns">Reset to default columns</button>${[...new Set(category.fields.map(field => field.group))].map(group => `<fieldset><legend>${escapeHtml(groupLabel(category,group))}</legend>${category.fields.filter(field => field.group === group).map(field => `<label><input type="checkbox" data-column="${escapeHtml(field.key)}" ${state.cols.includes(field.key) ? 'checked' : ''}>${escapeHtml(field.label)}</label>`).join('')}</fieldset>`).join('')}</div></details></div><p class="request-prompt">Can’t find it? <a id="request-product" href="${escapeHtml(missingIssueUrl(category.id, state.q))}" target="_blank" rel="noopener noreferrer">Prepare GitHub issue draft</a> for a product request, or email ${correctionsMail('Product request')}. ${requestNote} A draft opens only if you choose this link.</p><div id="selection-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div><p id="selection-notice" class="inline-notice" role="status" ${droppedNote ? '' : 'hidden'}>${escapeHtml(droppedNote)}</p><div id="compare-shelf"></div><div id="results-table"></div><div id="pagination"></div></section></div>`;
+    main.innerHTML = `${crumb([{name:category.name}])}<div class="page-head"><h1>${escapeHtml(category.name)} ${demoBadge(category)}</h1><p class="intro">${escapeHtml(category.description)} ${escapeHtml(reviewNote(category))} Open a product to inspect its sources and uncertainty.</p></div><div class="catalogue-layout"><aside class="filter-rail"><details open><summary>Filters</summary>${certonlyControl(category, state)}${previewControl(category, state, rows)}${filterMarkup(category, rows, state)}</details></aside><section class="catalogue-results" aria-label="Products"><div class="results-head"><label class="search-field" for="product-search">Search name, brand, identifier or a pasted retail title<input id="product-search" type="search" placeholder="Search products…" value="${escapeHtml(state.q)}" autocomplete="off"></label><div><h2>Compare the facts</h2><p>Choose 2–4 products to compare.</p></div></div><div class="results-tools"><span class="meta" id="result-count" role="status"></span><label class="sort-control">Sort <select id="sort-select" aria-label="Sort products"><option value="coverage">Most complete first</option><option value="brand">Brand</option><option value="name">Product name</option><option value="model">${escapeHtml(modelLabel(category))}</option><option value="__column" disabled>Column (use header)</option></select></label>${hasConfigs || gridConfig(category) ? `<label class="sort-control">View <select id="view-select" aria-label="Result view"><option value="flat" ${state.view === 'flat' ? 'selected' : ''}>Flat list</option>${hasConfigs ? `<option value="grouped" ${state.view === 'grouped' ? 'selected' : ''}>Grouped by model</option>` : ''}${gridConfig(category) ? `<option value="sizegrid" ${state.view === 'sizegrid' ? 'selected' : ''}>Size grid</option>` : ''}</select></label>` : ''}<label class="maybe-toggle" id="maybe-label" hidden><input type="checkbox" id="maybe-toggle">Include <span id="maybe-count">0</span> with unknown values (might match)</label><details class="column-menu"><summary>Choose columns</summary><div class="column-options"><button type="button" id="reset-columns">Reset to default columns</button>${[...new Set(category.fields.map(field => field.group))].map(group => `<fieldset><legend>${escapeHtml(groupLabel(category,group))}</legend>${category.fields.filter(field => field.group === group).map(field => `<label><input type="checkbox" data-column="${escapeHtml(field.key)}" ${state.cols.includes(field.key) ? 'checked' : ''}>${escapeHtml(field.label)}</label>`).join('')}</fieldset>`).join('')}</div></details></div><p class="request-prompt">Can’t find it? <a id="request-product" href="${escapeHtml(missingIssueUrl(category.id, state.q))}" target="_blank" rel="noopener noreferrer">Prepare GitHub issue draft</a> for a product request, or email ${correctionsMail('Product request')}. ${requestNote} A draft opens only if you choose this link.</p><div id="selection-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div><p id="selection-notice" class="inline-notice" role="status" ${droppedNote ? '' : 'hidden'}>${escapeHtml(droppedNote)}</p><div id="compare-shelf"></div><div id="results-table"></div><div id="pagination"></div></section></div>`;
+    let presetReported = false;
+    const activePreset = presetById(category, state.preset);
+    if (activePreset) main.querySelector('.page-head').insertAdjacentHTML('afterend', activePreset.gate.passes
+      ? `<p class="preset-banner"><strong>${escapeHtml(activePreset.title)}</strong> Filters from this question are applied and editable. <a href="${categoryUrl(category.id)}">Clear preset</a></p>`
+      : `<section class="preset-banner help" aria-label="Help fill this"><strong>${escapeHtml(activePreset.title)}</strong><p><strong>Help fill this: ${activePreset.gate.known} of ${activePreset.gate.total} known</strong> for “${escapeHtml(activePreset.gate.label)}” (${pct(activePreset.gate.fill)}; this question needs ${pct(activePreset.gate.min_fill)}). The question’s own filters are not applied, because a filtered table would be mostly unknown.${activePreset.gate.missing_brands?.length ? ` No value yet for: ${escapeHtml(brandList(activePreset.gate.missing_brands, activePreset.gate.missing_brand_count))}.` : ''} <a data-request data-category="${escapeHtml(category.id)}" href="${escapeHtml(fillRequestUrl(activePreset))}" target="_blank" rel="noopener noreferrer">Help fill this</a></p></section>`);
     const mobileQuery = matchMedia('(max-width: 800px)');
     const filterDisclosure = main.querySelector('.filter-rail > details');
     filterDisclosure.open = !mobileQuery.matches;
@@ -542,6 +644,7 @@
     });
     const sortSelect = main.querySelector('#sort-select');
     sortSelect.addEventListener('change', () => { state.sort = sortSelect.value; state.dir = state.sort === 'coverage' ? 'desc' : 'asc'; update(); });
+    main.querySelector('#maybe-toggle').addEventListener('change', event => { state.maybe = event.target.checked; state.page = 1; update(); });
     main.querySelector('#view-select')?.addEventListener('change', event => { state.view = event.target.value; state.page = 1; update(); });
     search.addEventListener('input', () => { state.q = search.value; state.page = 1; update(); });
     main.querySelector('#brand-filter').addEventListener('change', event => { state.brand = event.target.value; state.page = 1; update(); });
@@ -616,7 +719,12 @@
       const found = searchRows(rows, state.q);
       const hasQuery = !!found.query;
       const base = hasQuery ? rows.filter(row => found.matches.has(row.id)) : rows;
-      const filtered = base.filter(row => (!state.brand || row.brand === state.brand) && category.fields.filter(f => f.facet).every(field => matchFacet(row, field, state.filters)))
+      const facetFields = category.fields.filter(f => f.facet);
+      const inBrand = base.filter(row => !state.brand || row.brand === state.brand);
+      const matched = inBrand.filter(row => facetPass(row, facetFields, state.filters, false));
+      const maybeRows = inBrand.filter(row => !facetPass(row, facetFields, state.filters, false) && facetPass(row, facetFields, state.filters, true));
+      const maybeIds = new Set(state.maybe ? maybeRows.map(row => row.id) : []);
+      const filtered = (state.maybe ? [...matched, ...maybeRows] : matched)
         .sort((a, b) => { if (hasQuery) { const ma = found.matches.get(a.id), mb = found.matches.get(b.id); const delta = (ma.rank - mb.rank) || (mb.matched.length - ma.matched.length); if (delta) return delta; } return compareSort(a, b, state); });
       sortSelect.value = [...sortSelect.options].some(o => o.value === state.sort && !o.disabled) ? state.sort : '__column';
       main.querySelector('#request-product').href = missingIssueUrl(category.id, state.q);
@@ -632,10 +740,19 @@
       state.page = Math.min(state.page, pages);
       const pageUnits = units.slice((state.page - 1) * pageSize, state.page * pageSize);
       const groupInfo = grouped ? new Map(pageUnits.filter(unit => unit.members[0].kind === 'configuration' && unit.members[0].parent_id).map(unit => [unit.members[0].id, {parent:unit.key, name:unit.members[0].name, matching:unit.members.length, total:configTotals.get(unit.key) || unit.members.length}])) : null;
-      main.querySelector('#result-count').textContent = `${filtered.length} of ${rows.length} products${state.preview ? ' (accepted plus unreviewed candidates)' : ''}${grouped ? `, in ${units.length} ${units.length === 1 ? 'group' : 'groups'}` : ''}${pages > 1 ? `. Page ${state.page} of ${pages}` : ''}`;
+      const split = facetFields.some(field => facetActive(field, state.filters));
+      main.querySelector('#result-count').textContent = `${split ? `${matched.length} ${matched.length === 1 ? 'match' : 'matches'}` : filtered.length} of ${rows.length} products${state.preview ? ' (accepted plus unreviewed candidates)' : ''}${grouped ? `, in ${units.length} ${units.length === 1 ? 'group' : 'groups'}` : ''}${pages > 1 && !(state.view === 'sizegrid' && gridConfig(category)) ? `. Page ${state.page} of ${pages}` : ''}${split && maybeRows.length ? `. ${maybeRows.length} more ${maybeRows.length === 1 ? 'has' : 'have'} an unknown value for a filtered field and might match${state.maybe ? ' (shown, marked)' : ''}` : ''}`;
+      const maybeToggle = main.querySelector('#maybe-toggle');
+      maybeToggle.checked = state.maybe;
+      main.querySelector('#maybe-label').hidden = !(split && (maybeRows.length || state.maybe));
+      main.querySelector('#maybe-count').textContent = maybeRows.length;
       const query = categoryStateQuery(state);
-      renderTable(category, pageUnits.flatMap(unit => unit.members), state, query, {found, total:rows.length, hiddenByFilters:base.length - filtered.length, baseCount:base.length, groupInfo, compared:selectedRows(rows, state)});
-      main.querySelector('#pagination').innerHTML = pages > 1 ? `<nav class="pagination" aria-label="Result pages"><button type="button" data-dir="prev" data-page="${state.page - 1}" ${state.page === 1 ? 'disabled' : ''}>Previous</button><span>Page ${state.page} of ${pages}</span><button type="button" data-dir="next" data-page="${state.page + 1}" ${state.page === pages ? 'disabled' : ''}>Next</button></nav>` : '';
+      const gridCfg = state.view === 'sizegrid' ? gridConfig(category) : null;
+      if (gridCfg) main.querySelector('#results-table').innerHTML = filtered.length ? sizeGridMarkup(filtered, gridCfg) : emptyState(category, state, {found, total:rows.length, hiddenByFilters:base.length - filtered.length, baseCount:base.length});
+      else renderTable(category, pageUnits.flatMap(unit => unit.members), state, query, {found, total:rows.length, hiddenByFilters:base.length - filtered.length, baseCount:base.length, groupInfo, compared:selectedRows(rows, state), maybe:maybeIds});
+      for (const key of state.cols) { const f = category.fields.find(item => item.key === key); if (f && pageUnits.some(unit => unit.members.some(row => !isKnown(specObject(row, key))))) noteUnknown(category.id, key); }
+      if (state.preset && !presetReported) { presetReported = true; if (presetById(category, state.preset)?.gate.passes) sendEvent('killer_query', category.id, {preset:state.preset, results:matched.length}); }
+      main.querySelector('#pagination').innerHTML = pages > 1 && !(state.view === 'sizegrid' && gridConfig(category)) ? `<nav class="pagination" aria-label="Result pages"><button type="button" data-dir="prev" data-page="${state.page - 1}" ${state.page === 1 ? 'disabled' : ''}>Previous</button><span>Page ${state.page} of ${pages}</span><button type="button" data-dir="next" data-page="${state.page + 1}" ${state.page === pages ? 'disabled' : ''}>Next</button></nav>` : '';
       renderShelf(category, rows, state, query);
       main.querySelector('#selection-status').textContent = `${state.ids.length} selected. ${state.ids.length >= 4 ? 'Maximum of 4; remove one to add another.' : state.ids.length >= 2 ? 'Compare products available.' : 'Choose 2 to 4 products to compare.'}`;
       persistCategoryState(category, state);
@@ -687,7 +804,7 @@
       const groupHeader = info ? `<tr class="model-group"><th colspan="${fields.length + 4}" scope="rowgroup">Configurations of <a href="${productUrl(category.id, info.parent, query)}">${escapeHtml(info.name)}</a> <span class="muted">(${info.matching} matching of ${info.total} configurations)</span></th></tr>` : '';
       const why = ctx.found?.matches.get(row.id)?.why;
       const parentLine = row.kind === 'configuration' && row.parent_id ? `<small class="entity-kind">Configuration of <a href="${productUrl(category.id, row.parent_id, query)}">${escapeHtml(row.name)} (model)</a></small>` : row.kind ? `<small class="entity-kind">${escapeHtml(row.kind[0].toUpperCase() + row.kind.slice(1))}</small>` : '';
-      return `${groupHeader}<tr class="${state.ids.includes(row.id) ? 'selected' : ''}${row.unreviewed ? ' unreviewed' : ''}"><td class="select-cell"><input type="checkbox" data-select="${escapeHtml(row.id)}" aria-label="Select ${escapeHtml(row.name)} ${escapeHtml(row.model || '')} for comparison" ${state.ids.includes(row.id) ? 'checked' : ''} ${state.ids.length >= 4 && !state.ids.includes(row.id) ? 'disabled' : ''}></td><td class="col-brand">${escapeHtml(row.brand)}</td><td class="name-cell"><span class="brand-compact">${escapeHtml(row.brand)}</span><a href="${productUrl(category.id, row.id, query)}">${escapeHtml(row.name)}</a> ${demoBadge(row)}${row.unreviewed ? ` ${unreviewedBadge}` : ''}<span class="code id-compact">${escapeHtml(row.model || '—')}</span>${row.variant_label ? `<small class="variant-label">${escapeHtml(row.variant_label)}</small>` : ''}${parentLine}${why ? `<small class="match-why">${escapeHtml(why)}</small>` : ''}</td><td class="code col-model">${escapeHtml(row.model || '—')}</td>${fields.map(f => `<td class="${['number','integer'].includes(f.type) ? 'num' : ''}">${cellHtml(row, f)}</td>`).join('')}</tr>`;
+      return `${groupHeader}<tr class="${state.ids.includes(row.id) ? 'selected' : ''}${row.unreviewed ? ' unreviewed' : ''}"><td class="select-cell"><input type="checkbox" data-select="${escapeHtml(row.id)}" aria-label="Select ${escapeHtml(row.name)} ${escapeHtml(row.model || '')} for comparison" ${state.ids.includes(row.id) ? 'checked' : ''} ${state.ids.length >= 4 && !state.ids.includes(row.id) ? 'disabled' : ''}></td><td class="col-brand">${escapeHtml(row.brand)}</td><td class="name-cell"><span class="brand-compact">${escapeHtml(row.brand)}</span><a href="${productUrl(category.id, row.id, query)}">${escapeHtml(row.name)}</a> ${demoBadge(row)}${row.unreviewed ? ` ${unreviewedBadge}` : ''}<span class="code id-compact">${escapeHtml(row.model || '—')}</span>${row.variant_label ? `<small class="variant-label">${escapeHtml(row.variant_label)}</small>` : ''}${parentLine}${ctx.maybe?.has(row.id) ? '<small class="maybe-tag">Unknown value, might match</small>' : ''}${why ? `<small class="match-why">${escapeHtml(why)}</small>` : ''}</td><td class="code col-model">${escapeHtml(row.model || '—')}</td>${fields.map(f => `<td class="${['number','integer'].includes(f.type) ? 'num' : ''}">${cellHtml(row, f)}</td>`).join('')}</tr>`;
     }).join('');
     target.innerHTML = `<div class="table-scroll" role="region" aria-label="Product comparison table" tabindex="0"><table><thead><tr><th scope="col" class="select-head">Select</th>${columnHeader('brand','Brand','col-brand')}${columnHeader('name','Product','name-head')}${columnHeader('model', modelLabel(category), 'col-model')}${fields.map(f => columnHeader(f.key, f.label)).join('')}</tr></thead><tbody>${body}</tbody></table></div>`;
   }
@@ -782,6 +899,9 @@
       if (relation) main.querySelector('.detail-grid').insertAdjacentHTML('beforebegin', `<p class="model-link">This is a configuration. <a href="${productUrl(category.id, relation.target, returnQuery)}">View its model and other configurations</a>.</p>`);
       const revisionRelation = record.relations?.find(link => link.type === 'variant_of' && link.status === 'approved');
       if (record.kind === 'revision' && revisionRelation) main.querySelector('.detail-grid').insertAdjacentHTML('beforebegin', `<p class="model-link">This is a hardware revision. Specs not stated for it are inherited from its model. <a href="${productUrl(category.id, revisionRelation.target, returnQuery)}">View the model and all revisions</a>.</p>`);
+      const pdoCfg = presetData.renderers?.pdo_pill;
+      if (pdoCfg?.categories.includes(category.id) && category.fields.some(field => field.key === 'out.ports')) main.querySelector('.detail-main').insertAdjacentHTML('afterbegin', pdoSection(record, pdoCfg));
+      for (const field of category.fields) if (field.tier === 'core' && !isKnown(specObject(record, field.key))) noteUnknown(category.id, field.key);
       if (record.revisions?.length) main.querySelector('.detail-main').insertAdjacentHTML('afterbegin', revisionsMarkup(category, record, returnQuery));
       main.querySelector('[data-jump]')?.addEventListener('click', event => { event.preventDefault(); const target = main.querySelector('#revisions-section'); target?.scrollIntoView(); target?.focus(); });
       if (record.bundles?.length) entityNames(category).then(names => { if (sequence === routeSequence) main.querySelector('.detail-main')?.insertAdjacentHTML('beforeend', bundlesMarkup(category, record.bundles, names, returnQuery)); });

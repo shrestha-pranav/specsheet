@@ -449,9 +449,11 @@ specs:
   - '40'
   - '80'
   - '160'
+  - '240'
   facet: *id001
   traps:
   - Many Wi-Fi 6 routers claim 160 MHz but needs DFS channels; some units (budget AX1800) stop at 80
+  - '240 = Wi-Fi 7 5 GHz 240 MHz (Ubiquiti U7 "BW240"); added coverage r3 2026-11-24'
   sources:
   - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
   example: '160'

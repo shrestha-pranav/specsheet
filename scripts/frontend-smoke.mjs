@@ -21,7 +21,7 @@ const context = vm.createContext({
   matchMedia:()=>({matches:false,addEventListener(){}}),
   fetch:async url => {requests.push(url); try { const body = await json(url.split('?')[0]); return {ok:true,json:async()=>body}; } catch (error) { if (error.code === 'ENOENT') return {ok:false,status:404}; throw error; }}
 });
-const names = ['facetControl','methodsDiffer','methodsFlag','categories','indexFor','detailFor','displayValue','initialState','categoryStateQuery','productUrl','validatedReturnQuery','returnWithIds','matchFacet','missingIssueUrl','correctionIssueUrl','renderTable','renderProduct','renderCompare','previewOverlay','revisionsMarkup','searchRows','extractIdentifiers','differingFields','cellValue','compareUrl','configTable','evidenceMarkup','valueWithContext','renderPage','reportMiss'];
+const names = ['facetControl','methodsDiffer','methodsFlag','categories','indexFor','detailFor','displayValue','initialState','categoryStateQuery','productUrl','validatedReturnQuery','returnWithIds','matchFacet','missingIssueUrl','correctionIssueUrl','renderTable','renderProduct','renderCompare','previewOverlay','revisionsMarkup','searchRows','extractIdentifiers','differingFields','cellValue','compareUrl','configTable','evidenceMarkup','valueWithContext','renderPage','reportMiss','loadPresets','presetCard','presetGallery','facetPass','facetActive','pdoVerdict','pdoSection','sizeGridRows','sizeGridMarkup','sendEvent','noteUnknown','pct'];
 const source = await readFile(resolve(root, 'docs/app.js'), 'utf8');
 assert(source.includes('  renderRoute();\n})();'), 'Application bootstrap changed; update harness');
 vm.runInContext(source.replace('  renderRoute();\n})();', `  globalThis.test = {${names.join(',')}};\n})();`), context);
@@ -307,5 +307,69 @@ for (const category of categories) {
   }
   assert(site.api_origin === '' || /^https:/.test(site.api_origin), 'api_origin empty (beacon off) or https');
   ui.reportMiss('laptops', 'zzz no such thing');   // no api_origin configured: must be a silent no-op
+}
+
+// ---- killer-query presets (A4, 2026-11-24): data-driven gallery, build-time fill gate, unknown-might-match, PDO pill, size grid, beacons off
+{
+  const data = await ui.loadPresets();
+  assert(data.presets.length >= 6 && data.presets.length <= 9, 'presets: 6-9 cards from presets.json');
+  const src = await json('presets.json');
+  assert.deepEqual(data.presets.map(p => p.id), src.presets.map(p => p.id), 'built presets.json carries every source preset (no hard-coded list in app.js)');
+  assert(!/ram-upgradable|no-pwm-usbc-monitor/.test(source), 'preset ids are data, never hard-coded in app.js');
+  for (const preset of data.presets) {
+    const cat = categories.find(c => c.id === preset.category);
+    if (!cat.fields) Object.assign(cat, await json(`api/v1/${cat.schema}`));
+    const all = await ui.indexFor(cat);
+    const gateKeys = preset.gate.keys.map(k => k.key);
+    // The gate must be the real fill of the real index, re-derived here independently of scripts/presets.py.
+    for (const k of preset.gate.keys) assert.equal(k.known, all.filter(r => r.specs[k.key]?.status === 'known').length, `${preset.id}: ${k.key} known count matches the index`);
+    assert.equal(preset.gate.passes, preset.gate.fill >= preset.min_fill, `${preset.id}: gate is fill >= min_fill`);
+    // Count parity with scripts/presets.py: strict = matches, lenient = matches + unknown-might-match.
+    const facets = cat.fields.filter(f => f.facet), filters = preset.filters || {};
+    const strict = all.filter(r => ui.facetPass(r, facets, filters, false)).length, lenient = all.filter(r => ui.facetPass(r, facets, filters, true)).length;
+    assert.equal(strict, preset.count.matches, `${preset.id}: matches agree with build`);
+    assert.equal(lenient - strict, preset.count.maybe, `${preset.id}: unknown-might-match agrees with build`);
+    const card = ui.presetCard(preset);
+    if (preset.gate.passes) assert.match(card, new RegExp(`href="#/category/${preset.category}\\?preset=${preset.id}"`), `${preset.id}: passing card opens the preset`);
+    else {
+      assert.match(card, /Help fill this: \d+ of \d+ known/, `${preset.id}: failing card asks for help`);
+      assert(!card.includes(`?preset=${preset.id}"><`) && !/class="preset-card"/.test(card), `${preset.id}: a failing preset is never a confident card`);
+      assert(card.includes(preset.gate.label), `${preset.id}: names the missing field`);
+      if (preset.gate.missing_brands.length) assert(card.includes(preset.gate.missing_brands[0].brand), `${preset.id}: names a brand we lack`);
+    }
+    assert(gateKeys.length > 0);
+  }
+  const zero = data.presets.find(p => p.gate.fill === 0);
+  assert(zero && !zero.gate.passes, 'a 0%-fill key fails the gate today');
+  // Synthetic: the gate is data, so a preset at exactly min_fill passes and 1 row short fails.
+  const fake = fill => ({id:'x', category:'laptops', category_name:'Laptops', title:'T', count:{matches:3, maybe:1, total:10}, min_fill:0.8, gate:{passes:fill >= 0.8, fill, min_fill:0.8, label:'Field', known:Math.round(fill * 10), total:10, missing_brands:[{brand:'Acme', rows:2}], missing_brand_count:1}});
+  assert.match(ui.presetCard(fake(0.8)), /3 matches<\/strong>, 1 more unknown, might match/);
+  assert.match(ui.presetCard(fake(0.7)), /Help fill this: 7 of 10 known.*Acme/s);
+  assert.equal(ui.pct(0.796), '79.6%', 'a failing 79.6% never displays as 80%');
+  // The unknown filter: unknown is never no, and only unknown rows are "might match".
+  const bool = {key:'b', type:'bool', facet:true}, unknownRow = {specs:{}}, noRow = {specs:{b:{status:'known', value:false}}}, yesRow = {specs:{b:{status:'known', value:true}}};
+  assert.equal(ui.facetPass(unknownRow, [bool], {f_b_value:'yes'}, false), false); assert.equal(ui.facetPass(unknownRow, [bool], {f_b_value:'yes'}, true), true, 'unknown might match');
+  assert.equal(ui.facetPass(noRow, [bool], {f_b_value:'yes'}, true), false, 'known No is never lenient');
+  assert.equal(ui.facetPass(yesRow, [bool], {f_b_value:'yes'}, false), true);
+  assert.equal(ui.facetPass(unknownRow, [bool], {f_b_value:'unknown'}, false), true, 'explicit unknown filter');
+  // PDO pill
+  const cfg = data.renderers.pdo_pill;
+  const rec = (ports, pps) => ({specs:{'out.ports':{status:'known', value:ports}, ...(pps === undefined ? {} : {'pd.pps':{status:'known', value:pps}})}});
+  assert.equal(ui.pdoVerdict(rec([{name:'C1', direction:'out', pps:'5-11V 6.1A'}]), cfg).overall, 'yes');
+  assert.equal(ui.pdoVerdict(rec([{name:'C1', direction:'out', pps:'5-11V 3A'}, {name:'C2', direction:'out', pps:'3.3-11V 3A'}]), cfg).overall, 'no');
+  assert.equal(ui.pdoVerdict(rec([{name:'C1', direction:'out', pps:'5-11V 3A'}, {name:'C2', direction:'out', pps:null}]), cfg).overall, 'unknown', 'a port without PPS data is unknown, not no');
+  assert.equal(ui.pdoVerdict(rec([{name:'C1', direction:'out', pps:null}], false), cfg).overall, 'no', 'product states no PPS');
+  assert.equal(ui.pdoVerdict({specs:{}}, cfg).overall, 'unknown');
+  assert.match(ui.pdoSection({specs:{}}, cfg), /Unknown is not “No”/);
+  // Size grid: unknown stays a count
+  const grid = ui.sizeGridRows([{specs:{'gen.size_class':{status:'known', value:65}, 'panel.display_tech':{status:'known', value:'oled'}}}, {specs:{'gen.size_class':{status:'known', value:65}}}, {specs:{}}], data.renderers.size_grid);
+  assert.equal(JSON.stringify(grid.map(g => g.size)), '[65,null]'); assert.equal(JSON.stringify(grid[0].panel), '[["oled",1],["unknown",1]]'); assert.equal(grid[0].zones.unknown, 2);
+  assert.match(ui.sizeGridMarkup([{specs:{}}], data.renderers.size_grid), /Size unknown/);
+  // Beacons: off until api_origin is set; the page-level helpers are silent no-ops and send text/plain when on
+  assert.equal((await json('site.json')).api_origin, '', 'GitHub Pages: api_origin empty');
+  assert.equal(ui.sendEvent('request_click', 'laptops'), false, 'event beacon is a no-op without api_origin');
+  ui.noteUnknown('laptops', 'mem.soldered');
+  assert(source.split('\n').some(line => line.includes('/v1/event`') && line.includes("type:'text/plain'")), 'event beacon sends text/plain');
+  assert(!/localStorage\.setItem\([^)]*(preset|event)/.test(source) && !/document\.cookie/.test(source), 'no cookies or stored ids');
 }
 console.log(`Frontend behavior smoke passed: ${rows.length} laptop rows; shard loading, lazy detail cache, structured/literal ports, absence semantics, return state, private issue drafts.`);

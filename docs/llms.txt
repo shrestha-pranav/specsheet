@@ -9,19 +9,20 @@
 - [Identifier lookup](https://shrestha-pranav.github.io/specsheet/api/v1/lookup/identifiers.json): GTIN / model number to product id
 - Per category: `https://shrestha-pranav.github.io/specsheet/api/v1/<category>/index-N.json` (rows), `facets.json`, `schema.json`, `products/<id>.json` (full record with per-value sources)
 - [Data contract](https://shrestha-pranav.github.io/specsheet/api/v1/README.md)
+- [Killer-query presets](https://shrestha-pranav.github.io/specsheet/api/v1/presets.json): ready-made questions (filters and columns as data), each with its measured fill and a pass/fail gate; a failing preset is a data gap, not an empty answer
 
 ## Categories
 
 - air-purifiers: Air purifiers (217 products)
 - chargers: USB chargers (142 products)
 - laptops: Laptops (2419 products)
-- monitors: Monitors (4133 products)
+- monitors: Monitors (4234 products)
 - power-banks: Power banks (168 products)
 - power-stations: Portable power stations (71 products)
 - power-strips: Power strips & surge protectors (538 products)
 - robot-vacuums: Robot vacuums & mops (144 products)
-- routers: Wi-Fi routers & mesh (247 products)
-- ssds: SSDs (572 products)
+- routers: Wi-Fi routers & mesh (334 products)
+- ssds: SSDs (584 products)
 - tvs: Televisions (1371 products)
 
 ## API and MCP (preview)

@@ -13,3 +13,8 @@ Role: retailer data = aliases, MPN candidates, prices, availability; never prima
 - **MSI (www.msi.com): BLOCKED** (Akamai "Access Denied" 403, robots.txt included). Not retried.
 - BenQ US (/en-us/monitor.html) 200, robots allows; Dell US /apd/ monitor pages 200 (3.7 MB, no server-rendered tech-spec block: specs load
   client-side). No adapter built this round for either.
+
+## A2 coverage r3 (2026-11-24)
+- BenQ US: adapter `benq_monitors@1` (benq-us-monitors), /en-us/sitemap.xml -> 136 /monitor/<line>/<model>/spec.html (accessory/software lines
+  dropped), server-rendered name/detail rows. flk.pwm from "Flicker-free Technology: Yes" only; USB-C PD from the Power Delivery row or upstream port label.
+- Dell US: still no adapter. /apd/ monitor pages load the tech-spec block client-side and the product sitemap carries no monitor URLs; not retried.

@@ -609,6 +609,7 @@ specs:
   level: revision
   traps:
   - Datasheet silent => usually DRAM-less; 'HMB' uses host RAM and some hosts/OSes disable it
+  - '`dramless` = the maker says DRAM-less and nothing about HMB: hw.hmb_support stays unknown, never assumed (coverage r3, 2026-11-24)'
   - DRAM-less variant can share a name with a DRAM model (SN770 vs SN850; Crucial P3 vs P3 Plus differ in number only)
   sources:
   - Manufacturer datasheet PDF (Samsung lists '1GB LPDDR4')
@@ -618,6 +619,7 @@ specs:
   - dram
   - dramless_hmb
   - dramless_none
+  - dramless
   - unknown
   identity_role: variant_axis
 - key: hw.dram_size

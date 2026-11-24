@@ -262,4 +262,15 @@ assert.equal(total, categories.reduce((sum, category) => sum + category.count, 0
   assert(Object.values(cov.categories).some(item => item.granted.values > 0), 'coverage.json reports granted values');
   for (const item of Object.values(cov.categories)) assert(item.granted.values <= item.free.values, 'granted <= free');
 }
+{
+  // Killer-query presets: computed at build time from the real index (scripts/presets.py), never hand-written.
+  const presets = await parse(join(root, 'presets.json'));
+  assert(presets.presets.length >= 6 && presets.presets.length <= 9, 'presets: 6-9 killer queries');
+  for (const p of presets.presets) {
+    assert(categories.some(c => c.id === p.category), `preset ${p.id}: known category`);
+    assert(p.gate && typeof p.gate.passes === 'boolean' && p.gate.keys.length, `preset ${p.id}: gate computed`);
+    assert.equal(p.gate.passes, p.gate.fill >= p.min_fill, `preset ${p.id}: gate = fill >= min_fill`);
+    if (!p.gate.passes) assert(p.gate.label && p.gate.known <= p.gate.total, `preset ${p.id}: failing preset names its missing field`);
+  }
+}
 console.log(`Static dataset smoke passed: ${total} products across ${categories.length} categories; ${parsedJsonFiles} JSON files parsed`);

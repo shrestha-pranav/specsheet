@@ -57,3 +57,8 @@
 {"at": "2026-11-24T14:42:37Z", "id": "claim/mfr-ssd-kingston@1", "sha256": "sha256:cc4a8a5cef036c806f4dac0ce6ba802feab2ee8d4326d1b5949e07dc99831094"}
 {"at": "2026-11-24T14:42:37Z", "id": "rel/source-stated-hierarchy@3", "sha256": "sha256:cdcb817054630b70056e88eda41649a4ddf1e3afe4f8e5b445fed861f986cadf"}
 {"at": "2026-11-24T14:42:37Z", "id": "rel/bundle-contents@3", "sha256": "sha256:a6f675dd34c6d0ad3094c16690dcbb1af932b289d83e1a2cc559c26afb882e21"}
+{"at": "2026-11-24T15:55:33Z", "id": "claim/mfr-ssd-structured@4", "sha256": "sha256:1cb58b7ce8dea4a56bce0501dc661bd80b2aaba357da94103846a8fd68676246"}
+{"at": "2026-11-24T15:55:33Z", "id": "claim/mfr-ssd-kingston@2", "sha256": "sha256:a9171dbbe17eb2c2336265e123d9fbc07f68e12b1f0495d88db61316a4e3c5ce"}
+{"at": "2026-11-24T15:55:33Z", "id": "claim/mfr-routers-direct@1", "sha256": "sha256:22838a2eccd56bdedd3c252d176de15026227e42a81369616f7368c1d6284ca7"}
+{"at": "2026-11-24T15:55:33Z", "id": "claim/mfr-monitor-benq@1", "sha256": "sha256:67ba01772d97970fcc01cf7243348f30bbb8dd484e3de2fc59a73a00650d5cfe"}
+{"at": "2026-11-24T15:55:33Z", "id": "rel/source-stated-hierarchy@4", "sha256": "sha256:ddde37b0f84ea5ce43446ffeaed375498831e3aecc4a736116a8abdf7e7f8d83"}

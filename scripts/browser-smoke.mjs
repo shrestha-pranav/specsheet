@@ -89,6 +89,18 @@ try {
   await page.goto(`${base}#/category/gan-chargers`, {waitUntil:'domcontentloaded'});
   await page.locator('#results-table tbody tr').first().waitFor();
   assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'Mobile category should not overflow viewport');
+  await page.setViewportSize({width:1200,height:900});
+  await page.goto(`${base}#/`, {waitUntil:'domcontentloaded'});
+  await page.locator('.preset-card').first().waitFor();
+  assert(await page.locator('.preset-card').count() >= 6, 'Home shows the preset gallery');
+  assert(await page.locator('.preset-card.help').first().getByText(/Help fill this: \d+ of \d+ known/).isVisible(), 'A preset under its fill gate renders as a help-fill card');
+  await page.goto(`${base}#/category/tvs?view=sizegrid&cols=gen.size_class`, {waitUntil:'domcontentloaded'});
+  await page.locator('.size-grid').waitFor();
+  assert(await page.locator('.size-grid tbody tr').count() > 3, 'TV size grid renders rows');
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(`${base}#/`, {waitUntil:'domcontentloaded'});
+  await page.locator('.preset-card').first().waitFor();
+  assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'Mobile gallery should not overflow viewport');
   assert.equal(errors.length, 0, `Page errors: ${errors.join('; ')}`);
   await page.close();
   console.log('Browser smoke passed: rows, Anker search, URL state, compare, demo schema, dark theme, mobile bounds');

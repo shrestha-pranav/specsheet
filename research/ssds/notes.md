@@ -42,3 +42,7 @@ label date code, NAND part). Official sources rarely carry these; reviewers/tear
   nor no-HMB. Open for A1: add a `dramless` (HMB unstated) value, or keep these unknown.
 - TEAMGROUP "use InnoGrit controller solutions by default" (G50/G70 lines) is hedged: not taken.
 - New source kingston-us-ssd (datasheet PDFs only; product pages blocked). See merchants.md.
+- Coverage r3 (2026-11-24): A1 question answered by the coordinator. A bare "DRAM-less" now maps to the new enum value `dramless` (HMB unstated;
+  hw.hmb_support stays unknown, never assumed): SN7100S 16, SN7100 4, SN7100X 2 configurations (_ssdprose, sandisk_ssd@4). Open: `_ssd.dram()`
+  still maps a TABLE cell "DRAM-less"/"None" to dramless_none, which assumes "no HMB"; switching it to `dramless` would touch every SSD parser.
+- Kingston NV2 / NV1 / A2000 older datasheets now parse (kingston_ssd@2). NV2/NV1 print NAND "3D" only and no DRAM row, so those stay unknown.

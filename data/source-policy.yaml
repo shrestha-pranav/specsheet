@@ -14,8 +14,9 @@
 # Invariants enforced by the gate: licence_grant yes => free yes; paid yes => licence_grant yes.
 # Changing any disposition = bump policy_version (date.N), add a changelog line. Builds stamp the version into
 # manifest.json; a release refuses to promote with a policy version older than the one in git.
-policy_version: "2026-11-24.3"
+policy_version: "2026-11-24.4"
 changelog:
+  - {version: "2026-11-24.4", by: A2, note: "Added techspecs.ui.com (Ubiquiti, ubiquiti-us-routers), www.gl-inet.com (GL.iNet, glinet-us-routers) and www.benq.com (BenQ, benq-us-monitors), new maker sources of coverage r3. Same disposition as the other unaudited makers: free yes, paid no, no licence grant."}
   - {version: "2026-11-24.3", by: coordinator, note: "Added 12 maker domains cited by new adapters (dell, byjasco, microsoft x2, razer, support.apple, baseus, furmanpower, austere, plugable, nekteck) plus images.salsify.com (maker document CDN). Same disposition as other unaudited makers: free yes, paid no, no licence grant."}
   - {version: "2026-11-24.2", by: A2, note: "Added www.kingston.com (Kingston datasheet PDFs, new source kingston-us-ssd) with the same disposition as the other SSD makers (free yes, paid no, no licence grant)."}
   - {version: "2026-11-24.1", by: A5, note: "First version. Replaces api-worker/licensing-exclusions.json (exclusions, paid only) and the public_domain flags in docs/sources.json. Makers moved paid yes->no (unaudited). iniushop.com reclassified retail->maker (INIU's own store)."}
@@ -78,6 +79,9 @@ sources:
   - {domain: rog.asus.com, match: exact, kind: maker, credit: "ASUS ROG official specification pages", categories: [laptops, monitors], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: www.teamgroupinc.com, match: exact, kind: maker, credit: "TEAMGROUP official specification pages", categories: [ssds], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: www.sandisk.com, match: exact, kind: maker, credit: "SanDisk official specification pages", categories: [ssds], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: techspecs.ui.com, match: exact, kind: maker, credit: "Ubiquiti official tech specs", categories: [routers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.gl-inet.com, match: exact, kind: maker, credit: "GL.iNet official product pages", categories: [routers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.benq.com, match: exact, kind: maker, credit: "BenQ official specification pages", categories: [monitors], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: www.kingston.com, match: exact, kind: maker, credit: "Kingston official datasheets", categories: [ssds], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: us.tcl.com, match: exact, kind: maker, credit: "TCL official specification pages", categories: [tvs], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: www.vizio.com, match: exact, kind: maker, credit: "VIZIO official specification pages", categories: [tvs], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}

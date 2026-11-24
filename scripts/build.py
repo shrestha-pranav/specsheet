@@ -322,6 +322,8 @@ def main():
         dump(API / "lookup" / "identifiers.json", {})
         dump(API / "redirects.json", {})
     dump(API / "categories.json", categories)
+    import presets      # killer-query presets + build-time fill gate -> api/v1/presets.json (docs/presets.json holds the definitions)
+    print("presets:", json.dumps(presets.write(API)))
     pol, cov, stamp = policy_outputs(API, gate, json.loads((OUT / "site.json").read_text()).get("brand", "specsheet"))
     dump(API / "manifest.json", {"dataset_version": "1.0.0", "build": "", "generated_at": __import__("time").strftime("%FT%TZ", __import__("time").gmtime()),
                                  "record_format": "specsheet.record/1", **stamp, "categories": manifest_cats, "release": release})

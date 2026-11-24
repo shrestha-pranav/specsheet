@@ -1,7 +1,7 @@
 {
  "generated_from": "data/source-policy.yaml",
- "policy_version": "2026-11-24.3",
- "policy_sha256": "6cd4761401c9cd6bac68e41a35cc77f84613ef1b48b8fa2da5eeffcaaf07bb1a",
+ "policy_version": "2026-11-24.4",
+ "policy_sha256": "3dc152466426a2cbdbe622cb210f0dbfff112a69873bcd5c12d0becb53f9e44e",
  "license_scope": "compilation + values whose sources[] include licence_grant:true; other values are facts with links, not licensed by us",
  "granted": [
   {
@@ -131,6 +131,33 @@
    "credit": "SanDisk official specification pages",
    "categories": [
     "ssds"
+   ]
+  },
+  {
+   "domain": "techspecs.ui.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Ubiquiti official tech specs",
+   "categories": [
+    "routers"
+   ]
+  },
+  {
+   "domain": "www.gl-inet.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "GL.iNet official product pages",
+   "categories": [
+    "routers"
+   ]
+  },
+  {
+   "domain": "www.benq.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "BenQ official specification pages",
+   "categories": [
+    "monitors"
    ]
   },
   {
