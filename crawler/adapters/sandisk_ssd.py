@@ -15,6 +15,8 @@ parse    : pure. Per-SKU blocks: <div class='product-title' data-sku data-sku-ti
 Traps    : 'Endurance (TBW)' prints '600units' (it is TB written); Random Read/Write '800K IOPS' carries no queue depth (not mapped to qd32);
            no controller/NAND/DRAM rows exist on these pages (WD never prints them = the silent-revision problem); the same Model Number can
            appear under two orderable suffixes (-00BCA0 vs -00CDD0 on the 8TB SN850X): a candidate revision signal, recorded not decided.
+v3 (2026-11-24): NAND type/vendor, controller (vendor) and HMB from explicit page-prose statements (_ssdprose.py), quote kept as raw,
+           only where the spec table is silent for that SKU.
 """
 import gzip, re, sys, time
 from pathlib import Path
@@ -22,9 +24,10 @@ sys.path.insert(0, str(Path(__file__).parent))
 import _contract as C
 import _ssd as S
 import _lt as L
+import _ssdprose as SP
 import _run
 
-ID, VERSION, SOURCE = "sandisk_ssd", 2, "sandisk-us-ssd"
+ID, VERSION, SOURCE = "sandisk_ssd", 3, "sandisk-us-ssd"
 CATEGORIES = {"ssds"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.sandisk.com"
@@ -93,6 +96,7 @@ def parse_html(snap, h):
         end = ms[k + 1].start() if k + 1 < len(ms) else len(sec)
         seen[sku] = [(S.clean(a), S.clean(b)) for a, b in PAIR.findall(sec[m.end():end])]
     unmapped = {}
+    prose = SP.extract(h)
     for sku, pairs in seen.items():
         P = {}
         for a, b in pairs:
@@ -161,10 +165,15 @@ def parse_html(snap, h):
             add("if.protocol", "nvme", v, "Protocol")
         if not any(c["key"] == "perf.seq_read" and c["locator"].get("sku") == part for c in pr.claims) and (v := get("Transfer Rate")) and (mm := re.search(r"up to\s*([\d,.]+\s*(?:GB|MB)/s)", v, re.I)):
             add("perf.seq_read", S.speed_mbs(mm[1]), v, "Transfer Rate")
+        have = {c["key"] for c in pr.claims if c["locator"].get("sku") == part}
+        for k, (v, q) in prose["claims"].items():          # v3: explicit page-prose statements, only where the spec table is silent
+            if k not in have:
+                add(k, v, q, "page prose")
         for lab in ("Dimensions (L x W x H)", "Dimensions", "Model Number"):
             get(lab)
         unmapped[sku] = {k: v for k, v in P.items() if k not in used}
-    pr.fingerprints = {"raw": snap.snapshot, "line": line, "skus": list(seen), "sitemap_skus": snap.ref.hints.get("skus"), "unmapped": unmapped}
+    pr.fingerprints = {"raw": snap.snapshot, "line": line, "skus": list(seen), "sitemap_skus": snap.ref.hints.get("skus"), "unmapped": unmapped,
+                       "prose_conflicts": prose["conflicts"]}
     return pr
 
 

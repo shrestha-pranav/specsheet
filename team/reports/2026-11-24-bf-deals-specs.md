@@ -1,0 +1,11 @@
+# bf-deals consumes specsheet (2026-11-24)
+- New `~/projects/bf-deals/specs.py`: loads `scripts/match.py` by path, local `docs/api/v1` only. Uses matches at confidence >= 0.9; adds category facts (chargers/power banks: max single/total/all-ports W, PPS + V/A, ports + PDOs; SSD/monitor/TV: handful) and the specsheet URL.
+- Semantics as specified: known failing value excludes; no match or unknown value = "specs unverified", kept; `strict: true` drops those. PPS also derived True from a known port flagged PPS (never False).
+- watchlist.yaml: `specs:` documented; GaN charger watch gets `{category: chargers, require: {pd.pps: true, out.max_single_port_w: ">=45"}}`. Its criteria text still says 65 W laptop port; the judge applies that on top.
+- deals.py: `apply_specs` before judging, facts + link on cards, "specs unverified" label, "✓ verified spec" in digest item text. judge.py prompt: `verified_specs` is verified data, preferred over title claims.
+- Test: `python3 ~/projects/bf-deals/test_specs.py` (5 fixture titles, pass/fail/unverified/strict) = ok. Render checked on fixtures.
+- Cached run `deals.py --no-brightdata --no-push --no-judge` completed, no Bright Data spend: 0 verified matches on today's real titles.
+- Finding: name-only matches score 0.88 (e.g. "Anker 735 Nano II 65W", "UGREEN Nexode 65W"), so the 0.9 gate ignores them; only titles with a model number (A2688, 10334) pass. Real Slickdeals titles rarely carry one.
+- Finding: only 6 chargers have `pd.pps` known, so most charger deals will read "specs unverified" until coverage grows.
+- Side effect: that --no-judge run rewrote out/index.html and the bf-deals digest section without picks; the 07:00 cron rebuilds both.
+- Docs: bf-deals/README.md, specsheet README "Consumers", vault `svc-morning-digest` (pointer + verify `test_specs.py`). `kb lint`: 0 errors. Nothing committed, crontab and morning-digest untouched.

@@ -18,7 +18,7 @@ import _contract as C
 import _charger as G
 import _run
 
-ID, VERSION, SOURCE = "belkin_chargers", 1, "belkin-us-chargers"
+ID, VERSION, SOURCE = "belkin_chargers", 2, "belkin-us-chargers"     # r7: shared _powerbank changed (energy_basis pairs, case-insensitive Wh)
 CATEGORIES = {"chargers"}
 ADAPTER = f"{ID}@{VERSION}"
 SITEMAP = "https://www.belkin.com/sitemap-variant_products_us_001.xml"

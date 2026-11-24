@@ -1,0 +1,9 @@
+# A4: legal wording + licence markers (2026-11-24)
+- docs/pages.js: Terms "Licence and attribution" replaced with brief §6 text (links DATA-LICENSE.md); intro no longer says "free to use with credit". Sources page rebuilt: How to cite, What our licence covers, Licensed with permission (granted[], with attribution line), Shown as facts with links (facts_only[]), Coverage table, Takedowns (+ "within 7 days of a valid request"). About "free under the ODbL" now "open ... for what we hold rights in". No "public domain" left anywhere in docs/.
+- Sources "None listed" fixed: reads granted/facts_only (was sources[]/public_domain).
+- docs/app.js: sources page also fetches api/v1/coverage.json (values shown vs under our licence); new licenceMark() adds a small marker in each value's evidence summary: "ODbL" if any listed source has licence_grant:true, else "facts only, source terms apply"; no marker when the flag is absent (legacy/demo) or for preview candidates. docs/styles.css: .licence-mark (11px, muted).
+- D1 text in product/decisions.md and DATA-LICENSE.md already matched §6 (A3/PM landed it); no edits needed there.
+- Everything stays draft (site.legal_status banner); contacts stay GitHub issues (email_enabled=false), asserted by existing smoke.
+- Smokes (under flock): frontend-smoke.mjs and smoke.mjs pass. New cases: sources lists granted+attribution+coverage, no "None listed", no "public domain" in terms/sources/about, 7-day takedown, marker ODbL / facts-only / absent; smoke.mjs checks sources.json shape (no public_domain, attributions) and coverage.json (granted <= free).
+- Shared-file edits: docs/app.js (2 small hunks), docs/styles.css (1 appended rule), scripts/frontend-smoke.mjs, scripts/smoke.mjs.
+- Not done: per-source licence tag in the side "Source links" list (summary marker only); browser-smoke.mjs not run. Owner legal review still pending.

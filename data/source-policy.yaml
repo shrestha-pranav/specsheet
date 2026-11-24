@@ -1,0 +1,137 @@
+# Source publication policy: the ONE file that gates the free build, the paid export and the licence grant.
+# Owner: A5 PM (dispositions) / A3 (gate code). Decision: product/decisions.md D1.3 (PM round 3, 2026-11-24).
+# Draft 2026-11-24: not yet read by any build. A3 wires it (team/briefs/pm-2026-11-24-licensing-gate.md).
+#
+# Per domain (matched against the hostname of every source URL; `match: subdomains` also matches *.domain):
+#   free           true|false  value may appear in the free site/static JSON/Worker preview, as a fact + source link
+#   paid           true|false  value may appear in any paid artifact (query/match/changes/bulk with PAYMENTS=on)
+#   licence_grant  true|false  value is offered under OUR ODbL grant (DATA-LICENSE.md). no = shown as a fact with a
+#                             source link; we grant nothing over it and make no claim about the source's terms.
+#   evidence       level: fetched | search | blocked | none, refs: [urls], checked: date. paid/licence_grant = yes
+#                  REQUIRES level fetched and a ref showing permission; the gate rejects the file otherwise.
+#   withhold_keys  [spec keys]  optional; these keys are withheld for this source in every tier (field-scope takedown)
+#   other keys     match (exact|subdomains), kind, credit, categories, conditions, to_clear, audit_ref. Anything else = invalid.
+# Invariants enforced by the gate: licence_grant yes => free yes; paid yes => licence_grant yes.
+# Changing any disposition = bump policy_version (date.N), add a changelog line. Builds stamp the version into
+# manifest.json; a release refuses to promote with a policy version older than the one in git.
+policy_version: "2026-11-24.3"
+changelog:
+  - {version: "2026-11-24.3", by: coordinator, note: "Added 12 maker domains cited by new adapters (dell, byjasco, microsoft x2, razer, support.apple, baseus, furmanpower, austere, plugable, nekteck) plus images.salsify.com (maker document CDN). Same disposition as other unaudited makers: free yes, paid no, no licence grant."}
+  - {version: "2026-11-24.2", by: A2, note: "Added www.kingston.com (Kingston datasheet PDFs, new source kingston-us-ssd) with the same disposition as the other SSD makers (free yes, paid no, no licence grant)."}
+  - {version: "2026-11-24.1", by: A5, note: "First version. Replaces api-worker/licensing-exclusions.json (exclusions, paid only) and the public_domain flags in docs/sources.json. Makers moved paid yes->no (unaudited). iniushop.com reclassified retail->maker (INIU's own store)."}
+
+defaults:
+  # A domain that is not listed below. Withheld from the licence grant and from paid. Shown free as fact + link,
+  # but a RELEASE build (release.sh) fails while any published value cites an unlisted domain, so every
+  # published domain carries an explicit disposition. Non-release builds warn and list the domains.
+  unlisted: {free: true, paid: false, licence_grant: false}
+  fail_release_on_unlisted: true
+
+# What a value needs, per tier (applied to the value's own sources[], after dropping sources not allowed in the tier):
+#   a value is kept in a tier iff at least one of its sources is allowed in that tier; the kept sources[] list
+#   shows ONLY the allowed sources (a disallowed source is never cited, linked or counted in that tier).
+#   licence: a value is "granted" iff at least one remaining source has licence_grant yes.
+record_rules:
+  drop_record_fields: [media]          # images/media are never published in any tier
+  exclude_demo_records: true
+  exclude_categories: [power-strips-demo]
+  withheld_status: not_published       # status shown when a value existed but no source is allowed in the tier
+
+sources:
+  # Government / certification
+  - {domain: data.energystar.gov, match: exact, kind: government, credit: "U.S. EPA ENERGY STAR (data.energystar.gov)",
+     free: true, paid: true, licence_grant: true,
+     evidence: {level: fetched, checked: 2026-11-24,
+       refs: ["https://catalog.data.gov/dataset/energy-star-model-index (license field: https://edg.epa.gov/EPA_Data_License.html, access level public)",
+              "https://edg.epa.gov/EPA_Data_License.html ('Unless otherwise specified, all data produced by the U.S EPA is by default in the public domain')"]},
+     conditions: ["Attribute: 'Source: U.S. EPA ENERGY STAR'", "ENERGY STAR mark only as a factual attribute, never as branding or logo",
+                  "Values are manufacturer-certified data published by EPA; check dataset metadata for 'otherwise specified' notices per dataset"],
+     audit_ref: "research/data-licensing.md#per-source (ENERGY STAR row)"}
+  - {domain: ww2.arb.ca.gov, match: exact, kind: government, credit: "California Air Resources Board, certified air cleaning devices list",
+     free: true, paid: false, licence_grant: false,
+     evidence: {level: search, checked: 2026-11-24, refs: ["https://ww2.arb.ca.gov/list-carb-certified-air-cleaning-devices (no reuse terms in fetched portion)"],
+       note: "Site conditions of use not retrieved (/conditions-use and /use 404 on 2026-11-24). Public record status is not a reuse licence."},
+     conditions: ["Attribute CARB", "Show CARB disclaimer: certification is not an endorsement of effectiveness or safety"],
+     to_clear: "Read CARB/ca.gov conditions of use or email aircleaners@arb.ca.gov; then paid/licence_grant may move to yes",
+     audit_ref: "research/data-licensing.md#per-source (CARB row)"}
+  - {domain: displayhdr.org, match: exact, kind: certification, credit: "VESA DisplayHDR certified products list",
+     free: true, paid: false, licence_grant: false,
+     evidence: {level: fetched, checked: 2026-11-24, refs: ["https://displayhdr.org/ (footer: (c) VESA, all rights reserved; asks for attribution on reuse)"]},
+     conditions: ["Attribute VESA DisplayHDR", "Never show the DisplayHDR logo"],
+     to_clear: "Written VESA permission for the certified-products list", audit_ref: "research/data-licensing.md#per-source (DisplayHDR row)"}
+  - {domain: on.dcl.csa-iot.org, match: exact, kind: certification, credit: "Connectivity Standards Alliance Distributed Compliance Ledger",
+     free: true, paid: false, licence_grant: false,
+     evidence: {level: fetched, checked: 2026-11-24, refs: ["https://csa-iot.org/terms-of-use/ (no copying/republication without written consent; does not name the DCL)"]},
+     to_clear: "Ask CSA whether ledger data is open data", audit_ref: "research/data-licensing.md#per-source (CSA DCL row)"}
+  # Maker reference sites
+  - {domain: psref.lenovo.com, match: exact, kind: maker, credit: "Lenovo PSREF (Product Specifications Reference)",
+     free: true, paid: false, licence_grant: false,
+     evidence: {level: blocked, checked: 2026-11-24, refs: ["https://www.lenovo.com/us/en/legal/ (403 to automated fetch; search snippet: copying/redistribution needs prior written permission)"]},
+     to_clear: "Written Lenovo permission (open-questions Q2)", audit_ref: "research/data-licensing.md#per-source (Lenovo PSREF row)"}
+  # Maker product pages: terms of use not audited. Shown free as facts + link; no grant, not paid.
+  - {domain: www.lg.com, match: exact, kind: maker, credit: "LG official specification pages", categories: [monitors, tvs], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.asus.com, match: exact, kind: maker, credit: "ASUS official specification pages", categories: [laptops, monitors, routers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.samsung.com, match: exact, kind: maker, credit: "Samsung official specification pages", categories: [ssds, tvs], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.cyberpowersystems.com, match: exact, kind: maker, credit: "CyberPower official specification pages", categories: [power-strips], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: assets.tripplite.com, match: exact, kind: maker, credit: "Tripp Lite (Eaton) official specification pages", categories: [power-strips], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.tp-link.com, match: exact, kind: maker, credit: "TP-Link official specification pages", categories: [routers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: rog.asus.com, match: exact, kind: maker, credit: "ASUS ROG official specification pages", categories: [laptops, monitors], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.teamgroupinc.com, match: exact, kind: maker, credit: "TEAMGROUP official specification pages", categories: [ssds], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.sandisk.com, match: exact, kind: maker, credit: "SanDisk official specification pages", categories: [ssds], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.kingston.com, match: exact, kind: maker, credit: "Kingston official datasheets", categories: [ssds], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: us.tcl.com, match: exact, kind: maker, credit: "TCL official specification pages", categories: [tvs], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.vizio.com, match: exact, kind: maker, credit: "VIZIO official specification pages", categories: [tvs], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.ecovacs.com, match: exact, kind: maker, credit: "ECOVACS official specification pages", categories: [robot-vacuums], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.dreametech.com, match: exact, kind: maker, credit: "Dreame official specification pages", categories: [robot-vacuums], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.anker.com, match: exact, kind: maker, credit: "Anker official specification pages", categories: [chargers, power-banks], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.netgear.com, match: exact, kind: maker, credit: "NETGEAR official specification pages", categories: [routers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.belkin.com, match: exact, kind: maker, credit: "Belkin official specification pages", categories: [chargers, power-banks], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.bluettipower.com, match: exact, kind: maker, credit: "BLUETTI official specification pages", categories: [power-stations], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.winixamerica.com, match: exact, kind: maker, credit: "Winix official specification pages", categories: [air-purifiers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: iniushop.com, match: exact, kind: maker, credit: "INIU official specification pages", categories: [chargers, power-banks], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.goalzero.com, match: exact, kind: maker, credit: "Goal Zero official specification pages", categories: [power-stations], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: us.mova.tech, match: exact, kind: maker, credit: "MOVA official specification pages", categories: [robot-vacuums], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: us.ecoflow.com, match: exact, kind: maker, credit: "EcoFlow official specification pages", categories: [power-banks, power-stations], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.ankersolix.com, match: exact, kind: maker, credit: "Anker SOLIX official specification pages", categories: [power-stations], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: us.ugreen.com, match: exact, kind: maker, credit: "UGREEN official specification pages", categories: [chargers, power-banks], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: sharge.com, match: exact, kind: maker, credit: "SHARGE official specification pages", categories: [power-banks], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.irobot.com, match: exact, kind: maker, credit: "iRobot official specification pages", categories: [robot-vacuums], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: us.roborock.com, match: exact, kind: maker, credit: "Roborock official specification pages", categories: [robot-vacuums], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.jackery.com, match: exact, kind: maker, credit: "Jackery official specification pages", categories: [power-stations], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: kuxiu.com, match: exact, kind: maker, credit: "KUXIU official specification pages", categories: [power-banks], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.mophie.com, match: exact, kind: maker, credit: "mophie official specification pages", categories: [chargers, power-banks], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.cuktech.com, match: exact, kind: maker, credit: "CUKTECH official specification pages", categories: [chargers, power-banks], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: levoit.com, match: exact, kind: maker, credit: "Levoit official specification pages", categories: [air-purifiers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.choetech.com, match: exact, kind: maker, credit: "CHOETECH official specification pages", categories: [chargers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.nativeunion.com, match: exact, kind: maker, credit: "Native Union official specification pages", categories: [chargers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: satechi.net, match: exact, kind: maker, credit: "Satechi official specification pages", categories: [chargers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.hypershop.com, match: exact, kind: maker, credit: "HyperJuice (Targus) official specification pages", categories: [chargers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: us.narwal.com, match: exact, kind: maker, credit: "Narwal official specification pages", categories: [robot-vacuums], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.aukey.com, match: exact, kind: maker, credit: "AUKEY official specification pages", categories: [chargers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  # Retail, aggregators, reviews: editorial/retail content, low-tier evidence. Not used for any published value today.
+  - {domain: amazon.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
+  - {domain: bhphotovideo.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
+  - {domain: slickdeals.net, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
+  - {domain: notebookcheck.net, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
+  - {domain: techradar.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
+  - {domain: androidauthority.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
+  - {domain: gizmochina.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
+  - {domain: the-gadgeteer.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
+  - {domain: 9to5toys.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
+  - {domain: chargerlab.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
+  - {domain: switchchargers.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
+  - {domain: smartgadgetkit.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
+  - {domain: furper.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
+  - {domain: en.best-batteries.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
+  - {domain: www.dell.com, match: exact, kind: maker, credit: "Dell official specification pages", categories: [laptops, monitors], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: byjasco.com, match: exact, kind: maker, credit: "Jasco (GE-licensed) official product pages", categories: [power-strips], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.microsoft.com, match: exact, kind: maker, credit: "Microsoft official product pages", categories: [laptops], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: learn.microsoft.com, match: exact, kind: maker, credit: "Microsoft official spec documentation", categories: [laptops], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.razer.com, match: exact, kind: maker, credit: "Razer official product pages", categories: [laptops], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: support.apple.com, match: exact, kind: maker, credit: "Apple official tech-specs pages", categories: [laptops], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.baseus.com, match: exact, kind: maker, credit: "Baseus official product pages", categories: [chargers, power-banks], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: furmanpower.com, match: exact, kind: maker, credit: "Furman official product pages", categories: [power-strips], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: austere.com, match: exact, kind: maker, credit: "Austere official product pages", categories: [power-strips], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: plugable.com, match: exact, kind: maker, credit: "Plugable official product pages", categories: [chargers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.nekteck.com, match: exact, kind: maker, credit: "Nekteck official product pages", categories: [chargers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: images.salsify.com, match: exact, kind: maker, credit: "Maker document CDN (spec sheets/manuals linked as documents)", categories: [power-strips, chargers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}

@@ -276,6 +276,16 @@ def stamp_build():
     return build
 
 
+def policy_outputs(api, gate, brand):
+    """Licensing gate outputs (scripts/source_policy.py over data/source-policy.yaml; v1_publish gated every value before rows, facets and
+    lookup were derived): <api>/coverage.json + the manifest stamp (policy version/sha, licence scope, attribution)."""
+    import source_policy
+    pol = gate.get("policy") or source_policy.load()
+    cov = gate.get("coverage") or source_policy.coverage_table({})
+    dump(api / "coverage.json", dict(pol.manifest_block(brand), tier="free", **cov))
+    return pol, cov, dict(tier="free", **pol.manifest_block(brand), coverage="coverage.json")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--no-state", action="store_true", help="skip the profile-driven categories (laptops, power-strips); needs no state/specsheet.sqlite")
@@ -302,9 +312,9 @@ def main():
             index.append({k: record[k] for k in ("id", "category", "brand", "name", "family", "model", "variant", "identifiers", "specs", "confidence", "demo")})
         dump(folder / "products.json", index)
     manifest_cats = [{"id": c["id"], "schema_version": "0", "count": c["count"], "index": [], "facets": None, "demo": c["demo"], "legacy": True} for c in categories]
-    v1_stats, release = {}, None
+    v1_stats, release, gate = {}, None, {}
     if not args.no_state:
-        v1c, v1m, release = v1_publish.publish(API, v1_stats)
+        v1c, v1m, release = v1_publish.publish(API, v1_stats, gate)
         categories += v1c
         manifest_cats += v1m
     else:
@@ -312,8 +322,9 @@ def main():
         dump(API / "lookup" / "identifiers.json", {})
         dump(API / "redirects.json", {})
     dump(API / "categories.json", categories)
+    pol, cov, stamp = policy_outputs(API, gate, json.loads((OUT / "site.json").read_text()).get("brand", "specsheet"))
     dump(API / "manifest.json", {"dataset_version": "1.0.0", "build": "", "generated_at": __import__("time").strftime("%FT%TZ", __import__("time").gmtime()),
-                                 "record_format": "specsheet.record/1", "categories": manifest_cats, "release": release})
+                                 "record_format": "specsheet.record/1", **stamp, "categories": manifest_cats, "release": release})
     (API / "README.md").write_text("# Static dataset v1\n\n`manifest.json` lists categories with schema versions, index shards and facets. Contract: `team/briefs/a4-contract.md`.\n\nLegacy v0 files (`categories.json` fields, `<cat>/products.json`) remain for the chargers pilot and the demo category; profile-driven categories (see ARCHITECTURE 15.9) also ship a slim `products.json` (column fields only) so the current UI keeps working until A4 switches to `index*.json` + `facets.json`. Every specification has `{value,status,sources,...}`; `status` is known, unknown, conflicted, not_yet_extracted, not_applicable, or not_published. Only known values are established for filtering. Profile-driven categories: the trusted files (`<cat>/index*.json`, `facets.json`, `products/`) contain only claims accepted by a recorded decision (`data/decisions/`: human ledger line or versioned auto-accept policy, id in `manifest.release.policies`) and approved links; unreviewed candidates and proposed links live separately under `preview/<cat>/` (rows flagged `review_scope: preview`, details are deltas over the trusted record). Per-category `market_filter` (category.yaml) applies, e.g. laptops are US-market only (Lenovo `US` MTMs). The `power-strips-demo` entries are fictional.\n")
     (OUT / ".nojekyll").write_text("")
     if not args.no_state:       # title matcher index (scripts/match.py): alias phrases + the retired v0 pilot names, resolved through redirects
@@ -323,6 +334,10 @@ def main():
     site_meta.generate()   # docs/{llms.txt,sitemap.xml,robots.txt,sources.json} + brand/JSON-LD stamp in index.html
     stamp_build()
     checked = check_js()
+    pol.check_unlisted(what="build.py")      # warns; RELEASE=1 (release.sh) exits non-zero naming unlisted domains
+    t = cov["total"]
+    print(f"source policy {pol.version}: free {t['free']['records']} records / {t['free']['values']} values, granted {t['granted']['values']}, "
+          f"paid {t['paid']['records']} / {t['paid']['values']}, records omitted by policy {gate.get('omitted', 0)}")
     print(f"built {len(strips)} demo products (v0 chargers pilot retired); checked {checked} JavaScript files/scripts")
     for cat, st in v1_stats.items():
         print(f"  {cat}: {json.dumps(st)}")

@@ -12,6 +12,7 @@ raw/
 # (takes effect once docs/api is removed from the index: git rm -r -q --cached docs/api)
 docs/api/
 api-worker/r2-data/
+api-worker/pack/
 api-worker/node_modules/
 api-worker/.wrangler/
 api-worker/.dev.vars

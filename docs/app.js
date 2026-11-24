@@ -314,13 +314,13 @@
   };
   let siteReady;
   const loadSite = () => siteReady ||= getJson('site.json').then(config => { SITE = {...SITE, ...config, contacts:{...SITE.contacts, ...config.contacts}}; applySite(); }).catch(() => { /* keep defaults */ });
-  let sourcesPromise;
+  let sourcesPromise, coveragePromise;
   const PAGE_TITLES = {terms:'Terms of use', privacy:'Privacy', sources:'Sources and credit', about:'About'};
   async function renderPage(kind, sequence) {
     const pages = window.SpecsheetPages;
     if (!pages) { main.innerHTML = errorPanel('Page unavailable', 'This page could not be loaded.'); return; }
     let data = null;
-    if (kind === 'sources') { sourcesPromise ||= getJson('sources.json').catch(() => { sourcesPromise = null; return null; }); data = await sourcesPromise; }
+    if (kind === 'sources') { sourcesPromise ||= getJson('sources.json').catch(() => { sourcesPromise = null; return null; }); data = await sourcesPromise; if (data) { coveragePromise ||= getJson('api/v1/coverage.json').catch(() => { coveragePromise = null; return null; }); data = {...data, coverage:await coveragePromise}; } }
     if (sequence !== routeSequence) return;
     setTitle(PAGE_TITLES[kind]);
     main.innerHTML = `${crumb([{name:PAGE_TITLES[kind]}])}${pages[kind](SITE, data)}`;
@@ -332,7 +332,7 @@
     clearTimeout(missTimer);
     const text = normalizeQuery(query || '').slice(0, 80);
     if (!SITE.api_origin || text.length < 3 || text === lastMiss || typeof navigator === 'undefined' || !navigator.sendBeacon) return;
-    missTimer = setTimeout(() => { lastMiss = text; try { navigator.sendBeacon(`${SITE.api_origin.replace(/\/$/, '')}/v1/miss`, new Blob([JSON.stringify({category:categoryId, q:text})], {type:'application/json'})); } catch { /* best effort */ } }, 1500);
+    missTimer = setTimeout(() => { lastMiss = text; try { navigator.sendBeacon(`${SITE.api_origin.replace(/\/$/, '')}/v1/miss`, new Blob([JSON.stringify({category:categoryId, q:text})], {type:'text/plain'})); } catch { /* best effort */ } }, 1500);
   };
 
   async function renderRoute() {
@@ -698,6 +698,8 @@
     target.innerHTML = `<div class="compare-shelf"><strong>${chosen.length} selected</strong><div class="selected-items">${chosen.map(row => `<button type="button" data-remove="${escapeHtml(row.id)}" aria-label="Remove ${escapeHtml(row.name)}">${escapeHtml(row.brand)} ${escapeHtml(row.model || row.name)} ×</button>`).join('')}</div>${chosen.length >= 2 ? `<a class="button-link primary" href="${compareUrl(category.id, state.ids, false, query)}">Compare products</a>` : '<small>Select at least one more product.</small>'}</div>`;
   }
 
+  // Licence status per value: under our ODbL grant iff a listed source has licence_grant:true; otherwise a fact with a link (source terms apply). No marker when the data predates the flag.
+  const licenceMark = sources => { if (!sources.length || sources.every(source => typeof source.licence_grant !== 'boolean')) return ''; const granted = sources.some(source => source.licence_grant === true); return ` <small class="licence-mark ${granted ? 'granted' : 'facts'}" title="${granted ? 'Covered by our ODbL grant: a listed source has permission evidence' : 'Shown as a fact with a link. We grant no licence over it; check the source\u2019s terms'}">${granted ? 'ODbL' : 'facts only, source terms apply'}</small>`; };
   const evidenceMarkup = (record, spec, {candidate = false} = {}) => {
     const direct = (spec.sources || []).map(id => record.sources.find(source => source.id === id)).filter(Boolean);
     const context = direct.length ? [] : (record.record_format ? [] : record.sources);
@@ -708,7 +710,7 @@
     const sourceList = direct.length ? direct : context;
     const scopeText = direct.length ? (inherited ? 'These links support the model claim this value is inherited from; they were not attached to this configuration directly.' : 'These links were attached to this field in the record.') : context.length ? 'These links belong to the record; none was attached to this field.' : 'No source link is available for this field.';
     const review = candidate ? 'Unreviewed candidate: no review decision accepts this value. It does not share the accepted value\u2019s sources.' : record.demo ? 'Fictional demo value.' : record.record_format ? 'Accepted into the catalogue; acceptance is not independent testing.' : 'Legacy pilot value: not reviewed.';
-    return `<details><summary><span class="badge ${candidate ? 'preview' : kind}">${escapeHtml(label)}</span></summary><p>${scopeText}</p>${sourceList.length ? `<ul>${sourceList.map(source => { const url = safeUrl(source.url); return `<li>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.label || source.title || new URL(url).host)}</a>` : escapeHtml(source.label || source.title || 'Source')}${source.tier ? ` <span class="source-tier">${escapeHtml(source.tier)}</span>` : ''}</li>`; }).join('')}</ul>` : ''}<p>${review} Field confidence: ${escapeHtml(spec.confidence || 'not rated')}. ${escapeHtml(statusLabel[spec.status] || 'Unknown')}.</p></details>`;
+    return `<details><summary><span class="badge ${candidate ? 'preview' : kind}">${escapeHtml(label)}</span>${candidate ? '' : licenceMark(direct)}</summary><p>${scopeText}</p>${sourceList.length ? `<ul>${sourceList.map(source => { const url = safeUrl(source.url); return `<li>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.label || source.title || new URL(url).host)}</a>` : escapeHtml(source.label || source.title || 'Source')}${source.tier ? ` <span class="source-tier">${escapeHtml(source.tier)}</span>` : ''}</li>`; }).join('')}</ul>` : ''}<p>${review} Field confidence: ${escapeHtml(spec.confidence || 'not rated')}. ${escapeHtml(statusLabel[spec.status] || 'Unknown')}.</p></details>`;
   };
   // Hardware revisions of one model: only what each revision states beyond the model, never implied identical.
   const revisionsMarkup = (category, record, returnQuery = '') => {

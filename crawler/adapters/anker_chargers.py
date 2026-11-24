@@ -18,7 +18,7 @@ import _contract as C
 import _charger as G
 import _run
 
-ID, VERSION, SOURCE = "anker_chargers", 1, "anker-us-chargers"
+ID, VERSION, SOURCE = "anker_chargers", 2, "anker-us-chargers"     # r7: shared _powerbank changed (energy_basis pairs, case-insensitive Wh)
 CATEGORIES = {"chargers"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.anker.com"

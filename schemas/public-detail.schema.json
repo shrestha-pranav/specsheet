@@ -156,6 +156,10 @@
           "via": {
             "type": "string",
             "description": "Ancestor entity whose source this is (inherited specs)."
+          },
+          "licence_grant": {
+            "type": "boolean",
+            "description": "data/source-policy.yaml: values citing this source are under our ODbL grant (true) or shown as facts with a link only (false)."
           }
         },
         "not": {

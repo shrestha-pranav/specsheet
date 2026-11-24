@@ -21,6 +21,7 @@ import yaml
 
 import catmeta
 import resolve as R
+import source_policy as SP
 
 CODE = Path(__file__).resolve().parent.parent
 ROOT = catmeta.ROOT                    # data root (research/, state/, data/); SPECSHEET_ROOT overrides it for fixture tests
@@ -189,7 +190,31 @@ def view(ents, claims, absn, specdefs, parent_of, ok_states, identity=None):
     return resolved, cycles
 
 
-def publish(api: Path, build_stats: dict):
+def gate_view(pol, view_specs, ents, srcs, claims, ok_states, gone, tier="free"):
+    """Licensing gate (scripts/source_policy.py) on one resolved view, BEFORE rows/facets/lookup/details are derived from it. Sources are
+    the owner's sids (the entity's, or the ancestor's for inherited specs); support = an accepted (scope) claim of that source for the key
+    whose value equals the published one. Entities in `gone` (no own source allowed in the tier) publish nothing. -> withheld count."""
+    url = {eid: {s["sid"]: s["url"] for s in srcs[eid]} for eid in ents}
+    n = 0
+    for eid in ents:
+        sp = view_specs[eid]
+        if eid in gone:
+            view_specs[eid] = {}
+            continue
+        own = lambda k, eid=eid, sp=sp: sp[k].get("inherited_from") or eid
+
+        def support(k, sid, v, cids, own=own):
+            canon = None if v is SP.ANY else json.dumps(v, sort_keys=True)
+            return any(c["id"] in cids and c["source"] == sid and c["review"] in ok_states and (canon is None or json.dumps(c["value"], sort_keys=True) == canon)
+                       for c in claims[own(k)].get(k, []))
+        view_specs[eid], wk = pol.gate_specs(sp, tier, lambda k, sid, own=own: url.get(own(k), {}).get(sid), support)
+        n += len(wk)
+    return n
+
+
+def publish(api: Path, build_stats: dict, gate_out: dict | None = None):
+    pol = SP.load()
+    coverage, gone_all = {}, 0
     con = sqlite3.connect(DB)
     con.row_factory = sqlite3.Row
     meta = {r["k"]: r["v"] for r in con.execute("SELECT * FROM meta")}
@@ -228,11 +253,15 @@ def publish(api: Path, build_stats: dict):
 
         trusted, cyc = view(ents, claims, absn, specdefs, parent_of, {"accepted"}, p.get("identity"))
         preview, _ = view(ents, claims, absn, specdefs, parent_of, {"accepted", "candidate"}, p.get("identity"))
+        gone = {eid for eid in ents if not pol.identity_ok((s["url"] for s in srcs[eid]), "free")}
+        gone_all += len(gone)
+        withheld = gate_view(pol, trusted, ents, srcs, claims, {"accepted"}, gone)
+        gate_view(pol, preview, ents, srcs, claims, {"accepted", "candidate"}, gone)
 
         def selectable(eid, specs):
             if ents[eid]["kind"] == "revision" and not cfg.get("revision_rows"):
                 return False        # revisions are published inside their model's detail (and as their own detail file); index rows are opt-in
-            return ents[eid]["kind"] != "family" and any(has_value(r) for r in specs.values()) \
+            return eid not in gone and ents[eid]["kind"] != "family" and any(has_value(r) for r in specs.values()) \
                 and catmeta.passes_market_filter(cfg, idents[eid])
 
         rows_t = [eid for eid in sorted(ents) if selectable(eid, trusted[eid])]
@@ -246,7 +275,7 @@ def publish(api: Path, build_stats: dict):
         anc = set()
         for eid in rows_t:
             for r in (ents[eid]["parent_id"], ents[eid]["family_id"]):
-                while r and r in ents and r not in pub and r not in anc:
+                while r and r in ents and r not in pub and r not in anc and r not in gone:
                     anc.add(r); r = ents[r]["parent_id"]
         # a revision of any published model/ancestor model gets a detail file even when it has no index row (a link target for the model's `revisions[]`)
         rev_files = {eid for eid, e in ents.items() if e["kind"] == "revision" and e["parent_id"] in (pub | anc) and any(has_value(r) for r in trusted[eid].values())}
@@ -255,7 +284,7 @@ def publish(api: Path, build_stats: dict):
         # when an approved `contains` relation points at a published model. Never index rows.
         bundle_of = collections.defaultdict(list)
         for eid, e in ents.items():
-            if e["kind"] == "package" and "contents" in json.loads(e["extra"] or "{}"):
+            if e["kind"] == "package" and eid not in gone and "contents" in json.loads(e["extra"] or "{}"):
                 tg = sorted({r["target_id"] for r in rels[eid] if r["type"] == "contains" and r["status"] == "approved" and r["target_id"] in files_t})
                 for t in tg:
                     bundle_of[t].append(eid)
@@ -283,7 +312,7 @@ def publish(api: Path, build_stats: dict):
                     if key in remap:
                         new.append(remap[key])
                 specs[k] = dict(r, sources=new)
-            return out
+            return pol.source_entries(out, "free")
 
         def header(eid, specs, scope):
             e = ents[eid]
@@ -297,7 +326,7 @@ def publish(api: Path, build_stats: dict):
             model_str = next((i["value"] for i in idents[eid] if i["scheme"] in ("mtm", "mfr_model", "mfr_sku") and i["role"] == "key"), None)
             vl = variant_label(cfg, specdefs, e, specs)
             return {"record_format": "specsheet.record/1", "review_scope": scope, "id": eid, "category": cat, "kind": e["kind"],
-                    "brand": {"id": e["brand"], "name": e["brand_name"]}, "name": e["name"] or eid, "variant_label": vl, "lifecycle": {"state": lc},
+                    "brand": {"id": e["brand"], "name": e["brand_name"]}, "name": SP.TAG.sub("", e["name"] or "").strip() or eid, "variant_label": vl, "lifecycle": {"state": lc},
                     "identifiers": ids_out, "aliases": [{"text": a["text"], "kind": a["kind"]} for a in aliases[eid]], "relations": relations,
                     "family": (ents[e["family_id"]]["name"] if e["family_id"] in ents else None), "model": model_str, "variant": vl}
 
@@ -323,8 +352,8 @@ def publish(api: Path, build_stats: dict):
                     s[k] = r["status"]
             keyids = [f"{i['scheme']}:{i['value']}" for i in idents[eid] if i["valid"] and (i["role"] == "key" or i["scheme"] == "gtin")]
             search = [d["name"].lower()] + [a["text"].lower() for a in aliases[eid]][:4] + [i.lower() for i in keyids] + [i["value_raw"].lower() for i in idents[eid] if i["role"] == "key"]
-            row = {"id": eid, "kind": e["kind"], "brand": e["brand_name"], "brand_id": e["brand"], "name": d["name"], "variant_label": d["variant_label"], "family_id": e["family_id"],
-                   "parent_id": e["parent_id"], "ids": keyids, "search": sorted(set(search)), "v": v, "s": s,
+            row = {"id": eid, "kind": e["kind"], "brand": e["brand_name"], "brand_id": e["brand"], "name": d["name"], "variant_label": d["variant_label"],
+                   "family_id": e["family_id"] if e["family_id"] not in gone else None, "parent_id": e["parent_id"] if e["parent_id"] not in gone else None, "ids": keyids, "search": sorted(set(search)), "v": v, "s": s,
                    "completeness": {"core": [sum(1 for k in core if k in specs and specs[k]["status"] == "known"), len(core)]},
                    "lifecycle": d["lifecycle"]["state"], "demo": False}
             if x:
@@ -343,7 +372,7 @@ def publish(api: Path, build_stats: dict):
                 stats[r["status"]] += 1
             stats["inherited"] += sum(1 for r in specs.values() if r.get("inherited_from"))
             d.update({"contents": [], "options": [], "sources": sources_for(eid, specs), "media": [],
-                      "documents": [{"url": x["url"], "kind": x["kind"], "label": x["label"] or x["kind"]} for x in docs[eid] if x["url"]],
+                      "documents": pol.documents([{"url": x["url"], "kind": x["kind"], "label": x["label"] or x["kind"]} for x in docs[eid] if x["url"]], "free"),
                       "notes": ("Regional (non-US) packages sharing this configuration: %d. " % ex["regional_mtms"] if ex.get("regional_mtms") else "")
                                + "Values are manufacturer-published claims accepted by a recorded decision (data/decisions: ledger or versioned policy).",
                       "demo": False, "marketing_terms": [], "confidence": {"level": "unrated", "scope": "accepted"},
@@ -414,6 +443,19 @@ def publish(api: Path, build_stats: dict):
             stats["preview_specs_delta"] += len(delta)
 
         validate_details(cat, list(details.values()) + list(pdetails.values()))
+        cov = {"free": [0, 0], "granted": [0, 0], "paid": [0, 0]}
+        for d in details.values():
+            pol.note_published(d)
+            kn, gr = pol.count(d)
+            cov["free"][0] += 1; cov["free"][1] += kn
+            cov["granted"][0] += gr > 0; cov["granted"][1] += gr
+            g = pol.gate(d, "paid")
+            if g is not None:
+                pk, _ = pol.count(g)
+                cov["paid"][0] += 1; cov["paid"][1] += pk
+        for d in pdetails.values():
+            pol.note_published(d)
+        coverage[cat] = cov
         folder = api / cat
         dump(folder / "schema.json", sch)
         (folder / "products").mkdir(parents=True, exist_ok=True)    # a category with zero trusted rows still has an (empty) products dir
@@ -458,7 +500,8 @@ def publish(api: Path, build_stats: dict):
                               "demo": False, "preview": prev_entry, **({"certification_only": cert_entry} if cert_entry else {})})
         build_stats[cat] = {"rows": len(out_rows), "detail_files": len(details), "ancestor_only": len(anc), "us_filter_dropped": dropped_us, "shards": len(paths),
                             "preview_rows": len(prev_rows), "preview_only": prev_entry["only_preview"], "parent_cycles": len(cyc), "spec_status": dict(stats),
-                            "kinds": dict(collections.Counter(r["kind"] for r in out_rows)), "certonly_rows": len(cert_rows)}
+                            "kinds": dict(collections.Counter(r["kind"] for r in out_rows)), "certonly_rows": len(cert_rows),
+                            "withheld_by_policy": withheld, "omitted_by_policy": len(gone)}
     dump(api / "lookup" / "identifiers.json", {k: sorted(v) for k, v in sorted(lookup.items())}, compact=True)
     tomb = ROOT / "data" / "_ids" / "tombstones.jsonl"
     red = {}
@@ -472,6 +515,8 @@ def publish(api: Path, build_stats: dict):
         cov[r["source_id"]][r["k"]] = r["v"]
     release = {"accepted_digest": meta.get("accepted_digest"), "policies": json.loads(meta.get("policies") or "[]"), "ledger_lines": int(meta.get("ledger_lines") or 0),
                "profiles": json.loads(meta.get("profiles") or "{}"), "coverage": cov}
+    if gate_out is not None:
+        gate_out.update(policy=pol, coverage=SP.coverage_table(coverage), omitted=gone_all)
     return categories, manifest_cats, release
 
 

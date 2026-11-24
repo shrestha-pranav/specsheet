@@ -49,3 +49,11 @@
 {"at": "2026-11-24T09:57:18Z", "id": "claim/mfr-chargers-structured@1", "sha256": "sha256:cd0ddc98e3c42e8a21de8b71c422af60b2c055bb981d0ad1ffc6307926510341"}
 {"at": "2026-11-24T10:18:23Z", "id": "claim/psref-split@1", "sha256": "sha256:951aba43edecc498dc27b37ed30d3316bf9ec7c94b9cae658e0cedc189bfae02"}
 {"at": "2026-11-24T10:18:23Z", "id": "claim/monitor-flicker-label-map@1", "sha256": "sha256:d89bddbe49615b2ba8057401dd1cd6ecb070f1c6fe86fd559dfc662e8a304d78"}
+{"at": "2026-11-24T14:42:37Z", "id": "claim/mfr-monitor-structured@3", "sha256": "sha256:241493c8d94844be44d7ff0a2a9bcfdbae84f6aa3933c7ddc6cc62a5a6f65dcd"}
+{"at": "2026-11-24T14:42:37Z", "id": "claim/mfr-ssd-structured@3", "sha256": "sha256:35352d90eb49a2c642ee339bd9824871ec0936ddb242ce4f9fb10f082f5dff3b"}
+{"at": "2026-11-24T14:42:37Z", "id": "claim/mfr-power-banks-structured@6", "sha256": "sha256:3858856e16070df9a8467e57a3c37c6a6502d577cd575a503fbb5308efb400ae"}
+{"at": "2026-11-24T14:42:37Z", "id": "claim/mfr-power-stations-structured@3", "sha256": "sha256:df15d260b03525f89ab205a613732ebca5c15b7e80ae0780265cf863ff52342a"}
+{"at": "2026-11-24T14:42:37Z", "id": "claim/mfr-chargers-structured@2", "sha256": "sha256:b21c26dd76ee935ef79e303abad3702d1694fc39154c734491c469f54297c8ca"}
+{"at": "2026-11-24T14:42:37Z", "id": "claim/mfr-ssd-kingston@1", "sha256": "sha256:cc4a8a5cef036c806f4dac0ce6ba802feab2ee8d4326d1b5949e07dc99831094"}
+{"at": "2026-11-24T14:42:37Z", "id": "rel/source-stated-hierarchy@3", "sha256": "sha256:cdcb817054630b70056e88eda41649a4ddf1e3afe4f8e5b445fed861f986cadf"}
+{"at": "2026-11-24T14:42:37Z", "id": "rel/bundle-contents@3", "sha256": "sha256:a6f675dd34c6d0ad3094c16690dcbb1af932b289d83e1a2cc559c26afb882e21"}

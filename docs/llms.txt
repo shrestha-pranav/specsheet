@@ -21,7 +21,7 @@
 - power-strips: Power strips & surge protectors (538 products)
 - robot-vacuums: Robot vacuums & mops (144 products)
 - routers: Wi-Fi routers & mesh (247 products)
-- ssds: SSDs (547 products)
+- ssds: SSDs (572 products)
 - tvs: Televisions (1371 products)
 
 ## API and MCP (preview)

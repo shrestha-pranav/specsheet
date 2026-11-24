@@ -4,55 +4,26 @@
 Writes into docs/ (not docs/api): llms.txt, sitemap.xml, robots.txt, sources.json, and re-stamps the brand, footer
 addresses and the schema.org Dataset JSON-LD inside docs/index.html. Called by build.py; also runnable alone:
   python3 -I scripts/site_meta.py
-sources.json is generated from data/decisions/policies.yaml (the source-policy file): every source id an accepted
-policy draws on, with a display credit and a public-domain flag. No secret or personal value is read or written.
+sources.json is generated from data/source-policy.yaml via scripts/source_policy.py (granted / facts_only). No secret or personal value is read or written.
 """
 import json, re, sys
 from html import escape
 from pathlib import Path
 
-import yaml
-
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"
-POLICIES = ROOT / "data" / "decisions" / "policies.yaml"
-
-# Display credit per source id (or id prefix). Anything not listed gets "<Brand> (manufacturer specification pages)".
-CREDITS = {
-    "energystar": ("U.S. EPA ENERGY STAR certified product data", True),
-    "carb": ("California Air Resources Board certified air cleaner list", False),
-    "displayhdr": ("VESA DisplayHDR certified products list", False),
-    "csa-dcl": ("CSA Distributed Compliance Ledger (Matter)", False),
-    "lenovo-psref": ("Lenovo PSREF (Product Specifications Reference)", False),
-}
 
 
 def load_site():
     return json.loads((DOCS / "site.json").read_text())
 
 
-def credit_for(source_id):
-    for prefix, (label, public) in CREDITS.items():
-        if source_id == prefix or source_id.startswith(prefix + "-"):
-            return label, public
-    brand = re.split(r"-us\b|-", source_id)[0]
-    names = {"tplink": "TP-Link", "tripplite": "Tripp Lite", "cyberpower": "CyberPower", "ecoflow": "EcoFlow", "irobot": "iRobot",
-             "goalzero": "Goal Zero", "ankersolix": "Anker SOLIX", "lg": "LG", "tcl": "TCL", "asus": "ASUS", "ugreen": "UGREEN",
-             "iniu": "INIU", "cuktech": "CUKTECH", "kuxiu": "KUXIU", "teamgroup": "TeamGroup", "mophie": "mophie"}
-    return f"{names.get(brand, brand.title())} official specification pages", False
-
-
 def sources():
-    policies = yaml.safe_load(POLICIES.read_text())
-    ids = {}
-    for policy in policies.get("claim_policies", []):
-        for sid in policy.get("match", {}).get("source_ids", []):
-            ids.setdefault(sid, set()).add(policy["id"])
-    out = []
-    for sid in sorted(ids):
-        label, public = credit_for(sid)
-        out.append({"id": sid, "credit": label, "public_domain": public})
-    return {"generated_from": "data/decisions/policies.yaml", "sources": out}
+    """docs/sources.json, generated from data/source-policy.yaml (scripts/source_policy.py, the only policy reader): `granted` (under our
+    ODbL grant, with the attribution line each requires) and `facts_only` (shown as facts with links; we grant nothing over them)."""
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import source_policy
+    return source_policy.load().sources_doc()
 
 
 def wordmark(brand):

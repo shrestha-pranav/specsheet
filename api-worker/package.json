@@ -1,13 +1,16 @@
 {
   "name": "specsheet-api-worker",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
+    "pack": "cd .. && flock /tmp/specsheet-release.lock python3 -I scripts/build_r2.py --tier free --shard-hex 3",
     "dev": "wrangler dev --persist-to .wrangler/state",
-    "seed": "node scripts/seed-local-r2.mjs",
     "typecheck": "tsc --noEmit",
-    "test": "node --test test/*.test.mjs test/*.test.ts"
+    "test": "node --test test/*.test.ts test/*.test.mjs",
+    "route-table": "node scripts/route-table.mjs --write",
+    "load-test": "node scripts/load-test.mjs --n 200 && node --import ./scripts/cf-stub-loader.mjs scripts/cpu-bench.mjs --n 200",
+    "smoke": "node scripts/route-matrix.mjs"
   },
   "dependencies": {
     "@x402/core": "^2.32.0",

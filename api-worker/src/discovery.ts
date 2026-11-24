@@ -1,88 +1,85 @@
-import { PRICES, paidEnabled, type Env } from "./config.ts";
-import { PAID_ROUTES } from "./x402.ts";
+// OpenAPI and llms.txt list only routes that return data in the current mode (D3.5, D4 discovery). Match appears only once ported.
+import { BOUNDS, PRICES, QUOTA, type Env, type Mode } from "./config.ts";
 
-export function openapi(env: Env, origin: string) {
-  const network = env.X402_NETWORK || "eip155:84532";
-  const paid = (key: keyof typeof PAID_ROUTES, price: string) => ({
-    "x-x402": { scheme: "exact", price, network, asset: "USDC" },
-    "x-payment-info": { price: { mode: "fixed", currency: "USD", amount: price.replace("$", "") }, protocols: [{ x402: {} }] },
-    responses: { "402": { description: "Payment required: x402 requirements in the PAYMENT-REQUIRED header and JSON body", content: { "application/json": { schema: { $ref: "#/components/schemas/PaymentRequired" } } } } },
-    description: PAID_ROUTES[key].description,
-  });
-  const ok = (schema: object) => ({ "200": { description: "OK", content: { "application/json": { schema } } } });
-  const spec = {
-    openapi: "3.1.0",
-    info: { title: "specsheet API", version: "0.1.0", description: "Free static spec data plus x402 pay-per-request endpoints. Testnet (Base Sepolia) unless the operator enables mainnet.", "x-guidance": "Call /llms.txt for a summary. Paid endpoints answer 402 with x402 payment requirements; pay in USDC and retry with a PAYMENT-SIGNATURE header." },
-    servers: [{ url: origin }],
-    paths: {
-      "/v1/manifest.json": { get: { summary: "Free: dataset manifest (redirects to static JSON)", responses: { "302": { description: "Redirect to the static dataset" } } } },
-      "/v1/{path}": { get: { summary: "Free: any static dataset file (categories.json, <cat>/products/<id>.json, ...); 302 to GH Pages", parameters: [{ name: "path", in: "path", required: true, schema: { type: "string" } }], responses: { "302": { description: "Redirect" } } } },
-      "/v1/query": { get: { summary: "Paid: filtered query with provenance", ...paid("GET /v1/query", PRICES.query),
-        parameters: [
-          { name: "category", in: "query", required: true, schema: { type: "string" } },
-          { name: "filters", in: "query", schema: { type: "string" }, description: "Comma list of key<op>value; ops >= <= > < != = ~ . Example: cpu.cores>=8,brand=ASUS" },
-          { name: "q", in: "query", schema: { type: "string" }, description: "Free-text match on brand/name/identifiers" },
-          { name: "fields", in: "query", schema: { type: "string" }, description: "Comma list of spec keys to return" },
-          { name: "limit", in: "query", schema: { type: "integer", default: 25, maximum: 100 } },
-          { name: "offset", in: "query", schema: { type: "integer", default: 0 } },
-        ], responses: { ...ok({ $ref: "#/components/schemas/QueryResult" }), "400": { description: "Bad filter (not charged)" } } } },
-      "/v1/changes": { get: { summary: "Paid: record diff since a release", ...paid("GET /v1/changes", PRICES.changes),
-        parameters: [
-          { name: "since", in: "query", required: true, schema: { type: "string" }, description: "Release id (see /v1/manifest.json release) or ISO date" },
-          { name: "category", in: "query", schema: { type: "string" } },
-          { name: "limit", in: "query", schema: { type: "integer", default: 1000, maximum: 5000 } },
-        ], responses: { ...ok({ type: "object" }) } } },
-      "/v1/match": { get: { summary: "Paid: resolve a listing title to a product id (not yet implemented, returns 501 uncharged)", ...paid("GET /v1/match", PRICES.match),
-        parameters: [{ name: "title", in: "query", required: true, schema: { type: "string" } }, { name: "category", in: "query", schema: { type: "string" } }],
-        responses: { ...ok({ type: "object" }), "501": { description: "Not implemented yet" } } } },
-      "/v1/bulk/{category}.jsonl.gz": { get: { summary: "Paid: full category dump", ...paid("GET /v1/bulk/*", PRICES.bulk),
-        parameters: [{ name: "category", in: "path", required: true, schema: { type: "string" } }],
-        responses: { "200": { description: "gzip JSON lines", content: { "application/gzip": { schema: { type: "string", format: "binary" } } } }, "402": { description: "Payment required" } } } },
-      "/mcp": { post: { summary: "MCP (Streamable HTTP, stateless JSON-RPC): tools query_specs, match_product; payment via _meta[\"x402/payment\"]", responses: { "200": { description: "JSON-RPC response" } } } },
-    },
-    components: { schemas: {
-      PaymentRequired: { type: "object", description: "x402 PaymentRequired (v2)", properties: { x402Version: { type: "integer" }, accepts: { type: "array", items: { type: "object" } }, error: { type: "string" } } },
-      QueryResult: { type: "object", properties: { category: { type: "string" }, release: { type: "string" }, total: { type: "integer" }, count: { type: "integer" }, results: { type: "array", items: { type: "object", properties: { id: { type: "string" }, brand: { type: "string" }, name: { type: "string" }, specs: { type: "object", description: "key -> {value, unit, kind, sources[{id,url,label,tier,retrieved_at}]}" }, sources: { type: "array", items: { type: "object" } } } } } } },
-    } },
+export interface Surface { mode: Mode; match: boolean; release: string; categories: string[]; site: string }
+
+const NOTE = "Free preview: quotas may change, paid tier not enabled.";
+const NAT = `Quota is per client network (IPv4 address or IPv6 /64), so users behind one NAT or proxy share it: ${QUOTA.daily} data calls per UTC day shared by REST and MCP tool calls (an MCP batch of N tool calls counts N), plus ${QUOTA.perMinute}/minute. 429 responses carry Retry-After in seconds.`;
+const bulkHint = (site: string) => `For volume or full copies, use the free static dataset on GitHub Pages (${site}/api/v1/manifest.json, per-category index and product files) instead of this API.`;
+
+export function openapi(env: Env, origin: string, s: Surface) {
+  const paid = s.mode === "on";
+  const price = (k: keyof typeof PRICES) => (paid ? { "x-price": { amount: PRICES[k].replace("$", ""), currency: "USD", provisional: true } } : {});
+  const errs = {
+    "400": { description: "Invalid input (never charged; counts once against quota)" }, "414": { description: "URL longer than 2048" },
+    "429": { description: "Over quota; Retry-After seconds" }, "503": { description: "preview_paused / preview_capacity; Retry-After seconds" },
+    ...(paid ? { "402": { description: "Payment required (x402); free allowance spent" } } : {}),
   };
-  if (!paidEnabled(env)) { // paid mode off: advertise only the free surface
-    for (const k of ["/v1/query", "/v1/changes", "/v1/match", "/v1/bulk/{category}.jsonl.gz", "/mcp"]) delete (spec.paths as Record<string, unknown>)[k];
-    spec.info.description += " Paid endpoints are coming soon and not currently offered.";
+  const ok = (schema: object) => ({ "200": { description: "OK", content: { "application/json": { schema } } } });
+  const paths: Record<string, unknown> = {
+    "/": { get: { summary: "Same as /health", responses: ok({ type: "object" }) } },
+    "/health": { get: { summary: "Release, policy version, modes, breaker state", responses: ok({ type: "object" }) } },
+    "/openapi.json": { get: { summary: "This document", responses: ok({ type: "object" }) } },
+    "/llms.txt": { get: { summary: "Plain-text summary for agents", responses: { "200": { description: "text" } } } },
+  };
+  if (s.mode !== "on-bad") {
+    paths["/v1/query"] = { get: { summary: "Filtered spec query with per-value provenance", ...price("query"),
+      parameters: [
+        { name: "category", in: "query", required: true, schema: { type: "string", enum: s.categories } },
+        { name: "filters", in: "query", schema: { type: "string", maxLength: BOUNDS.filtersChars }, description: `Comma list of key<op>value (ops >= <= > < != = ~), at most ${BOUNDS.filterClauses} clauses, keys from the category schema, values <= ${BOUNDS.filterValue} chars. Example: cpu.cores>=8,brand=ASUS. Unknown values never match.` },
+        { name: "q", in: "query", schema: { type: "string", maxLength: BOUNDS.q }, description: "Substring match on brand/name/variant/identifiers" },
+        { name: "fields", in: "query", schema: { type: "string" }, description: `Comma list of at most ${BOUNDS.fields} spec keys to return` },
+        { name: "limit", in: "query", schema: { type: "integer", default: BOUNDS.limitDefault, minimum: 1, maximum: BOUNDS.limitMax } },
+        { name: "offset", in: "query", schema: { type: "integer", default: 0, minimum: 0, maximum: BOUNDS.offsetMax }, description: "Deeper reads: use the static files" },
+      ], responses: { ...ok({ $ref: "#/components/schemas/QueryResult" }), ...errs } } };
+    paths["/v1/changes"] = { get: { summary: "Record diff since a release", ...price("changes"),
+      parameters: [
+        { name: "since", in: "query", required: true, schema: { type: "string" }, description: `A retained release id (see /health) or an ISO date within ${BOUNDS.changesDays} days` },
+        { name: "category", in: "query", schema: { type: "string", enum: s.categories } },
+        { name: "limit", in: "query", schema: { type: "integer", default: BOUNDS.changesLimitDefault, maximum: BOUNDS.changesLimitMax } },
+      ], responses: { ...ok({ type: "object" }), ...errs } } };
+    if (s.match) paths["/v1/match"] = { get: { summary: "Resolve a retail listing title to a product id (precision first: no answer beats a wrong one)", ...price("match"),
+      parameters: [{ name: "title", in: "query", required: true, schema: { type: "string", maxLength: BOUNDS.title } }, { name: "category", in: "query", schema: { type: "string", enum: s.categories } }],
+      responses: { ...ok({ type: "object" }), ...errs } } };
+    if (paid) {
+      paths["/v1/bulk/{category}.jsonl.gz"] = { get: { summary: "Full category dump (gzip JSON lines)", ...price("bulk_category"), parameters: [{ name: "category", in: "path", required: true, schema: { type: "string", enum: s.categories } }], responses: { "200": { description: "application/gzip" }, ...errs } } };
+      paths["/v1/bulk/all.jsonl.gz"] = { get: { summary: "All categories (gzip JSON lines)", ...price("bulk_all"), responses: { "200": { description: "application/gzip" }, ...errs } } };
+    }
+    paths["/mcp"] = { post: { summary: `MCP (stateless Streamable HTTP, JSON-RPC, batch <= ${BOUNDS.mcpBatch}, body <= 16 KB). Tools: ${tools(s).join(", ")}`, responses: { "200": { description: "JSON-RPC response" }, "413": { description: "Body too large" }, "429": { description: "Over quota" } } } };
   }
-  return spec;
+  return {
+    openapi: "3.1.0",
+    info: { title: "specsheet API", version: "0.2.0", description: `${paid ? "Paid mode (provisional prices, x402)." : NOTE} ${NAT} ${bulkHint(s.site)}` },
+    servers: [{ url: origin }], "x-release": s.release, paths,
+    components: { schemas: { QueryResult: { type: "object", properties: {
+      release: { type: "string" }, category: { type: "string" }, total: { type: "integer" }, offset: { type: "integer" }, count: { type: "integer" },
+      results: { type: "array", items: { type: "object", properties: { id: { type: "string" }, brand: { type: "string" }, name: { type: "string" },
+        specs: { type: "object", description: "key -> {value, unit, kind, sources: [source id]}" }, sources: { type: "array", description: "{id, url, label, tier, retrieved_at, ...} for the ids used in specs", items: { type: "object" } } } } } } } } },
+  };
 }
 
-export function llmsTxt(env: Env, origin: string) {
-  const network = env.X402_NETWORK || "eip155:84532";
-  if (!paidEnabled(env)) return `# specsheet
-> Cross-brand product spec sheets with provenance. Free static dataset only; paid API endpoints are coming soon.
+export const tools = (s: Surface) => (s.mode === "on-bad" ? [] : s.match ? ["query_specs", "match_product"] : ["query_specs"]);
 
-- [Dataset manifest](${origin}/v1/manifest.json): categories, counts, release (redirects to the static dataset)
-- Any static file under /v1/ redirects to the free dataset.
-- [OpenAPI 3.1](${origin}/openapi.json)
-`;
-  return `# specsheet
-> Cross-brand product spec sheets with provenance (laptops, monitors, TVs, SSDs, routers, power strips, chargers and more). Facts are manufacturer/regulator-published values; every value lists its source.
+export function llmsTxt(origin: string, s: Surface) {
+  if (s.mode === "on-bad") return `# specsheet API\n> Release ${s.release}. Paid routes are unavailable (payments not configured). ${bulkHint(s.site)}\n- [Health](${origin}/health), [OpenAPI](${origin}/openapi.json), ${origin}/llms.txt\n`;
+  const paid = s.mode === "on";
+  const p = (k: keyof typeof PRICES) => (paid ? ` (${PRICES[k]} per call after the free allowance; provisional)` : "");
+  return `# specsheet API
+> Cross-brand product spec sheets with provenance: every value lists the published source it came from. Release ${s.release}.
+> ${paid ? "Paid mode with provisional prices (x402)." : NOTE}
 
-Network: ${network} (${network === "eip155:84532" ? "Base Sepolia TESTNET, no real money" : "mainnet"}). Payments: x402, USDC, no account or API key.
+## Routes
+- GET ${origin}/v1/query?category=laptops&filters=cpu.cores>=8,mem.size>=16&limit=10 : filtered results with per-value sources${p("query")}. Categories: ${s.categories.join(", ")}
+- GET ${origin}/v1/changes?since=<release id or ISO date within ${BOUNDS.changesDays} days> : record diff between releases${p("changes")}
+${s.match ? `- GET ${origin}/v1/match?title=<retail listing title> : resolve a listing title to a product id, or no candidates when unsure${p("match")}\n` : ""}${paid ? `- GET ${origin}/v1/bulk/<category>.jsonl.gz${p("bulk_category")}, /v1/bulk/all.jsonl.gz${p("bulk_all")}\n` : ""}- MCP: POST ${origin}/mcp (stateless JSON-RPC), tools: ${tools(s).join(", ")}
+- [OpenAPI 3.1](${origin}/openapi.json), [health](${origin}/health), this file: ${origin}/llms.txt
 
-## Free
-- [Dataset manifest](${origin}/v1/manifest.json): categories, counts, release (redirects to the static dataset)
-- Any static file under /v1/ (categories.json, <category>/products/<id>.json, <category>/facets.json) redirects to the free dataset.
-
-## Paid (HTTP 402 with x402 requirements, then retry with payment)
-- GET ${origin}/v1/query?category=laptops&filters=cpu.cores>=8,brand=ASUS&limit=10 : ${PRICES.query} per call, filtered results with per-value sources
-- GET ${origin}/v1/match?title=<listing title> : ${PRICES.match} per call, resolve a retail title to a product id (not live yet)
-- GET ${origin}/v1/changes?since=<release id or date> : ${PRICES.changes} per call, record diff between releases
-- GET ${origin}/v1/bulk/<category>.jsonl.gz : ${PRICES.bulk} per call, full category dump
-
-## Machine interfaces
-- [OpenAPI 3.1](${origin}/openapi.json)
-- MCP (stateless Streamable HTTP): POST ${origin}/mcp, tools query_specs and match_product
-- x402 discovery: unpaid requests to paid routes return the payment requirements
+## Limits
+- ${NAT}
+- Inputs are bounded: q <= ${BOUNDS.q} chars, filters <= ${BOUNDS.filterClauses} clauses, fields <= ${BOUNDS.fields}, limit <= ${BOUNDS.limitMax}, offset <= ${BOUNDS.offsetMax}; unknown parameters are rejected.
+- ${bulkHint(s.site)}
 
 ## Notes
-- Values with status unknown or conflicted are never returned as facts; absent specs mean not established.
-- Some sources are excluded from paid tiers for licensing reasons; the free dataset is unaffected.
+- Values with status unknown or conflicted are never returned as facts; an absent spec means not established.
 `;
 }

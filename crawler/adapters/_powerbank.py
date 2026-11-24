@@ -69,7 +69,16 @@ def unresolved(pr, adapter, snap, key, raw, label, model, reason):
 
 
 def emit(pr, adapter, snap, key, value, raw, label, model, conditions=None, quote=None):
-    """One model claim: a value, an Unresolved (-> status unknown + reason) or nothing. Conditions/quote are kept on the claim."""
+    """One model claim: a value, an Unresolved (-> status unknown + reason) or nothing. Conditions/quote are kept on the claim.
+    A Basised value (r7) = one claim per figure, each with its own basis condition merged into `conditions`."""
+    if isinstance(value, Basised):
+        for item in value:
+            if isinstance(item, Unresolved):
+                emit(pr, adapter, snap, key, item, raw, label, model, conditions, quote)
+            else:
+                v, c, _ = item
+                emit(pr, adapter, snap, key, v, raw, label, model, dict(conditions or {}, **c), quote)
+        return
     if isinstance(value, Unresolved):
         return unresolved(pr, adapter, snap, key, raw, label, model, value.reason)
     if value in (None, "", []):
@@ -78,17 +87,43 @@ def emit(pr, adapter, snap, key, value, raw, label, model, conditions=None, quot
                              locator={"model_code": model, "label": label}, quote=quote, conditions=conditions))
 
 
+WH = r"(?<![\d.])(\d{1,3}(?:\.\d+)?)\s*Wh\b"          # r7: case-insensitive (CUKTECH prints '72Wh/73.44wh': the pair was read as one figure)
+BASIS_WORD = {"rated": "rated", "typical": "typical", "typ": "typical"}
+
+
+class Basised(list):
+    """Several printed figures for one key, each [(value, {basis condition}, quote) | Unresolved]: emit() writes one claim per entry."""
+
+
 def energy(text):
-    """Printed Wh. One figure -> it. Several DIFFERENT figures ('74Wh/75.5Wh', '36Wh/ 35.28Wh') -> the one explicitly labelled rated, else
-    Unresolved: the profile's cap.energy_wh is the rated energy and an unlabelled pair does not say which is which (review 3)."""
+    """Printed Wh. One figure -> it (no condition). Several DIFFERENT figures ('74Wh/75.5Wh', '36Wh/ 35.28Wh'): r7 keeps BOTH, each with the
+    basis condition energy_basis=rated|typical, but only a figure the cell itself labels ('88Wh (typical) / 90Wh (rated)', 'Rated: 90Wh',
+    'typ. 88Wh') gets one; an unlabelled figure of a pair is an Unresolved (the profile's cap.energy_wh never picks one of an unlabelled pair, review 3)."""
     t = text or ""
-    whs = list(dict.fromkeys(fnum(x) for x in re.findall(r"(?<![\d.])(\d{1,3}(?:\.\d+)?)\s*Wh\b", t)))
-    if len(whs) <= 1:
-        return whs[0] if whs else None
-    lab = re.search(r"(?i)rated(?: energy| capacity)?\s*[:：]?\s*(\d{1,3}(?:\.\d+)?)\s*Wh\b|(\d{1,3}(?:\.\d+)?)\s*Wh\s*\(?\s*rated", t)
-    if lab:
-        return fnum(lab[1] or lab[2])
-    return Unresolved(f"{len(whs)} Wh figures ({' / '.join(str(x) for x in whs)}) without a rated/typical label")
+    figs = list(dict.fromkeys(fnum(x) for x in re.findall(WH, t, re.I)))
+    if len(figs) <= 1:
+        return figs[0] if figs else None
+    out, unl = Basised(), []
+    for v in figs:
+        lab = None
+        for m in re.finditer(WH, t, re.I):
+            if fnum(m[1]) != v:
+                continue
+            before, after = t[max(0, m.start() - 22):m.start()], t[m.end():m.end() + 14]
+            b = re.search(r"(?i)\b(rated|typical|typ)\.?(?:\s*(?:energy|capacity))?\s*[:：]?\s*$", before)
+            a = re.match(r"(?i)\s*\(?\s*(rated|typical|typ)\b", after)
+            lab = lab or (BASIS_WORD[(b or a)[1].lower()] if (b or a) else None)
+        if lab:
+            out.append((v, {"energy_basis": lab}, t))
+        else:
+            unl.append(v)
+    if len({c["energy_basis"] for _, c, _ in out}) != len(out):          # two figures with the same label: a contradiction, nothing trusted
+        return Unresolved(f"{len(figs)} Wh figures ({' / '.join(str(x) for x in figs)}) with a repeated basis label")
+    if not out:
+        return Unresolved(f"{len(figs)} Wh figures ({' / '.join(str(x) for x in figs)}) without a rated/typical label")
+    if unl:
+        out.append(Unresolved(f"Wh figure(s) {' / '.join(str(x) for x in unl)} printed beside a labelled one without their own rated/typical label"))
+    return out
 
 
 def rated(text):

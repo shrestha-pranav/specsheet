@@ -289,6 +289,22 @@ for (const category of categories) {
   assert.match(element('main').innerHTML, /github\.com\/shrestha-pranav\/specsheet\/issues/, 'takedown contact falls back to GitHub issues while email_enabled is false');
   assert.doesNotMatch(element('main').innerHTML, /@knownspec\.com/, 'no placeholder-domain email published before the domain exists');
   assert.match(element('main').innerHTML, /ENERGY STAR/, 'sources list generated from the policy file');
+  {
+    const html = element('main').innerHTML;
+    assert.doesNotMatch(html, /None listed/, 'sources: granted list is populated from sources.json (granted/facts_only shape)');
+    assert.match(html, /Licensed with permission/); assert.match(html, /Shown as facts with links, not licensed by us/);
+    assert.match(html, /Required attribution: “Source: U\.S\. EPA ENERGY STAR”/);
+    assert.match(html, /within 7 days of a valid request/);
+    assert.match(html, /Values under our licence/, 'sources: coverage table from coverage.json');
+    for (const kind of ['terms','sources','about']) { await ui.renderPage(kind, 0); assert.doesNotMatch(element('main').innerHTML, /public domain/i, `${kind}: no public-domain claim`); }
+    await ui.renderPage('terms', 0);
+    assert.match(element('main').innerHTML, /grant no licence over them/);
+    const rec = sources => ({record_format:true, sources});
+    const spec = {sources:['a']};
+    assert.match(ui.evidenceMarkup(rec([{id:'a', url:'https://data.energystar.gov/x', label:'ES', licence_grant:true}]), spec), />ODbL</, 'detail marker: granted source');
+    assert.match(ui.evidenceMarkup(rec([{id:'a', url:'https://example.com/x', label:'Maker', licence_grant:false}]), spec), /facts only, source terms apply/, 'detail marker: facts only');
+    assert.doesNotMatch(ui.evidenceMarkup(rec([{id:'a', url:'https://example.com/x', label:'Old'}]), spec), /licence-mark/, 'no marker without the flag');
+  }
   assert(site.api_origin === '' || /^https:/.test(site.api_origin), 'api_origin empty (beacon off) or https');
   ui.reportMiss('laptops', 'zzz no such thing');   // no api_origin configured: must be a silent no-op
 }

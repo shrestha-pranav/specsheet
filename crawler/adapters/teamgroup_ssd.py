@@ -12,7 +12,9 @@ parse    : pure. The page's 'specTable' has one row per capacity: Model | Capaci
            x_batch_code alias, NOT assumed to be a hardware revision).
 Traps    : read/write 'up to' speeds differ per capacity (512GB write 2,500 vs 4,500 MB/s): claims are per configuration; 'DRAM Cache: NO' = DRAM-less
            but HMB use is not stated (dramless_none is only emitted when the cell says NO and the interface is NVMe/SATA: recorded as printed);
-           'Terabyte Written 1200TBW' is TB; controller/NAND vendor are never printed (marketing says '3D NAND').
+           'Terabyte Written 1200TBW' is TB; controller/NAND vendor are never in the table (some pages name them in prose).
+v3 (2026-11-24): NAND type, controller (vendor) and HMB from explicit page-prose statements (_ssdprose.py), quote kept as raw, only where
+           the table is silent; 'DRAM Cache: NO' + a stated HMB = dramless_hmb.
 """
 import gzip, re, sys, time
 from pathlib import Path
@@ -20,9 +22,10 @@ sys.path.insert(0, str(Path(__file__).parent))
 import _contract as C
 import _ssd as S
 import _lt as L
+import _ssdprose as SP
 import _run
 
-ID, VERSION, SOURCE = "teamgroup_ssd", 2, "teamgroup-us-ssd"
+ID, VERSION, SOURCE = "teamgroup_ssd", 3, "teamgroup-us-ssd"
 CATEGORIES = {"ssds"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.teamgroupinc.com"
@@ -104,6 +107,7 @@ def parse_html(snap, h):
     warranty = re.search(r"(\d+)[- ]year limited warranty", text, re.I)
     series = snap.ref.key
     unmapped = {}
+    prose = SP.extract(h)
     for cells in rows:
         R = dict(zip(heads, cells))
         part = R.get("TEAM P/N") or R.get("P/N") or ""
@@ -133,8 +137,10 @@ def parse_html(snap, h):
         if R.get("Terabyte Written") and re.match(r"[\d,]+", R["Terabyte Written"]):
             add("end.tbw", S.n(re.match(r"[\d,]+", R["Terabyte Written"])[0]), R["Terabyte Written"], "Terabyte Written")
         d = R.get("DRAM Cache")
-        if d and re.fullmatch(r"no", d, re.I):
-            add("hw.dram_type", "dramless_none", d, "DRAM Cache")
+        hmb = prose["claims"].get("hw.dram_type", (None,))[0] == "dramless_hmb"
+        if d and re.fullmatch(r"no", d, re.I):         # v3: 'NO' + an explicit HMB statement on the page = dramless_hmb (both literals kept)
+            add("hw.dram_type", "dramless_hmb" if hmb else "dramless_none", f"DRAM Cache: {d}; {prose['claims']['hw.dram_type'][1]}" if hmb else d,
+                "DRAM Cache + page prose" if hmb else "DRAM Cache")
         elif d and re.fullmatch(r"yes", d, re.I):
             add("hw.dram_type", "dram", d, "DRAM Cache")
         iface = kv.get("Interface") or ""
@@ -165,9 +171,13 @@ def parse_html(snap, h):
             add("end.mtbf", S.n(mm[1]), v, "MTBF")
         if warranty:
             add("end.warranty_years", int(warranty[1]), warranty[0], "Features")
+        have = {c["key"] for c in pr.claims if c["locator"].get("sku") == part}
+        for k, (v, q) in prose["claims"].items():          # v3: explicit page-prose statements, only where the spec table is silent
+            if k not in have and not (k == "hw.dram_type" and d and re.fullmatch(r"yes|no", d, re.I)):
+                add(k, v, q, "page prose")
         unmapped[part] = {k: v for k, v in R.items() if k not in used}
     pr.fingerprints = {"raw": snap.snapshot, "series": series, "rows": len(rows), "more_specs": sorted(kv), "unmapped": unmapped,
-                       "sitemap_urls": snap.ref.hints.get("urls")}
+                       "sitemap_urls": snap.ref.hints.get("urls"), "prose_conflicts": prose["conflicts"]}
     return pr
 
 

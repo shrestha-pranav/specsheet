@@ -35,3 +35,10 @@ label date code, NAND part). Official sources rarely carry these; reviewers/tear
 ## Open
 - Verify Crucial and WD datasheet access (browser fetch or coordinator approval); confirm P3 vs P3 Plus DRAM/NAND per capacity.
 - Revision-level sources need a ToS check (TechPowerUp, Tom's, StorageReview) before storing facts beyond citation.
+
+## A2 coverage r2 (2026-11-24)
+- sandisk_ssd@3 / teamgroup_ssd@3: silicon facts from explicit page prose (crawler/adapters/_ssdprose.py), quote kept as raw, only where the table
+  is silent. Bare "DRAM-less" (SanDisk SN7100/SN7100S/SN7100X) is NOT mapped: the enum has no plain `dramless`, and the page states neither HMB
+  nor no-HMB. Open for A1: add a `dramless` (HMB unstated) value, or keep these unknown.
+- TEAMGROUP "use InnoGrit controller solutions by default" (G50/G70 lines) is hedged: not taken.
+- New source kingston-us-ssd (datasheet PDFs only; product pages blocked). See merchants.md.

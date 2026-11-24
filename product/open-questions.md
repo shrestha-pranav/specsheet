@@ -1,11 +1,17 @@
 # Open questions for the owner (only what genuinely needs you)
 
-Q1. **Legal review scope** (revenue on hold). Suggested bundle for review: ODbL vs CC BY for the free data
-    (D1.2), the free-tier terms/privacy drafts (checklist 11), the paid-tier terms + commercial data license draft,
-    whether sales tax applies to the data API, and any operating-structure questions (no recommendation here).
-Q2. **Lenovo PSREF.** It is the main laptop source and is excluded from paid artifacts until the licensing audit
-    says otherwise. Do you want to ask Lenovo for written permission to republish PSREF facts with links? If not,
-    paid laptops will be thin.
-Q3. **Domain.** Confirm `knownspec.com` (fallback `plainspec.com`), or name another.
-Q4. **Preview quotas.** OK to serve `/v1/query` + MCP free during the hold at 60/min and 1,000/day per IP? This is
-    the demand signal for when to turn paid on. Default: yes.
+Q1. **Legal review scope** (revenue on hold). Bundle: the R3 licence boundaries (`DATA-LICENSE.md`: ODbL over the
+    compilation + permission-evidenced values only, no grant over other values), whether showing uncleared sources'
+    facts with links on the free site is acceptable (D1.3, risk accepted for now), contribution terms that would
+    allow a future alternative licence, the free terms/privacy drafts, paid-tier terms, sales tax, DMCA agent
+    designation, and operating-structure questions (no recommendation here).
+Q2. **Lenovo PSREF.** 109k of 207k published values (53%) come only from PSREF. They stay free as linked facts but
+    are outside our licence grant and outside paid. Ask Lenovo for written permission? Without it, paid laptops are empty.
+Q3. **Domain.** Confirm `knownspec.com` (fallback `plainspec.com`). L1 needs it for contact email only.
+Q4. **Preview quotas.** OK to serve `/v1/query`, `/v1/changes` and MCP free at 60/min and 1,000/day per client
+    (IPv4 /32, IPv6 /64), shared REST+MCP, with a 60k/day global breaker? Default: yes.
+Q5. **Permission emails (optional, cheap).** Agents draft them, and you send from `legal@`: VESA (DisplayHDR list),
+    CSA (DCL), CARB (certified list). Each yes moves a source to `licence_grant: true` and paid-eligible. Default: send
+    after L1.
+Q6. **$5/month Workers Paid**, only if the local load test shows query CPU above the Free plan's 10 ms. Default: no
+    spend unless the test fails.

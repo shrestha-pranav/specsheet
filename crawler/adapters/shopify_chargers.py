@@ -20,7 +20,7 @@ import _contract as C
 import _charger as G
 import _run
 
-VERSION = 1
+VERSION = 2       # v2: r7 shared _powerbank (energy_basis pairs, case-insensitive Wh); charger rules unchanged
 CATEGORIES = {"chargers"}
 DELAY = 1.0
 CHG = re.compile(r"charger|charging station|charging hub|power adapter|wall adapter|power delivery adapter|\bGaN\b.*\d+\s*W", re.I)

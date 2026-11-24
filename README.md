@@ -44,11 +44,20 @@ Not self-hosted (no ports, no Caddy route); public prototype on GitHub Pages, se
 - Design: `ARCHITECTURE.md` (v0.2; section 0 = accepted review changes). Review: `reviews/2026-11-22-astra.md`.
 - Corrections: GitHub issues.
 
+## Consumers
+
+- **bf-deals** (`~/projects/bf-deals/specs.py`, morning deal digest): imports `match()` from `scripts/match.py` over
+  the local `docs/api/v1` (never the live site), uses matches at confidence >= 0.9, filters deals by a watch's
+  `specs:` block and links `#/product/<cat>/<id>`. A known value that fails excludes; unknown or unmatched is "specs
+  unverified", never excluded. Changing `match()` output keys or the product-record `specs` shape breaks it;
+  `python3 ~/projects/bf-deals/test_specs.py` checks.
+
 ## License
 
 - Code: Apache-2.0 (`LICENSE`).
-- Dataset: ODbL 1.0, with individual facts not claimed and US federal-government-sourced values in the public
-  domain. Attribution line for produced works: "Data: specsheet (ODbL), sources linked per value".
+- Dataset: ODbL 1.0 for the compilation and for values from sources with recorded permission evidence
+  (`data/source-policy.yaml`, `licence_grant: true`). Other values are shown as facts with a source link and are
+  not licensed by us. Attribution line: "Data: specsheet (ODbL), sources linked per value".
 - Documentation prose: CC BY 4.0.
 
 Details in `DATA-LICENSE.md`. Brand, domain and contact placeholders live in one file, `docs/site.json`.

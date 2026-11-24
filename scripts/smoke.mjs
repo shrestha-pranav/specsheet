@@ -253,4 +253,13 @@ assert.equal(total, categories.reduce((sum, category) => sum + category.count, 0
   const rvRows = await parse(join(root, 'robot-vacuums', 'products', 'dreame-aqua10-roller.json'));
   assert(rvRows.specs['clean.suction_pa'].basis?.claim_basis, 'suction basis present in detail records');
 }
+{
+  const src = await parse(resolve(root, '..', '..', 'sources.json'));
+  assert(Array.isArray(src.granted) && src.granted.length > 0 && Array.isArray(src.facts_only), 'sources.json has granted/facts_only');
+  assert(!('public_domain' in src) && !JSON.stringify(src).includes('public_domain'), 'sources.json has no public_domain field');
+  assert(src.granted.every(item => item.attribution), 'every granted source carries an attribution line');
+  const cov = await parse(join(root, 'coverage.json'));
+  assert(Object.values(cov.categories).some(item => item.granted.values > 0), 'coverage.json reports granted values');
+  for (const item of Object.values(cov.categories)) assert(item.granted.values <= item.free.values, 'granted <= free');
+}
 console.log(`Static dataset smoke passed: ${total} products across ${categories.length} categories; ${parsedJsonFiles} JSON files parsed`);

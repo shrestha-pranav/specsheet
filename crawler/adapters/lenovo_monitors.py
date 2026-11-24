@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lenovo PSREF monitors adapter v1 (contract ARCHITECTURE 15.5), category monitors. Reuses the laptop adapter's transport.
+"""Lenovo PSREF monitors adapter v2 (contract ARCHITECTURE 15.5), category monitors. Reuses the laptop adapter's transport.
 
 PSREF 'Monitors' classification (ThinkVision + Lenovo/Legion lines, non-withdrawn, no ThinkCentre Tiny-in-One / LFD signage).
 discover : /api/ph/ProductCategoryTree (same anonymous-JWT API as lenovo_psref.py; see that module's docstring)
@@ -9,6 +9,7 @@ parse    : pure. Entity = product key (a model family, e.g. Legion_27_10_Monitor
            a value is proposed only when the literal maps unambiguously. Everything else -> fingerprints.unmapped.
 Traps recorded: 'Color Depth: 8-bit (6-bit+FRC)' is claimed as 6-bit+FRC (the parenthetical is the real panel); the single
 'Refresh Rate' is a max (native vs overclock not stated); 'Brightness' typ/min basis not stated.
+v2 (2026-11-24): usb.usbc_pd_w read per port line, upstream USB-C/TB/USB4 only; 'up to 90W PD' (number before PD) and 'USB PD 3.1 up to 140W' now parse.
 """
 import gzip, html, json, re, sys
 from pathlib import Path
@@ -17,7 +18,7 @@ import _contract as C
 import _run
 import lenovo_psref as LP
 
-ID, VERSION, SOURCE = "lenovo_monitors", 1, "lenovo-psref-monitors"
+ID, VERSION, SOURCE = "lenovo_monitors", 2, "lenovo-psref-monitors"
 ADAPTER = f"{ID}@{VERSION}"
 SKIP = re.compile(r"LFD|Tiny|TIO|Collaboration", re.I)
 PANEL = [(r"in-plane|\bIPS\b", "IPS"), (r"vertical alignment|\bVA\b", "VA"), (r"twisted|\bTN\b", "TN"), (r"QD-?OLED", "QD-OLED")]
@@ -29,6 +30,25 @@ def num(s):
         return None
     v = float(m.group(0).replace(",", ""))
     return int(v) if v == int(v) else v
+
+
+UPSTREAM_PORT = re.compile(r"USB-?C|Thunderbolt|USB4", re.I)
+PD_W = [re.compile(r"(\d{2,3})\s*W\s*(?:USB\s*)?(?:PD|Power Delivery)\b", re.I),               # 'up to 90W PD' (v2: number before PD)
+        re.compile(r"(?:Power Delivery|\bPD)(?:\s*\d\.\d)?[^|\d]{0,25}?(\d{2,3})\s*W", re.I),     # 'USB PD 3.1 up to 140W' / 'PD 65W'
+        re.compile(r"up to\s*(\d{2,3})\s*W\b", re.I)]                                           # 'Alt Mode, up to 75W' on an upstream USB-C port
+
+
+def upstream_pd_w(seg):
+    """Power a USB-C/Thunderbolt upstream port line states it delivers, or None. Downstream (charging-out) ports never count."""
+    s = html.unescape(seg)
+    if not UPSTREAM_PORT.search(s) or not re.search(r"upstream", s, re.I):
+        return None
+    if re.search(r"downstream", s, re.I) and not re.search(r"one USB upstream", s, re.I):
+        return None
+    for rx in PD_W:
+        if (m := rx.search(s)):
+            return float(m[1])
+    return None
 
 
 def flat_features(plat):
@@ -174,8 +194,13 @@ class LenovoMonitors(LP.LenovoPsref):
                                      "psref_json", obs, {"label": "Ports", "basis": basis}, pt))
             pr.claims.append(C.claim(key, "vin.dp_count", sum(int(m[1] or 1) for m in re.finditer(r"(?:(\d+)x\s*)?Display ?Port", html.unescape(pt), re.I)), None, pt,
                                      "s1", ADAPTER, "psref_json", obs, {"label": "Ports", "basis": basis}, pt))
-            if (m := re.search(r"(?:Power Delivery|PD)[^|\d]{0,25}(\d{2,3})\s*W", pt, re.I)):
-                pr.claims.append(C.claim(key, "usb.usbc_pd_w", float(m[1]), "W", pt, "s1", ADAPTER, "psref_json", obs, {"label": "Ports", "basis": basis}, pt))
+            pdw = {}
+            for seg in ports:                       # v2: one port line at a time; only the USB-C upstream port's power counts (profile: upstream PD)
+                if (w := upstream_pd_w(seg)) is not None:
+                    pdw.setdefault(w, seg)
+            if len(pdw) == 1:                       # two upstream ports with different wattages: ambiguous, nothing written
+                (w, seg), = pdw.items()
+                pr.claims.append(C.claim(key, "usb.usbc_pd_w", w, "W", seg, "s1", ADAPTER, "psref_json", obs, {"label": "Ports", "basis": basis}, seg))
         sf = txt("Special Features")
         if (m := re.search(r"DisplayHDR\s*(True Black\s*)?(\d{3,4})", sf, re.I)):
             tier = f"DisplayHDR {'True Black ' if m[1] else ''}{m[2]}"

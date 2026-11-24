@@ -90,6 +90,12 @@ conditions:
   type: number
   unit: A
   description: The load current of the rated-capacity test ('5V/3A' -> 3). A rating without a printed load stays an unresolved preview claim.
+- id: energy_basis
+  label: Energy figure basis
+  type: enum
+  enum: [rated, typical]
+  description: 'r7 (A2 2026-11-24): basis of a cap.energy_wh figure when the maker prints a typical/rated PAIR and labels each one. Set only from the
+    printed label; a single unlabelled figure carries no condition, and an unlabelled pair stays an unresolved preview claim.'
 groups:
 - id: general
   label: General & identity
@@ -238,6 +244,8 @@ specs:
     kind: range
     bins: [20, 40, 74, 100]
     column: true
+  conditions: [energy_basis]
+  basis_conditions: [energy_basis]
   traps:
   - Stores rarely print it; FAQ text and the label do. Never computed here from mAh x an assumed 3.7 V (that is how 103 Wh packs get called "airline safe")
   - 'CUKTECH prints two figures (74Wh/75.5Wh) without saying which is typical and which is rated: review 3 keeps the pair as an unresolved preview

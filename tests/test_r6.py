@@ -86,12 +86,12 @@ class Policies(unittest.TestCase):
         cur = {registry.parser_info(s)["parser"] for s in registry.SOURCES}
         for i in ("claim/mfr-power-banks-structured@5", "claim/mfr-power-stations-structured@2", "rel/bundle-contents@1"):
             a = pol[i]["approval"]; self.assertIn(a["state"], ("pending", "approved"), i); self.assertTrue(a["state"] == "pending" or (a.get("by") and a.get("at")), i)  # human-approved 2026-11-23
-        for i in ("claim/mfr-power-banks-structured@4", "claim/mfr-power-stations-structured@1"):
+        for i in ("claim/mfr-power-banks-structured@4", "claim/mfr-power-stations-structured@1", "claim/mfr-power-banks-structured@5", "claim/mfr-power-stations-structured@2"):   # r7: @5/@2 superseded by @6/@3
             self.assertFalse(set(pol[i]["match"]["extractors"]) & cur, f"{i} still matches a live extractor")
         st = {registry.parser_info(s)["parser"] for s, m in registry.SOURCES.items() if m["category"] == "power-stations"}
-        self.assertEqual(set(pol["claim/mfr-power-stations-structured@2"]["match"]["extractors"]), st)
-        self.assertEqual(pol["claim/mfr-power-stations-structured@2"]["match"]["keys"], pol["claim/mfr-power-stations-structured@1"]["match"]["keys"])
-        self.assertEqual(pol["claim/mfr-power-banks-structured@5"]["match"]["keys"], pol["claim/mfr-power-banks-structured@4"]["match"]["keys"])
+        self.assertEqual(set(pol["claim/mfr-power-stations-structured@3"]["match"]["extractors"]), st)
+        self.assertEqual(pol["claim/mfr-power-stations-structured@3"]["match"]["keys"], pol["claim/mfr-power-stations-structured@1"]["match"]["keys"])
+        self.assertEqual(pol["claim/mfr-power-banks-structured@6"]["match"]["keys"], pol["claim/mfr-power-banks-structured@4"]["match"]["keys"])
         self.assertEqual({t for r in pol["rel/bundle-contents@1"]["rules"] for t in r["types"]}, {"contains"})
 
 

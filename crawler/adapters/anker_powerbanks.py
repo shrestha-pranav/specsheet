@@ -22,7 +22,7 @@ import _lt as L
 import _powerbank as P
 import _run
 
-ID, VERSION, SOURCE = "anker_powerbanks", 3, "anker-us-powerbanks"     # v3: r6 shared _powerbank (repeated port row = one port); v2: review 3
+ID, VERSION, SOURCE = "anker_powerbanks", 4, "anker-us-powerbanks"     # r7: shared _powerbank changed (energy_basis pairs, case-insensitive Wh); v3: r6 shared _powerbank (repeated port row = one port); v2: review 3
 CATEGORIES = {"power-banks"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.anker.com"

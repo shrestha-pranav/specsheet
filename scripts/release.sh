@@ -16,6 +16,7 @@ cd "$(dirname "$0")/.."
 dry=${RELEASE_DRY_RUN:-0}
 if [ "${1:-}" = "--dry-run" ]; then dry=1; shift; fi
 msg=${1:?usage: release.sh [--dry-run] "commit message"}
+export RELEASE=1   # scripts/source_policy.py: values citing a domain without a disposition in data/source-policy.yaml fail the build
 
 python3 -I scripts/import.py --strict-parsers > /tmp/specsheet-import.json
 python3 -I scripts/build.py > /tmp/specsheet-build.log

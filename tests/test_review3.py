@@ -193,7 +193,9 @@ class Fix3Conditions(unittest.TestCase):
         self.assertTrue(unresolved(P.rated("11600mAh(5V/9V/7A typical output)")[0]))
         self.assertTrue(unresolved(P.rated("20000mAh")[0]), "a rated row without basis never becomes cell mAh")
         self.assertTrue(unresolved(P.energy("74Wh/75.5Wh 7.4V")), "unlabelled dual Wh: no silent pick")
-        self.assertEqual(P.energy("Rated energy: 74Wh / 75.5Wh typical"), 74)
+        # r7 (A2 coverage r2): a labelled pair keeps BOTH figures, each with its energy_basis condition
+        self.assertEqual([x[:2] for x in P.energy("Rated energy: 74Wh / 75.5Wh typical")], [(74, {"energy_basis": "rated"}), (75.5, {"energy_basis": "typical"})])
+        self.assertTrue(unresolved(P.energy("72Wh/73.44wh 14.4V")), "lowercase wh is still a second figure")
         self.assertEqual(P.energy("20000mAh/3.6V/72Wh"), 72)
         src = (ROOT / "crawler/adapters/anker_powerbanks.py").read_text()
         self.assertIn('add("cap.class_mah", P.mah(title)', src, "Anker title capacity is a class")
@@ -233,9 +235,9 @@ class Fix3Conditions(unittest.TestCase):
 
 class Policies(unittest.TestCase):
     # r6: power banks re-issued as @5 (parser bump for the repeated-port-row fix); @4 joins the inert superseded set
-    NEW = {"claim/mfr-robovac-structured@5", "claim/mfr-power-banks-structured@5", "claim/dcl-matter-certified@2"}
+    NEW = {"claim/mfr-robovac-structured@5", "claim/mfr-power-banks-structured@6", "claim/dcl-matter-certified@2"}   # r7: power banks @5 -> @6
     OLD = {"claim/mfr-robovac-structured@2", "claim/mfr-robovac-structured@3", "claim/mfr-robovac-structured@4",
-           "claim/mfr-power-banks-structured@2", "claim/mfr-power-banks-structured@3", "claim/mfr-power-banks-structured@4", "claim/dcl-matter-certified@1"}
+           "claim/mfr-power-banks-structured@2", "claim/mfr-power-banks-structured@3", "claim/mfr-power-banks-structured@4", "claim/mfr-power-banks-structured@5", "claim/dcl-matter-certified@1"}
 
     def test_consolidated_pending_policies_cover_every_current_extractor(self):
         dec = D.Decisions(ROOT / "data")

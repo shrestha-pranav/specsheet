@@ -1,6 +1,6 @@
 # Data licensing audit for paid tiers (2026-11-24)
 
-Not legal advice; review by counsel before enabling paid mode (it ships disabled, PAID_ENABLED=false).
+Not legal advice; review by counsel before enabling paid mode (it ships disabled, PAYMENTS=off).
 Method: WebFetch/WebSearch only, robots.txt respected, no workarounds. Several legal pages returned 403/404 to
 automated fetch; those are recorded as BLOCKED/unverified, not guessed. Evidence levels: [fetched] read the page,
 [search] search-result snippet only, [none] no terms found.

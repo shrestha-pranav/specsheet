@@ -34,7 +34,7 @@ import _powerbank as P
 import _run
 import shopify_powerbanks as S
 
-VERSION = 3       # v3: r6 shared _powerbank (repeated port row = one port); v2: review 3 (two unlabelled figures unresolved, 5 V capacity basis, rated load conditions)
+VERSION = 4       # v4: r7 shared _powerbank (labelled Wh pairs keep both with energy_basis, case-insensitive Wh); v3: r6 shared _powerbank (repeated port row = one port); v2: review 3 (two unlabelled figures unresolved, 5 V capacity basis, rated load conditions)
 DELAY = 1.0
 
 
@@ -271,7 +271,7 @@ def parse2(ad, snap, page, prod):
     if cap:
         series = [float(x) for x in re.findall(r"(\d+(?:\.\d+)?)\s*V(?:DC)?\b(?!\s*⎓)", cap) if 5 <= float(x) <= 30 and not re.search(r"\(\s*5V", cap)]
         mahs = [int(x.replace(",", "")) for x in re.findall(r"(\d{1,3}(?:,\d{3})+|\d{4,6})\s*mAh", cap, re.I)]
-        whs = [P.fnum(x) for x in re.findall(r"(?<![\d.])(\d{1,3}(?:\.\d+)?)\s*Wh\b", cap)]
+        whs = [P.fnum(x) for x in re.findall(P.WH, cap, re.I)]
         if re.search(r"\b\d+K\s*:", cap):
             mahs = whs = []                       # '5K: ... ; 10K: ...' = two models in one cell
         if not series and mahs:

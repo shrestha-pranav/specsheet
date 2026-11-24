@@ -1,285 +1,525 @@
 {
- "generated_from": "data/decisions/policies.yaml",
- "sources": [
+ "generated_from": "data/source-policy.yaml",
+ "policy_version": "2026-11-24.3",
+ "policy_sha256": "6cd4761401c9cd6bac68e41a35cc77f84613ef1b48b8fa2da5eeffcaaf07bb1a",
+ "license_scope": "compilation + values whose sources[] include licence_grant:true; other values are facts with links, not licensed by us",
+ "granted": [
   {
-   "id": "anker-us-chargers",
-   "credit": "Anker official specification pages",
-   "public_domain": false
+   "domain": "data.energystar.gov",
+   "match": "exact",
+   "kind": "government",
+   "credit": "U.S. EPA ENERGY STAR (data.energystar.gov)",
+   "attribution": "Source: U.S. EPA ENERGY STAR",
+   "conditions": [
+    "Attribute: 'Source: U.S. EPA ENERGY STAR'",
+    "ENERGY STAR mark only as a factual attribute, never as branding or logo",
+    "Values are manufacturer-certified data published by EPA; check dataset metadata for 'otherwise specified' notices per dataset"
+   ],
+   "paid": true
+  }
+ ],
+ "facts_only": [
+  {
+   "domain": "ww2.arb.ca.gov",
+   "match": "exact",
+   "kind": "government",
+   "credit": "California Air Resources Board, certified air cleaning devices list",
+   "to_clear": "Read CARB/ca.gov conditions of use or email aircleaners@arb.ca.gov; then paid/licence_grant may move to yes"
   },
   {
-   "id": "anker-us-powerbanks",
-   "credit": "Anker official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "ankersolix-us-stations",
-   "credit": "Anker SOLIX official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "asus-us",
-   "credit": "ASUS official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "asus-us-monitors",
-   "credit": "ASUS official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "asus-us-routers",
-   "credit": "ASUS official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "aukey-us-chargers",
-   "credit": "Aukey official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "belkin-us-chargers",
-   "credit": "Belkin official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "belkin-us-powerbanks",
-   "credit": "Belkin official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "bluetti-us-stations",
-   "credit": "Bluetti official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "carb-airpurifiers",
-   "credit": "California Air Resources Board certified air cleaner list",
-   "public_domain": false
-  },
-  {
-   "id": "choetech-us-chargers",
-   "credit": "Choetech official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "csa-dcl-robovac",
-   "credit": "CSA Distributed Compliance Ledger (Matter)",
-   "public_domain": false
-  },
-  {
-   "id": "cuktech-us-chargers",
-   "credit": "CUKTECH official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "cuktech-us-powerbanks",
-   "credit": "CUKTECH official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "cyberpower",
-   "credit": "CyberPower official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "displayhdr",
+   "domain": "displayhdr.org",
+   "match": "exact",
+   "kind": "certification",
    "credit": "VESA DisplayHDR certified products list",
-   "public_domain": false
+   "to_clear": "Written VESA permission for the certified-products list"
   },
   {
-   "id": "dreame-us-robovac",
-   "credit": "Dreame official specification pages",
-   "public_domain": false
+   "domain": "on.dcl.csa-iot.org",
+   "match": "exact",
+   "kind": "certification",
+   "credit": "Connectivity Standards Alliance Distributed Compliance Ledger",
+   "to_clear": "Ask CSA whether ledger data is open data"
   },
   {
-   "id": "ecoflow-us-powerbanks",
-   "credit": "EcoFlow official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "ecoflow-us-stations",
-   "credit": "EcoFlow official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "ecovacs-us-robovac",
-   "credit": "Ecovacs official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "energystar-airpurifiers",
-   "credit": "U.S. EPA ENERGY STAR certified product data",
-   "public_domain": true
-  },
-  {
-   "id": "energystar-monitors",
-   "credit": "U.S. EPA ENERGY STAR certified product data",
-   "public_domain": true
-  },
-  {
-   "id": "energystar-tvs",
-   "credit": "U.S. EPA ENERGY STAR certified product data",
-   "public_domain": true
-  },
-  {
-   "id": "goalzero-us-stations",
-   "credit": "Goal Zero official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "hyper-us-chargers",
-   "credit": "Hyper official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "iniu-us-chargers",
-   "credit": "INIU official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "iniu-us-powerbanks",
-   "credit": "INIU official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "irobot-us-robovac",
-   "credit": "iRobot official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "jackery-us-stations",
-   "credit": "Jackery official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "kuxiu-us-powerbanks",
-   "credit": "KUXIU official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "lenovo-psref",
+   "domain": "psref.lenovo.com",
+   "match": "exact",
+   "kind": "maker",
    "credit": "Lenovo PSREF (Product Specifications Reference)",
-   "public_domain": false
+   "to_clear": "Written Lenovo permission (open-questions Q2)"
   },
   {
-   "id": "lenovo-psref-monitors",
-   "credit": "Lenovo PSREF (Product Specifications Reference)",
-   "public_domain": false
-  },
-  {
-   "id": "levoit-us-airpurifiers",
-   "credit": "Levoit official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "lg-us",
+   "domain": "www.lg.com",
+   "match": "exact",
+   "kind": "maker",
    "credit": "LG official specification pages",
-   "public_domain": false
+   "categories": [
+    "monitors",
+    "tvs"
+   ]
   },
   {
-   "id": "lg-us-tvs",
-   "credit": "LG official specification pages",
-   "public_domain": false
+   "domain": "www.asus.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "ASUS official specification pages",
+   "categories": [
+    "laptops",
+    "monitors",
+    "routers"
+   ]
   },
   {
-   "id": "mophie-us-chargers",
-   "credit": "mophie official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "mophie-us-powerbanks",
-   "credit": "mophie official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "mova-us-robovac",
-   "credit": "Mova official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "narwal-us-robovac",
-   "credit": "Narwal official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "nativeunion-us-chargers",
-   "credit": "Nativeunion official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "netgear-us-routers",
-   "credit": "Netgear official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "roborock-us-robovac",
-   "credit": "Roborock official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "samsung-us-ssd",
+   "domain": "www.samsung.com",
+   "match": "exact",
+   "kind": "maker",
    "credit": "Samsung official specification pages",
-   "public_domain": false
+   "categories": [
+    "ssds",
+    "tvs"
+   ]
   },
   {
-   "id": "samsung-us-tvs",
-   "credit": "Samsung official specification pages",
-   "public_domain": false
+   "domain": "www.cyberpowersystems.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "CyberPower official specification pages",
+   "categories": [
+    "power-strips"
+   ]
   },
   {
-   "id": "sandisk-us-ssd",
-   "credit": "Sandisk official specification pages",
-   "public_domain": false
+   "domain": "assets.tripplite.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Tripp Lite (Eaton) official specification pages",
+   "categories": [
+    "power-strips"
+   ]
   },
   {
-   "id": "satechi-us-chargers",
-   "credit": "Satechi official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "sharge-us-powerbanks",
-   "credit": "Sharge official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "tcl-us-tvs",
-   "credit": "TCL official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "teamgroup-us-ssd",
-   "credit": "TeamGroup official specification pages",
-   "public_domain": false
-  },
-  {
-   "id": "tplink-us-routers",
+   "domain": "www.tp-link.com",
+   "match": "exact",
+   "kind": "maker",
    "credit": "TP-Link official specification pages",
-   "public_domain": false
+   "categories": [
+    "routers"
+   ]
   },
   {
-   "id": "tripplite",
-   "credit": "Tripp Lite official specification pages",
-   "public_domain": false
+   "domain": "rog.asus.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "ASUS ROG official specification pages",
+   "categories": [
+    "laptops",
+    "monitors"
+   ]
   },
   {
-   "id": "ugreen-us-chargers",
-   "credit": "UGREEN official specification pages",
-   "public_domain": false
+   "domain": "www.teamgroupinc.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "TEAMGROUP official specification pages",
+   "categories": [
+    "ssds"
+   ]
   },
   {
-   "id": "ugreen-us-powerbanks",
-   "credit": "UGREEN official specification pages",
-   "public_domain": false
+   "domain": "www.sandisk.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "SanDisk official specification pages",
+   "categories": [
+    "ssds"
+   ]
   },
   {
-   "id": "vizio-us-tvs",
-   "credit": "Vizio official specification pages",
-   "public_domain": false
+   "domain": "www.kingston.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Kingston official datasheets",
+   "categories": [
+    "ssds"
+   ]
   },
   {
-   "id": "winix-us-airpurifiers",
+   "domain": "us.tcl.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "TCL official specification pages",
+   "categories": [
+    "tvs"
+   ]
+  },
+  {
+   "domain": "www.vizio.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "VIZIO official specification pages",
+   "categories": [
+    "tvs"
+   ]
+  },
+  {
+   "domain": "www.ecovacs.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "ECOVACS official specification pages",
+   "categories": [
+    "robot-vacuums"
+   ]
+  },
+  {
+   "domain": "www.dreametech.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Dreame official specification pages",
+   "categories": [
+    "robot-vacuums"
+   ]
+  },
+  {
+   "domain": "www.anker.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Anker official specification pages",
+   "categories": [
+    "chargers",
+    "power-banks"
+   ]
+  },
+  {
+   "domain": "www.netgear.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "NETGEAR official specification pages",
+   "categories": [
+    "routers"
+   ]
+  },
+  {
+   "domain": "www.belkin.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Belkin official specification pages",
+   "categories": [
+    "chargers",
+    "power-banks"
+   ]
+  },
+  {
+   "domain": "www.bluettipower.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "BLUETTI official specification pages",
+   "categories": [
+    "power-stations"
+   ]
+  },
+  {
+   "domain": "www.winixamerica.com",
+   "match": "exact",
+   "kind": "maker",
    "credit": "Winix official specification pages",
-   "public_domain": false
+   "categories": [
+    "air-purifiers"
+   ]
+  },
+  {
+   "domain": "iniushop.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "INIU official specification pages",
+   "categories": [
+    "chargers",
+    "power-banks"
+   ]
+  },
+  {
+   "domain": "www.goalzero.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Goal Zero official specification pages",
+   "categories": [
+    "power-stations"
+   ]
+  },
+  {
+   "domain": "us.mova.tech",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "MOVA official specification pages",
+   "categories": [
+    "robot-vacuums"
+   ]
+  },
+  {
+   "domain": "us.ecoflow.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "EcoFlow official specification pages",
+   "categories": [
+    "power-banks",
+    "power-stations"
+   ]
+  },
+  {
+   "domain": "www.ankersolix.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Anker SOLIX official specification pages",
+   "categories": [
+    "power-stations"
+   ]
+  },
+  {
+   "domain": "us.ugreen.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "UGREEN official specification pages",
+   "categories": [
+    "chargers",
+    "power-banks"
+   ]
+  },
+  {
+   "domain": "sharge.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "SHARGE official specification pages",
+   "categories": [
+    "power-banks"
+   ]
+  },
+  {
+   "domain": "www.irobot.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "iRobot official specification pages",
+   "categories": [
+    "robot-vacuums"
+   ]
+  },
+  {
+   "domain": "us.roborock.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Roborock official specification pages",
+   "categories": [
+    "robot-vacuums"
+   ]
+  },
+  {
+   "domain": "www.jackery.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Jackery official specification pages",
+   "categories": [
+    "power-stations"
+   ]
+  },
+  {
+   "domain": "kuxiu.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "KUXIU official specification pages",
+   "categories": [
+    "power-banks"
+   ]
+  },
+  {
+   "domain": "www.mophie.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "mophie official specification pages",
+   "categories": [
+    "chargers",
+    "power-banks"
+   ]
+  },
+  {
+   "domain": "www.cuktech.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "CUKTECH official specification pages",
+   "categories": [
+    "chargers",
+    "power-banks"
+   ]
+  },
+  {
+   "domain": "levoit.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Levoit official specification pages",
+   "categories": [
+    "air-purifiers"
+   ]
+  },
+  {
+   "domain": "www.choetech.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "CHOETECH official specification pages",
+   "categories": [
+    "chargers"
+   ]
+  },
+  {
+   "domain": "www.nativeunion.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Native Union official specification pages",
+   "categories": [
+    "chargers"
+   ]
+  },
+  {
+   "domain": "satechi.net",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Satechi official specification pages",
+   "categories": [
+    "chargers"
+   ]
+  },
+  {
+   "domain": "www.hypershop.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "HyperJuice (Targus) official specification pages",
+   "categories": [
+    "chargers"
+   ]
+  },
+  {
+   "domain": "us.narwal.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Narwal official specification pages",
+   "categories": [
+    "robot-vacuums"
+   ]
+  },
+  {
+   "domain": "www.aukey.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "AUKEY official specification pages",
+   "categories": [
+    "chargers"
+   ]
+  },
+  {
+   "domain": "www.dell.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Dell official specification pages",
+   "categories": [
+    "laptops",
+    "monitors"
+   ]
+  },
+  {
+   "domain": "byjasco.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Jasco (GE-licensed) official product pages",
+   "categories": [
+    "power-strips"
+   ]
+  },
+  {
+   "domain": "www.microsoft.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Microsoft official product pages",
+   "categories": [
+    "laptops"
+   ]
+  },
+  {
+   "domain": "learn.microsoft.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Microsoft official spec documentation",
+   "categories": [
+    "laptops"
+   ]
+  },
+  {
+   "domain": "www.razer.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Razer official product pages",
+   "categories": [
+    "laptops"
+   ]
+  },
+  {
+   "domain": "support.apple.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Apple official tech-specs pages",
+   "categories": [
+    "laptops"
+   ]
+  },
+  {
+   "domain": "www.baseus.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Baseus official product pages",
+   "categories": [
+    "chargers",
+    "power-banks"
+   ]
+  },
+  {
+   "domain": "furmanpower.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Furman official product pages",
+   "categories": [
+    "power-strips"
+   ]
+  },
+  {
+   "domain": "austere.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Austere official product pages",
+   "categories": [
+    "power-strips"
+   ]
+  },
+  {
+   "domain": "plugable.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Plugable official product pages",
+   "categories": [
+    "chargers"
+   ]
+  },
+  {
+   "domain": "www.nekteck.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Nekteck official product pages",
+   "categories": [
+    "chargers"
+   ]
+  },
+  {
+   "domain": "images.salsify.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Maker document CDN (spec sheets/manuals linked as documents)",
+   "categories": [
+    "power-strips",
+    "chargers"
+   ]
   }
  ]
 }

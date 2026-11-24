@@ -12,3 +12,9 @@ Role: retailer data = aliases, MPN candidates, prices, availability; never prima
 - PCPartPicker (aggregator): model + capacity + part number + interface, useful sanity cross-check; tier = aggregator.
 - Revision evidence is NOT in any merchant feed. Where it can come from (review teardowns, label photos, user reports) is in identity.md.
 - Open question for coordinator: Best Buy API key is still the single cheapest bulk UPC/MPN source (same ask as monitors).
+
+## Maker-site access, A2 coverage r2 (2026-11-24; one polite GET each, crawler UA, no retries)
+- **Crucial (crucial.com): BLOCKED.** robots.txt itself returns an F5 "Request Rejected" page. Not retried; no workaround.
+- **Kingston product pages + /siteindex.xml: BLOCKED** (Cloudflare challenge 403). **Kingston datasheet PDFs (/datasheets/<stem>_us.pdf): reachable**
+  (robots allows, 200 PDF). Used by crawler/adapters/kingston_ssd.py with a seed list from web search (no index is reachable). 404 stems: SKC600,
+  SKC2500, SFYRD, SKC3000, NV3, SFYRDK, SNV3D. SNV2S / SNVS / SA2000 use an older two-column layout the parser does not read (0 rows, recorded).

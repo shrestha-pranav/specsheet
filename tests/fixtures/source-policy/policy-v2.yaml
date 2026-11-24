@@ -1,0 +1,21 @@
+# Fixture policy for tests/test_source_policy.py (not read by any real build).
+policy_version: "2026-11-24.2"
+changelog:
+  - {version: "2026-11-24.1", by: A3, note: "fixture"}
+  - {version: "2026-11-24.2", by: A3, note: "fixture: withhold gen.kind for www.maker.example (field takedown)"}
+defaults:
+  unlisted: {free: true, paid: false, licence_grant: false}
+  fail_release_on_unlisted: true
+record_rules:
+  drop_record_fields: [media]
+  exclude_demo_records: true
+  exclude_categories: [widgets-demo]
+  withheld_status: not_published
+sources:
+  - {domain: data.cert.example, match: exact, kind: government, credit: "Cert Body list", free: true, paid: true, licence_grant: true,
+     evidence: {level: fetched, checked: 2026-11-24, refs: ["https://data.cert.example/licence (public domain)"]},
+     conditions: ["Attribute: 'Source: Cert Body'"]}
+  - {domain: www.maker.example, match: exact, kind: maker, credit: "WidgetCo pages", free: true, paid: false, licence_grant: false, withhold_keys: [gen.kind], evidence: {level: none, checked: null}}
+  - {domain: ref.maker.example, match: exact, kind: maker, credit: "WidgetCo reference", free: true, paid: false, licence_grant: false, evidence: {level: blocked, checked: 2026-11-24, refs: []}}
+  - {domain: www.hold.example, match: exact, kind: maker, credit: "HoldCo pages", free: true, paid: false, licence_grant: false, withhold_keys: [gen.kind], evidence: {level: none, checked: null}}
+  - {domain: shop.example, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null}}

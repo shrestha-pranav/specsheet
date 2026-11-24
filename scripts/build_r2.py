@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Build the paid-tier data set for api-worker/ (Cloudflare R2 layout) from the static API in docs/api/v1.
+"""Build the Worker query pack (--tier free, default out api-worker/pack) or the paid-tier export (--tier paid, default out
+api-worker/r2-data) from the static API in docs/api/v1. Same layout for both tiers.
 
-  python3 -I scripts/build_r2.py [--docs docs/api/v1] [--releases releases] [--out api-worker/r2-data]
+  python3 -I scripts/build_r2.py [--tier free|paid] [--docs docs/api/v1] [--releases releases] [--out DIR] [--policy data/source-policy.yaml]
                                  [--categories a,b] [--release ID]
 
 Output tree (object keys == paths under --out; upload with api-worker/scripts/seed-local-r2.mjs locally,
@@ -12,12 +13,18 @@ or `wrangler r2 bulk put` / rclone to the real bucket, see api-worker/README.md)
   bulk/<cat>.jsonl.gz           one trusted record per line (/v1/bulk/<cat>.jsonl.gz)
   changes/<release>.json        per-category diff vs the previous snapshot; changes/index.json lists all releases
 
-Only trusted data is exported (never preview/). api-worker/licensing-exclusions.json removes demo data, `media`
-and every spec whose sources are all on an excluded domain (research/data-licensing.md). The release manifests in
-releases/ carry no per-record data, so diffs come from snapshots under state/r2-snapshots/ (gitignored): history
-begins at the first run of this script after a release, not retroactively. Stdlib only; read-only on docs/.
+Only trusted data is exported (never preview/). Every record goes through the licensing gate (scripts/source_policy.py over
+data/source-policy.yaml, the same module build.py uses): demo data, `media`, excluded categories, sources the tier disallows and
+values no remaining source supports are removed (docs/ is already free-gated, so sources[] list supporters only). The docs build
+must have been made with the same policy (sha256 check). A value that becomes withheld shows in `changes` as
+{key, change: "withdrawn"} with no previous value. The release manifests in releases/ carry no per-record data, so diffs come from
+snapshots under state/r2-snapshots/<tier>/ (gitignored): history begins at the first run of this script after a release, not
+retroactively. Read-only on docs/. RELEASE=1 fails on values citing unlisted domains.
 """
-import argparse, glob, gzip, hashlib, json, os, sys, urllib.parse
+import argparse, glob, gzip, hashlib, json, os, re, sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import source_policy  # noqa: E402  (the one policy reader)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MAX_CHANGE_ROWS = 5000  # per category per release; the Worker truncates further
@@ -34,35 +41,6 @@ def jdump(obj, path, **kw):
         json.dump(obj, f, ensure_ascii=False, separators=(",", ":"), sort_keys=True, **kw)
 
 
-def domain_excluded(url, domains):
-    host = (urllib.parse.urlparse(url).hostname or "").lower()
-    return any(host == d or host.endswith("." + d) for d in domains)
-
-
-def clean_record(rec, cfg):
-    """Apply licensing exclusions. Returns None if the record must not be exported."""
-    if cfg.get("exclude_demo_records") and rec.get("demo"):
-        return None
-    doms = [d.lower() for d in cfg.get("exclude_source_domains", [])]
-    bad_ids = {s["id"] for s in rec.get("sources", []) if domain_excluded(s.get("url", ""), doms)}
-    rec = dict(rec)
-    for k in cfg.get("drop_record_fields", []):
-        rec.pop(k, None)
-    rec["sources"] = [s for s in rec.get("sources", []) if s["id"] not in bad_ids]
-    specs = {}
-    for key, sp in (rec.get("specs") or {}).items():
-        srcs = sp.get("sources") or []
-        if srcs and all(s in bad_ids for s in srcs):
-            continue  # value only attested by an excluded source
-        if bad_ids and srcs:
-            sp = dict(sp, sources=[s for s in srcs if s not in bad_ids])
-        specs[key] = sp
-    rec["specs"] = specs
-    if "documents" in rec:
-        rec["documents"] = [d for d in rec["documents"] if not domain_excluded(d.get("url", ""), doms)]
-    return rec
-
-
 def known_values(rec):
     out = {}
     for key, sp in rec["specs"].items():
@@ -71,14 +49,27 @@ def known_values(rec):
     return out
 
 
-def build_category(cat, docs, cfg, out):
-    prods = {}
+def withheld_keys(rec, pol):
+    return sorted(k for k, sp in rec["specs"].items() if sp.get("status") == pol.withheld_status)
+
+
+def build_category(cat, docs, pol, tier, out, shard_hex=2):
+    prods, cov = {}, {"free": [0, 0], "granted": [0, 0], "paid": [0, 0]}
     for f in sorted(glob.glob(os.path.join(docs, cat["id"], "products", "*.json"))):
-        rec = clean_record(jload(f), cfg)
+        raw = jload(f)
+        rec = pol.gate(raw, tier)
         if rec is not None:
             prods[rec["id"]] = rec
-    base = {}  # id -> index row skeleton (index shards are authoritative for the row set)
-    for rel in cat.get("index") or []:
+            pol.note_published(rec)
+        fr = rec if tier == "free" else pol.gate(raw, "free")
+        if fr is not None:
+            kn, gr = pol.count(fr)
+            cov["free"][0] += 1; cov["free"][1] += kn; cov["granted"][0] += gr > 0; cov["granted"][1] += gr
+        pr = rec if tier == "paid" else pol.gate(raw, "paid")
+        if pr is not None:
+            cov["paid"][0] += 1; cov["paid"][1] += pol.count(pr)[0]
+    base = {}  # id -> index row skeleton (index shards, incl. the certification-only shard, are authoritative for the row set)
+    for rel in (cat.get("index") or []) + ((cat.get("certification_only") or {}).get("index") or []):
         for r in jload(os.path.join(docs, rel)):
             base[r["id"]] = r
     rows = []
@@ -101,7 +92,9 @@ def build_category(cat, docs, cfg, out):
     shards = {}
     for i in sorted(ids):
         if i in prods:
-            shards.setdefault(hashlib.sha1(i.encode()).hexdigest()[:2], {})[i] = prods[i]
+            shards.setdefault(hashlib.sha1(i.encode()).hexdigest()[:shard_hex], {})[i] = prods[i]
+    for f in glob.glob(os.path.join(out, "records", cat["id"], "*.json")):  # a rebuild (or a new --shard-hex) leaves no stale shards
+        os.remove(f)
     for xx, d in shards.items():
         jdump(d, os.path.join(out, "records", cat["id"], xx + ".json"))
     bulk = os.path.join(out, "bulk", cat["id"] + ".jsonl.gz")
@@ -110,19 +103,53 @@ def build_category(cat, docs, cfg, out):
         for i in sorted(ids):
             if i in prods:
                 gz.write(json.dumps(prods[i], ensure_ascii=False, separators=(",", ":"), sort_keys=True).encode() + b"\n")
-    return rows, {"id": cat["id"], "count": len(rows), "legacy": bool(cat.get("legacy")),
-                  "bulk": f"bulk/{cat['id']}.jsonl.gz", "bulk_bytes": os.path.getsize(bulk)}
+    withheld = {r["id"]: withheld_keys(prods[r["id"]], pol) for r in rows}
+    return rows, withheld, cov, {"id": cat["id"], "count": len(rows), "legacy": bool(cat.get("legacy")),
+                                 "keys": sorted({k for r in rows for k in r["v"]}),  # Worker filter/fields bound (D3.6)
+                                 "bulk": f"bulk/{cat['id']}.jsonl.gz", "bulk_bytes": os.path.getsize(bulk), "sha256": {
+                                     "index": sha256_file(os.path.join(out, "index", cat["id"] + ".json")), "bulk": sha256_file(bulk)}}
 
 
-def diff_rows(old, new):
-    """old/new: {id: v}. Added/removed ids plus per-key [old,new] for changed rows."""
+def match_catalogue(docs, ids, out):
+    """match/catalogue.json for the Worker port of scripts/match.py (api-worker/src/match.ts): the matcher's own Catalogue, pre-tokenised
+    by match.tokens() so both sides tokenise the catalogue identically, restricted to ids in this pack. Returns its sha256."""
+    import match as M
+    if not all(os.path.exists(os.path.join(docs, f)) for f in ("categories.json", "lookup/identifiers.json")):
+        return None  # fixture trees without the matcher inputs: no catalogue, the Worker keeps match at 404
+    C = M.Catalogue(docs)
+    keep = {i: p for i, p in C.products.items() if i in ids}
+    doc = {"format": "specsheet.match/1",
+           "products": [[p["id"], p["category"], p["brand"], p["brand_id"], p["name"], sorted(p["toks"]), sorted(p["btoks"]),
+                         [M.tokens(ph) for ph in p["phrases"]], 1 if re.search(r"(?i)pack|\b\d+\s*-?\s*count\b", " ".join(p["phrases"])) else 0]
+                        for p in keep.values()],
+           "brand_names": {n: sorted(b) for n, b in sorted(C.brand_names.items())},
+           "ident": {k: v2 for k, v in sorted(C.ident.items()) if (v2 := [i for i in v if i in keep])},
+           "aliases": {k: v2 for k, v in sorted(C.aliases.items()) if (v2 := [i for i in v if i in keep])},
+           "mod_by_brand": {b: sorted(m) for b, m in sorted(C.mod_by_brand.items()) if m}}
+    path = os.path.join(out, "match", "catalogue.json")
+    jdump(doc, path)
+    return sha256_file(path)
+
+
+def sha256_file(p):
+    with open(p, "rb") as f:
+        return hashlib.sha256(f.read()).hexdigest()
+
+
+def diff_rows(old, new, withheld=None):
+    """old/new: {id: v}; withheld: {id: [keys now withheld by the source policy]}. Added/removed ids plus per-key [old,new] for changed
+    rows. A key that was published and is now withheld is {key, change: "withdrawn"} with NO previous value (never re-publish it)."""
+    withheld = withheld or {}
     added = sorted(set(new) - set(old))
     removed = sorted(set(old) - set(new))
     changed = []
     for i in sorted(set(new) & set(old)):
         if old[i] != new[i]:
             ks = sorted(set(old[i]) | set(new[i]))
-            changed.append({"id": i, "fields": {k: [old[i].get(k), new[i].get(k)] for k in ks if old[i].get(k) != new[i].get(k)}})
+            wd = set(withheld.get(i) or ())
+            fields = {k: [old[i].get(k), new[i].get(k)] for k in ks if old[i].get(k) != new[i].get(k) and not (k in wd and k not in new[i])}
+            w = [{"key": k, "change": "withdrawn"} for k in ks if k in wd and k in old[i] and k not in new[i]]
+            changed.append(dict({"id": i, "fields": fields}, **({"withdrawn": w} if w else {})))
     return {"added": added[:MAX_CHANGE_ROWS], "removed": removed[:MAX_CHANGE_ROWS], "changed": changed[:MAX_CHANGE_ROWS],
             "counts": {"added": len(added), "removed": len(removed), "changed": len(changed)}}
 
@@ -146,24 +173,35 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--docs", default=os.path.join(ROOT, "docs/api/v1"))
     ap.add_argument("--releases", default=os.path.join(ROOT, "releases"))
-    ap.add_argument("--out", default=os.path.join(ROOT, "api-worker/r2-data"))
-    ap.add_argument("--exclusions", default=os.path.join(ROOT, "api-worker/licensing-exclusions.json"))
-    ap.add_argument("--snapshots", default=os.path.join(ROOT, "state/r2-snapshots"))
+    ap.add_argument("--tier", choices=source_policy.TIERS, default="paid")
+    ap.add_argument("--out", default="", help="default api-worker/pack (free) | api-worker/r2-data (paid)")
+    ap.add_argument("--policy", default="", help="default data/source-policy.yaml")
+    ap.add_argument("--snapshots", default="", help="default state/r2-snapshots/<tier>")
     ap.add_argument("--categories", default="", help="comma list (dev seeding); default all trusted categories")
     ap.add_argument("--release", default="", help="override release id (tests)")
+    ap.add_argument("--shard-hex", type=int, default=2, choices=(2, 3), help="record shard width in hex chars (the Worker pack uses 3: "
+                    "smaller shards = less JSON parsed per /v1/query page); recorded in the manifest as shard_hex")
+    ap.add_argument("--no-match", action="store_true", help="skip match/catalogue.json")
     a = ap.parse_args()
-    cfg = jload(a.exclusions)
+    a.out = a.out or os.path.join(ROOT, "api-worker/pack" if a.tier == "free" else "api-worker/r2-data")
+    a.snapshots = a.snapshots or os.path.join(ROOT, "state/r2-snapshots", a.tier)
+    pol = source_policy.load(a.policy or None)
     man = jload(os.path.join(a.docs, "manifest.json"))
+    if man.get("policy_sha256") and man["policy_sha256"] != pol.sha256:
+        raise SystemExit(f"{a.docs} was built with source policy {man.get('policy_version')} ({man['policy_sha256'][:12]}), not "
+                         f"{pol.version} ({pol.sha256[:12]}): rebuild with scripts/build.py first")
     want = {c for c in a.categories.split(",") if c}
-    cats = [c for c in man["categories"] if c["id"] not in cfg.get("exclude_categories", []) and not c.get("demo")
+    cats = [c for c in man["categories"] if c["id"] not in pol.exclude_categories and not c.get("demo")
             and (not want or c["id"] in want)]
     release, created = latest_release(a.releases, a.release)
     created = created or man.get("generated_at")
-    metas, snap = [], {}
+    metas, snap, wsnap, covs = [], {}, {}, {}
     for c in cats:
-        rows, meta = build_category(c, a.docs, cfg, a.out)
+        rows, withheld, cov, meta = build_category(c, a.docs, pol, a.tier, a.out, a.shard_hex)
         metas.append(meta)
+        covs[c["id"]] = cov
         snap[c["id"]] = {r["id"]: r["v"] for r in rows}
+        wsnap[c["id"]] = withheld
         print(f'{c["id"]}: {meta["count"]} rows, bulk {meta["bulk_bytes"]} B', file=sys.stderr)
     # diff vs previous snapshot (only when this is a new release and the category sets are comparable)
     os.makedirs(a.snapshots, exist_ok=True)
@@ -177,11 +215,13 @@ def main():
             pf = max(prev_files, key=lambda f: os.path.getmtime(os.path.join(a.snapshots, f)))
             with gzip.open(os.path.join(a.snapshots, pf), "rt") as f:
                 prev = json.load(f)
+            if prev.get("format") == 2:
+                prev = prev["v"]
             entry["prev"] = pf[:-8]
         cats_diff = {}
         for cid, cur in snap.items():
             if prev is not None and cid in prev:
-                d = diff_rows(prev[cid], cur)
+                d = diff_rows(prev[cid], cur, wsnap[cid])
             elif prev is not None:
                 d = diff_rows({}, cur)  # new category since previous release
             else:
@@ -195,10 +235,19 @@ def main():
         history.sort(key=lambda h: h["release"])
         jdump(history, idx_path)
     with gzip.open(os.path.join(a.snapshots, release + ".json.gz"), "wt") as f:
-        json.dump(snap, f, separators=(",", ":"))
-    jdump({"release": release, "built_at": created, "dataset_build": man.get("build"), "categories": metas,
-           "note": "paid-tier export: trusted records only, licensing exclusions applied"}, os.path.join(a.out, "meta", "manifest.json"))
-    print(f"release {release}: {len(metas)} categories -> {a.out}", file=sys.stderr)
+        json.dump({"format": 2, "v": snap, "w": wsnap}, f, separators=(",", ":"))
+    brand = "specsheet"
+    site = os.path.join(ROOT, "docs", "site.json")
+    if os.path.exists(site):
+        brand = jload(site).get("brand", brand)
+    match_sha = None if a.no_match else match_catalogue(a.docs, {i for s_ in snap.values() for i in s_}, a.out)
+    jdump(dict({"release": release, "tier": a.tier, "built_at": created, "dataset_build": man.get("build"), "categories": metas,
+                "shard_hex": a.shard_hex, "match": {"catalogue": "match/catalogue.json", "sha256": match_sha} if match_sha else None,
+                "coverage": source_policy.coverage_table(covs),
+                "note": f"{a.tier}-tier query pack: trusted records only, gated by data/source-policy.yaml"}, **pol.manifest_block(brand)),
+          os.path.join(a.out, "meta", "manifest.json"))
+    pol.check_unlisted(what="build_r2.py")
+    print(f"release {release} ({a.tier}, policy {pol.version}): {len(metas)} categories -> {a.out}", file=sys.stderr)
 
 
 if __name__ == "__main__":

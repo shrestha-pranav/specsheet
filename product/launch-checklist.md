@@ -1,52 +1,67 @@
-# Launch checklist (PM round 1, 2026-11-24)
+# Launch checklist (PM round 1, 2026-11-24; revised PM round 3, same day)
 
-Two milestones. **L1 = free/open launch** (target: within days). **L2 = paid switch-on**: revenue on hold pending
-the owner's legal review, built and tested now, switched on later in one step. [owner] = only the owner can do it
-(accounts, purchases, approvals). [agent] = coordinator dispatches a brief. Decisions: `product/decisions.md`.
+Two milestones. **L1 = free/open launch**. **L2 = paid switch-on**: revenue on hold pending the owner's legal review.
+L2 is a project with its own gates, not one step. [owner] = only the owner can do it (accounts, purchases, approvals).
+[agent] = coordinator dispatches a brief. Decisions: `product/decisions.md`.
+**Changed 2026-11-24 (R3):** L1 topology is GH Pages + an API Worker on workers.dev (D2). R2 bucket lock dropped. Old
+step 16 ("no paid route returns data") replaced by the route matrix (D3.5). Acceptance criteria added (end of L1).
+Directory submissions and announce moved after acceptance.
 
-## Owner, tomorrow (Cloudflare only; nothing payment-related)
+## Owner, now (Cloudflare only; nothing payment-related)
 1. [owner] Create a Cloudflare account (free plan). Enable 2FA.
 2. [owner] Check availability + a USPTO search, then buy **`knownspec.com`** at Cloudflare Registrar (fallback
-   `plainspec.com`). Tell the coordinator which.
-3. [owner] Email Routing on the domain: create `corrections@`, `legal@`, `hello@` → forward to your inbox. Verify
-   the destination address.
-4. [owner] R2: enable it, then create buckets **`specsheet-data`** (private; served via the Worker) and
-   **`specsheet-raw`** (private; backups). On `specsheet-raw` enable object versioning if offered, or a bucket lock
-   rule; on `specsheet-data` add a bucket lock rule for prefix `releases/` (retain 365 days).
-5. [owner] R2 API token **`specsheet-raw-backup`**: Object Read & Write, scoped to `specsheet-raw` only. Store as
-   `pass specsheet/r2-raw-backup` (access key id + secret + account id). Second token **`specsheet-release`**:
-   Object Read & Write on `specsheet-data` only → `pass specsheet/r2-release`.
-6. [owner] Workers: note the account's `workers.dev` subdomain. Create Web Analytics for the domain (cookieless).
-   Do **not** create Stripe or Coinbase CDP accounts (after legal review).
-7. [owner] On GitHub: enable Discussions, private vulnerability reporting, and secret scanning push protection.
+   `plainspec.com`). Needed at L1 for contact email only; the site stays on GH Pages.
+3. [owner] Email Routing: `corrections@`, `legal@`, `hello@` → your inbox. Verify the destination.
+4. [owner] Workers: note the `workers.dev` subdomain. Create Web Analytics for the GH Pages site (cookieless JS
+   snippet). Set usage notifications at 50%/80% for Workers and Durable Objects. No Stripe/Coinbase accounts.
+5. [owner] On GitHub: enable Discussions, private vulnerability reporting, secret scanning push protection.
+6. [owner] Create a read-only Account Analytics API token → `pass specsheet/cf-analytics-read` (for kpi.sql).
+7. [owner, can wait until after L1] R2: enable, create private buckets `specsheet-raw` (versioning on, noncurrent
+   versions expire after 30 days, **no bucket lock**) and `specsheet-data` (archive, **no bucket lock**). Tokens
+   `specsheet-raw-backup` → `pass specsheet/r2-raw-backup` and `specsheet-release` → `pass specsheet/r2-release`,
+   each scoped to its own bucket.
 
 ## L1: free/open launch
-8.  [agent] Local raw/ + state second-disk backup, nightly (brief `pm-2026-11-24-backup`). Can start now.
-9.  [agent] Add `LICENSE` (Apache-2.0), `DATA-LICENSE.md` (ODbL 1.0 notice + public-domain note), docs CC BY 4.0
-    note, gitleaks CI (brief `pm-2026-11-24-site-legal`).
-10. [agent] Draft `/terms`, `/privacy`, `/sources`, contact footer, brand text, `llms.txt`, Dataset JSON-LD,
-    sitemap, robots.txt (brief `pm-2026-11-24-site-legal`).
-11. [owner] Review and approve the terms/privacy/sources drafts (plain-language, free tier only).
-12. [agent] Single licensing gate for both tiers, `release.sh` → R2 immutable release upload, dry-run until
-    tokens exist (brief `pm-2026-11-24-release-r2`). Depends on `research/data-licensing.md` landing.
-13. [agent] Worker: `PAYMENTS=off` mode, free preview quotas, rate limiting, Analytics Engine metrics,
-    `/v1/miss`, serving the site shell + dataset from R2 (brief `pm-2026-11-24-api-gateway`). Local only.
-14. [agent] Rclone R2 sync of raw/ wired once step 5 is done; first full upload + one-source restore test.
-15. [owner] First deploy: `cd api-worker && npx wrangler login && npx wrangler deploy` with `PAYMENTS=off`
-    (exact commands in api-worker/README after step 13). Add the custom domain to the Worker (root + `api.`).
-16. [agent] Post-deploy smoke against the live domain (UI, free JSON, query preview, 429 path, MCP, llms.txt,
-    no paid route returns data while bulk is off).
-17. [agent] GH Pages → redirect page to the new domain; keep gh-pages publishing as a fallback for 14 days.
-18. [agent] Publish to the MCP Registry (`mcp-publisher`, GitHub auth) [owner runs the login step], then
-    Smithery/Glama/mcp.so submissions (forms may need the owner's GitHub login: [owner]).
-19. [owner] Announce (optional): Show HN / relevant subreddits, with a link to Discussions.
+8.  [agent] Local raw/ + state second-disk backup, nightly (brief `pm-2026-11-24-backup`). Prove a one-source restore.
+9.  [agent] Licensing gate on `data/source-policy.yaml` for the free build, Worker query pack and paid export, with
+    fixtures (brief `pm-2026-11-24-licensing-gate`). Includes post-gate coverage per tier and the Sources page
+    data. Blocks 11 and 13.
+10. [agent] Licence text: `DATA-LICENSE.md` (R3 draft done), Terms/Sources/Privacy wording per D1.2 and D4
+    (A4, from licensing-gate brief §6 and measurement-plan §1).
+11. [owner] Review and approve terms/privacy/sources/about drafts and `DATA-LICENSE.md`.
+12. [agent] Release promotion: manifest checksums + policy version, verify, gh-pages publish, query pack for the
+    same release, rollback procedure; R2 archive upload dry-run until step 7 (brief `pm-2026-11-24-release-r2`).
+13. [agent] API Worker per the D3.5 route matrix: `PAYMENTS`/`PREVIEW` vars, bounds, shared REST/MCP quota with
+    Retry-After, DO daily counters, global breaker, metrics contract, `/v1/miss`, `/v1/event`, matcher port (or match
+    stays 404 and unlisted), local load test, kpi.sql (brief `pm-2026-11-24-api-gateway`). Local only.
+14. [agent] Takedown drill on a fake source (`product/takedown-runbook.md` §5).
+15. [owner] First deploy with the coordinator: `cd api-worker && npx wrangler login && npx wrangler deploy`
+    (`PAYMENTS=off`, `PREVIEW=on`). Set `site.json` `api_origin` to the workers.dev URL and republish Pages.
+16. [agent] Post-deploy smoke: run the route matrix against the live workers.dev URL (every row, expected status),
+    zero facilitator calls, 429 with Retry-After from REST and MCP on one shared budget, breaker forced via a test
+    threshold, `/health` release equals the Pages release, then `wrangler rollback` and roll forward once.
+17. [agent] One contact test per address (`corrections@`, `legal@`, `hello@`): delivered and answered. Then
+    `site.email_enabled=true`.
+18. [agent] First weekly kpi.sql run returns every row, with test traffic from step 16 classed `test`.
+
+**L1 acceptance (all true before announce):** pages approved (11); gate fixtures green and coverage published (9);
+route matrix green live (16); one-source restore (8) and release rollback (16) done; contact verified (17); takedown
+drill done (14); metrics query works (18); freshness, coverage and unknown states visible in the UI.
+
+19. [owner] Announce (optional): Show HN / relevant subreddits, linking Discussions.
+20. [agent] After acceptance: MCP Registry (`mcp-publisher`, owner runs the GitHub login), then Smithery/Glama/mcp.so.
 
 ## L2: paid switch-on (after legal review; nothing here runs before)
-20. [owner] Legal review outcome recorded in `product/decisions.md` (by the coordinator, generic wording).
-21. [owner] Create Coinbase CDP project **`specsheet-x402`** + Secret API key **`specsheet-worker`**; Stripe account
-    + "Stablecoins and Crypto" request, if the Stripe settlement path is chosen. Create the receiving address.
-22. [agent] Mainnet CDP facilitator auth (the TODO in `api-worker/src/x402.ts`), settlement log to Analytics Engine/R2
-    for bookkeeping; paid-tier terms linked.
-23. [owner] `wrangler secret put PAY_TO`, `CDP_API_KEY_ID`, `CDP_API_KEY_SECRET`; set `PAYMENTS=on`,
-    `X402_NETWORK=eip155:8453`, `ALLOW_MAINNET=true`, mainnet `FACILITATOR_URL`; deploy. One $0.002 test purchase.
-24. [agent] List in x402 Bazaar / directories; update llms.txt + OpenAPI to show prices.
+21. [owner] Legal review outcome recorded in `product/decisions.md` (coordinator, generic wording), including
+    contribution terms and the scope of any alternative licence (D1.2).
+22. [agent+owner] Source clearances: Lenovo, VESA, CSA, CARB, top makers by value count. Each cleared source gets
+    `paid`/`licence_grant` true with fetched evidence. Without these, paid = ENERGY STAR only.
+23. [agent] Hosting migration off GH Pages before any paid use (D2 "before L2" list), budgeted separately.
+24. [agent] Economics: the chosen settlement path's real minimum and fees; per-call only if fee ≤ 10% of price,
+    else prepaid packs (D3.3); update `PRICES` and the D3.3 table together.
+25. [owner] Coinbase CDP project + key and/or Stripe crypto method; receiving address.
+26. [agent] Mainnet facilitator auth (TODO in `src/x402.ts`), settlement log, paid-tier terms linked, fail-closed
+    on-mode tests in the route matrix.
+27. [owner] `wrangler secret put PAY_TO`, `CDP_API_KEY_ID`, `CDP_API_KEY_SECRET`; `PAYMENTS=on`,
+    `X402_NETWORK=eip155:8453`, `ALLOW_MAINNET=true`, mainnet `FACILITATOR_URL`; deploy; one test purchase.
+28. [agent] x402 Bazaar / directories; llms.txt + OpenAPI show prices.

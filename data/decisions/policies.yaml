@@ -81,21 +81,21 @@ claim_policies:
     keys:
       asus-us: [cpu.base_clock, cpu.boost_clock, cpu.cache, cpu.cores, cpu.cores_threads, cpu.model, cpu.threads]
       lenovo-psref: [cpu.base_clock, cpu.boost_clock, cpu.cache, cpu.cores, cpu.cores_threads, cpu.model, cpu.threads]
-- id: claim/mfr-monitor-structured@2
-  since: '2026-11-23'
-  supersedes: claim/mfr-monitor-structured@1
-  rationale: 'Monitors, manufacturer-owned structured pages: Lenovo PSREF monitor platform tables (lenovo_monitors@1), LG US product JSON (lg_us@1 next_data
-    terms) and ASUS US techspec tables (asus_monitors@1). Per field: only values that normalise to the profile type (normalize.py) are accepted; labels
-    A2 recorded as unmapped (ASUS "1ms MPRT" is not GtG) never become claims, so nothing mapped here is a guess. Manufacturer-marketed values (motion.gtg_marketed,
-    hdr.peak_marketed, hdr.marketed_label) are accepted AS marketed claims (the keys say so). Adapter versions pinned. @2: explicit per-source key allowlist.'
+- id: claim/mfr-monitor-structured@3
+  since: '2026-11-24'
+  supersedes: claim/mfr-monitor-structured@2
+  rationale: 'Same meaning as @2 (per-source key allowlists, kinds, tiers, normalisation) for lg_us@1 and asus_monitors@1, re-issued for the parser bump lenovo_monitors@1 -> @2: usb.usbc_pd_w is read one port line at a time, only from a USB-C/Thunderbolt/USB4 line the maker marks USB upstream, number before or after PD (''up to 90W PD'', ''USB PD 3.1 up to 140W'', ''Alt Mode, up to 75W''); downstream charging ports never count; two upstream ports with different wattages write nothing. WIDENING: usb.usbc_pd_w added to the lenovo-psref-monitors allowlist (53 PSREF families). All other Lenovo claims are byte-identical to @1 output.'
   audit:
-    by: A3-impl r4
-    at: '2026-11-23'
-    evidence: 'key allowlist = exactly the keys @1 accepted in the last release import (accepted_digest 707f0510...), per source: no widening, no narrowing.'
-    parsers: {lenovo_monitors@1: 'sha256:b7e7dfee555d5a890251', lg_us@1: 'sha256:51da673073084332f227', asus_monitors@1: 'sha256:21ba35a4d7bbafdaff71'}
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+    by: A2 coverage r2
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD): lenovo-psref-monitors +53 usb.usbc_pd_w, 0 other changes'
+    parsers:
+      lenovo_monitors@2: 'sha256:ed0431bb405523a78915'
+      lg_us@1: 'sha256:51da673073084332f227'
+      asus_monitors@1: 'sha256:21ba35a4d7bbafdaff71'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [lenovo_monitors@1, lg_us@1, asus_monitors@1]
+    extractors: [lenovo_monitors@2, lg_us@1, asus_monitors@1]
     source_ids: [lenovo-psref-monitors, lg-us, asus-us-monitors]
     kinds: [official]
     tiers: [manufacturer]
@@ -104,7 +104,7 @@ claim_policies:
     keys:
       lenovo-psref-monitors: [color.dci_p3, color.srgb, ergo.vesa, ergo.weight, ergo.weight_panel, gen.color, gen.curvature, gen.size_class, hdr.contrast_static,
         hdr.marketed_label, hdr.sdr_typ, panel.bit_depth, panel.surface, panel.technology, pwr.max, pwr.typical, res.aspect, res.height_px, res.native,
-        res.ppi, res.refresh_max, res.vrr_types, res.width_px, sup.warranty_years, vin.dp_count, vin.hdmi_count, vin.ports]
+        res.ppi, res.refresh_max, res.vrr_types, res.width_px, sup.warranty_years, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
       lg-us: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.viewable_diag, hdr.contrast_static, hdr.sdr_typ, motion.gtg_marketed,
         panel.surface, panel.technology, pwr.external_adapter, pwr.max, pwr.typical, res.aspect, res.height_px, res.native, res.refresh_max, res.vrr_types,
         res.width_px, sup.warranty_years, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count]
@@ -153,24 +153,20 @@ claim_policies:
     keys: [hdr.vesa_tier]
     statuses: [known]
     require_normalized: true
-- id: claim/mfr-ssd-structured@2
-  since: '2026-11-23'
-  supersedes: claim/mfr-ssd-structured@1
-  rationale: 'Consumer SSDs, manufacturer-owned pages: SanDisk/WD product pages (sandisk_ssd@1) and the TEAMGROUP per-capacity tables (teamgroup_ssd@1).
-    Per field: only the listed keys, only values that normalise to the profile type. Rated sequential speeds are the maker''s "up to" figures and are accepted
-    AS conditioned claims (adapter attaches cache_state=in_slc_cache, the profile headline condition), never as sustained speeds; the post-cache speed and
-    SLC cache size are not on these pages and stay absent. NOT accepted (preview candidates): id.msrp_us (price at fetch time) and anything not listed (e.g.
-    unmapped labels, certifications). @2 (parsers samsung_ssd@2 / sandisk_ssd@2 / teamgroup_ssd@2) REPLACES the @1 ''up to'' rule: an ''up to'' speed is
-    accepted as a qualified (qualifier up_to) rated figure; it carries cache_state=in_slc_cache ONLY when the claim''s own text evidences the cache (Samsung
-    ''Measured with Intelligent TurboWrite technology being activated''); ''up to'' alone never implies a cache state (review 2 risk 2).'
+- id: claim/mfr-ssd-structured@3
+  since: '2026-11-24'
+  supersedes: claim/mfr-ssd-structured@2
+  rationale: 'Same keys, sources, kinds and up-to speed rule as @2, re-issued for sandisk_ssd@2 -> @3 and teamgroup_ssd@2 -> @3. The one change (crawler/adapters/_ssdprose.py): hw.nand_type, hw.nand_vendor, hw.controller, hw.controller_vendor and hw.dram_type are also read from an explicit affirmative sentence of the product page about the drive (''built with ... BiCS TLC 3D CBA NAND'', ''PHISON PS5027-E27T control chip'', ''supports ... Host Memory Buffer (HMB)''), quote kept as raw, only where the spec table is silent for that SKU. Hedged/comparative sentences, two values on one page and silence write nothing; a bare ''DRAM-less'' is not mapped. TEAMGROUP ''DRAM Cache: NO'' + a stated HMB = dramless_hmb.'
   audit:
-    by: A3-impl r4
-    at: '2026-11-23'
-    evidence: 'Same keys as @1; parser @2 drops the unconditional cache_state condition (A3 r4 diff: 5 Samsung claims keep it on evidence).'
-    parsers: {sandisk_ssd@2: 'sha256:f43f27701094bcf81d3d', teamgroup_ssd@2: 'sha256:142b129a8fb6c4f517d5'}
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+    by: A2 coverage r2
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD): sandisk +160 (nand_type 85, nand_vendor 71, controller_vendor 4), teamgroup +78/-4 (4 dramless_none -> dramless_hmb on G50 EVO)'
+    parsers:
+      sandisk_ssd@3: 'sha256:a17c54f651dda1d59873'
+      teamgroup_ssd@3: 'sha256:0ff6acf0cbf3f80f83d8'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [sandisk_ssd@2, teamgroup_ssd@2]
+    extractors: [sandisk_ssd@3, teamgroup_ssd@3]
     source_ids: [sandisk-us-ssd, teamgroup-us-ssd]
     kinds: [official]
     tiers: [manufacturer]
@@ -453,40 +449,36 @@ claim_policies:
       csa-dcl-robovac:
       - smart.matter
     require_normalized: true
-- id: claim/mfr-power-banks-structured@5
-  since: '2026-11-23'
-  supersedes: claim/mfr-power-banks-structured@4
-  rationale: 'Power banks: @4 unchanged in meaning (same sources, per-source keys, kinds, tiers, normalisation), re-issued for the r6 parser bump of all
-    nine extractors (@2 -> @3). The one parser change: _powerbank.port_segments keeps ONE port when a block prints the same port row twice (INIU P73-E1
-    ''OUT1/ OUT2: ... 45W (Max)'' appears twice in the maker''s Output cell, so out.ports listed it twice). @4 stays in claim_policies, matching only the
-    @2 extractor versions that no longer exist in code, so it accepts nothing.'
+- id: claim/mfr-power-banks-structured@6
+  since: '2026-11-24'
+  supersedes: claim/mfr-power-banks-structured@5
+  rationale: 'Same sources, per-source keys, kinds, tiers and normalisation as @5, re-issued for the r7 bump of all nine extractors (@3 -> @4) after _powerbank.energy changed: (1) a Wh pair whose figures the cell labels (rated / typical) keeps BOTH, each with the basis condition energy_basis (research/power-banks/spec-profile.yaml basis_conditions), an unlabelled figure of a pair stays an unresolved preview claim; (2) Wh is matched case-insensitively, so CUKTECH PB200 ''72Wh/73.44wh'' is now an unlabelled pair (unresolved) instead of a published 72 Wh.'
   audit:
-    by: A3-impl r6
-    at: '2026-11-23'
-    evidence: Re-parsed every stored page under the bumped parsers and diffed accepted claims against the r5 release import (team/reports/2026-11-23-a3-impl-r6.md);
-      fixture tests/test_r6.py.
+    by: A2 coverage r2
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD): cuktech PB200 cap.energy_wh 72 -> unresolved; no other change (no stored page labels a pair)'
     parsers:
-      anker_powerbanks@3: sha256:011e63bdaf5d57f68588
-      belkin_powerbanks@3: sha256:e6252e1b71807dac0086
-      cuktech_powerbanks@3: sha256:8793a1e9d152befec1ab
-      iniu_powerbanks@3: sha256:8793a1e9d152befec1ab
-      ugreen_powerbanks@3: sha256:8793a1e9d152befec1ab
-      ecoflow_powerbanks@3: sha256:50c7f3c6bc5ba756b011
-      sharge_powerbanks@3: sha256:50c7f3c6bc5ba756b011
-      kuxiu_powerbanks@3: sha256:50c7f3c6bc5ba756b011
-      mophie_powerbanks@3: sha256:50c7f3c6bc5ba756b011
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+      anker_powerbanks@4: 'sha256:6431ffeefa8076fd168d'
+      belkin_powerbanks@4: 'sha256:c6830273335aadf98f01'
+      cuktech_powerbanks@4: 'sha256:ff5624eccd55cd794b7d'
+      iniu_powerbanks@4: 'sha256:ff5624eccd55cd794b7d'
+      ugreen_powerbanks@4: 'sha256:ff5624eccd55cd794b7d'
+      ecoflow_powerbanks@4: 'sha256:fd4bf165b8d63ffd3df6'
+      sharge_powerbanks@4: 'sha256:fd4bf165b8d63ffd3df6'
+      kuxiu_powerbanks@4: 'sha256:fd4bf165b8d63ffd3df6'
+      mophie_powerbanks@4: 'sha256:fd4bf165b8d63ffd3df6'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
     extractors:
-    - anker_powerbanks@3
-    - belkin_powerbanks@3
-    - cuktech_powerbanks@3
-    - iniu_powerbanks@3
-    - ugreen_powerbanks@3
-    - ecoflow_powerbanks@3
-    - sharge_powerbanks@3
-    - kuxiu_powerbanks@3
-    - mophie_powerbanks@3
+    - anker_powerbanks@4
+    - belkin_powerbanks@4
+    - cuktech_powerbanks@4
+    - iniu_powerbanks@4
+    - ugreen_powerbanks@4
+    - ecoflow_powerbanks@4
+    - sharge_powerbanks@4
+    - kuxiu_powerbanks@4
+    - mophie_powerbanks@4
     source_ids:
     - anker-us-powerbanks
     - belkin-us-powerbanks
@@ -631,32 +623,28 @@ claim_policies:
       - phys.dimensions
       - phys.weight
     require_normalized: true
-- id: claim/mfr-power-stations-structured@2
-  since: '2026-11-23'
-  supersedes: claim/mfr-power-stations-structured@1
-  rationale: 'Portable power stations: @1 unchanged in meaning (same sources, per-source keys, kinds, tiers), re-issued because the five extractors were
-    version-bumped (@1 -> @2) when the shared _powerbank module they import changed in r6 (a repeated identical port row is one port). No station rule changed;
-    exp.batteries stays excluded. Bundle variants now mint package entities in the importer (scripts/bundles.py), which carry no claims, so nothing here
-    accepts bundle data. @1 stays in claim_policies matching only the @1 extractor versions, so it accepts nothing.'
+- id: claim/mfr-power-stations-structured@3
+  since: '2026-11-24'
+  supersedes: claim/mfr-power-stations-structured@2
+  rationale: 'Same meaning as @2, re-issued because the five station extractors import _powerbank and were bumped @2 -> @3 (r7 energy-pair rule; stations read Wh with _powerstation, so no station rule or claim changed).'
   audit:
-    by: A3-impl r6
-    at: '2026-11-23'
-    evidence: Re-parsed every stored page under the bumped parsers and diffed accepted claims against the r5 release import (team/reports/2026-11-23-a3-impl-r6.md);
-      fixture tests/test_r6.py.
+    by: A2 coverage r2
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD): 0 claim changes on all five sources'
     parsers:
-      ankersolix_stations@2: sha256:513f8cbc8ed8880ac993
-      bluetti_stations@2: sha256:93f79836f7c8066c46dc
-      ecoflow_stations@2: sha256:93f79836f7c8066c46dc
-      goalzero_stations@2: sha256:93f79836f7c8066c46dc
-      jackery_stations@2: sha256:93f79836f7c8066c46dc
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+      ankersolix_stations@3: 'sha256:94260f9f8155895c1b47'
+      bluetti_stations@3: 'sha256:10d735d9bf31702f867e'
+      ecoflow_stations@3: 'sha256:10d735d9bf31702f867e'
+      goalzero_stations@3: 'sha256:10d735d9bf31702f867e'
+      jackery_stations@3: 'sha256:10d735d9bf31702f867e'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
     extractors:
-    - ankersolix_stations@2
-    - bluetti_stations@2
-    - ecoflow_stations@2
-    - goalzero_stations@2
-    - jackery_stations@2
+    - ankersolix_stations@3
+    - bluetti_stations@3
+    - ecoflow_stations@3
+    - goalzero_stations@3
+    - jackery_stations@3
     source_ids:
     - ecoflow-us-stations
     - bluetti-us-stations
@@ -991,39 +979,29 @@ claim_policies:
     require_normalized: true
     keys:
       energystar-airpurifiers: [eff.energy_star]
-- id: claim/mfr-chargers-structured@1
+- id: claim/mfr-chargers-structured@2
   since: '2026-11-24'
-  rationale: 'USB chargers (category chargers, superseding the v0 gan-chargers pilot): the makers'' own labelled US store spec rows (Anker Specifications
-    table + key_parameter list, Belkin Technical Specifications, Shopify store spec tables / label-value rows). Labelled fields only, never titles,
-    prose or prices, with review-3 rules from the start: (1) out.max_total_w only from a row the maker labels total (Total Output / Total Wattage /
-    Anker Total Capacity in W); out.all_ports_w only with explicit port membership (a printed combination naming every individual port, or an
-    N-ports-in-use row with N = the printed port count); additive splits, subsets and unmatched in-use rows stay status-unknown; a single unlabelled
-    wattage (Belkin Wattage, mophie Output) is out.rated_w, never total or single-port, and is unresolved when the maker title prints a different
-    single wattage; (2) per-port PDOs and PPS ranges as printed (wattage never computed from V x A; per-port protocol lists are not PDOs);
-    pd.pps / pd.epr / phys.foldable_plug affirmative only (EPR = a printed fixed PDO of 28 V or more); (3) identity = the maker model number or the
-    documented SKU-stem rule per brand (research/chargers/identity.md); pages with several model numbers, N-pack/bundle pages, wireless and 2/3-in-1
-    sets mint nothing. NOT accepted (preview only): gen.gan and gen.form_factor (title-derived), gen.product_line (title), pd.protocols (literal
-    maker tokens, not normalised), id.msrp_us (dated price), every status-unknown claim.'
+  supersedes: claim/mfr-chargers-structured@1
+  rationale: 'Same rules, sources and keys as @1, re-issued for the r7 bump of all eleven extractors (@1 -> @2: shared _powerbank changed) plus two affirmative-only pd.pps rules in _charger.py: a USB-C output row that names PPS without a range (HyperJuice ''USB-C1: 100W Max - PD 3.0 and PPS'') and a per-port ''USB-C1 Protocols'' row naming PPS (UGREEN 500W). USB-A rows never count. WIDENING: pd.pps added to the hyper-us-chargers allowlist.'
   audit:
-    by: A1+A2 chargers
+    by: A2 coverage r2
     at: '2026-11-24'
-    evidence: Parsed every stored snapshot of the charger sources; per-key sanity checks (single-port <= total, all-ports <= total, port rows
-      <= port count) and fixtures in tests/test_chargers.py; team/reports/2026-11-24-a12-chargers-matcher.md.
+    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD): +3 hyper pd.pps, +1 ugreen pd.pps, 0 other changes'
     parsers:
-      anker_chargers@1: 'sha256:b973d314c48eccc758ab'
-      belkin_chargers@1: 'sha256:2d23c397d44b6d4f9f01'
-      ugreen_chargers@1: 'sha256:c66068f8903dbf47f73e'
-      iniu_chargers@1: 'sha256:c66068f8903dbf47f73e'
-      cuktech_chargers@1: 'sha256:c66068f8903dbf47f73e'
-      satechi_chargers@1: 'sha256:c66068f8903dbf47f73e'
-      mophie_chargers@1: 'sha256:c66068f8903dbf47f73e'
-      aukey_chargers@1: 'sha256:c66068f8903dbf47f73e'
-      hyper_chargers@1: 'sha256:c66068f8903dbf47f73e'
-      nativeunion_chargers@1: 'sha256:c66068f8903dbf47f73e'
-      choetech_chargers@1: 'sha256:c66068f8903dbf47f73e'
+      anker_chargers@2: 'sha256:8bb7107d875d52865b9f'
+      belkin_chargers@2: 'sha256:f596fcb8e433a7d2f486'
+      ugreen_chargers@2: 'sha256:b5c002c27d49233d7281'
+      iniu_chargers@2: 'sha256:b5c002c27d49233d7281'
+      cuktech_chargers@2: 'sha256:b5c002c27d49233d7281'
+      satechi_chargers@2: 'sha256:b5c002c27d49233d7281'
+      mophie_chargers@2: 'sha256:b5c002c27d49233d7281'
+      aukey_chargers@2: 'sha256:b5c002c27d49233d7281'
+      hyper_chargers@2: 'sha256:b5c002c27d49233d7281'
+      nativeunion_chargers@2: 'sha256:b5c002c27d49233d7281'
+      choetech_chargers@2: 'sha256:b5c002c27d49233d7281'
   approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [anker_chargers@1, belkin_chargers@1, ugreen_chargers@1, iniu_chargers@1, cuktech_chargers@1, satechi_chargers@1, mophie_chargers@1, aukey_chargers@1, hyper_chargers@1, nativeunion_chargers@1, choetech_chargers@1]
+    extractors: [anker_chargers@2, belkin_chargers@2, ugreen_chargers@2, iniu_chargers@2, cuktech_chargers@2, satechi_chargers@2, mophie_chargers@2, aukey_chargers@2, hyper_chargers@2, nativeunion_chargers@2, choetech_chargers@2]
     source_ids: [anker-us-chargers, belkin-us-chargers, ugreen-us-chargers, iniu-us-chargers, cuktech-us-chargers, satechi-us-chargers, mophie-us-chargers, aukey-us-chargers, hyper-us-chargers, nativeunion-us-chargers, choetech-us-chargers]
     kinds: [official]
     tiers: [manufacturer]
@@ -1038,7 +1016,7 @@ claim_policies:
       satechi-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.ports, phys.foldable_plug, phys.weight]
       mophie-us-chargers: [out.rated_w]
       aukey-us-chargers: [gen.color, out.max_single_port_w, out.ports]
-      hyper-us-chargers: [gen.color, out.max_single_port_w, out.ports, out.rated_w]
+      hyper-us-chargers: [gen.color, out.max_single_port_w, out.ports, out.rated_w, pd.pps]
       nativeunion-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.ports, pd.max_fixed_voltage, phys.weight]
       choetech-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.max_total_w, out.ports, pd.max_fixed_voltage, phys.dimensions, phys.weight]
 - id: claim/psref-split@1
@@ -1090,21 +1068,54 @@ claim_policies:
       asus-us-monitors: [flk.pwm, usb.usbc_pd_w]
       lg-us: [flk.pwm]
       lenovo-psref-monitors: [flk.pwm]
-relation_policies:
-- id: rel/source-stated-hierarchy@2
-  since: '2026-11-23'
-  supersedes: rel/source-stated-hierarchy@1
-  rationale: The manufacturer source itself states the link. @2 replaces the open globs adapter:* / page-variants:* with one explicit rule per source method,
-    relation type and parser version that produced the relations @1 approved; a new adapter, a new relation type or a parser bump gets nothing until a rule
-    is added (new id). Suffix-inferred (suffix:*) and stem (stem:*) links are never covered.
+- id: claim/mfr-ssd-kingston@1
+  since: '2026-11-24'
+  rationale: 'Kingston client SSDs from Kingston''s own datasheet PDFs (kingston_ssd@1; product pages are Cloudflare-blocked, the datasheets are not,
+    research/ssds/merchants.md). Per configuration = orderable part number, tied to its Specifications block by form factor; per-capacity rows only
+    when the row names that capacity. Speeds are the datasheet figures, accepted like claim/mfr-ssd-structured@3 (no cache_state condition is
+    inferred). NAND ''3D'' alone, a generic ''Gen 4x4 NVMe controller'' and a missing DRAM row write nothing. Only the listed keys.'
   audit:
-    by: A3-impl r4
-    at: '2026-11-23'
-    evidence: 'rules = the (method, type, parser) triples @1 approved in the last release import (4,137 links): no widening.'
-    parsers: {lenovo_psref@2: 'sha256:ec6a55f8081086820989', asus@1: 'sha256:628db32b5ba83fa291c6', dell@1: 'sha256:13cd4d61b81c005021b6', surface@1: 'sha256:80cd87b7b1b87d6969e9',
-      razer@1: 'sha256:8752d0e2f07ae8b46ff2', samsung@1: 'sha256:d0e9cabff53a15285159', lenovo_monitors@1: 'sha256:b7e7dfee555d5a890251', samsung_ssd@2: 'sha256:a6cbc9077c793c287d62',
-      sandisk_ssd@2: 'sha256:f43f27701094bcf81d3d', teamgroup_ssd@2: 'sha256:142b129a8fb6c4f517d5', tplink_routers@2: 'sha256:c7318e9238be7635b158', crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'}
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+    by: A2 coverage r2
+    at: '2026-11-24'
+    evidence: 'six of nine seeded datasheets parsed (KC3000, FURY Renegade, FURY Renegade G5, NV3, A400, XS2000; 25 part numbers, spot-checked
+      against the PDFs); NV2/NV1/A2000 use an older two-column layout and yield nothing. team/reports/2026-11-24-a2-coverage-r2.md'
+    parsers:
+      kingston_ssd@1: 'sha256:121f49289440b7fa99f3'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [kingston_ssd@1]
+    source_ids: [kingston-us-ssd]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      kingston-us-ssd: [end.mtbf, end.tbw, end.warranty_years, gen.capacity, gen.device_class, gen.form_factor, hw.controller, hw.controller_vendor,
+        hw.dram_type, hw.nand_type, if.pcie_gen, if.pcie_lanes, if.protocol, if.usb_standard, perf.seq_read, perf.seq_write, therm.temp_operating]
+relation_policies:
+- id: rel/source-stated-hierarchy@3
+  since: '2026-11-24'
+  supersedes: rel/source-stated-hierarchy@2
+  rationale: 'Same rules as @2 with the parser versions bumped (lenovo_monitors@1 -> @2, sandisk_ssd@2 -> @3, teamgroup_ssd@2 -> @3: none of the bumps touches identifiers, so the links are unchanged) plus ONE new rule: adapter:kingston-us-ssd member_of_family/configuration_of from kingston_ssd@1 (part number -> part-number stem, as stated in the Kingston datasheet). Suffix/stem inference still never covered.'
+  audit:
+    by: A2 coverage r2
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD)'
+    parsers:
+      lenovo_psref@2: 'sha256:ec6a55f8081086820989'
+      asus@1: 'sha256:628db32b5ba83fa291c6'
+      dell@1: 'sha256:13cd4d61b81c005021b6'
+      surface@1: 'sha256:80cd87b7b1b87d6969e9'
+      razer@1: 'sha256:8752d0e2f07ae8b46ff2'
+      samsung@1: 'sha256:d0e9cabff53a15285159'
+      lenovo_monitors@2: 'sha256:ed0431bb405523a78915'
+      samsung_ssd@2: 'sha256:a6cbc9077c793c287d62'
+      sandisk_ssd@3: 'sha256:a17c54f651dda1d59873'
+      teamgroup_ssd@3: 'sha256:0ff6acf0cbf3f80f83d8'
+      kingston_ssd@1: 'sha256:121f49289440b7fa99f3'
+      tplink_routers@2: 'sha256:c7318e9238be7635b158'
+      crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   rules:
   - method: adapter:lenovo-psref
     types: [member_of_family, configuration_of]
@@ -1126,16 +1137,19 @@ relation_policies:
     parsers: [samsung@1]
   - method: adapter:lenovo-psref-monitors
     types: [package_of]
-    parsers: [lenovo_monitors@1]
+    parsers: [lenovo_monitors@2]
   - method: adapter:samsung-us-ssd
     types: [member_of_family, configuration_of]
     parsers: [samsung_ssd@2]
   - method: adapter:sandisk-us-ssd
     types: [member_of_family, configuration_of]
-    parsers: [sandisk_ssd@2]
+    parsers: [sandisk_ssd@3]
   - method: adapter:teamgroup-us-ssd
     types: [member_of_family, configuration_of]
-    parsers: [teamgroup_ssd@2]
+    parsers: [teamgroup_ssd@3]
+  - method: adapter:kingston-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [kingston_ssd@1]
   - method: adapter:tplink-us-routers
     types: [variant_of]
     parsers: [tplink_routers@2]
@@ -1148,44 +1162,36 @@ relation_policies:
   - method: page-variants:belkin
     types: [configuration_of]
     parsers: [crawlpy-strips@1]
-- id: rel/bundle-contents@2
-  since: '2026-11-23'
-  supersedes: rel/bundle-contents@1
-  rationale: 'Review 4 fix 1. contains links minted by the shared transform scripts/bundles.py bundles@2, pinned here by fingerprint (audit.parsers
-    bundles@2; a code change is parser drift, fatal under --strict-parsers) and by the link parser "<adapter>@N+bundles@2", which @1 never
-    matches (@1 is inert). Evidence level stated: the manufacturer store listing that itemises the SKU (one listing can mint; several must agree,
-    which is consistency, not independent corroboration). No SKU-digit inference; the page model must be named, a capacity note must equal the
-    page''s own capacity; colour slashes only from a reviewed list; pipe tails kept as unparsed (contents incomplete); both free syntaxes are
-    promotions (dated, never contents); pack words fabricate no component; 0 quantities rejected; exact multisets of member models and full
-    descriptions (plural folding only); one stated market; punctuation-variant, disputed or unparseable SKUs are quarantined in
-    identity_conflicts, never re-attached as aliases.'
+- id: rel/bundle-contents@3
+  since: '2026-11-24'
+  supersedes: rel/bundle-contents@2
+  rationale: 'Same rules and transform (bundles@2) as @2, re-issued only because four station extractors were bumped @2 -> @3 (r7 shared _powerbank change, no station or bundle rule changed).'
   audit:
-    by: A3-impl r7
-    at: '2026-11-23'
-    evidence: fixtures tests/test_r7.py (rigid/flexible 200W, SKU digit collision, slash/pipe, both free syntaxes, zero counts, conflicting and
-      unparseable observations, regional SKU reuse, punctuation variants; exact multi-model / quantity bundles still pass).
+    by: A2 coverage r2
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD)'
     parsers:
-      ankersolix_stations@2: sha256:513f8cbc8ed8880ac993
-      bluetti_stations@2: sha256:93f79836f7c8066c46dc
-      ecoflow_stations@2: sha256:93f79836f7c8066c46dc
-      jackery_stations@2: sha256:93f79836f7c8066c46dc
-      dreame_robovac@2: sha256:82418fe203d439831b23
-      narwal_robovac@2: sha256:2f212aa7076aff13a250
+      ankersolix_stations@3: 'sha256:94260f9f8155895c1b47'
+      bluetti_stations@3: 'sha256:10d735d9bf31702f867e'
+      ecoflow_stations@3: 'sha256:10d735d9bf31702f867e'
+      jackery_stations@3: 'sha256:10d735d9bf31702f867e'
+      dreame_robovac@2: 'sha256:82418fe203d439831b23'
+      narwal_robovac@2: 'sha256:2f212aa7076aff13a250'
       bundles@2: 'sha256:673c815897604268136d'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   rules:
   - method: bundle:ankersolix-us-stations
     types: [contains]
-    parsers: [ankersolix_stations@2+bundles@2]
+    parsers: [ankersolix_stations@3+bundles@2]
   - method: bundle:bluetti-us-stations
     types: [contains]
-    parsers: [bluetti_stations@2+bundles@2]
+    parsers: [bluetti_stations@3+bundles@2]
   - method: bundle:ecoflow-us-stations
     types: [contains]
-    parsers: [ecoflow_stations@2+bundles@2]
+    parsers: [ecoflow_stations@3+bundles@2]
   - method: bundle:jackery-us-stations
     types: [contains]
-    parsers: [jackery_stations@2+bundles@2]
+    parsers: [jackery_stations@3+bundles@2]
   - method: bundle:dreame-us-robovac
     types: [contains]
     parsers: [dreame_robovac@2+bundles@2]
@@ -2613,3 +2619,572 @@ retired_policies:
          refresh.dlg_hz, refresh.marketing, refresh.native_hz, res.class, res.height_px, res.native, res.width_px, sup.warranty, vrr.formats,
          vrr.supported]
   retired: {at: '2026-11-23', superseded_by: claim/tvs-structured@2, reason: 'superseded and inert (matches no current extractor version) or a strict subset of its successor; retired on user approval 2026-11-23'}
+- id: claim/mfr-monitor-structured@2
+  since: '2026-11-23'
+  supersedes: claim/mfr-monitor-structured@1
+  rationale: 'Monitors, manufacturer-owned structured pages: Lenovo PSREF monitor platform tables (lenovo_monitors@1), LG US product JSON (lg_us@1 next_data
+    terms) and ASUS US techspec tables (asus_monitors@1). Per field: only values that normalise to the profile type (normalize.py) are accepted; labels
+    A2 recorded as unmapped (ASUS "1ms MPRT" is not GtG) never become claims, so nothing mapped here is a guess. Manufacturer-marketed values (motion.gtg_marketed,
+    hdr.peak_marketed, hdr.marketed_label) are accepted AS marketed claims (the keys say so). Adapter versions pinned. @2: explicit per-source key allowlist.'
+  audit:
+    by: A3-impl r4
+    at: '2026-11-23'
+    evidence: 'key allowlist = exactly the keys @1 accepted in the last release import (accepted_digest 707f0510...), per source: no widening, no narrowing.'
+    parsers: {lenovo_monitors@1: 'sha256:b7e7dfee555d5a890251', lg_us@1: 'sha256:51da673073084332f227', asus_monitors@1: 'sha256:21ba35a4d7bbafdaff71'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+  match:
+    extractors: [lenovo_monitors@1, lg_us@1, asus_monitors@1]
+    source_ids: [lenovo-psref-monitors, lg-us, asus-us-monitors]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    require_normalized: true
+    keys:
+      lenovo-psref-monitors: [color.dci_p3, color.srgb, ergo.vesa, ergo.weight, ergo.weight_panel, gen.color, gen.curvature, gen.size_class, hdr.contrast_static,
+        hdr.marketed_label, hdr.sdr_typ, panel.bit_depth, panel.surface, panel.technology, pwr.max, pwr.typical, res.aspect, res.height_px, res.native,
+        res.ppi, res.refresh_max, res.vrr_types, res.width_px, sup.warranty_years, vin.dp_count, vin.hdmi_count, vin.ports]
+      lg-us: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.viewable_diag, hdr.contrast_static, hdr.sdr_typ, motion.gtg_marketed,
+        panel.surface, panel.technology, pwr.external_adapter, pwr.max, pwr.typical, res.aspect, res.height_px, res.native, res.refresh_max, res.vrr_types,
+        res.width_px, sup.warranty_years, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count]
+      asus-us-monitors: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.viewable_diag, hdr.contrast_static, hdr.marketed_label,
+        hdr.peak_marketed, hdr.sdr_typ, motion.gtg_marketed, panel.surface, panel.technology, pwr.typical, res.aspect, res.height_px, res.native, res.refresh_max,
+        res.vrr_types, res.width_px, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-monitor-structured@3, reason: 'parser lenovo_monitors@2 (upstream USB-C PD wattage) + usb.usbc_pd_w added for Lenovo; @2 meaning frozen as locked'}
+- id: claim/mfr-ssd-structured@2
+  since: '2026-11-23'
+  supersedes: claim/mfr-ssd-structured@1
+  rationale: 'Consumer SSDs, manufacturer-owned pages: SanDisk/WD product pages (sandisk_ssd@1) and the TEAMGROUP per-capacity tables (teamgroup_ssd@1).
+    Per field: only the listed keys, only values that normalise to the profile type. Rated sequential speeds are the maker''s "up to" figures and are accepted
+    AS conditioned claims (adapter attaches cache_state=in_slc_cache, the profile headline condition), never as sustained speeds; the post-cache speed and
+    SLC cache size are not on these pages and stay absent. NOT accepted (preview candidates): id.msrp_us (price at fetch time) and anything not listed (e.g.
+    unmapped labels, certifications). @2 (parsers samsung_ssd@2 / sandisk_ssd@2 / teamgroup_ssd@2) REPLACES the @1 ''up to'' rule: an ''up to'' speed is
+    accepted as a qualified (qualifier up_to) rated figure; it carries cache_state=in_slc_cache ONLY when the claim''s own text evidences the cache (Samsung
+    ''Measured with Intelligent TurboWrite technology being activated''); ''up to'' alone never implies a cache state (review 2 risk 2).'
+  audit:
+    by: A3-impl r4
+    at: '2026-11-23'
+    evidence: 'Same keys as @1; parser @2 drops the unconditional cache_state condition (A3 r4 diff: 5 Samsung claims keep it on evidence).'
+    parsers: {sandisk_ssd@2: 'sha256:f43f27701094bcf81d3d', teamgroup_ssd@2: 'sha256:142b129a8fb6c4f517d5'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+  match:
+    extractors: [sandisk_ssd@2, teamgroup_ssd@2]
+    source_ids: [sandisk-us-ssd, teamgroup-us-ssd]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    keys: [gen.capacity, gen.device_class, gen.form_factor, gen.weight, if.pcie_gen, if.pcie_lanes, if.protocol, if.nvme_version, if.usb_standard, if.usb_connector,
+      hw.controller, hw.controller_vendor, hw.dram_type, hw.dram_size, hw.dram_gen, hw.nand_type, hw.nand_vendor, perf.seq_read, perf.seq_write, perf.rand_read_iops_qd1,
+      perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption,
+      therm.temp_operating, port.drop]
+    require_normalized: true
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-ssd-structured@3, reason: 'parsers sandisk_ssd@3 / teamgroup_ssd@3 (explicit page-prose silicon statements); @2 meaning frozen as locked'}
+- id: rel/source-stated-hierarchy@2
+  since: '2026-11-23'
+  supersedes: rel/source-stated-hierarchy@1
+  rationale: The manufacturer source itself states the link. @2 replaces the open globs adapter:* / page-variants:* with one explicit rule per source method,
+    relation type and parser version that produced the relations @1 approved; a new adapter, a new relation type or a parser bump gets nothing until a rule
+    is added (new id). Suffix-inferred (suffix:*) and stem (stem:*) links are never covered.
+  audit:
+    by: A3-impl r4
+    at: '2026-11-23'
+    evidence: 'rules = the (method, type, parser) triples @1 approved in the last release import (4,137 links): no widening.'
+    parsers: {lenovo_psref@2: 'sha256:ec6a55f8081086820989', asus@1: 'sha256:628db32b5ba83fa291c6', dell@1: 'sha256:13cd4d61b81c005021b6', surface@1: 'sha256:80cd87b7b1b87d6969e9',
+      razer@1: 'sha256:8752d0e2f07ae8b46ff2', samsung@1: 'sha256:d0e9cabff53a15285159', lenovo_monitors@1: 'sha256:b7e7dfee555d5a890251', samsung_ssd@2: 'sha256:a6cbc9077c793c287d62',
+      sandisk_ssd@2: 'sha256:f43f27701094bcf81d3d', teamgroup_ssd@2: 'sha256:142b129a8fb6c4f517d5', tplink_routers@2: 'sha256:c7318e9238be7635b158', crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+  rules:
+  - method: adapter:lenovo-psref
+    types: [member_of_family, configuration_of]
+    parsers: [lenovo_psref@2]
+  - method: adapter:asus-us
+    types: [member_of_family]
+    parsers: [asus@1]
+  - method: adapter:dell-us
+    types: [member_of_family]
+    parsers: [dell@1]
+  - method: adapter:microsoft-surface
+    types: [member_of_family, configuration_of]
+    parsers: [surface@1]
+  - method: adapter:razer-us
+    types: [member_of_family, configuration_of]
+    parsers: [razer@1]
+  - method: adapter:samsung-us
+    types: [member_of_family, configuration_of]
+    parsers: [samsung@1]
+  - method: adapter:lenovo-psref-monitors
+    types: [package_of]
+    parsers: [lenovo_monitors@1]
+  - method: adapter:samsung-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [samsung_ssd@2]
+  - method: adapter:sandisk-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [sandisk_ssd@2]
+  - method: adapter:teamgroup-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [teamgroup_ssd@2]
+  - method: adapter:tplink-us-routers
+    types: [variant_of]
+    parsers: [tplink_routers@2]
+  - method: page-variants:anker
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:baseus
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:belkin
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  retired: {at: '2026-11-24', superseded_by: rel/source-stated-hierarchy@3, reason: 'parser bumps lenovo_monitors@2, sandisk_ssd@3, teamgroup_ssd@3 + new kingston_ssd@1 rule; @2 meaning frozen as locked'}
+- id: claim/mfr-power-banks-structured@5
+  since: '2026-11-23'
+  supersedes: claim/mfr-power-banks-structured@4
+  rationale: 'Power banks: @4 unchanged in meaning (same sources, per-source keys, kinds, tiers, normalisation), re-issued for the r6 parser bump of all
+    nine extractors (@2 -> @3). The one parser change: _powerbank.port_segments keeps ONE port when a block prints the same port row twice (INIU P73-E1
+    ''OUT1/ OUT2: ... 45W (Max)'' appears twice in the maker''s Output cell, so out.ports listed it twice). @4 stays in claim_policies, matching only the
+    @2 extractor versions that no longer exist in code, so it accepts nothing.'
+  audit:
+    by: A3-impl r6
+    at: '2026-11-23'
+    evidence: Re-parsed every stored page under the bumped parsers and diffed accepted claims against the r5 release import (team/reports/2026-11-23-a3-impl-r6.md);
+      fixture tests/test_r6.py.
+    parsers:
+      anker_powerbanks@3: sha256:011e63bdaf5d57f68588
+      belkin_powerbanks@3: sha256:e6252e1b71807dac0086
+      cuktech_powerbanks@3: sha256:8793a1e9d152befec1ab
+      iniu_powerbanks@3: sha256:8793a1e9d152befec1ab
+      ugreen_powerbanks@3: sha256:8793a1e9d152befec1ab
+      ecoflow_powerbanks@3: sha256:50c7f3c6bc5ba756b011
+      sharge_powerbanks@3: sha256:50c7f3c6bc5ba756b011
+      kuxiu_powerbanks@3: sha256:50c7f3c6bc5ba756b011
+      mophie_powerbanks@3: sha256:50c7f3c6bc5ba756b011
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+  match:
+    extractors:
+    - anker_powerbanks@3
+    - belkin_powerbanks@3
+    - cuktech_powerbanks@3
+    - iniu_powerbanks@3
+    - ugreen_powerbanks@3
+    - ecoflow_powerbanks@3
+    - sharge_powerbanks@3
+    - kuxiu_powerbanks@3
+    - mophie_powerbanks@3
+    source_ids:
+    - anker-us-powerbanks
+    - belkin-us-powerbanks
+    - cuktech-us-powerbanks
+    - iniu-us-powerbanks
+    - ugreen-us-powerbanks
+    - ecoflow-us-powerbanks
+    - sharge-us-powerbanks
+    - kuxiu-us-powerbanks
+    - mophie-us-powerbanks
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    keys:
+      anker-us-powerbanks:
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.builtin_cable
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - pd.max_fixed_voltage
+      - pd.pps
+      - phys.dimensions
+      - phys.weight
+      belkin-us-powerbanks:
+      - cap.class_mah
+      - out.cable_note
+      - out.max_output_w
+      - out.usb_a_count
+      - out.usb_c_count
+      - phys.dimensions
+      iniu-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      cuktech-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      ugreen-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      ecoflow-us-powerbanks:
+      - cap.cell_mah
+      - cap.energy_wh
+      - in.max_w
+      - out.max_single_port_w
+      - out.max_total_w
+      - phys.dimensions
+      - phys.weight
+      sharge-us-powerbanks:
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      kuxiu-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - phys.dimensions
+      - phys.weight
+      mophie-us-powerbanks:
+      - cap.cell_mah
+      - out.max_output_w
+      - phys.dimensions
+      - phys.weight
+    require_normalized: true
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-power-banks-structured@6, reason: 'r7 shared _powerbank change, all nine extractors bumped @3 -> @4; @5 meaning frozen as locked'}
+- id: claim/mfr-power-stations-structured@2
+  since: '2026-11-23'
+  supersedes: claim/mfr-power-stations-structured@1
+  rationale: 'Portable power stations: @1 unchanged in meaning (same sources, per-source keys, kinds, tiers), re-issued because the five extractors were
+    version-bumped (@1 -> @2) when the shared _powerbank module they import changed in r6 (a repeated identical port row is one port). No station rule changed;
+    exp.batteries stays excluded. Bundle variants now mint package entities in the importer (scripts/bundles.py), which carry no claims, so nothing here
+    accepts bundle data. @1 stays in claim_policies matching only the @1 extractor versions, so it accepts nothing.'
+  audit:
+    by: A3-impl r6
+    at: '2026-11-23'
+    evidence: Re-parsed every stored page under the bumped parsers and diffed accepted claims against the r5 release import (team/reports/2026-11-23-a3-impl-r6.md);
+      fixture tests/test_r6.py.
+    parsers:
+      ankersolix_stations@2: sha256:513f8cbc8ed8880ac993
+      bluetti_stations@2: sha256:93f79836f7c8066c46dc
+      ecoflow_stations@2: sha256:93f79836f7c8066c46dc
+      goalzero_stations@2: sha256:93f79836f7c8066c46dc
+      jackery_stations@2: sha256:93f79836f7c8066c46dc
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+  match:
+    extractors:
+    - ankersolix_stations@2
+    - bluetti_stations@2
+    - ecoflow_stations@2
+    - goalzero_stations@2
+    - jackery_stations@2
+    source_ids:
+    - ecoflow-us-stations
+    - bluetti-us-stations
+    - jackery-us-stations
+    - goalzero-us-stations
+    - ankersolix-us-stations
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    keys:
+      ecoflow-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - conn.wireless
+      - exp.expandable
+      - exp.max_batteries
+      - exp.max_wh
+      - gen.warranty_years
+      - in.ac_w
+      - in.car_w
+      - in.solar_port_w
+      - in.solar_ports
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_boost_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      bluetti-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - cert.marks
+      - cert.ul2743
+      - conn.wireless
+      - exp.expandable
+      - gen.warranty_years
+      - in.ac_w
+      - in.max_w
+      - in.passthrough
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_boost_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ac_waveform
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - out.wireless_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      jackery-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - gen.warranty_years
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      goalzero-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - cert.marks
+      - exp.expandable
+      - gen.warranty_years
+      - in.ac_w
+      - in.recharge_ac_h
+      - in.recharge_solar_h
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ac_waveform
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      ankersolix-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - conn.wireless
+      - exp.expandable
+      - exp.max_batteries
+      - exp.max_wh
+      - gen.warranty_years
+      - in.ac_w
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-power-stations-structured@3, reason: 'extractors bumped @2 -> @3 for the r7 shared _powerbank change; @2 meaning frozen as locked'}
+- id: claim/mfr-chargers-structured@1
+  since: '2026-11-24'
+  rationale: 'USB chargers (category chargers, superseding the v0 gan-chargers pilot): the makers'' own labelled US store spec rows (Anker Specifications
+    table + key_parameter list, Belkin Technical Specifications, Shopify store spec tables / label-value rows). Labelled fields only, never titles,
+    prose or prices, with review-3 rules from the start: (1) out.max_total_w only from a row the maker labels total (Total Output / Total Wattage /
+    Anker Total Capacity in W); out.all_ports_w only with explicit port membership (a printed combination naming every individual port, or an
+    N-ports-in-use row with N = the printed port count); additive splits, subsets and unmatched in-use rows stay status-unknown; a single unlabelled
+    wattage (Belkin Wattage, mophie Output) is out.rated_w, never total or single-port, and is unresolved when the maker title prints a different
+    single wattage; (2) per-port PDOs and PPS ranges as printed (wattage never computed from V x A; per-port protocol lists are not PDOs);
+    pd.pps / pd.epr / phys.foldable_plug affirmative only (EPR = a printed fixed PDO of 28 V or more); (3) identity = the maker model number or the
+    documented SKU-stem rule per brand (research/chargers/identity.md); pages with several model numbers, N-pack/bundle pages, wireless and 2/3-in-1
+    sets mint nothing. NOT accepted (preview only): gen.gan and gen.form_factor (title-derived), gen.product_line (title), pd.protocols (literal
+    maker tokens, not normalised), id.msrp_us (dated price), every status-unknown claim.'
+  audit:
+    by: A1+A2 chargers
+    at: '2026-11-24'
+    evidence: Parsed every stored snapshot of the charger sources; per-key sanity checks (single-port <= total, all-ports <= total, port rows
+      <= port count) and fixtures in tests/test_chargers.py; team/reports/2026-11-24-a12-chargers-matcher.md.
+    parsers:
+      anker_chargers@1: 'sha256:b973d314c48eccc758ab'
+      belkin_chargers@1: 'sha256:2d23c397d44b6d4f9f01'
+      ugreen_chargers@1: 'sha256:c66068f8903dbf47f73e'
+      iniu_chargers@1: 'sha256:c66068f8903dbf47f73e'
+      cuktech_chargers@1: 'sha256:c66068f8903dbf47f73e'
+      satechi_chargers@1: 'sha256:c66068f8903dbf47f73e'
+      mophie_chargers@1: 'sha256:c66068f8903dbf47f73e'
+      aukey_chargers@1: 'sha256:c66068f8903dbf47f73e'
+      hyper_chargers@1: 'sha256:c66068f8903dbf47f73e'
+      nativeunion_chargers@1: 'sha256:c66068f8903dbf47f73e'
+      choetech_chargers@1: 'sha256:c66068f8903dbf47f73e'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [anker_chargers@1, belkin_chargers@1, ugreen_chargers@1, iniu_chargers@1, cuktech_chargers@1, satechi_chargers@1, mophie_chargers@1, aukey_chargers@1, hyper_chargers@1, nativeunion_chargers@1, choetech_chargers@1]
+    source_ids: [anker-us-chargers, belkin-us-chargers, ugreen-us-chargers, iniu-us-chargers, cuktech-us-chargers, satechi-us-chargers, mophie-us-chargers, aukey-us-chargers, hyper-us-chargers, nativeunion-us-chargers, choetech-us-chargers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      anker-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.all_ports_w, out.max_single_port_w, out.max_total_w, out.port_count, out.ports, out.simultaneous, out.usb_a_count, out.usb_c_count, pd.epr, pd.max_fixed_voltage, pd.pps, pd.pps_max_current_a, pd.pps_max_voltage, phys.dimensions, phys.foldable_plug, phys.weight]
+      belkin-us-chargers: [out.port_count, out.rated_w, out.usb_a_count, out.usb_c_count, phys.dimensions]
+      ugreen-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.max_total_w, out.port_count, out.ports, out.rated_w, out.usb_a_count, out.usb_c_count, pd.epr, pd.max_fixed_voltage, pd.pps, pd.pps_max_current_a, pd.pps_max_voltage, phys.dimensions, phys.weight]
+      iniu-us-chargers: [gen.color, out.max_single_port_w, out.ports, pd.max_fixed_voltage]
+      cuktech-us-chargers: [in.rating, in.type, in.voltage_range, out.max_single_port_w, out.port_count, out.ports, out.usb_a_count, out.usb_c_count, pd.max_fixed_voltage, phys.dimensions, phys.weight]
+      satechi-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.ports, phys.foldable_plug, phys.weight]
+      mophie-us-chargers: [out.rated_w]
+      aukey-us-chargers: [gen.color, out.max_single_port_w, out.ports]
+      hyper-us-chargers: [gen.color, out.max_single_port_w, out.ports, out.rated_w]
+      nativeunion-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.ports, pd.max_fixed_voltage, phys.weight]
+      choetech-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.max_total_w, out.ports, pd.max_fixed_voltage, phys.dimensions, phys.weight]
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-chargers-structured@2, reason: 'r7 parser bump (shared _powerbank; _charger PPS rows) + pd.pps for hyper-us-chargers; @1 meaning frozen as locked'}
+- id: rel/bundle-contents@2
+  since: '2026-11-23'
+  supersedes: rel/bundle-contents@1
+  rationale: 'Review 4 fix 1. contains links minted by the shared transform scripts/bundles.py bundles@2, pinned here by fingerprint (audit.parsers
+    bundles@2; a code change is parser drift, fatal under --strict-parsers) and by the link parser "<adapter>@N+bundles@2", which @1 never
+    matches (@1 is inert). Evidence level stated: the manufacturer store listing that itemises the SKU (one listing can mint; several must agree,
+    which is consistency, not independent corroboration). No SKU-digit inference; the page model must be named, a capacity note must equal the
+    page''s own capacity; colour slashes only from a reviewed list; pipe tails kept as unparsed (contents incomplete); both free syntaxes are
+    promotions (dated, never contents); pack words fabricate no component; 0 quantities rejected; exact multisets of member models and full
+    descriptions (plural folding only); one stated market; punctuation-variant, disputed or unparseable SKUs are quarantined in
+    identity_conflicts, never re-attached as aliases.'
+  audit:
+    by: A3-impl r7
+    at: '2026-11-23'
+    evidence: fixtures tests/test_r7.py (rigid/flexible 200W, SKU digit collision, slash/pipe, both free syntaxes, zero counts, conflicting and
+      unparseable observations, regional SKU reuse, punctuation variants; exact multi-model / quantity bundles still pass).
+    parsers:
+      ankersolix_stations@2: sha256:513f8cbc8ed8880ac993
+      bluetti_stations@2: sha256:93f79836f7c8066c46dc
+      ecoflow_stations@2: sha256:93f79836f7c8066c46dc
+      jackery_stations@2: sha256:93f79836f7c8066c46dc
+      dreame_robovac@2: sha256:82418fe203d439831b23
+      narwal_robovac@2: sha256:2f212aa7076aff13a250
+      bundles@2: 'sha256:673c815897604268136d'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+  rules:
+  - method: bundle:ankersolix-us-stations
+    types: [contains]
+    parsers: [ankersolix_stations@2+bundles@2]
+  - method: bundle:bluetti-us-stations
+    types: [contains]
+    parsers: [bluetti_stations@2+bundles@2]
+  - method: bundle:ecoflow-us-stations
+    types: [contains]
+    parsers: [ecoflow_stations@2+bundles@2]
+  - method: bundle:jackery-us-stations
+    types: [contains]
+    parsers: [jackery_stations@2+bundles@2]
+  - method: bundle:dreame-us-robovac
+    types: [contains]
+    parsers: [dreame_robovac@2+bundles@2]
+  - method: bundle:narwal-us-robovac
+    types: [contains]
+    parsers: [narwal_robovac@2+bundles@2]
+  retired: {at: '2026-11-24', superseded_by: rel/bundle-contents@3, reason: 'station extractors bumped @2 -> @3 (r7 shared _powerbank); @2 meaning frozen as locked'}

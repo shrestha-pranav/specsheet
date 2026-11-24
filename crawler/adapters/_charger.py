@@ -352,6 +352,11 @@ def read_rows(pr, adapter, snap, model, title, kind, rows, colors=(), table="spe
             add("pd.protocols", toks, raw, lab)
             if re.search(r"\bPPS\b", raw):
                 add("pd.pps", True, raw, lab, quote="the maker's protocol row names PPS")
+        elif re.match(r"(?:usb-?c|type-?c)\s*\d?\s+(?:charging |supported |fast charging )?protocols?$", ll):     # r7: per-port 'USB-C1 Protocols' (UGREEN 500W)
+            if re.search(r"\bPPS\b", raw):
+                add("pd.pps", True, raw, lab, quote="the maker's USB-C port protocol row names PPS")
+            else:
+                unmapped[lab] = raw[:100]
         elif ll in ("wattage", "power output", "rated output", "rated power", "max power", "power"):
             add("out.rated_w", title_check(title, _w(raw)), raw, lab, quote="maker's single wattage row: total vs single-port not stated")
         elif ll == "technology":
@@ -380,6 +385,9 @@ def read_rows(pr, adapter, snap, model, title, kind, rows, colors=(), table="spe
         single = [p["max_w"] for p in ports if p.get("max_w")]
         add("out.max_single_port_w", max(single) if single else None, lit, "output rows", quote="best single port: largest printed per-port maximum")
         pps = [r for p in ports if p.get("pps") for r in p["pps"].split("; ")]
+        named = [x for x in o.lit if re.search(r"(?i)^(?:USB-?C|Type-?C|C)\s*\d?\b[^;]*\bPPS\b", x)]     # r7: 'USB-C1: 100W Max – PD 3.0 and PPS' (HyperJuice)
+        if not pps and named:
+            add("pd.pps", True, "; ".join(named)[:600], "output rows", quote="a USB-C output row names PPS (no range printed)")
         if pps:
             add("pd.pps", True, lit, "output rows", quote="a PPS/variable range is printed for a port")
             rr = [m for m in (re.match(NUM + r"-" + NUM + r"V " + NUM + r"A", r) for r in pps) if m]

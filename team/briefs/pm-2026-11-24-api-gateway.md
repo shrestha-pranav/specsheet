@@ -1,35 +1,55 @@
-# Brief: api-worker → public gateway, PAYMENTS=off launch mode (PM D2, D3, D4). Owner: api agent (Opus/Sonnet).
-Read team/briefs/common.md, product/decisions.md (D2-D4), api-worker/README.md. Local only: never `wrangler login`,
-`deploy`, or `r2` against a real account. Revenue is on hold pending the owner's legal review: nothing here may
-take a real payment. Wait for the in-flight api-worker scaffold agent to finish before editing.
+# Brief: API Worker for the free L1 launch (PM D2, D3, D4; rewritten PM round 3, 2026-11-24). Owner: api agent (Opus).
+**Changed 2026-11-24 (R3):** supersedes the round-1 brief and its round-2 addendum. Dropped: serving the site shell
+and dataset from R2, the `/v1/*` 302 catch-all, `/v1/presets`, and the per-IP-only limits. The spec is
+`product/decisions.md` D3.4-D3.7 (route matrix, bounds, quota, breaker) and `product/measurement-plan.md` §1-3
+(metrics contract). Where this brief and those differ, decisions.md wins. Ask A5 rather than improvising.
+Read team/briefs/common.md, reviews/2026-11-24-astra-review-5-pm.md (P0-2), api-worker/README.md, src/*.ts.
+Local only: never `wrangler login`, `deploy` or any real-account command. Nothing may take a payment.
 
-1. **Mode switch.** Var `PAYMENTS` = `off` (default, committed) | `on`.
-   off: /v1/query, /v1/match, /v1/changes and MCP tools served free under preview quotas; /v1/bulk/* → 404
-   `{"error":"not_available"}`; no 402 anywhere. on: x402 above free allowances (prices below); fails closed 503
-   without PAY_TO / mainnet config (keep existing resolveX402 behaviour). Tests for both modes + "on without secrets".
-2. **Prices** (src/config.ts): query $0.002, match $0.005, changes $0.01, bulk per category $1.00, bulk all $5.00
-   (add `/v1/bulk/all.jsonl.gz`). Free allowance when on: query 100/day/IP, match 20/day/IP.
-3. **Rate limiting**: Workers Rate Limiting binding, 60 req/min per IP on dynamic routes + MCP; daily 1,000/IP
-   counter (in mode off) via a Durable Object or KV-free approach of your choice (justify cost; Workers Free plan).
-   429 + Retry-After. Static file paths: edge cache only, no per-IP limit.
-4. **Serve the dataset + site from R2/assets**: `/api/v1/*` read from R2 `releases/<current>/...` (current.json
-   pointer, 60 s cache) with Cache API; site shell (docs/index.html, app.js, styles.css, favicon) as Worker static
-   assets at `/`. Keep the 302-to-GH-Pages path as a fallback behind `STATIC_ORIGIN` until cutover. Same object
-   layout A3 uploads (coordinate via team/briefs/pm-2026-11-24-release-r2.md). Root-level `/llms.txt`,
-   `/openapi.json`, `/robots.txt` (disallow /v1/query, /v1/match, /mcp) served by the Worker.
-5. **Metrics**: Analytics Engine dataset `specsheet_requests`: blobs = route, category, status, client class
-   (browser/agent-UA/mcp), mode, would_be_paid; doubles = bytes, ms; cache hit. Never write IP, UA string verbatim,
-   or query text. Add `scripts/metrics-weekly` query example (SQL API) to README, owner runs it.
-6. **Search-miss intake**: `POST /v1/miss` {category, q (normalized, <=120 chars), build} → Analytics Engine
-   `specsheet_misses`; 204; rate-limited; no IP stored. CORS for the site origin only.
-7. **Discovery texts**: llms.txt/OpenAPI say "free preview, quotas may change; paid tier not yet enabled" in mode
-   off; brand name from a `BRAND` var (default "specsheet"; owner domain decision pending: knownspec).
-8. README "Owner deploy steps": exact commands for checklist step 15 and the L2 switch-on (step 23), bucket names
-   `specsheet-data`, `specsheet-raw`, custom domain routes. No secrets in files.
-Done when: `npm test` + typecheck pass, e2e covers mode off/on, miss beacon, 429. No commits. Report
-team/reports/2026-11-24-api-gateway.md (<=60 lines), list shared-file edits.
-
-**Addendum (PM round 2, 2026-11-24):** implement the event table in product/measurement-plan.md in Analytics Engine. That means
-`api_call`, `query` (filter keys only), `match`, `mcp_tool`, `would_be_paid`, `bulk_download`, plus a `POST /v1/event` sink for the
-UI beacons (killer_query, source_click, request_click, spec_unknown_shown) with a strict allowlist of event names and fields, and the
-daily-rotating salted client hash (never stored raw). Put the weekly KPI SQL in `api-worker/scripts/kpi.sql`. Serve `GET /v1/presets` from docs/presets.json.
+1. **Names, one set everywhere.** Vars `PAYMENTS` = `off|on` (default `off`, committed) and `PREVIEW` = `on|off`.
+   Delete `PAID_ENABLED` and `paidEnabled()` with no alias. Prices: `PRICES` in `src/config.ts` with keys `query`,
+   `match`, `changes`, `bulk_category`, `bulk_all` at the D3.3 values, commented "provisional (D3.3)". README route
+   table, OpenAPI, llms.txt, wrangler.jsonc comments and tests use exactly these names. A unit test greps the repo
+   for `PAID_ENABLED` and for any price string not in `PRICES`.
+2. **Route matrix as data.** Write `api-worker/test/route-matrix.json` encoding every D3.5 row: method, path, mode
+   (off / on / on-bad / breaker / preview-off), input case, expected status, error code, `Retry-After` present,
+   listed-in-discovery. One e2e test iterates it. Generate the README route table from it (script) or test that they
+   match. Off-mode rows run against a recording mock facilitator and assert **zero calls and no 402**. Requests
+   carrying `X-PAYMENT` or MCP `_meta["x402/payment"]` in off-mode are served free and the payment is never forwarded.
+3. **Data = query pack.** `scripts/build_r2.py` gains `--tier free|paid` (gate from `scripts/source_policy.py`,
+   A3's licensing-gate brief; coordinate, don't fork the logic). The free pack goes to `api-worker/pack/`
+   (gitignored), served as Worker static assets with `run_worker_first: true` and read via the `ASSETS` binding. The
+   R2 binding is removed from the L1 config (paid mode reads the paid pack the same way until L2 decides
+   otherwise). The pack manifest carries `release`, `policy_version` and checksums. `/health` returns them. Every
+   JSON response includes `release`.
+4. **Match.** Port `scripts/match.py` to `src/match.ts` with parity tests on tests/fixtures (same inputs, same ids
+   and confidence buckets). Until parity passes, `/v1/match` → 404 `not_available` and `match_product` is absent
+   from MCP `tools/list`, OpenAPI and llms.txt. Report which state you landed in.
+5. **Bounds** exactly per D3.6, checked before any data load. Unknown params → 400. Tests for each bound at limit
+   and limit+1.
+6. **Quota and breaker** per D3.7: Rate Limiting binding (60/min/client key), `Budget` Durable Object (SQLite
+   backend) sharded 16 ways by HMAC(client key), in-memory counts flushed by alarm every 60 s, daily 1,000 shared by
+   REST and MCP tool calls (batch of N = N; internal MCP→REST dispatch is not re-counted), separate beacon budgets
+   (miss 30/day, event 200/day). `Retry-After` in seconds to reset. DO failure → binding-only plus a `quota_degraded`
+   point. `Breaker` DO: global daily data-route total, threshold var `BREAKER_DAILY` (default 60000), state cached
+   30 s, 503 `preview_capacity` when tripped. A test forces a low threshold. Key derivation: IPv4 /32, IPv6 /64
+   from `CF-Connecting-IP`.
+7. **Cache.** Canonical cache key = release + route + category + sorted validated params. 300 s for 200s and for
+   404 `not_found`. Cache hits still count against quota.
+8. **Metrics contract** per measurement-plan §1-2: one AE point per request (`specsheet_requests`), fields in that
+   order, the daily salt in the `Breaker` DO (created on first use, deleted at 01:00 UTC next day by alarm), and the
+   redaction function for miss text with unit tests (emails, URLs, phone-like runs, length). Traffic class
+   `test` for header `X-Specsheet-Test: 1`. `POST /v1/event` allowlist and `POST /v1/miss`, both CORS for the site
+   origin only, size-capped. Never write IP, full UA or filter values: a test inspects every written point.
+9. **Load test (local).** `scripts/load-test.mjs` against `wrangler dev`: laptops queries at max filters/limit, and
+   MCP batches. Report p50/p95 wall and CPU (`--inspect` or the CPU time Wrangler reports). If p95 CPU > 5 ms,
+   report it as a Q6 risk with the hot path named.
+10. **Discovery and docs.** OpenAPI/llms.txt list only routes that return data in the current mode, say "free
+    preview, quotas may change, paid tier not enabled", explain the shared NAT budget, and point bulk users to the
+    static files on Pages. README "Owner deploy steps" = checklist step 15 exact commands (workers.dev, no R2 at L1)
+    and the L2 steps marked "after legal review". `scripts/kpi.sql` + `scripts/kpi.sh` (reads the token from a
+    chmod-600 file materialized from `pass specsheet/cf-analytics-read`, writes `state/metrics/<week>.csv`) produce
+    each measurement-plan §3 row.
+Done when: `npm test` + typecheck pass; the route-matrix e2e covers every row in all modes; bounds, quota (REST+MCP
+shared), breaker, miss/event, redaction and no-PII-written tests pass; load test reported. No commits. Report
+team/reports/2026-11-24-api-gateway.md (<=60 lines), listing shared-file edits.

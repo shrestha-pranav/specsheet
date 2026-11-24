@@ -8,3 +8,8 @@ Role: retailer data = aliases, MPN candidates, prices, availability; never prima
 - Dell.com / Lenovo.com / HP.com / Samsung.com / LG.com: manufacturer stores, treat as manufacturer sources (pricing = merchant observation).
 - PCPartPicker (aggregator): lists model + panel type + part numbers; useful secondary for size/refresh sanity, tier = aggregator.
 - Open question for coordinator: Best Buy API key (free) is the single cheapest way to bulk-attach US MPN/UPC to model numbers.
+
+## Maker-site access, A2 coverage r2 (2026-11-24; one polite GET each, crawler UA)
+- **MSI (www.msi.com): BLOCKED** (Akamai "Access Denied" 403, robots.txt included). Not retried.
+- BenQ US (/en-us/monitor.html) 200, robots allows; Dell US /apd/ monitor pages 200 (3.7 MB, no server-rendered tech-spec block: specs load
+  client-side). No adapter built this round for either.
