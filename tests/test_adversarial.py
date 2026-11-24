@@ -116,7 +116,8 @@ class Governance(unittest.TestCase):
             f, v = fam(p["id"])
             newer = [a for a in active if fam(a)[0] == f and fam(a)[1] > v]
             self.assertTrue(newer or p.get("retired"), f"{p['id']} retired without successor or reason")
-        self.assertIn("claim/mfr-routers-structured@2", [p["id"] for p in dec.claim_policies], "edited router policy re-issued")
+        self.assertTrue(any(fam(p["id"])[0] == "claim/mfr-routers-structured" and fam(p["id"])[1] >= 2 for p in dec.claim_policies),
+                        "edited router policy re-issued (@2 or a later reissue)")
         import registry
         cur = {v["parser"]: v["fingerprint"] for v in (registry.parser_info(s) for s in registry.SOURCES) if v["parser"]}
         self.assertEqual(dec.parser_drift(cur), [], "audited parser fingerprints match the code")

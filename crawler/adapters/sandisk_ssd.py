@@ -29,7 +29,7 @@ import _lt as L
 import _ssdprose as SP
 import _run
 
-ID, VERSION, SOURCE = "sandisk_ssd", 4, "sandisk-us-ssd"
+ID, VERSION, SOURCE = "sandisk_ssd", 5, "sandisk-us-ssd"
 CATEGORIES = {"ssds"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.sandisk.com"
@@ -82,6 +82,8 @@ def parse_html(snap, h):
     pr, obs = C.ParseResult(), snap.fetched_at
     pr.sources = [L.source(snap, "SanDisk/WD US product page " + snap.ref.key)]
     titles = dict(re.findall(r'class="product-title[^"]*" data-sku="([^"]+)" data-sku-title="([^"]*)"', h))
+    og = re.search(r'<meta[^>]+property="og:title"[^>]+content="([^"]*)"', h)
+    og = S.clean(re.sub(r"\s*\|\s*Sandisk\s*$", "", og[1])) if og else ""
     h1 = re.search(r"<h1[^>]*pdp-product-title[^>]*>(.*?)<span", h, re.S)
     line = S.clean(h1[1]) if h1 else snap.ref.key
     i0 = h.find('id="product-specifications"')
@@ -133,6 +135,7 @@ def parse_html(snap, h):
         if (v := get("Interface")):
             if ext or re.search(r"USB|thunderbolt", v, re.I):
                 add("if.usb_standard", S.usb(v), v, "Interface")
+                add("if.protocol", S.usb_protocol(v), v, "Interface")      # v5: affirmative USB interface only (ruling 4)
             elif re.search(r"SATA", v, re.I):
                 add("if.protocol", "sata_ahci", v, "Interface")
             else:
@@ -167,6 +170,12 @@ def parse_html(snap, h):
             add("if.protocol", "nvme", v, "Protocol")
         if not any(c["key"] == "perf.seq_read" and c["locator"].get("sku") == part for c in pr.claims) and (v := get("Transfer Rate")) and (mm := re.search(r"up to\s*([\d,.]+\s*(?:GB|MB)/s)", v, re.I)):
             add("perf.seq_read", S.speed_mbs(mm[1]), v, "Transfer Rate")
+        if not ext and not any(c["key"] == "if.protocol" and c["locator"].get("sku") == part for c in pr.claims):
+            for t in (S.clean(titles.get(sku) or ""), og):    # v5: the maker's own product name ('WD Blue SN5100 NVMe SSD - 500GB', 'WD Green SATA SSD')
+                pn = {x.upper() for x in re.findall(r"\bNVMe\b|\bSATA\b", t, re.I)}
+                if len(pn) == 1:                                # SKU title first, then the page title; a name naming both says nothing
+                    add("if.protocol", "nvme" if pn == {"NVME"} else "sata_ahci", t, "Product name")
+                    break
         have = {c["key"] for c in pr.claims if c["locator"].get("sku") == part}
         for k, (v, q) in prose["claims"].items():          # v3: explicit page-prose statements, only where the spec table is silent
             if k not in have:

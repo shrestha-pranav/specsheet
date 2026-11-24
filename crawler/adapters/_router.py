@@ -6,6 +6,8 @@ Keys follow research/routers/spec-profile.yaml. A value is only returned when th
 """
 import html, re
 
+import _contract as C
+
 SEG = re.compile(r"(?=(?<![\d.])(?:2\.4|5|6)\s*G\s?Hz)")
 RATE = re.compile(r"(\d[\d,]*\.?\d*)\s*(Mbps|Gbps)", re.I)
 
@@ -64,6 +66,47 @@ def per_band(t):
         if w and "width" not in d:
             d["width"] = max(int(x) for ws in w for x in ws.split("/"))
     return out
+
+
+BAND_TOK = re.compile(r"(?<![\d.])(2\.4|5|6)\s*G\s?Hz(?:\s*-\s*([12]))?", re.I)
+NEG = {"basis": "complete_enumeration"}     # profile condition: a 'no' read off a complete maker list (coordinator ruling 1, 2026-11-24)
+
+
+def band_enum(t, count=None):
+    """has_6ghz from ONE maker band-list cell: True when it names 6 GHz; False only when the cell is a complete enumeration
+    (every GHz figure in it is a band token, it names both 2.4 and 5 GHz, no 'up to' / 'or' / 'optional' hedge, and when the maker
+    states a band count (Dual/Tri/Quad) the distinct radios listed equal it); otherwise None (unknown)."""
+    t = t or ""
+    toks = [(m[1], m[2]) for m in BAND_TOK.finditer(t)]
+    base = {{"2.4": "24", "5": "5", "6": "6"}[b] for b, _ in toks}
+    if "6" in base:
+        return True
+    if not toks or re.search(r"\bup\s*to\b|\bor\b|optional|select|\bonly\b", t, re.I):
+        return None
+    if len(re.findall(r"G\s?Hz", t, re.I)) != len(toks) or not {"24", "5"} <= base:
+        return None
+    if count is not None and len(set(toks)) != count:
+        return None
+    return False
+
+
+def rates_cover_class(pb, cls):
+    """True when a per-band rate list sums to the class number (BE3600 = 2882 + 688, within 3 %): no radio is missing from the list."""
+    m = re.search(r"(\d{3,5})$", cls or "")
+    rates = [d.get("rate") for d in (pb or {}).values()]
+    if not m or len(rates) < 2 or any(r is None for r in rates):
+        return False
+    n = int(m[1])
+    return abs(sum(rates) - n) <= 0.03 * n
+
+
+def add_6ghz(pr, adapter, snap, has6, raw, loc_kind, loc_val, label):
+    """One wifi.has_6ghz claim: True plain, False with the complete_enumeration basis and the list kept as raw."""
+    if has6 is None:
+        return
+    raw = raw if isinstance(raw, str) else " | ".join(raw)
+    pr.claims.append(C.claim(loc_val, "wifi.has_6ghz", has6, None, raw, "s1", adapter, "adapter", snap.fetched_at,
+                             locator={loc_kind: loc_val, "label": label}, conditions=None if has6 else dict(NEG)))
 
 
 def memory(t):

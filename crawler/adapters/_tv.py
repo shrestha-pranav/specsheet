@@ -117,6 +117,8 @@ def hdmi_count(v):
 
 HDR_TOKENS = [("dolby_vision", r"dolby\s*vis(?:i)?on"), ("hdr10plus", r"hdr\s*10\s*(?:\+|plus)"), ("hdr10", r"hdr\s*10(?!\s*(?:\+|plus))"),
               ("hlg", r"\bhlg\b"), ("advanced_hdr", r"advanced\s*hdr")]
+# A1 ruling 2 value table (research/tvs/spec-profile.yaml panel.display_tech `backlight_table`): whole-cell Backlight Type values -> lcd.
+BACKLIGHT_LCD = (r"(?:active )?full[- ]?array(?: led)?", r"mini[- ]?led", r"edge(?:[- ]lit)?(?: led)?", r"direct(?:[- ]lit)?(?: led)?")
 FREESYNC = {"freesync": "freesync", "compatible": "freesync", "yes": "freesync", "freesync premium": "freesync_premium",
             "freesync premium pro": "freesync_premium_pro"}
 
@@ -177,9 +179,15 @@ def emit(pr, brand, model, rows, adapter, stage, obs):
         if re.fullmatch(r"backlight type|mini-led / local dimming type|led technology|contrast|display technology", k, re.I):
             lv = v.lower()
             b = ("rgb_mini_led" if re.search(r"rgb", lv) and re.search(r"mini|micro", lv) else "mini_led" if re.search(r"mini ?-?led", lv)
-                 else "edge_led" if re.search(r"\bedge\b", lv) else "direct_led" if re.search(r"^direct\b|\bdirect led\b", lv) else None)
+                 else "edge_led" if re.search(r"\bedge\b", lv) else "direct_led" if re.search(r"^direct\b|\bdirect led\b", lv)
+                 else "direct_led" if re.fullmatch(r"(?:active )?full[- ]?array(?: led)?", lv) else None)
             if b and "panel.backlight" not in keys:
                 add("panel.backlight", b, k)
+            # A1 ruling 2 (2026-11-24): a 'Backlight Type' row whose WHOLE value is in BACKLIGHT_LCD names an LED backlight, and a backlit
+            # panel is an LCD. Only when no display-type row resolved the technology; any other value (DLED, Local Dimming...) says nothing.
+            if (k.lower() == "backlight type" and tech is None and "panel.display_tech" not in keys
+                    and any(re.fullmatch(rx, lv) for rx in BACKLIGHT_LCD)):
+                add("panel.display_tech", "lcd", k)
     for k, v in rows.items():
         if re.fullmatch(r"led technology|display technology|mini-led / local dimming type", k, re.I) and re.search(r"quantum|\bqd\b|\bqd-|^s?qd", v, re.I):
             add("panel.quantum_dot", True, k)
@@ -264,6 +272,10 @@ def emit(pr, brand, model, rows, adapter, stage, obs):
         if kk and (n := hdmi_4k120(vv)) is not None:
             add("hdmi.ports_4k120", n, kk)
             break
+    if "hdmi.ports_4k120" not in keys:          # LG 'Latest HDMI (4K @ 120Hz): HDMI ports 3,4' = an explicit list of the 4K 120 Hz ports
+        kk, vv = find(rows, r"latest hdmi \(4k ?@ ?120 ?hz\)")
+        if kk and (m := re.fullmatch(r"HDMI(?:\s*ports?)?\s*((?:\d\s*(?:,|&|and|/)?\s*)+)", vv, re.I)):
+            add("hdmi.ports_4k120", len(set(re.findall(r"\d", m.group(1)))), kk)
     k, v = find(rows, r"hdmi maximum input rate")
     if k:
         add("hdmi.max_input", v[:60], k)

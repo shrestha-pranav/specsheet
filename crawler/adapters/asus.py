@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ASUS (US) adapter v1, contract ARCHITECTURE 15.5.
+"""ASUS (US) adapter v2 (v2: mem.max / mem.soldered from the Memory cell text, memory_facts), contract ARCHITECTURE 15.5.
 
 discover : odinapi SeriesFilterResult (the list API the asus.com/us laptop finder uses), PageSize=300 -> 280 rows =
            122 series pages (www.asus.com) + 158 per-CONFIG rows (rog.asus.com; PartNo + SalesModelName like G835LXG-DB96)
@@ -27,6 +27,42 @@ LABELMAP = {"Processor": "cpu.model", "Graphics": "gpu.model", "Neural Processor
             "Display": "disp.size", "Operating System": "sw.os", "Color": "id.color", "Weight": "phys.weight", "Dimensions (W x D x H)": "phys.dimensions",
             "Battery": "pwr.battery_wh", "Power Supply": "pwr.charger_w", "Wi-Fi": "wl.wifi", "Wireless": "wl.wifi", "Camera": "in.webcam",
             "Keyboard": "in.kb_layout", "Security": "in.tpm", "Audio": "in.speakers", "I/O Ports": "port.usbc_list", "Card Reader": "port.card_reader"}
+MAXCAP = re.compile(r"(?:Max(?:imum)? Capacity|Memory Max Up to|Max Total system memory up to)\s*:?\s*(\d+)\s*GB", re.I)
+ONBOARD = re.compile(r"\b(\d+)\s*GB(?:\s*\*\s*(\d))?\s+(?:LP)?DDR\d[A-Z]?(?:[- ]?\d{4})?\s+(?:Memory\s+)?on\s*(?:board|package)\b", re.I)
+DIMM = re.compile(r"SO-?DIMM", re.I)
+
+
+def memory_facts(opts):
+    """ASUS Memory cell options (one per config of a model code) -> {"mem.max": GB, "mem.soldered": enum} (v2), only what the text states.
+    mem.max: each option's own "Max Capacity:N GB" / "Memory Max Up to:N GB" / "Max Total system memory up to:N GB"; every option must state one
+    and they must agree. mem.soldered per option: "on board"/"on package" memory (one amount) and no SO-DIMM anywhere = soldered, but only when the option also says
+    "No expansion possible" or its stated max equals the on-board amount (else a free slot is possible: unknown); SO-DIMM and no on-board =
+    socketed; both = mixed. Options must agree. A cell with neither phrase says nothing (" - Max Capacity:64GB" gives the max only)."""
+    out, maxes, sold = {}, set(), set()
+    for o in [x for x in opts if not x.lstrip().startswith("*")]:     # "*Dual-channel ... requires ..." alone is a footnote, not a config
+        m = {int(x) for x in MAXCAP.findall(o)}
+        ob = ONBOARD.findall(o)
+        if len(ob) > 1:              # two on-board amounts in one option = two configs run together: says nothing
+            maxes.add(None); sold.add(None); continue
+        maxes.add(m.pop() if len(m) == 1 else None)
+        dimm = bool(DIMM.search(o))
+        if ob and dimm:
+            sold.add("mixed")
+        elif dimm:
+            sold.add("socketed")
+        elif len(ob) == 1:
+            amt = int(ob[0][0]) * int(ob[0][1] or 1)
+            stated = MAXCAP.findall(o)
+            sold.add("soldered" if re.search(r"No expansion possible", o, re.I) or (len(set(stated)) == 1 and int(stated[0]) == amt) else None)
+        else:
+            sold.add(None)
+    if len(maxes) == 1 and None not in maxes:
+        out["mem.max"] = maxes.pop()
+    if len(sold) == 1 and None not in sold:
+        out["mem.soldered"] = sold.pop()
+    return out
+
+
 TXT = lambda s: re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", s))).strip()
 
 
@@ -48,7 +84,7 @@ def parse_table(t):
 
 
 class Asus:
-    id, version, source_id, categories = "asus", 1, "asus-us", {"laptops"}
+    id, version, source_id, categories = "asus", 2, "asus-us", {"laptops"}
 
     def __init__(self):
         self.store = C.BlobStore(self.source_id)
@@ -96,6 +132,10 @@ class Asus:
                         opts = cells[i]
                         pr.claims.append(C.claim(code, key, opts if len(opts) > 1 else opts[0], None, " | ".join(opts), "s1", f"{self.id}@{self.version}",
                                                  "adapter", obs, locator={"model_code": code, "label": label}))
+                        if label == "Memory":
+                            for k2, v2 in memory_facts(opts).items():
+                                pr.claims.append(C.claim(code, k2, v2, "GB" if k2 == "mem.max" else None, " | ".join(opts), "s1", f"{self.id}@{self.version}",
+                                                         "adapter", obs, locator={"model_code": code, "label": label}, quote=" | ".join(opts)))
             pr.fingerprints["model_codes"] = len(codes)
         nvar = 0
         for cfg in snap.ref.hints.get("configs", []):  # ROG list rows (hints are cheap but come from the official list API)
@@ -123,6 +163,10 @@ class Asus:
                         if key and p.get("value"):
                             pr.claims.append(C.claim(sku, key, p["value"], None, p["value"], "s1", f"{self.id}@{self.version}", "adapter", obs,
                                                      locator={"sku": sku, "label": p["name"]}))
+                            if key == "mem.size":
+                                for k2, v2 in memory_facts([p["value"]]).items():
+                                    pr.claims.append(C.claim(sku, k2, v2, "GB" if k2 == "mem.max" else None, p["value"], "s1", f"{self.id}@{self.version}",
+                                                             "adapter", obs, locator={"sku": sku, "label": p["name"]}, quote=p["value"]))
         pr.fingerprints["variants"] = nvar
         if not codes and not nvar:
             pr.absences.append({"key": "id.mpn", "status": "not_published", "source": "s1", "checked_at": obs})

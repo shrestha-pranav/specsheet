@@ -46,3 +46,17 @@ label date code, NAND part). Official sources rarely carry these; reviewers/tear
   hw.hmb_support stays unknown, never assumed): SN7100S 16, SN7100 4, SN7100X 2 configurations (_ssdprose, sandisk_ssd@4). Open: `_ssd.dram()`
   still maps a TABLE cell "DRAM-less"/"None" to dramless_none, which assumes "no HMB"; switching it to `dramless` would touch every SSD parser.
 - Kingston NV2 / NV1 / A2000 older datasheets now parse (kingston_ssd@2). NV2/NV1 print NAND "3D" only and no DRAM row, so those stay unknown.
+
+## Preset fill (A2, 2026-11-24): coordinator rulings 4 and 5
+- Ruling 5 (`_ssd.dram()`, every SSD parser bumped: samsung_ssd@3, sandisk_ssd@5, teamgroup_ssd@5, kingston_ssd@3): a TABLE cell reading
+  "DRAM-less" / "None" / "No" = `dramless` (HMB unknown). `dramless_none` only when the cell explicitly denies HMB ("no HMB", "HMB: No").
+  A cell naming HMB affirmatively = `dramless_hmb` (Samsung 990 EVO / 990 EVO Plus "Cache Memory: HMB (Host Memory Buffer)", 7 SKUs).
+  TEAMGROUP "DRAM Cache: NO" (122 configurations) moves dramless_none -> dramless. Kingston "DRAM cache: No" would read the same (none printed today).
+- Ruling 4 (portable `if.protocol`, affirmative only): new enum value `usb` (USB-attached; UASP/BOT not stated). Written only when the maker's
+  interface cell names a USB 2/3.x interface; `usb_uasp` only if it says UASP. Thunderbolt or USB4 cells (PCIe may be tunnelled), connector-only
+  cells (TEAMGROUP M200 "Connector: USB Type-C") and portables with no interface row (SanDisk Extreme Portable V3 etc.) stay unknown. Never not_applicable.
+- Internal drives with no Interface row: nvme / sata_ahci from the maker's own product name when it states exactly one (SanDisk SKU title, else
+  og:title: SN8100, SN5100, SN7100S, NAS 800, Optimus GX PRO 850P, WD Green SATA; Samsung JSON-LD name "... SSD NVMe™ M.2" for 990 PRO/990 EVO).
+  _ssd.interface() now reads "PCIe® 5.0 x4" (the ® broke the regex: Samsung 9100 PRO, 980 PRO gen/lanes/protocol).
+- Not done: SanDisk NVMe DRAM beyond the prose already read (no datasheet PDFs are linked from the crawled pages, and documents.sandisk.com has
+  no data/source-policy.yaml entry); Kingston NV3/NV2/NV1 datasheets print no DRAM row.

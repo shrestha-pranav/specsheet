@@ -10,14 +10,19 @@ Traps    : flk.pwm is written ONLY from an affirmative 'Flicker-free Technology:
            TUV flicker-free may be tested at default brightness only). 'No', a blank or silence writes nothing. usb.usbc_pd_w only from a row that
            names USB-C (or Thunderbolt) power delivery with a single wattage; two figures (e.g. 'up to 90W / 65W') write nothing. Refresh 'Refresh
            Rate (Hz)' may carry several modes ('165 (DP), 144 (HDMI)'): the maximum stated is res.refresh_max. Panel 'IPS'/'VA'/'TN'/'OLED' only.
+v2 (2026-11-24, preset fill): usb.usbc_inputs from the Connectivity section (one row per port type with its count): USB-C/Thunderbolt rows
+  naming DP Alt Mode / Thunderbolt and not downstream/out/data-only; 0 only as a complete enumeration (condition basis=complete_enumeration).
+  gen.size_class: a whole-inch 'Screen Size' stays the stated class; a fractional one (23.8") is the panel diagonal, so the class is derived
+  (kind derived, round half up, _monports.DERIVATION) instead of publishing 23.8 as a class.
 """
 import gzip, html, re, sys, time
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 import _contract as C
 import _run
+import _monports as MP
 
-ID, VERSION, SOURCE = "benq_monitors", 1, "benq-us-monitors"
+ID, VERSION, SOURCE = "benq_monitors", 2, "benq-us-monitors"
 CATEGORIES = {"monitors"}
 ADAPTER = f"{ID}@{VERSION}"
 SITEMAP = "https://www.benq.com/en-us/sitemap.xml"
@@ -129,7 +134,33 @@ def parse_html(snap, h):
         add("res.width_px", int(m[1]), lab); add("res.height_px", int(m[2]), lab)
     sz = get("Screen Size")
     if sz and (m := re.fullmatch(r"\s*(\d{2}(?:\.\d)?)\s*(?:inch|\")\s*", sz)):
-        add("gen.size_class", float(m[1]) if "." in m[1] else int(m[1]), "Screen Size")
+        if "." in m[1] and not m[1].endswith(".0"):
+            add("gen.size_class", MP.size_class(m[1]), "Screen Size")
+            pr.claims[-1]["kind"] = "derived"
+            pr.claims[-1]["locator"]["derivation"] = MP.DERIVATION
+        else:
+            add("gen.size_class", int(float(m[1])), "Screen Size")
+    conn = [(n, d) for c, n, d in rows if re.match(r"(?i)connectivity", c)]
+    if conn:
+        lines, amb = [], False
+        for n, d in conn:
+            dv = (d or "").strip()
+            if re.fullmatch(r"(?i)no|none|-|n/a|0", dv):
+                continue
+            if re.fullmatch(r"\d{1,2}", dv):
+                lines.append(f"{dv}x {n}")
+            elif MP.classify(n) == "input":
+                amb = True                  # a USB-C input row without a count ('Yes'): how many is not stated
+            else:
+                lines.append(n)
+        n_in, zero = (None, False) if amb else MP.count_inputs(lines)
+        if zero and any(MP.CPORT.search(f"{n} {d}") for c, n, d in rows if not re.match(r"(?i)connectivity", c)):
+            n_in, zero = None, False        # USB-C named outside the port section (PD row, accessory cable): not provably complete
+        if n_in is not None:
+            raw = "Connectivity: " + " | ".join(f"{n}: {d}" for n, d in conn)
+            pr.claims.append(C.claim(model, "usb.usbc_inputs", n_in, None, raw, "s1", ADAPTER, "adapter", snap.fetched_at,
+                                     locator={"model_code": model, "label": "Connectivity"}, quote=raw,
+                                     conditions={"basis": "complete_enumeration"} if zero else None))
     # USB-C power delivery: (a) the 'Power Delivery(USB C / Thunderbolt )' row with ONE figure ('90', '90W'); (b) an upstream port label
     # 'USB C(PowerDelivery 65W, DisplayPort Alt Mode, Data)'. Downstream 'power charging 7.5W' never counts; two different figures write nothing.
     ws = {}

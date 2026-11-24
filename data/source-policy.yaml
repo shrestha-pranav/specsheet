@@ -14,8 +14,9 @@
 # Invariants enforced by the gate: licence_grant yes => free yes; paid yes => licence_grant yes.
 # Changing any disposition = bump policy_version (date.N), add a changelog line. Builds stamp the version into
 # manifest.json; a release refuses to promote with a policy version older than the one in git.
-policy_version: "2026-11-24.4"
+policy_version: "2026-11-24.5"
 changelog:
+  - {version: "2026-11-24.5", by: coordinator, note: "Added documents.sandisk.com (SanDisk datasheet host) with maker default disposition."}
   - {version: "2026-11-24.4", by: A2, note: "Added techspecs.ui.com (Ubiquiti, ubiquiti-us-routers), www.gl-inet.com (GL.iNet, glinet-us-routers) and www.benq.com (BenQ, benq-us-monitors), new maker sources of coverage r3. Same disposition as the other unaudited makers: free yes, paid no, no licence grant."}
   - {version: "2026-11-24.3", by: coordinator, note: "Added 12 maker domains cited by new adapters (dell, byjasco, microsoft x2, razer, support.apple, baseus, furmanpower, austere, plugable, nekteck) plus images.salsify.com (maker document CDN). Same disposition as other unaudited makers: free yes, paid no, no licence grant."}
   - {version: "2026-11-24.2", by: A2, note: "Added www.kingston.com (Kingston datasheet PDFs, new source kingston-us-ssd) with the same disposition as the other SSD makers (free yes, paid no, no licence grant)."}
@@ -139,3 +140,4 @@ sources:
   - {domain: plugable.com, match: exact, kind: maker, credit: "Plugable official product pages", categories: [chargers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: www.nekteck.com, match: exact, kind: maker, credit: "Nekteck official product pages", categories: [chargers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: images.salsify.com, match: exact, kind: maker, credit: "Maker document CDN (spec sheets/manuals linked as documents)", categories: [power-strips, chargers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: documents.sandisk.com, match: exact, kind: maker, credit: "SanDisk official datasheets", categories: [ssds], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}

@@ -20,7 +20,7 @@ import _contract as C
 import _tv as T
 import _run
 
-ID, VERSION, SOURCE = "tcl_tvs", 1, "tcl-us-tvs"
+ID, VERSION, SOURCE = "tcl_tvs", 2, "tcl-us-tvs"
 CATEGORIES = {"tvs"}
 ADAPTER = f"{ID}@{VERSION}"
 DELAY = 1.0

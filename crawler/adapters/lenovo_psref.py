@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lenovo PSREF adapter v2 (contract: ARCHITECTURE 15.5). Official, structured, per-MTM specs.
+"""Lenovo PSREF adapter v3 (v3: platform-labelled Max Memory cells, see max_memory) (contract: ARCHITECTURE 15.5). Official, structured, per-MTM specs.
 
 PSREF is a SPA over a JSON API. The API wants a short-lived anonymous JWT that the site issues to every
 browser (POST /api/home/auth/issue, Origin+Referer set); no login/CAPTCHA; robots.txt is 404.
@@ -30,12 +30,38 @@ COLMAP = {"Processor": "cpu.model", "NPU": "cpu.npu_tops", "Graphics": "gpu.mode
           "Operating System": "sw.os", "Base Warranty": "sw.warranty", "Case Color": "id.color", "Country/Region": "id.region"}
 
 
+PLATFORM = re.compile(r"^([A-Z][A-Za-z0-9 ,-]*?):\s*(?=\S)")       # "Arrow Lake: up to 64GB ..." / "Models with Non-ECC memory: Up to 192GB ..."
+ECC = re.compile(r"^Models with (Non-ECC|ECC) memory$")
+
+
+def max_memory(v, row):
+    """PSREF Max Memory cell of ONE MTM row -> the value to normalise (v3). Newer PSREF layouts prefix the MTM's own cell with the platform
+    it applies to ("Lunar Lake: 32GB soldered memory, not upgradable"): the row is already this MTM's, so the label is dropped (raw keeps it).
+    A cell listing several variants (sep "^|^") is resolved only by the ECC/Non-ECC split, read from this MTM's own Memory cell; any other
+    multi-variant cell, or an ECC split the Memory cell does not settle, stays the literal (it does not normalise: unknown, never a guess)."""
+    parts = [x.strip() for x in v.split("^|^") if x.strip()]
+    if len(parts) == 1:
+        m = PLATFORM.match(parts[0])
+        return parts[0][m.end():] if m and not re.search(r"\d\s*GB", m.group(1), re.I) else parts[0]
+    mem = row.get("Memory") or ""
+    want = "Non-ECC" if re.search(r"\bNon-ECC\b", mem) else ("ECC" if re.search(r"(?<!Non-)\bECC\b", mem) else None)
+    hit = []
+    for x in parts:
+        m = PLATFORM.match(x)
+        e = ECC.match(m.group(1)) if m else None
+        if not e:
+            return v
+        if e.group(1) == want:
+            hit.append(x[m.end():])
+    return hit[0] if want and len(hit) == 1 else v
+
+
 def mtm_region(m):
     return m[-2:] if len(m) == 10 else None
 
 
 class LenovoPsref:
-    id, version, source_id, categories = "lenovo_psref", 2, "lenovo-psref", {"laptops"}
+    id, version, source_id, categories = "lenovo_psref", 3, "lenovo-psref", {"laptops"}
 
     def __init__(self):
         self.store = C.BlobStore(self.source_id)
@@ -140,7 +166,7 @@ class LenovoPsref:
             for col, key in COLMAP.items():
                 v = (m.get(col) or "").strip()
                 if v:
-                    c = C.claim(mtm, key, v, None, v, "s1", f"{self.id}@{self.version}", "adapter", obs, locator={"mtm": mtm, "column": col})
+                    c = C.claim(mtm, key, max_memory(v, m) if col == "Max Memory" else v, None, v, "s1", f"{self.id}@{self.version}", "adapter", obs, locator={"mtm": mtm, "column": col})
                     pr.claims.append(c)
         for mt in sorted(x for x in mts if x):
             pr.identifiers.append({"scheme": "x_lenovo_machine_type", "value": mt, "value_raw": mt, "issuer": "lenovo", "package_level": "model", "sources": ["s1"]})

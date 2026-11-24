@@ -133,6 +133,13 @@ conditions:
 - id: cts_version
   label: DisplayHDR CTS version
   type: text
+- id: basis
+  label: Evidence basis of a negative / zero value
+  type: enum
+  enum:
+  - complete_enumeration
+  description: 'Coordinator ruling 1 (2026-11-24): a 0 / false written only because the maker''s own structured spec section enumerates
+    every port of that kind (the full input list) and the feature is not among them. The list is kept as raw.'
 groups:
 - id: general
   label: General & identity
@@ -208,6 +215,12 @@ specs:
   - Manufacturer spec page
   example: 27
   identity_role: model_defining
+  note: 'Coordinator ruling 3 (2026-11-24): the class the maker prints is taken as stated (LG "22\" Class (21.5\" diagonal)" -> 22, Lenovo
+    "Display Size", BenQ whole-inch "Screen Size"). Where only the panel / viewable diagonal is printed (ASUS "Panel Size (inch)", LG "Screen
+    Size", BenQ "23.8\""), the class is derived by one deterministic rule, round half up to the whole inch (23.8 -> 24, 31.5 -> 32, 26.5 -> 27,
+    21.45 -> 21): kind derived, locator.derivation size_class_round_half_up@1 (crawler/adapters/_monports.py), the stated diagonal as raw.
+    A stated class always outranks the derived one (official > derived). LG itself prints 23.5" as a 23 class, so the derived class can
+    differ from a maker''s own rounding by one inch near .5.'
 - key: gen.viewable_diag
   label: Viewable diagonal
   group: general
@@ -1414,9 +1427,23 @@ specs:
   facet: true
   why: Single-cable laptops
   level: model
+  conditions:
+  - basis
+  basis_conditions:
+  - basis
+  traps:
+  - Downstream / charging-only / data-only USB-C ports (hub ports, 'USB-C Upstream, Data only') are not video inputs
+  - '"2x Thunderbolt 4 (Daisy Chain)" or "one upstream, one downstream": which port is the input is unstated, so no count'
+  - A spec table without a USB-C row is not proof of no USB-C unless the table is the maker's full port list (ruling 1)
   sources:
-  - Manufacturer spec page
+  - Manufacturer spec page (full port list)
   example: 1
+  note: 'Count of USB-C / Thunderbolt / USB4 ports the maker lists as taking video from the computer (DP Alt Mode, DisplayPort, Thunderbolt;
+    not downstream/out/data-only). A USB-C line whose role is unstated writes nothing. Coordinator ruling 1 (2026-11-24): 0 is written only
+    when the maker''s own structured port section (ASUS I/O Ports list, Lenovo PSREF port lists, BenQ Connectivity, LG Input/Output group)
+    enumerates every port, names at least one video input, and no USB-C port on the page is a video input; it carries
+    {basis: complete_enumeration} and the list as raw. USB-C named anywhere else on the page (an accessory cable, a signal-frequency row)
+    voids the zero. Prose, marketing bullets, partial tables and missing sections never give 0.'
 - key: usb.usbc_pd_w
   label: USB-C upstream PD power
   group: usbc

@@ -96,6 +96,14 @@ conditions:
   enum: [rated, typical]
   description: 'r7 (A2 2026-11-24): basis of a cap.energy_wh figure when the maker prints a typical/rated PAIR and labels each one. Set only from the
     printed label; a single unlabelled figure carries no condition, and an unlabelled pair stays an unresolved preview claim.'
+- id: basis
+  label: Value basis
+  type: enum
+  enum: [complete_enumeration]
+  description: 'A1 ruling 1 (coordinator, 2026-11-24): a negative (pd.pps false) is written ONLY when the maker''s own structured spec section
+    prints a complete list for the unit (every output port with its protocol list) and none names the feature. The claim carries
+    basis=complete_enumeration and keeps that list as raw. Prose, marketing bullets, partial tables, ''etc.'' lists, PDO-only lists and missing
+    rows never produce a negative.'
 groups:
 - id: general
   label: General & identity
@@ -353,8 +361,14 @@ specs:
     kind: range
     bins: [20, 30, 45, 65, 100, 140]
     column: true
+  traps:
+  - 'A2 preset fill (2026-11-24): only a figure the maker labels single-port (Belkin ''140W Single 158W Shared'', ''Maximum single USB-C output'',
+    ''up to 65W from a single USB-C port'') or the max of a per-port list where every entry names one port (mophie ''1 USB-C Port - 100W1 USB-C
+    Port - 45W...''). ''2 USB-C Ports - 45W'', ''USB-C Cable and Port: 20W'' and a bare ''Wattage: 45W'' do not say per-port vs shared: nothing.
+    Never V x A from the highest PDO.'
   sources:
   - Per-port '(100W Max)' in the PDO list
+  - Belkin Technical Specifications 'Wattage' / 'Output' cells and At a Glance single-port lines; mophie 'Output' per-port list
   example: 100
 - key: out.ports
   label: Port table (PDOs)
@@ -491,10 +505,16 @@ specs:
   level: model
   facet:
     kind: enum
+  basis_conditions: [basis]
   traps:
   - A '3-11V' range on a USB-A port is QC/proprietary, not PPS
+  - 'A1 ruling 1 (2026-11-24): false only from a complete per-port protocol enumeration (UGREEN ''Support Protocol ... Output: USB-C1/C2: PD3.0/...
+    USB-A: QC3.0/...'' with the printed ''Ports USB-A*1 USB-C*2'' inventory), carried as basis=complete_enumeration. A fixed-PDO list is NOT a
+    protocol list (Anker Prime pages print fixed PDOs only), ''etc.'' lists are open-ended, and a maker that never prints PPS (Belkin, mophie) stays unknown'
+  - 'The site-wide ''PPS'' strings on anker.com (US_PPS_collection, PPS Signup) are marketing-campaign ids, not the protocol'
   sources:
   - Per-port PDO list
+  - Per-port protocol list (UGREEN Support Protocol, Anker '[USB-C]-PPS' / 'PPS' output rows)
   example: true
 - key: pd.max_fixed_voltage
   label: Highest fixed PDO voltage

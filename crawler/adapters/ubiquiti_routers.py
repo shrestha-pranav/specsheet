@@ -14,7 +14,7 @@ Traps    : 'Spatial Streams 6' is a sum over radios (not a per-band figure): not
            core, not the SoC: cores/GHz only, hw.soc_* only when the cell names a chip vendor + part. Width comes from '(BW320)' on that band's
            max-rate row only (the 'Channel Bandwidth' row is not per band). Gateway LAN count = Port Layout total minus the stated default WAN ports
            (ports are re-assignable: wan_lan_configurable when Max. WAN Port Count exceeds the default). Weights with two labelled figures
-           (with/without SSD) keep 'Device:' or nothing. has_6ghz is only ever True (a 6 GHz band row); silence is not False.
+           (with/without SSD) keep 'Device:' or nothing. has_6ghz True from a 6 GHz band row; v2: False (basis=complete_enumeration) only when every per-band group (MIMO, Max. Data Rate, TX power, antenna gain) names the same 2.4 + 5 GHz radios. Silence is not False.
 """
 import gzip, json, re, sys, time
 from pathlib import Path
@@ -24,7 +24,7 @@ import _router as R
 import _lt as L
 import _run
 
-ID, VERSION, SOURCE = "ubiquiti_routers", 1, "ubiquiti-us-routers"
+ID, VERSION, SOURCE = "ubiquiti_routers", 2, "ubiquiti-us-routers"
 CATEGORIES = {"routers"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://techspecs.ui.com"
@@ -161,6 +161,14 @@ def parse_html(snap, h):
             add(key, w[1], f"{b}: {v}", rate_par)
     if "6 GHz" in mimo or "6 GHz" in rates:
         add("wifi.has_6ghz", True, "6 GHz: " + (mimo.get("6 GHz") or rates.get("6 GHz")), "MIMO / " + rate_par)
+    elif mimo and set(mimo) == set(rates) and {"2.4 GHz", "5 GHz"} <= set(mimo):
+        # v2: the per-radio groups are a complete band list when every per-band group of the tree names the same radios (one row per radio)
+        groups = {}
+        for par, lab in rows:
+            if lab in BAND or re.fullmatch(r"(?:2\.4|5|6) GHz", lab or ""):
+                groups.setdefault(par, set()).add(lab)
+        if all(g == set(mimo) for g in groups.values()):
+            R.add_6ghz(pr, ADAPTER, snap, False, " | ".join(f"MIMO > {b}: {v}" for b, v in mimo.items()), "model_code", model, "MIMO (one row per radio)")
     sec = get("Wireless Security")
     if sec and "WPA3" in sec:
         add("wifi.wpa3", True, sec, "Wireless Security")

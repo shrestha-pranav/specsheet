@@ -1,4 +1,4 @@
-"""Shared pure helpers for the SSD adapters (samsung_ssd, sandisk_ssd, teamgroup_ssd). No network.
+"""Shared pure helpers for the SSD adapters (samsung_ssd, sandisk_ssd, teamgroup_ssd, kingston_ssd). No network.
 
 Keys follow research/ssds/spec-profile.yaml. Capacity is DECIMAL GB as makers print it (1TB = 1000 GB); a value the source did not state is
 never invented (the caller passes None -> no claim). `raw` always keeps the source literal.
@@ -61,7 +61,7 @@ def interface(s):
     """-> list of (key, value) from an interface string. Only what the string states."""
     out = []
     s = s or ""
-    m = re.search(r"PCIe\s*(?:Gen\s*)?(\d)(?:\.0)?\s*(?:x\s*(\d))?", s, re.I)
+    m = re.search(r"PCIe\s*[®™]?\s*(?:Gen\s*)?(\d)(?:\.0)?\s*(?:x\s*(\d))?", s, re.I)   # preset fill: 'PCIe® 5.0 x4' (Samsung 9100 PRO)
     if m:
         out += [("if.protocol", "nvme"), ("if.pcie_gen", int(m[1]))]
         if m[2]:
@@ -115,11 +115,21 @@ def nand_vendor(s):
     return None
 
 
+HMB_ANY = re.compile(r"\bHMB\b|host memory buffer", re.I)
+HMB_DENIED = re.compile(r"\b(?:no|without|not\s+support(?:ed|s)?)\s+(?:an?\s+)?(?:HMB|host memory buffer)\b|\b(?:HMB|host memory buffer)\s*[:\-]?\s*(?:no|none|not supported|n/?a)\b", re.I)
+
+
 def dram(s):
-    """-> list of (key, value). 'None'/'DRAM-less' = dramless; sizes/generations only when printed."""
+    """-> list of (key, value) from a DRAM / cache cell. Ruling 5 (coordinator, preset fill 2026-11-24): a cell that says the drive has no DRAM
+    ('DRAM-less', 'None', 'No') = `dramless` (HMB unknown); `dramless_none` ONLY when the same cell explicitly denies HMB; `dramless_hmb` when the
+    cell names HMB affirmatively (incl. a cache cell that is just 'HMB (Host Memory Buffer)'). Sizes/generations only when printed."""
     s = s or ""
-    if re.search(r"dram[- ]?less|\bnone\b|^no$|not applicable|^n/?a$", s, re.I):
-        return [("hw.dram_type", "dramless_none")] if re.search(r"dram[- ]?less|\bnone\b|^no$", s, re.I) and not re.search(r"hmb|host memory", s, re.I) else []
+    if re.search(r"not applicable|^n/?a$", s, re.I):
+        return []
+    if re.search(r"dram[- ]?less|\bnone\b|^no$", s, re.I) or (HMB_ANY.search(s) and not re.search(r"DDR|DRAM", s, re.I)):
+        if HMB_DENIED.search(s):
+            return [("hw.dram_type", "dramless_none")]
+        return [("hw.dram_type", "dramless_hmb" if HMB_ANY.search(s) else "dramless")]
     out = []
     if re.search(r"DDR|DRAM", s, re.I):
         out.append(("hw.dram_type", "dram"))
@@ -130,6 +140,20 @@ def dram(s):
         if g:
             out.append(("hw.dram_gen", g[0].lower()))
     return out
+
+
+def usb_protocol(s):
+    """if.protocol for a USB-attached (portable) drive, AFFIRMATIVE ONLY (ruling 4, preset fill 2026-11-24): `usb_uasp` when the interface cell
+    names UASP, `usb` when it names a USB 2/3.x interface. Thunderbolt or USB4 in the cell (PCIe can be tunnelled: the host may see NVMe) = None,
+    a connector-only cell ('USB Type-C') = None, silence = None. Never not_applicable."""
+    s = s or ""
+    if re.search(r"thunderbolt|USB\s*4", s, re.I):
+        return None
+    if re.search(r"\bUASP\b", s, re.I):
+        return "usb_uasp"
+    if re.search(r"USB\s*(?:2\.0|3(?:\.\d)?)\b|SuperSpeed USB", s, re.I):
+        return "usb"
+    return None
 
 
 def temp_range(s):

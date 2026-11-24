@@ -21,7 +21,7 @@ const context = vm.createContext({
   matchMedia:()=>({matches:false,addEventListener(){}}),
   fetch:async url => {requests.push(url); try { const body = await json(url.split('?')[0]); return {ok:true,json:async()=>body}; } catch (error) { if (error.code === 'ENOENT') return {ok:false,status:404}; throw error; }}
 });
-const names = ['facetControl','methodsDiffer','methodsFlag','categories','indexFor','detailFor','displayValue','initialState','categoryStateQuery','productUrl','validatedReturnQuery','returnWithIds','matchFacet','missingIssueUrl','correctionIssueUrl','renderTable','renderProduct','renderCompare','previewOverlay','revisionsMarkup','searchRows','extractIdentifiers','differingFields','cellValue','compareUrl','configTable','evidenceMarkup','valueWithContext','renderPage','reportMiss','loadPresets','presetCard','presetGallery','facetPass','facetActive','pdoVerdict','pdoSection','sizeGridRows','sizeGridMarkup','sendEvent','noteUnknown','pct'];
+const names = ['facetControl','methodsDiffer','methodsFlag','categories','indexFor','detailFor','displayValue','initialState','categoryStateQuery','productUrl','validatedReturnQuery','returnWithIds','matchFacet','missingIssueUrl','correctionIssueUrl','renderTable','renderProduct','renderCompare','previewOverlay','revisionsMarkup','searchRows','extractIdentifiers','differingFields','cellValue','compareUrl','configTable','evidenceMarkup','valueWithContext','renderPage','reportMiss','loadPresets','presetCard','presetGallery','facetPass','facetActive','pdoVerdict','pdoSection','sizeGridRows','sizeGridMarkup','sendEvent','noteUnknown','pct','inPresetScope'];
 const source = await readFile(resolve(root, 'docs/app.js'), 'utf8');
 assert(source.includes('  renderRoute();\n})();'), 'Application bootstrap changed; update harness');
 vm.runInContext(source.replace('  renderRoute();\n})();', `  globalThis.test = {${names.join(',')}};\n})();`), context);
@@ -309,6 +309,19 @@ for (const category of categories) {
   ui.reportMiss('laptops', 'zzz no such thing');   // no api_origin configured: must be a silent no-op
 }
 
+// D8 gate from index rows alone. `by` filters are judged with the app's own matchFacet semantics: strict miss and lenient miss = a known value rules it out.
+function d8Gate(preset, all, facets, scope, minFill = preset.min_fill ?? 0.8, minBrands = preset.min_brands ?? scope.min_brands ?? 2) {
+  const filters = preset.filters || {}, require = preset.require || [];
+  const keys = [...new Set([...Object.keys(filters).filter(k => filters[k] !== '').map(k => k.match(/^f_(.+)_(min|max|value)$/)[1]), ...require])];
+  const pool = all.filter(r => ui.inPresetScope(r, scope));
+  const ruledOut = (r, key) => { const own = Object.fromEntries(Object.entries(filters).filter(([k]) => k.startsWith(`f_${key}_`))); const f = facets.filter(x => x.key === key); return !ui.facetPass(r, f, own, true); };
+  const by = preset.scope?.by || [];
+  const out = keys.map(key => { const pop = pool.filter(r => !by.some(b => b !== key && ruledOut(r, b)) && r.specs[key]?.status !== 'not_applicable'); return {key, pop, known:pop.filter(r => r.specs[key]?.status === 'known').length, total:pop.length}; });
+  let covered = null;
+  for (const k of out) { const have = new Set(k.pop.filter(r => r.specs[k.key]?.status === 'known' && r.brand).map(r => r.brand)); covered = covered ? new Set([...covered].filter(b => have.has(b))) : have; }
+  const coveredList = [...(covered || [])].sort();
+  return {pool, keys:out, covered:coveredList, passes:out.every(k => k.total && k.known / k.total >= minFill) && coveredList.length >= minBrands};
+}
 // ---- killer-query presets (A4, 2026-11-24): data-driven gallery, build-time fill gate, unknown-might-match, PDO pill, size grid, beacons off
 {
   const data = await ui.loadPresets();
@@ -321,14 +334,20 @@ for (const category of categories) {
     if (!cat.fields) Object.assign(cat, await json(`api/v1/${cat.schema}`));
     const all = await ui.indexFor(cat);
     const gateKeys = preset.gate.keys.map(k => k.key);
-    // The gate must be the real fill of the real index, re-derived here independently of scripts/presets.py.
-    for (const k of preset.gate.keys) assert.equal(k.known, all.filter(r => r.specs[k.key]?.status === 'known').length, `${preset.id}: ${k.key} known count matches the index`);
-    assert.equal(preset.gate.passes, preset.gate.fill >= preset.min_fill, `${preset.id}: gate is fill >= min_fill`);
-    // Count parity with scripts/presets.py: strict = matches, lenient = matches + unknown-might-match.
     const facets = cat.fields.filter(f => f.facet), filters = preset.filters || {};
-    const strict = all.filter(r => ui.facetPass(r, facets, filters, false)).length, lenient = all.filter(r => ui.facetPass(r, facets, filters, true)).length;
+    // The D8 gate must be re-derived from the index alone (independently of scripts/presets.py): tiers `t`, lifecycle, by-filters, not_applicable.
+    const d = d8Gate(preset, all, facets, preset.gate.scope);
+    for (const k of preset.gate.keys) { const mine = d.keys.find(item => item.key === k.key); assert.deepEqual([k.known, k.total], [mine.known, mine.total], `${preset.id}: ${k.key} known/in-scope population matches the index`); }
+    assert.equal(d.pool.length, preset.gate.scope.in_scope, `${preset.id}: in_scope matches`);
+    assert.equal(all.length, preset.gate.scope.category_total, `${preset.id}: category_total matches`);
+    assert.deepEqual(d.covered, [...preset.gate.scope.covered_brands].sort(), `${preset.id}: covered brands match`);
+    assert.equal(preset.gate.passes, d.passes, `${preset.id}: gate = every key >= min_fill and covered brands >= min_brands`);
+    assert.equal(preset.gate.passes, preset.gate.fill >= preset.min_fill && preset.gate.scope.covered_brands.length >= preset.gate.min_brands);
+    // Count parity with scripts/presets.py over the in-scope population: strict = matches, lenient = matches + unknown-might-match.
+    const strict = d.pool.filter(r => ui.facetPass(r, facets, filters, false)).length, lenient = d.pool.filter(r => ui.facetPass(r, facets, filters, true)).length;
     assert.equal(strict, preset.count.matches, `${preset.id}: matches agree with build`);
     assert.equal(lenient - strict, preset.count.maybe, `${preset.id}: unknown-might-match agrees with build`);
+    assert.equal(preset.count.out_of_scope, all.length - d.pool.length, `${preset.id}: out_of_scope agrees`);
     const card = ui.presetCard(preset);
     if (preset.gate.passes) assert.match(card, new RegExp(`href="#/category/${preset.category}\\?preset=${preset.id}"`), `${preset.id}: passing card opens the preset`);
     else {
@@ -339,12 +358,31 @@ for (const category of categories) {
     }
     assert(gateKeys.length > 0);
   }
-  const zero = data.presets.find(p => p.gate.fill === 0);
-  assert(zero && !zero.gate.passes, 'a 0%-fill key fails the gate today');
+  // A 0%-fill key always fails. Data-independent since A2 preset fill (2026-11-24) filled usb.usbc_inputs (was the live 0% example).
+  for (const p of data.presets.filter(p => p.gate.keys.some(k => k.known === 0 && k.total > 0))) assert(!p.gate.passes, `${p.id}: a 0%-fill key fails the gate`);
+  // D8 synthetic cases: unknown stays in, a key is not scoped by itself, min_brands=2 fails at 1 brand with 100% fill.
+  const synth = {fields:[{key:'a', type:'number', facet:{kind:'range'}}, {key:'b', type:'bool', facet:{kind:'bool'}}]};
+  const sf = synth.fields, mk = (brand, spec, extra = {}) => ({brand, t:['manufacturer'], lifecycle:'current', specs:spec, ...extra});
+  const k = (value) => ({status:'known', value});
+  const P = {id:'p', filters:{f_a_min:'10', f_b_value:'yes'}, scope:{by:['a']}};
+  const sc = {sources:['manufacturer'], include_discontinued:false};
+  let g = d8Gate(P, [mk('X', {a:k(20), b:k(true)}), mk('X', {a:k(5)}), mk('X', {})], sf, sc, 0.8, 1);
+  assert.deepEqual(g.keys.map(i => [i.key, i.known, i.total]), [['a', 2, 3], ['b', 1, 2]], 'a=5 rules the row out of b (known), the row with unknown a stays in; a is not scoped by itself');
+  assert.equal(d8Gate(P, [mk('X', {a:k(20), b:k(true)}), mk('X', {})], sf, sc, 0.8, 1).keys[1].total, 2, 'unknown a stays in the b population');
+  assert.equal(d8Gate(P, [mk('X', {a:k(20), b:k(true)}), mk('X', {a:k(20), b:{status:'not_applicable'}})], sf, sc, 0.8, 1).keys[1].total, 1, 'not_applicable leaves the key denominator');
+  const full = [mk('X', {a:k(20), b:k(true)}), mk('X', {a:k(30), b:k(true)})];
+  assert.equal(d8Gate(P, [mk('X', {a:k(20)}), mk('Y', {a:k(30)})], sf, sc, 0.8, 1).passes, false, 'a 0%-fill key fails the gate');
+  assert.equal(d8Gate(P, full, sf, sc, 0.8, 1).passes, true);assert.equal(d8Gate(P, full, sf, sc, 0.8, 2).passes, false, 'min_brands=2 fails at 1 brand even at 100% fill');
+  assert.equal(d8Gate(P, [...full, mk('Y', {a:k(20), b:k(true)})], sf, sc, 0.8, 2).passes, true, 'two covered brands pass');
+  assert.equal(d8Gate(P, [...full, mk('Y', {a:k(20)}, {t:['regulatory']})], sf, sc, 0.8, 1).pool.length, 2, 'row without a maker-tier source is out of scope');
+  assert.equal(d8Gate(P, [...full, mk('Y', {a:k(20)}, {lifecycle:'discontinued'})], sf, sc, 0.8, 1).pool.length, 2, 'discontinued is out of scope');
+  assert.equal(d8Gate(P, [...full, mk('Y', {a:k(20)}, {lifecycle:'unknown'})], sf, sc, 0.8, 1).pool.length, 3, 'unknown lifecycle stays in');
   // Synthetic: the gate is data, so a preset at exactly min_fill passes and 1 row short fails.
-  const fake = fill => ({id:'x', category:'laptops', category_name:'Laptops', title:'T', count:{matches:3, maybe:1, total:10}, min_fill:0.8, gate:{passes:fill >= 0.8, fill, min_fill:0.8, label:'Field', known:Math.round(fill * 10), total:10, missing_brands:[{brand:'Acme', rows:2}], missing_brand_count:1}});
+  const fake = fill => ({id:'x', category:'laptops', category_name:'Laptops', title:'T', count:{matches:3, maybe:1, total:10}, min_fill:0.8, gate:{passes:fill >= 0.8, fill, min_fill:0.8, label:'Field', known:Math.round(fill * 10), total:10, missing_brands:[{brand:'Acme', rows:2}], missing_brand_count:1, scope:{basis:'Maker pages. More.', sources:['manufacturer'], include_discontinued:false, in_scope:10, category_total:14, covered_brands:['Acme','Beta'], excluded:{source_tier:3, discontinued:1, by:{}}, not_covered:[{brand:'Gamma', rows:4, reason:'no maker source'}]}}});
   assert.match(ui.presetCard(fake(0.8)), /3 matches<\/strong>, 1 more unknown, might match/);
   assert.match(ui.presetCard(fake(0.7)), /Help fill this: 7 of 10 known.*Acme/s);
+  for (const f of [0.8, 0.7]) assert.match(ui.presetCard(fake(f)), /Covers 2 brands: Acme, Beta · 10 of 14 laptops in scope/, 'every card carries the coverage line');
+  assert.match(ui.presetCard(fake(0.8)), /Maker pages\./, 'and the basis');
   assert.equal(ui.pct(0.796), '79.6%', 'a failing 79.6% never displays as 80%');
   // The unknown filter: unknown is never no, and only unknown rows are "might match".
   const bool = {key:'b', type:'bool', facet:true}, unknownRow = {specs:{}}, noRow = {specs:{b:{status:'known', value:false}}}, yesRow = {specs:{b:{status:'known', value:true}}};

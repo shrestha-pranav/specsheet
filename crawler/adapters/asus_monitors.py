@@ -12,6 +12,9 @@ parse    : pure; identifiers mfr_model (page model code), mfr_sku (ROG PartNo / 
            research/monitors/spec-profile.yaml; locator.model_code; unmapped sections in fingerprints.
 Traps    : 'Response Time 1ms MPRT' is NOT GtG (left unmapped unless the literal says GTG); 'Refresh Rate (Max)' may include OC;
            'HDR Support: HDR10' is a marketing label, DisplayHDR tier only when the literal names it.
+v2 (2026-11-24, preset fill): gen.size_class derived from 'Panel Size (inch)' (kind derived, round half up, _monports.DERIVATION; ASUS
+           prints no size class). usb.usbc_inputs counted from the bare I/O port list (the maker's full input list): USB-C/Thunderbolt
+           lines naming DP Alt Mode / Thunderbolt; 0 only as a complete enumeration (condition basis=complete_enumeration).
 """
 import gzip, html, json, re, sys, time
 from pathlib import Path
@@ -19,8 +22,9 @@ sys.path.insert(0, str(Path(__file__).parent))
 import _contract as C
 from _contract import Ref, Discovery, ParseResult, claim  # noqa
 import _run
+import _monports as MP
 
-ID, VERSION, SOURCE = "asus_monitors", 1, "asus-us-monitors"
+ID, VERSION, SOURCE = "asus_monitors", 2, "asus-us-monitors"
 CATEGORIES = {"monitors"}
 API = ("https://odinapi.asus.com/recent-data/apiv2/SeriesFilterResult?SystemCode=asus&WebsiteCode=us&ProductLevel1Code=displays-desktops"
        "&ProductLevel2Code=monitors&PageSize=300&PageIndex={}&CategoryName=&SeparateType=1&LocalFlag=0")
@@ -181,6 +185,9 @@ def parse_html(snap, t):
         g = F.get
         if (v := g("Panel Size (inch)")) and num(v):
             add("gen.viewable_diag", num(v), "in", "Panel Size (inch)")   # ASUS states panel/viewable diagonal; marketed class may differ
+            pr.claims.append(claim(code, "gen.size_class", MP.size_class(num(v)), "in", f"Panel Size (inch): {v}", "s1", ADAPTER, "spec_html", obs,
+                                   {"label": "Panel Size (inch)", "model_code": code, "derivation": MP.DERIVATION}, f"Panel Size (inch): {v}"))
+            pr.claims[-1]["kind"] = "derived"
         if (v := g("Aspect Ratio")) in ("16:9", "16:10", "3:2", "21:9", "32:9", "4:3"):
             add("res.aspect", v, None, "Aspect Ratio")
         if (v := g("Panel Type")) is not None and T_ENUM.get(v.lower().strip()):
@@ -233,6 +240,13 @@ def parse_html(snap, t):
                 return n
             pr.claims.append(claim(code, "vin.hdmi_count", cnt(r"^HDMI"), None, pt, "s1", ADAPTER, "spec_html", obs, {"label": "I/O Ports", "model_code": code}, pt))
             pr.claims.append(claim(code, "vin.dp_count", cnt(r"^Display ?Port|^DP\b"), None, pt, "s1", ADAPTER, "spec_html", obs, {"label": "I/O Ports", "model_code": code}, pt))
+            other_c = [f"{k} : {v}" for k, v in F.items() if MP.CPORT.search(f"{k} {v}") and not re.search(r"hub|power delivery", k, re.I)]
+            n, zero = MP.count_inputs(bare)
+            if zero and other_c:            # USB-C named elsewhere on the page (accessory cable, a 'USB-C' row): the list is not provably complete
+                n, zero = None, False
+            if n is not None:
+                pr.claims.append(claim(code, "usb.usbc_inputs", n, None, f"I/O Ports: {pt}", "s1", ADAPTER, "spec_html", obs, {"label": "I/O Ports", "model_code": code},
+                                       pt, conditions={"basis": "complete_enumeration"} if zero else None))
             pdl = next((f"{k}: {v}" for k, v in F.items() if re.search(r"Power Delivery|\bPD\b", k) and re.search(r"\d\s*W", v)), None)
             if pdl and (m := re.search(r"(\d{2,3})\s*W", pdl)):
                 pr.claims.append(claim(code, "usb.usbc_pd_w", float(m[1]), "W", pdl, "s1", ADAPTER, "spec_html", obs, {"label": pdl.split(":")[0], "model_code": code}, pdl))

@@ -10,6 +10,9 @@ parse    : pure. Entity = product key (a model family, e.g. Legion_27_10_Monitor
 Traps recorded: 'Color Depth: 8-bit (6-bit+FRC)' is claimed as 6-bit+FRC (the parenthetical is the real panel); the single
 'Refresh Rate' is a max (native vs overclock not stated); 'Brightness' typ/min basis not stated.
 v2 (2026-11-24): usb.usbc_pd_w read per port line, upstream USB-C/TB/USB4 only; 'up to 90W PD' (number before PD) and 'USB PD 3.1 up to 140W' now parse.
+v3 (2026-11-24, preset fill): usb.usbc_inputs from every '<side> Ports' list of the spec tree (Rear/Side/Left/Right/Front/Top/Bottom):
+  USB-C/TB/USB4 lines that name DP Alt Mode / DisplayPort / Thunderbolt and are not downstream/out/data-only; a USB-C line of unknown role
+  writes nothing; 0 only as a complete enumeration (condition basis=complete_enumeration, every port line kept as raw).
 """
 import gzip, html, json, re, sys
 from pathlib import Path
@@ -17,8 +20,9 @@ sys.path.insert(0, str(Path(__file__).parent))
 import _contract as C
 import _run
 import lenovo_psref as LP
+import _monports as MP
 
-ID, VERSION, SOURCE = "lenovo_monitors", 2, "lenovo-psref-monitors"
+ID, VERSION, SOURCE = "lenovo_monitors", 3, "lenovo-psref-monitors"
 ADAPTER = f"{ID}@{VERSION}"
 SKIP = re.compile(r"LFD|Tiny|TIO|Collaboration", re.I)
 PANEL = [(r"in-plane|\bIPS\b", "IPS"), (r"vertical alignment|\bVA\b", "VA"), (r"twisted|\bTN\b", "TN"), (r"QD-?OLED", "QD-OLED")]
@@ -201,6 +205,16 @@ class LenovoMonitors(LP.LenovoPsref):
             if len(pdw) == 1:                       # two upstream ports with different wattages: ambiguous, nothing written
                 (w, seg), = pdw.items()
                 pr.claims.append(C.claim(key, "usb.usbc_pd_w", w, "W", seg, "s1", ADAPTER, "psref_json", obs, {"label": "Ports", "basis": basis}, seg))
+        allports = [x for lab in sorted(F) if re.fullmatch(r"(Rear|Side|Left|Right|Front|Top|Bottom) Ports", lab) for x in F[lab]]
+        if allports:
+            n, zero = MP.count_inputs([html.unescape(x) for x in allports])
+            others = [l for l, v in F.items() if not l.endswith(" Ports") and MP.CPORT.search(l + " " + " ".join(v))]
+            if zero and others:             # USB-C named outside the port lists: not provably complete
+                n, zero = None, False
+            if n is not None:
+                apt = " | ".join(allports)
+                pr.claims.append(C.claim(key, "usb.usbc_inputs", n, None, apt, "s1", ADAPTER, "psref_json", obs, {"label": "Ports", "basis": basis}, apt,
+                                         conditions={"basis": "complete_enumeration"} if zero else None))
         sf = txt("Special Features")
         if (m := re.search(r"DisplayHDR\s*(True Black\s*)?(\d{3,4})", sf, re.I)):
             tier = f"DisplayHDR {'True Black ' if m[1] else ''}{m[2]}"

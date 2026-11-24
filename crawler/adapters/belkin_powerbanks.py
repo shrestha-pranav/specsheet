@@ -20,7 +20,7 @@ import _lt as L
 import _powerbank as P
 import _run
 
-ID, VERSION, SOURCE = "belkin_powerbanks", 4, "belkin-us-powerbanks"     # r7: shared _powerbank changed (energy_basis pairs, case-insensitive Wh); v3: r6 shared _powerbank (repeated port row = one port); v2: shared _powerbank parser changed (review 3); Belkin rules unchanged
+ID, VERSION, SOURCE = "belkin_powerbanks", 5, "belkin-us-powerbanks"     # v5 (A2 preset fill): out.max_single_port_w only from a figure the maker labels single-port; r7: shared _powerbank changed (energy_basis pairs, case-insensitive Wh); v3: r6 shared _powerbank (repeated port row = one port); v2: shared _powerbank parser changed (review 3); Belkin rules unchanged
 CATEGORIES = {"power-banks"}
 ADAPTER = f"{ID}@{VERSION}"
 SITEMAP = "https://www.belkin.com/sitemap-variant_products_us_001.xml"
@@ -79,6 +79,33 @@ def jsonld(h):
             if isinstance(x, dict) and x.get("@type") in ("ProductGroup", "Product"):
                 return x
     return {}
+
+
+SP_CELL = [re.compile(r"(?<![\d.])(\d{1,3}(?:\.\d+)?)\s*W\s+Single\b", re.I),                      # Wattage '140W Single 158W Shared'
+           re.compile(r"\bSingle\)\s*(\d{1,3}(?:\.\d+)?)\s*W\b", re.I),                                # '(C-retractable cable / ... Single) 100W max'
+           re.compile(r"Maximum single(?: USB-C)? output\s*:\s*(?:Up to\s*)?(\d{1,3}(?:\.\d+)?)\s*W\b", re.I)]   # Output 'Maximum single USB-C output: Up to 100W'
+SP_GLANCE = [re.compile(r"(?<![\d.])(\d{1,3}(?:\.\d+)?)\s*W max single-port\b", re.I),               # 'Get 100W max single-port USB-C charging power'
+             re.compile(r"up to (\d{1,3}(?:\.\d+)?)\s*W from a single USB-C port", re.I),              # 'Power Delivery up to 65W from a single USB-C port'
+             re.compile(r"(?<![\d.])(\d{1,3}(?:\.\d+)?)\s*W USB-C power maximum for single device", re.I)]   # '7.5W wireless and 15W USB-C power maximum for single device'
+
+
+def single_port(rows, glance):
+    """Best single-port output, ONLY from a figure the maker itself labels single-port (A2 preset fill 2026-11-24): the Technical Specifications
+    'Wattage' / 'Output' cells ('140W Single 158W Shared', 'Maximum single USB-C output: Up to 100W'), else an At a Glance line that says
+    single port / single device. A bare 'Wattage: 45W' (per-port, total or wireless: not stated) or 'Up to 45W max output' is never read.
+    Several different labelled figures = nothing. -> (W, literal, label) or None."""
+    for lab in ("Wattage", "Output"):
+        v = rows.get(lab) or ""
+        ws = {P.fnum(m[1]) for rx in SP_CELL for m in rx.finditer(v)}
+        if len(ws) == 1:
+            return ws.pop(), v, lab
+        if ws:
+            return None
+    ws, lit = set(), ""
+    for rx in SP_GLANCE:
+        for m in rx.finditer(glance):
+            ws.add(P.fnum(m[1])); lit = glance[max(0, m.start() - 60): m.end() + 40]
+    return (ws.pop(), lit, "At a Glance (single-port statement)") if len(ws) == 1 else None
 
 
 def parse_page(snap, h):
@@ -140,6 +167,10 @@ def parse_page(snap, h):
             add("out.cable_note", val, val, lab)
         elif ll == "weight":
             add("phys.weight", P.grams(val), val, lab)
+    gl_all = " ".join(re.split(r"What.s in the Box", text[i: i + 1500])[0] for i in (m.start() for m in re.finditer("At a Glance", text)))   # every At a Glance block (the first is often the tab bar)
+    sp = single_port(rows, gl_all)
+    if sp:
+        add("out.max_single_port_w", sp[0], sp[1], sp[2])
     if re.search(r"integrated cable|built-in cable|integrated usb-c", title + " " + snap.ref.hints.get("slug", "").replace("-", " "), re.I):
         add("out.builtin_cable", "usb_c", title, "title")
     std, ww = P.wireless(title + " " + glance)

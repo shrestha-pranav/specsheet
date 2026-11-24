@@ -350,6 +350,12 @@ specs:
     kind: enum
   why: NVMe vs SATA vs USB-bridge
   level: model
+  traps:
+  - 'Affirmative only (coordinator ruling 4, 2026-11-24): a portable drive gets `usb` only when the maker''s interface cell names a USB 2/3.x
+    interface (`usb_uasp` only if it says UASP); Thunderbolt or USB4 in the cell (PCIe may be tunnelled, host can see NVMe), a connector-only
+    cell (''USB Type-C'') or silence = unknown. Never not_applicable from absence.'
+  - 'An internal drive whose spec table has no Interface row takes nvme/sata_ahci from the maker''s own product name (''WD Blue SN5100 NVMe SSD'')
+    only when the name states exactly one of NVMe/SATA.'
   sources:
   - Manufacturer datasheet / product page spec table
   example: nvme
@@ -358,6 +364,7 @@ specs:
   - sata_ahci
   - usb_uasp
   - usb_bot
+  - usb
   identity_role: model_defining
 - key: if.pcie_gen
   label: PCIe generation
@@ -610,6 +617,8 @@ specs:
   traps:
   - Datasheet silent => usually DRAM-less; 'HMB' uses host RAM and some hosts/OSes disable it
   - '`dramless` = the maker says DRAM-less and nothing about HMB: hw.hmb_support stays unknown, never assumed (coverage r3, 2026-11-24)'
+  - 'Ruling 5 (coordinator, 2026-11-24): a table cell reading DRAM-less / None / No = `dramless` (HMB unknown); `dramless_none` only when the
+    maker explicitly denies HMB; a cache cell that names HMB (''HMB (Host Memory Buffer)'') = `dramless_hmb`.'
   - DRAM-less variant can share a name with a DRAM model (SN770 vs SN850; Crucial P3 vs P3 Plus differ in number only)
   sources:
   - Manufacturer datasheet PDF (Samsung lists '1GB LPDDR4')

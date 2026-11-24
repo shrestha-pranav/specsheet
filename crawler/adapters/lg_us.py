@@ -10,6 +10,9 @@ parse    : pure over the blob. Identifiers mfr_model (sku), gtin (UPC), x_lg_mat
            research/monitors/spec-profile.yaml with raw literal (term: description); weights lb->kg are derived (raw kept).
 Traps    : 'Screen Size' is the viewable diagonal (21.45") -> gen.viewable_diag; 'Color Depth 16.7M' does not say 8-bit vs 6+FRC (left
            unmapped); 'Response Time (GTG)' basis text is kept in raw ('5ms (GtG at Faster)').
+v2 (2026-11-24, preset fill): gen.size_class from 'Screen Size Class (diagonal)' ('22" Class (21.5" diagonal)' -> 22, stated); where only a
+           diagonal is printed (that row without 'Class', or 'Screen Size') the class is derived (kind derived, round half up,
+           _monports.DERIVATION). usb.usbc_inputs from the Input/Output group, see lg_usbc_inputs().
 """
 import gzip, json, re, sys
 from pathlib import Path
@@ -17,8 +20,9 @@ sys.path.insert(0, str(Path(__file__).parent))
 import _contract as C
 from _contract import Ref, Discovery, ParseResult, claim  # noqa
 import _run
+import _monports as MP
 
-ID, VERSION, SOURCE = "lg_us", 1, "lg-us"
+ID, VERSION, SOURCE = "lg_us", 2, "lg-us"
 CATEGORIES = {"monitors"}
 SITEMAP = "https://www.lg.com/us/sitemap.xml"
 ADAPTER = f"{ID}@{VERSION}"
@@ -114,6 +118,15 @@ def parse_html(snap, html):
             add("panel.technology", val, None, "Display Type"); break
     if (v := g("Screen Size")) and num(v):
         add("gen.viewable_diag", num(v), "in", "Screen Size")
+    sc = g("Screen Size Class (diagonal)") or ""
+    if (m := re.search(r"(\d{2}(?:\.\d+)?)\s*(?:\"|”|''|-inch|inch)?\s*Class\b", sc, re.I)) or (m := re.fullmatch(r"\s*(\d{2})(?:\.0)?\s*(?:\"|”|inch)\s*(?:Flat|Curved)?\s*", sc, re.I)):
+        add("gen.size_class", int(float(m[1])), "in", "Screen Size Class (diagonal)")
+    else:
+        t = "Screen Size Class (diagonal)" if re.fullmatch(r"\s*\d{2}\.\d+\s*(?:\"|”|inch)\s*(?:Flat|Curved)?\s*", sc, re.I) else "Screen Size"
+        if (d := re.search(r"(\d{2}(?:\.\d+)?)\s*(?:\"|”|inch)", g(t) or "")):
+            add("gen.size_class", MP.size_class(d[1]), "in", t)
+            pr.claims[-1]["kind"] = "derived"
+            pr.claims[-1]["locator"]["derivation"] = MP.DERIVATION
     if (v := g("Refresh Rate")) and re.search(r"\d\s*Hz", v):
         add("res.refresh_max", num(v), "Hz", "Refresh Rate")
     if (v := g("Response Time (GTG)")) and num(v) is not None:
@@ -166,9 +179,71 @@ def parse_html(snap, html):
     for term in T:
         if re.search(r"USB.?C|Type-C", term, re.I) and re.search(r"power|PD", term + T[term], re.I) and (m := re.search(r"(\d{2,3})\s*W", term + " " + T[term])):
             add("usb.usbc_pd_w", float(m[1]), "W", term); break
+    io = [(r["term"], str(r["description"]).strip()) for grp in pd.get("allInfo") or [] if re.search(r"input|output|connect", grp.get("subtitle") or "", re.I)
+          for r in grp.get("tableData") or []]
+    rest = [(r["term"], str(r["description"]).strip()) for grp in pd.get("allInfo") or [] if not re.search(r"input|output|connect", grp.get("subtitle") or "", re.I)
+            for r in grp.get("tableData") or []]
+    n, zero, rawio = lg_usbc_inputs(io, rest)
+    if n is not None:
+        pr.claims.append(claim(model, "usb.usbc_inputs", n, None, rawio, "s1", ADAPTER, "next_data", obs, {"term": "Input/Output"}, rawio,
+                               conditions={"basis": "complete_enumeration"} if zero else None))
     pr.fingerprints = {"raw": snap.snapshot, "model": model, "status": p.get("modelStatus"), "terms": len(T),
                        "unmapped": {k: v for k, v in T.items() if k not in used}}
     return pr
+
+
+NOT = re.compile(r"^\s*(no|none|-|n/a)\s*$", re.I)
+LG_C = re.compile(r"USB[- ]?C|Type[- ]?C|Thunderbolt|USB ?4", re.I)
+
+
+def lg_usbc_inputs(io, rest):
+    """LG Input/Output group rows -> (count, complete_zero, raw) or (None, False, raw).
+    LG prints one row per port type, often redundantly ('USB Type-C: 1', 'USB-C: Yes', 'USB-C (Power Delivery): 65 W', 'USB Up-stream: YES (USB-C, 1ea)').
+    Count: an explicit upstream count ('Yes (1 Up / 2 Down)', 'USB Up-stream: YES (USB-C, 1ea)', 'via Thunderbolt/1ea, via USB-C/1ea'), else the
+    USB-C row's own count minus USB-C ports the Down-stream row names. A count is written only with video evidence on the page (DP Alternate
+    Mode: Yes, a USB-C/Thunderbolt power-delivery or max-resolution row, Thunderbolt); 'DP Alternate Mode: No' with no Thunderbolt = 0.
+    0 from absence only as a complete enumeration: the group names a video input (HDMI/DisplayPort/D-Sub/DVI) and no row anywhere on the
+    page names USB-C / Type-C / Thunderbolt except as 'No'."""
+    raw = "Input/Output: " + " | ".join(f"{t}: {v}" for t, v in io)
+    if not io:
+        return None, False, raw
+    c_rows = [(t, v) for t, v in io + rest if LG_C.search(f"{t} {v}") and not NOT.match(v)]
+    if not c_rows:
+        if any(re.search(r"HDMI|Display ?Port|D-Sub|DVI|\bDP\b", t, re.I) and not NOT.match(v) for t, v in io):
+            return 0, True, raw
+        return None, False, raw
+    T = dict(reversed(io))
+    def cnt(v):
+        m = re.search(r"(\d+)\s*(?:ea|x)\b|x\s*(\d+)\b|\((\d+)\)|^\s*(\d+)\s*$", v, re.I)
+        return int(next(x for x in m.groups() if x)) if m else None
+    up = None
+    for t, v in io:
+        if re.search(r"Type-?C|USB-?C", t) and (m := re.search(r"(\d+)\s*Up\b", v, re.I)):
+            up = int(m[1])
+    for t, v in io:
+        if re.search(r"USB\s*Up", t, re.I) and LG_C.search(v):
+            parts = re.findall(r"(?:thunderbolt|usb-?c)[^,/)]*?/?\s*(\d+)\s*ea|(\d+)\s*ea[^,)]*?(?:usb-?c|thunderbolt)|usb-?c\s*,\s*(\d+)\s*ea", v, re.I)
+            if parts:
+                up = sum(int(next(x for x in p if x)) for p in parts)
+    tb = [(t, v) for t, v in io if re.search(r"thunderbolt", t, re.I) and not re.search(r"cable|power", t, re.I)]
+    video = bool(tb) or any((re.search(r"DP Alt", t, re.I) and re.match(r"(?i)\s*yes", v)) or re.search(r"\(Power Delivery\)|Max\. Resolution", t, re.I)
+                            or re.search(r"DP Alt|Alt\.? Mode", v, re.I) for t, v in c_rows)
+    alt_no = any(re.search(r"DP Alt", t, re.I) and NOT.match(v) for t, v in io)
+    if alt_no and not tb and not video:
+        return 0, False, raw                               # the maker states the USB-C port carries no DisplayPort
+    if not video:
+        return None, False, raw
+    if up is None:
+        tot = [cnt(v) for t, v in io if re.fullmatch(r"USB Type-?C|USB-?C", t.strip(), re.I)]
+        tot = [x for x in tot if x is not None]
+        if not tot or len(set(tot)) != 1:
+            return None, False, raw
+        down = 0
+        for t, v in io:
+            if re.search(r"down", t, re.I) and (m := re.search(r"USB-?C[^0-9]{0,4}(\d+)\s*ea", v, re.I)):
+                down += int(m[1])
+        up = tot[0] - down
+    return (up, False, raw) if up >= 1 else (None, False, raw)
 
 
 if __name__ == "__main__":

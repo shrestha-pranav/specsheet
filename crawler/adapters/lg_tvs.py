@@ -18,7 +18,7 @@ import _contract as C
 import _tv as T
 import _run
 
-ID, VERSION, SOURCE = "lg_tvs", 1, "lg-us-tvs"
+ID, VERSION, SOURCE = "lg_tvs", 2, "lg-us-tvs"
 CATEGORIES = {"tvs"}
 SITEMAP = "https://www.lg.com/us/sitemap.xml"
 ADAPTER = f"{ID}@{VERSION}"

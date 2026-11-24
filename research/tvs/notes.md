@@ -46,3 +46,12 @@ fetched first), TCL (83 SKUs); per-label value histograms (team/reports/2026-11-
 1. Measured data (RTINGS-style panel subtype, zones, HDMI bandwidth): curated claims of kind measured with citation?
 2. ENERGY STAR wildcard declarations for LG -> pattern relations (identity.md, A3).
 3. Samsung E/F production letter as a panel-source marker: needs one review that reads both panels to become a rule.
+
+## Coordinator rulings (2026-11-24, preset fill round; A2 applied)
+- **Ruling 2, backlight value table** (`panel.display_tech`): a row labelled exactly "Backlight Type" whose whole value is Full Array LED,
+  Active Full Array, Mini LED, Edge(-lit) or Direct(-lit) writes `lcd` when no display-type row resolved the technology (a backlit panel is an
+  LCD). "Full Array LED" / "Active Full Array" also write `panel.backlight: direct_led`. Unmapped values (Vizio "DLED", "Local Dimming") stay
+  unresolved. LG "Direct" is A2's reading of the table (LED backlight rows), flagged for A1; striking it is one regex in `_tv.BACKLIGHT_LCD`.
+- **4K 120 Hz ports**: LG "HDMI Input: 4ea (supports 4K 120Hz, eARC, VRR, ...)" without a trailing "(N port)" stays unresolved: the same page
+  prints eARC on one port only ("eARC (HDMI 2)"), so the list is a union of port features, not a per-port statement. LG's older
+  "Latest HDMI (4K @ 120Hz): HDMI ports 3,4" row is an explicit port list and is counted. TCL US pages print "4 HDMI (1 eARC)" with no rate.

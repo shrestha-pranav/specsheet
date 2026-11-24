@@ -363,12 +363,33 @@
   const presetById = (category, id) => id ? presetData.presets.find(item => item.id === id && item.category === category.id) : null;
   const pct = fraction => `${Math.floor(fraction * 1000) / 10}%`;   // floored to 0.1: 79.6% must never read as 80%
   const brandList = (brands, total) => { const names = brands.map(item => item.brand); return names.length ? `${names.join(', ')}${total > names.length ? ` and ${total - names.length} more` : ''}` : ''; };
+  const plural = (n, one, many) => `${n.toLocaleString('en-US')} ${n === 1 ? one : many}`;
+  // D8: a row is in a preset's scope when it carries a source tier the preset accepts and is not discontinued (unless the preset includes those).
+  // Unknown lifecycle stays in. Mirrors scripts/presets.py; the by-filters only shape the gate's denominators, never the list.
+  const inPresetScope = (row, scope) => !scope || ((!scope.sources || (row.t || []).some(tier => scope.sources.includes(tier))) && (scope.include_discontinued || row.lifecycle !== 'discontinued'));
+  const coverNames = names => `${names.slice(0, 6).join(', ')}${names.length > 6 ? ` and ${names.length - 6} more` : ''}`;
+  const firstSentence = text => (text.match(/^.*?[.!?](?=\s|$)/) || [text])[0];
+  const scopeLines = preset => {
+    const scope = preset.gate.scope;
+    if (!scope) return '';
+    const ex = scope.excluded || {}, parts = [];
+    if (ex.source_tier) parts.push(`${ex.source_tier.toLocaleString('en-US')} without a ${scope.sources ? scope.sources.join(' or ') : ''} source`);
+    if (ex.discontinued) parts.push(`${ex.discontinued.toLocaleString('en-US')} discontinued`);
+    const by = Object.values(ex.by || {}).reduce((a, b) => a + b, 0);
+    if (by) parts.push(`${by.toLocaleString('en-US')} more ruled out by a known value on another key (not counted against that key)`);
+    const brands = scope.covered_brands || [];
+    const notCovered = (scope.not_covered || []).slice(0, 4).map(item => `${item.brand} (${item.reason})`).join(', ');
+    const title = `${scope.basis || ''}${parts.length ? ` Excluded: ${parts.join('; ')}.` : ''}`;
+    return `<p class="preset-cover muted"><span data-cover>Covers ${plural(brands.length, 'brand', 'brands')}${brands.length ? `: ${escapeHtml(coverNames(brands))}` : ''} · ${scope.in_scope.toLocaleString('en-US')} of ${scope.category_total.toLocaleString('en-US')} ${escapeHtml((preset.category_name || preset.category).toLowerCase())} in scope</span></p>`
+      + (scope.basis ? `<p class="preset-basis muted" title="${escapeHtml(title)}">${escapeHtml(firstSentence(scope.basis))}</p>` : '')
+      + (notCovered ? `<p class="preset-notcovered muted">Not covered: ${escapeHtml(notCovered)}${(scope.not_covered || []).length > 4 ? ', …' : ''}.</p>` : '');
+  };
   const fillRequestUrl = preset => `${issueBase()}?${new URLSearchParams({title:`Data request: ${preset.gate.label} (${preset.category_name})`})}`;
   const presetCard = preset => {
     const gate = preset.gate, href = `#/category/${encoded(preset.category)}`;
-    if (!gate.passes) return `<article class="preset-card help" data-preset="${escapeHtml(preset.id)}"><h3>${escapeHtml(preset.title)}</h3><p class="preset-fill"><strong>Help fill this: ${gate.known} of ${gate.total} known</strong> for “${escapeHtml(gate.label)}” (${pct(gate.fill)}; needs ${pct(gate.min_fill)}).</p>${gate.missing_brands?.length ? `<p class="muted">No value yet for: ${escapeHtml(brandList(gate.missing_brands, gate.missing_brand_count))}.</p>` : ''}<p class="preset-links"><a data-request data-category="${escapeHtml(preset.category)}" href="${escapeHtml(fillRequestUrl(preset))}" target="_blank" rel="noopener noreferrer">Help fill this</a> <a href="${href}?preset=${encoded(preset.id)}">See what we have</a></p></article>`;
+    if (!gate.passes) return `<article class="preset-card help" data-preset="${escapeHtml(preset.id)}"><h3>${escapeHtml(preset.title)}</h3><p class="preset-fill"><strong>Help fill this: ${gate.known} of ${gate.total} known</strong> for “${escapeHtml(gate.label)}” (${pct(gate.fill)}; needs ${pct(gate.min_fill)}${gate.min_brands && gate.scope && gate.fill >= gate.min_fill ? `, and ${gate.min_brands} brands with a value on every key` : ''}).</p>${scopeLines(preset)}${gate.missing_brands?.length ? `<p class="muted">No value yet for: ${escapeHtml(brandList(gate.missing_brands, gate.missing_brand_count))}.</p>` : ''}<p class="preset-links"><a data-request data-category="${escapeHtml(preset.category)}" href="${escapeHtml(fillRequestUrl(preset))}" target="_blank" rel="noopener noreferrer">Help fill this</a> <a href="${href}?preset=${encoded(preset.id)}">See what we have</a></p></article>`;
     const c = preset.count;
-    return `<article class="preset-card" data-preset="${escapeHtml(preset.id)}"><h3><a href="${href}?preset=${encoded(preset.id)}">${escapeHtml(preset.title)}</a></h3><p class="preset-fill"><strong>${c.matches} ${c.matches === 1 ? 'match' : 'matches'}</strong>${c.maybe ? `, ${c.maybe} more unknown, might match` : ''}</p><p class="muted">${gate.known} of ${gate.total} known for “${escapeHtml(gate.label)}” (${pct(gate.fill)})${gate.uncovered_brands?.length ? `. No value yet for ${escapeHtml(gate.uncovered_brands.map(item => item.brand).join(', '))}` : ''}.</p></article>`;
+    return `<article class="preset-card" data-preset="${escapeHtml(preset.id)}"><h3><a href="${href}?preset=${encoded(preset.id)}">${escapeHtml(preset.title)}</a></h3><p class="preset-fill"><strong>${c.matches} ${c.matches === 1 ? 'match' : 'matches'}</strong>${c.maybe ? `, ${c.maybe} more unknown, might match` : ''}</p><p class="muted">${gate.known} of ${gate.total} known for “${escapeHtml(gate.label)}” (${pct(gate.fill)})${gate.uncovered_brands?.length ? `. No value yet for ${escapeHtml(gate.uncovered_brands.map(item => item.brand).join(', '))}` : ''}.</p>${scopeLines(preset)}</article>`;
   };
   const presetGallery = data => data.presets?.length ? `<section class="preset-gallery" aria-labelledby="preset-heading"><h2 id="preset-heading">Questions we can answer</h2><p class="muted">A question is answered only when at least ${pct(data.default_min_fill ?? 0.8)} of the products have the field it depends on. Otherwise we ask for help filling it instead of showing a mostly-unknown table.</p><div class="preset-grid">${data.presets.map(presetCard).join('')}</div></section>` : '';
   // Samsung-45-W style verdict from the per-port PDO table. Unknown is never no: a port that does not list PPS is unknown unless the product states no PPS.
@@ -481,7 +502,7 @@
     const presetCols = seed ? (preset.columns || []).filter(key => available.has(key)) : [];
     const presetSort = seed && preset.sort && ['coverage','brand','name','model',...category.fields.map(f => f.key)].includes(preset.sort.key) ? preset.sort : null;
     if (seed && presetCols.length) cols.splice(0, cols.length, ...presetCols);
-    return {preset: preset?.id || '', maybe: params.get('maybe') === '1', q: params.get('q') || '', brand: params.get('brand') || '', filters,
+    return {preset: preset?.id || '', all: params.get('all') === '1' && !!preset, maybe: params.get('maybe') === '1', q: params.get('q') || '', brand: params.get('brand') || '', filters,
       sort: presetSort ? presetSort.key : ['coverage','brand','name','model',...category.fields.map(f => f.key)].includes(params.get('sort')) ? params.get('sort') : 'coverage',
       dir: presetSort ? (presetSort.dir === 'desc' ? 'desc' : 'asc') : params.has('dir') ? (params.get('dir') === 'desc' ? 'desc' : 'asc') : (params.get('sort') && params.get('sort') !== 'coverage' ? 'asc' : 'desc'),
       preview: params.get('preview') === '1' && !!category.preview, certonly: params.get('certonly') === '1' && !!category.certification_only?.index?.length, view: ['grouped','sizegrid'].includes(params.get('view')) ? params.get('view') : (seed && preset.view === 'sizegrid' ? 'sizegrid' : 'flat'), cols, ids, page:Math.max(1, Number.parseInt(params.get('page') || '1', 10) || 1)};
@@ -495,6 +516,7 @@
     if (state.certonly) params.set('certonly', '1');
     if (state.view !== 'flat') params.set('view', state.view);
     if (state.preset) params.set('preset', state.preset);
+    if (state.preset && state.all) params.set('all', '1');
     if (state.maybe) params.set('maybe', '1');
     if (state.sort !== 'coverage') params.set('sort', state.sort);
     if (state.dir !== (state.sort === 'coverage' ? 'desc' : 'asc')) params.set('dir', state.dir);
@@ -637,6 +659,7 @@
       persistCategoryState(category, state);
       renderCategory(category, new URLSearchParams(categoryStateQuery(state)), sequence).then(() => main.querySelector('#certonly-toggle')?.focus());
     });
+    main.querySelector('.preset-banner')?.insertAdjacentHTML('afterend', '<p id="preset-scope" class="preset-scope muted" aria-live="polite"></p>');
     main.querySelector('#preview-toggle')?.addEventListener('change', event => {
       state.preview = event.target.checked; state.page = 1;
       persistCategoryState(category, state);
@@ -644,6 +667,7 @@
     });
     const sortSelect = main.querySelector('#sort-select');
     sortSelect.addEventListener('change', () => { state.sort = sortSelect.value; state.dir = state.sort === 'coverage' ? 'desc' : 'asc'; update(); });
+    main.querySelector('#preset-scope')?.addEventListener('click', event => { if (event.target.closest('[data-show-all],[data-show-scope]')) { state.all = !!event.target.closest('[data-show-all]'); state.page = 1; update(); main.querySelector('#preset-scope button')?.focus(); } });
     main.querySelector('#maybe-toggle').addEventListener('change', event => { state.maybe = event.target.checked; state.page = 1; update(); });
     main.querySelector('#view-select')?.addEventListener('change', event => { state.view = event.target.value; state.page = 1; update(); });
     search.addEventListener('input', () => { state.q = search.value; state.page = 1; update(); });
@@ -716,9 +740,15 @@
       const active = document.activeElement;
       const focus = active?.closest('#results-table') ? {kind: active.dataset.select ? 'select' : 'sort', value: active.dataset.select || active.dataset.sort} :
         active?.closest('#compare-shelf') ? {kind:'shelf', value:active.dataset.remove} : null;
-      const found = searchRows(rows, state.q);
+      const scopeOn = !!activePreset && !state.all && !!activePreset.gate.scope;
+      const pool = scopeOn ? rows.filter(row => inPresetScope(row, activePreset.gate.scope)) : rows;
+      const scopeNote = main.querySelector('#preset-scope');
+      if (scopeNote && activePreset?.gate.scope) scopeNote.innerHTML = scopeOn
+        ? `Showing the ${pool.length.toLocaleString('en-US')} in-scope ${escapeHtml(category.name.toLowerCase())} of ${rows.length.toLocaleString('en-US')} (${escapeHtml(firstSentence(activePreset.gate.scope.basis || ''))}) <button type="button" data-show-all>Show all ${rows.length.toLocaleString('en-US')}</button>`
+        : `Showing all ${rows.length.toLocaleString('en-US')} ${escapeHtml(category.name.toLowerCase())}, including rows outside this question's scope. <button type="button" data-show-scope>Show only the ${rows.filter(row => inPresetScope(row, activePreset.gate.scope)).length.toLocaleString('en-US')} in scope</button>`;
+      const found = searchRows(pool, state.q);
       const hasQuery = !!found.query;
-      const base = hasQuery ? rows.filter(row => found.matches.has(row.id)) : rows;
+      const base = hasQuery ? pool.filter(row => found.matches.has(row.id)) : pool;
       const facetFields = category.fields.filter(f => f.facet);
       const inBrand = base.filter(row => !state.brand || row.brand === state.brand);
       const matched = inBrand.filter(row => facetPass(row, facetFields, state.filters, false));
@@ -741,15 +771,15 @@
       const pageUnits = units.slice((state.page - 1) * pageSize, state.page * pageSize);
       const groupInfo = grouped ? new Map(pageUnits.filter(unit => unit.members[0].kind === 'configuration' && unit.members[0].parent_id).map(unit => [unit.members[0].id, {parent:unit.key, name:unit.members[0].name, matching:unit.members.length, total:configTotals.get(unit.key) || unit.members.length}])) : null;
       const split = facetFields.some(field => facetActive(field, state.filters));
-      main.querySelector('#result-count').textContent = `${split ? `${matched.length} ${matched.length === 1 ? 'match' : 'matches'}` : filtered.length} of ${rows.length} products${state.preview ? ' (accepted plus unreviewed candidates)' : ''}${grouped ? `, in ${units.length} ${units.length === 1 ? 'group' : 'groups'}` : ''}${pages > 1 && !(state.view === 'sizegrid' && gridConfig(category)) ? `. Page ${state.page} of ${pages}` : ''}${split && maybeRows.length ? `. ${maybeRows.length} more ${maybeRows.length === 1 ? 'has' : 'have'} an unknown value for a filtered field and might match${state.maybe ? ' (shown, marked)' : ''}` : ''}`;
+      main.querySelector('#result-count').textContent = `${split ? `${matched.length} ${matched.length === 1 ? 'match' : 'matches'}` : filtered.length} of ${pool.length} products${state.preview ? ' (accepted plus unreviewed candidates)' : ''}${grouped ? `, in ${units.length} ${units.length === 1 ? 'group' : 'groups'}` : ''}${pages > 1 && !(state.view === 'sizegrid' && gridConfig(category)) ? `. Page ${state.page} of ${pages}` : ''}${split && maybeRows.length ? `. ${maybeRows.length} more ${maybeRows.length === 1 ? 'has' : 'have'} an unknown value for a filtered field and might match${state.maybe ? ' (shown, marked)' : ''}` : ''}`;
       const maybeToggle = main.querySelector('#maybe-toggle');
       maybeToggle.checked = state.maybe;
       main.querySelector('#maybe-label').hidden = !(split && (maybeRows.length || state.maybe));
       main.querySelector('#maybe-count').textContent = maybeRows.length;
       const query = categoryStateQuery(state);
       const gridCfg = state.view === 'sizegrid' ? gridConfig(category) : null;
-      if (gridCfg) main.querySelector('#results-table').innerHTML = filtered.length ? sizeGridMarkup(filtered, gridCfg) : emptyState(category, state, {found, total:rows.length, hiddenByFilters:base.length - filtered.length, baseCount:base.length});
-      else renderTable(category, pageUnits.flatMap(unit => unit.members), state, query, {found, total:rows.length, hiddenByFilters:base.length - filtered.length, baseCount:base.length, groupInfo, compared:selectedRows(rows, state), maybe:maybeIds});
+      if (gridCfg) main.querySelector('#results-table').innerHTML = filtered.length ? sizeGridMarkup(filtered, gridCfg) : emptyState(category, state, {found, total:pool.length, hiddenByFilters:base.length - filtered.length, baseCount:base.length});
+      else renderTable(category, pageUnits.flatMap(unit => unit.members), state, query, {found, total:pool.length, hiddenByFilters:base.length - filtered.length, baseCount:base.length, groupInfo, compared:selectedRows(rows, state), maybe:maybeIds});
       for (const key of state.cols) { const f = category.fields.find(item => item.key === key); if (f && pageUnits.some(unit => unit.members.some(row => !isKnown(specObject(row, key))))) noteUnknown(category.id, key); }
       if (state.preset && !presetReported) { presetReported = true; if (presetById(category, state.preset)?.gate.passes) sendEvent('killer_query', category.id, {preset:state.preset, results:matched.length}); }
       main.querySelector('#pagination').innerHTML = pages > 1 && !(state.view === 'sizegrid' && gridConfig(category)) ? `<nav class="pagination" aria-label="Result pages"><button type="button" data-dir="prev" data-page="${state.page - 1}" ${state.page === 1 ? 'disabled' : ''}>Previous</button><span>Page ${state.page} of ${pages}</span><button type="button" data-dir="next" data-page="${state.page + 1}" ${state.page === pages ? 'disabled' : ''}>Next</button></nav>` : '';

@@ -269,7 +269,8 @@ assert.equal(total, categories.reduce((sum, category) => sum + category.count, 0
   for (const p of presets.presets) {
     assert(categories.some(c => c.id === p.category), `preset ${p.id}: known category`);
     assert(p.gate && typeof p.gate.passes === 'boolean' && p.gate.keys.length, `preset ${p.id}: gate computed`);
-    assert.equal(p.gate.passes, p.gate.fill >= p.min_fill, `preset ${p.id}: gate = fill >= min_fill`);
+    assert.equal(p.gate.passes, p.gate.fill >= p.min_fill && p.gate.scope.covered_brands.length >= p.gate.min_brands, `preset ${p.id}: gate = fill >= min_fill and enough covered brands`);
+    assert(p.gate.scope.in_scope <= p.gate.scope.category_total && p.gate.keys.every(k => k.total <= p.gate.scope.in_scope), `preset ${p.id}: populations sit inside the scope`);
     if (!p.gate.passes) assert(p.gate.label && p.gate.known <= p.gate.total, `preset ${p.id}: failing preset names its missing field`);
   }
 }

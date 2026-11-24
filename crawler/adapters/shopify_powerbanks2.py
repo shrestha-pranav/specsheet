@@ -34,7 +34,7 @@ import _powerbank as P
 import _run
 import shopify_powerbanks as S
 
-VERSION = 4       # v4: r7 shared _powerbank (labelled Wh pairs keep both with energy_basis, case-insensitive Wh); v3: r6 shared _powerbank (repeated port row = one port); v2: review 3 (two unlabelled figures unresolved, 5 V capacity basis, rated load conditions)
+VERSION = 5       # v5 (A2 preset fill): mophie out.max_single_port_w = max of an Output row that names every output port one by one; v4: r7 shared _powerbank (labelled Wh pairs keep both with energy_basis, case-insensitive Wh); v3: r6 shared _powerbank (repeated port row = one port); v2: review 3 (two unlabelled figures unresolved, 5 V capacity basis, rated load conditions)
 DELAY = 1.0
 
 
@@ -242,6 +242,30 @@ def port_list(lit):
     return ports, "; ".join(combos) or None
 
 
+MOPHIE_ENTRY = re.compile(r"\s*(?:(\d)\s+)?((?:USB-C|USB-A|Lightning|MagSafe|Qi2?|Wireless|Magnetic)[A-Za-z0-9 ]*?)\s*[-:]\s*(\d{1,3}(?:\.\d+)?)W"
+                          r"(?:\s*\((?:Input/Output|Output)\))?\s*", re.I)
+
+
+def mophie_single(o):
+    """mophie 'Output' row -> best single-port W, or None (A2 preset fill 2026-11-24). The cell prints one entry per output, run together
+    ('1 USB-C Port - 100W1 USB-C Port - 45W1 USB-C Port - 20W', 'USB-C Lightning - 20WUSB-C Cable - 30W (Input/Output)USB-C Port - 30W ...').
+    Read only when the WHOLE cell parses as entries that each name exactly ONE port (count absent or 1, no 'Ports', no 'Cable and Port'):
+    '2 USB-C Ports - 45W' or 'USB-C Cable and Port: 20W' do not say per-port vs shared, so nothing is written. Wireless entries never count."""
+    pos, ws = 0, []
+    o = o.strip()
+    while pos < len(o):
+        m = MOPHIE_ENTRY.match(o, pos)
+        if not m or m.end() == pos:
+            return None
+        n, name = m[1], m[2].strip()
+        if (n and n != "1") or re.search(r"(?i)ports\b|cables\b|\band\b|&|/", name):
+            return None
+        if not re.search(r"(?i)magsafe|qi|wireless|magnetic", name):
+            ws.append(float(m[3]))
+        pos = m.end()
+    return P.fnum(max(ws)) if ws else None
+
+
 def parse2(ad, snap, page, prod):
     pr, key = C.ParseResult(), snap.ref.key
     pr.sources = [L.source(snap, f"{ad.brand.upper()} US store page {key}")]
@@ -301,6 +325,7 @@ def parse2(ad, snap, page, prod):
     if ad.brand == "mophie" and (o := rows.get("Output")):          # '3 USB-C Ports - 45W': per-port or total not stated (Belkin 'Wattage' rule)
         ws = re.findall(P.NUM + r"\s*W\b", o)
         add("out.max_output_w", P.fnum(ws[0]) if len(set(ws)) == 1 else None, o, "Output")
+        add("out.max_single_port_w", mophie_single(o), o, "Output", quote="max of the Output row's per-port list (every entry names one port)")
         rows = {k: v for k, v in rows.items() if k != "Output"}
     outs = [(l, v) for l, v in rows.items() if re.search(r"(^|usb-?[ac][\d/c]* |single-port |power )output$|^output$|^output \(power bank mode\)$", l, re.I)]
     if outs and not any(re.search(r"\b\d+K\s*:", v) for _, v in outs):

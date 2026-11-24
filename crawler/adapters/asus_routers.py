@@ -11,6 +11,8 @@ parse    : pure. Rows used: Network Standard, Product Segment ('AX5700 ultimate 
 Traps    : ASUS is the one maker that prints flash and RAM; no SoC vendor/model is printed. A page covers several unit variants for mesh kits; the 160 MHz line
            carries a regulatory footnote (may be unavailable in some regions) so it is a capability, not a guarantee. Wi-Fi 6E/7 pages: the 160 MHz
            statement cannot be pinned to 5 vs 6 GHz, so widths are only set for dual-band Wi-Fi 6 and for the Wi-Fi 7 '320' statement.
+v2 (2026-11-24, preset fill): wifi.has_6ghz also from the 'Operating Frequency' band list: True when it names 6 GHz, False (condition
+           basis=complete_enumeration, list kept as raw) only when it enumerates exactly 2.4 + 5 GHz radios and no data-rate line names 6 GHz.
 """
 import gzip, re, sys, time
 from pathlib import Path
@@ -21,7 +23,7 @@ import _lt as L
 import _run
 import asus as A
 
-ID, VERSION, SOURCE = "asus_routers", 1, "asus-us-routers"
+ID, VERSION, SOURCE = "asus_routers", 2, "asus-us-routers"
 CATEGORIES = {"routers"}
 ADAPTER = f"{ID}@{VERSION}"
 INDEX = "https://www.asus.com/sitemap.xml"
@@ -124,8 +126,13 @@ def parse_html(snap, h):
         add("wifi.max_width_5_mhz", "160", boost, "Boosts Speed")
     if len(bands) > 1:
         add("wifi.band_count", len(bands), cut, "WiFi Data Rate")
+    freq = cell(rows, "Operating Frequency")
     if "6" in bands:
         add("wifi.has_6ghz", True, cut, "WiFi Data Rate")
+    elif "6" not in R.per_band(data):
+        # v2: the 'Operating Frequency' row is the maker's complete band list ('5 GHz 2.4 GHz'): True when it names 6 GHz,
+        # False (basis=complete_enumeration, list kept as raw) when it enumerates 2.4 + 5 GHz and nothing else (R.band_enum)
+        R.add_6ghz(pr, ADAPTER, snap, R.band_enum(freq), freq, "model_code", model, "Operating Frequency")
     q = [int(x) for x in re.findall(r"(\d{3,4})\s*-?\s*QAM", boost)]
     if q and max(q) in (1024, 4096):
         add("wifi.qam_max", str(max(q)), boost, "Boosts Speed")

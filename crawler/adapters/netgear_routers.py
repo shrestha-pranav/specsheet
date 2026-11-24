@@ -11,6 +11,10 @@ parse    : pure. Two structured sources inside the page: (1) schema.org Product 
 Traps    : Orbi kits are named by pack (RBE972 = router+1 satellite, RBE973 = router+2): the kit code IS the model here, so pack_count is a model fact.
            Newer Orbi/Nighthawk pages carry only the JSON-LD headline properties (no per-band rows); those claims stay absent. 'up to 27Gbps' is a class
            sum. The JSON-LD price is list price at fetch time (candidate only). 'Powerful triple-core 1.5GHz' names no SoC vendor.
+v2 (2026-11-24, preset fill): Wi-Fi 7 pages carry two-cell spec tables. has_6ghz = True from any band row naming 6 GHz; False only when every
+           band row is a band-list row ('WiFi Bands', 'Simultaneous Dual-Band WiFi ...') that enumerates 2.4 + 5 GHz completely (R.band_enum,
+           condition basis=complete_enumeration, list kept as raw). 'WiFi Bands' per-band rates/streams (RS150 '5 GHz (3x3), 4.3 Gbps'), else from the page's own
+           product-attribute record c_wifiBands (one distinct value only; RBE870 '5 GHz (4x4/240 MHz, 4K-QAM): 8,640 Mbps').
 """
 import gzip, json, re, sys, time
 from pathlib import Path
@@ -20,7 +24,7 @@ import _router as R
 import _lt as L
 import _run
 
-ID, VERSION, SOURCE = "netgear_routers", 1, "netgear-us-routers"
+ID, VERSION, SOURCE = "netgear_routers", 2, "netgear-us-routers"
 CATEGORIES = {"routers"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.netgear.com"
@@ -28,6 +32,10 @@ SITEMAP = BASE + "/sitemap.xml"
 DELAY = 1.0
 LOC = re.compile(r"<loc>https://www\.netgear\.com/home/wifi/(routers|mesh)/([a-z0-9]+)/</loc>")
 KEEP = re.compile(r"^(rax|rs|rbe|rbk|rbs|rbr|rbse|mk|ms|cbk)\d", re.I)
+TR2 = re.compile(r"<tr[^>]*>\s*<td[^>]*>(.*?)</td>\s*<td[^>]*>(.*?)</td>\s*</tr>", re.S)
+# v2: the Wi-Fi 7 pages' two-cell spec tables. A band-list row is a complete enumeration ('WiFi Bands', 'Simultaneous Dual-Band WiFi ...');
+# any other row naming bands ('Multi-link Operation: Combines two WiFi bands') can only say True.
+ENUM_LABEL = re.compile(r"^(?:WiFi Bands?|(?:Simultaneous\s+)?(?:Dual|Tri|Quad)-Band\b.*)$", re.I)
 LD = re.compile(r'<script[^>]*type="application/ld\+json"[^>]*>(.*?)</script>', re.S)
 
 
@@ -76,6 +84,18 @@ def td_pairs(h):
             out.setdefault(cur, [])
         elif cur:
             out[cur] += t
+    return out
+
+
+def spec_rows(h):
+    """-> [(label, value)] of the two-cell <td> spec rows; <br> becomes ' | ', footnote <sup> marks are dropped."""
+    out = []
+    for a, b in TR2.findall(h):
+        lab = R.clean(re.sub(r"<sup>.*?</sup>", "", a, flags=re.S))
+        val = R.clean(re.sub(r"<br\s*/?>", " | ", re.sub(r"<sup>.*?</sup>", "", b, flags=re.S)))
+        val = re.sub(r"(?:\s*\|\s*)+", " | ", val).strip(" |")
+        if lab and val and len(lab) < 80:
+            out.append((lab, val))
     return out
 
 
@@ -136,8 +156,31 @@ def parse_html(snap, h):
         add("wifi.qam_max", str(max(qam)), tech, "WiFi Technology")
     if re.search(r"\bMLO\b|Multi-Link", base + " ".join(props.values()), re.I):
         add("wifi.mlo", True, base, "title/description")
+    srows = spec_rows(h)
+    brows = [(a, b) for a, b in srows if re.search(r"band", a, re.I) and R.BAND_TOK.search(b)]
     if re.search(r"\b6\s*GHz\b", band + tech):
         add("wifi.has_6ghz", True, band, "WiFi Band")
+    elif brows:
+        aff = next(((a, b) for a, b in brows if R.band_enum(b) is True), None)
+        enum = [(a, b) for a, b in brows if ENUM_LABEL.match(a)]
+        if aff:
+            R.add_6ghz(pr, ADAPTER, snap, True, f"{aff[0]}: {aff[1]}", "model_code", model, aff[0])
+        elif enum and len(enum) == len(brows):
+            res = [R.band_enum(b, R.bands(a) or R.bands(props.get("WiFi Band Type", ""))) for a, b in enum]
+            if all(r is False for r in res):
+                R.add_6ghz(pr, ADAPTER, snap, False, f"{enum[0][0]}: {enum[0][1]}", "model_code", model, enum[0][0])
+    done = {c["key"] for c in pr.claims}
+    lists = [(next((b for a, b in srows if re.fullmatch(r"WiFi Bands?", a, re.I)), ""), "WiFi Bands")]
+    mods = [(m.start(), m[1]) for m in re.finditer(r'"c_modelNumber":"([^"]+)"', h)]
+    cw = {json.loads('"' + m[1] + '"') for m in re.finditer(r'"c_wifiBands":"((?:[^"\\]|\\.)*)"', h)       # this product's record only:
+          if mods and min(mods, key=lambda x: abs(x[0] - m.start()))[1] == model}                               # nearest c_modelNumber
+    if len(cw) == 1:    # the page's own product-attribute record carries the same per-band list, often with the rates the table omits
+        lists.append((R.clean(cw.pop()), "c_wifiBands (product attributes)"))
+    for wb, wlab in lists:
+        for b, d in R.per_band(wb).items():   # per-band streams and rate, first statement wins; '160 to 20MHz' widths are not read
+            for k, v in ((f"wifi.rate_{b}_mbps", d.get("rate")), (f"wifi.streams_{b}", d.get("streams"))):
+                if v is not None and k not in done:
+                    add(k, v, wb, wlab); done.add(k)
     cov = re.search(r"([\d,]+)\s*sq", props.get("WiFi Coverage (sq. ft.)", "") or " ".join(rows.get("WiFi Coverage", [])))
     if cov:
         add("mesh.coverage_sqft", int(cov[1].replace(",", "")), props.get("WiFi Coverage (sq. ft.)") or rows.get("WiFi Coverage"), "WiFi Coverage")

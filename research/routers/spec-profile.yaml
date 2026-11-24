@@ -102,6 +102,14 @@ units:
   - unit: month
     base: month
     factor: 1
+conditions:
+- id: basis
+  label: Basis of a negative value
+  type: enum
+  enum:
+  - complete_enumeration
+  description: 'A false/0 written only because the maker''s own structured spec section prints a complete list for the unit (every band). Coordinator
+    ruling 1 (2026-11-24); prose, marketing bullets, partial tables, ''up to'' phrasing or a missing row never produce a negative.'
 groups:
 - id: general
   label: General & identity
@@ -306,8 +314,15 @@ specs:
   level: model
   facet: &id002
     kind: bool
+  conditions:
+  - basis
+  basis_conditions:
+  - basis
   traps:
   - Wi-Fi 7 does not imply 6 GHz in every region/SKU
+  - 'false only from a complete maker band list (NETGEAR ''WiFi Bands'' / ''Simultaneous Dual-Band WiFi'' row, ASUS ''Operating Frequency'', TP-Link
+    ''Frequency'' or a ''WiFi Speeds'' row whose per-band rates sum to the class number, Ubiquiti per-radio groups): condition basis=complete_enumeration.
+    ''Tri-band'' alone, a beamforming bullet or silence never gives false'
   sources:
   - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
   example: true

@@ -358,6 +358,7 @@ def publish(api: Path, build_stats: dict, gate_out: dict | None = None):
                    "lifecycle": d["lifecycle"]["state"], "demo": False}
             if x:
                 row["x"] = x
+            row["t"] = sorted({s["tier"] for s in d["sources"] if s.get("tier")})     # D8: source tiers the row carries (preset scope)
             if scope == "preview":
                 row["review_scope"] = "preview"; row["in_trusted"] = eid in pub
             return row

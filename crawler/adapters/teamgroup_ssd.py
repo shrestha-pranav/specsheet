@@ -27,7 +27,7 @@ import _lt as L
 import _ssdprose as SP
 import _run
 
-ID, VERSION, SOURCE = "teamgroup_ssd", 4, "teamgroup-us-ssd"
+ID, VERSION, SOURCE = "teamgroup_ssd", 5, "teamgroup-us-ssd"
 CATEGORIES = {"ssds"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.teamgroupinc.com"
@@ -141,7 +141,7 @@ def parse_html(snap, h):
         d = R.get("DRAM Cache")
         hmb = prose["claims"].get("hw.dram_type", (None,))[0] == "dramless_hmb"
         if d and re.fullmatch(r"no", d, re.I):         # v3: 'NO' + an explicit HMB statement on the page = dramless_hmb (both literals kept)
-            add("hw.dram_type", "dramless_hmb" if hmb else "dramless_none", f"DRAM Cache: {d}; {prose['claims']['hw.dram_type'][1]}" if hmb else d,
+            add("hw.dram_type", "dramless_hmb" if hmb else "dramless", f"DRAM Cache: {d}; {prose['claims']['hw.dram_type'][1]}" if hmb else d,
                 "DRAM Cache + page prose" if hmb else "DRAM Cache")
         elif d and re.fullmatch(r"yes", d, re.I):
             add("hw.dram_type", "dram", d, "DRAM Cache")
@@ -150,6 +150,7 @@ def parse_html(snap, h):
             if re.search(r"USB|thunderbolt", iface, re.I):
                 add("if.usb_standard", S.usb(iface), iface, "Interface")
                 add("gen.device_class", "portable_usb", iface, "Interface")
+                add("if.protocol", S.usb_protocol(iface), iface, "Interface")      # v5: affirmative USB interface only (ruling 4)
             elif re.search(r"SATA", iface, re.I):
                 add("if.protocol", "sata_ahci", iface, "Interface")
             else:

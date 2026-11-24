@@ -22,7 +22,7 @@ import _router as R
 import _lt as L
 import _run
 
-ID, VERSION, SOURCE = "glinet_routers", 1, "glinet-us-routers"
+ID, VERSION, SOURCE = "glinet_routers", 2, "glinet-us-routers"
 CATEGORIES = {"routers"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.gl-inet.com/en-us"
@@ -123,6 +123,10 @@ def parse_html(snap, h):
             add(f"wifi.rate_{b}_mbps", rs[0], sp, "Wi-Fi Speed")
     if "6" in found:
         add("wifi.has_6ghz", True, sp, "Wi-Fi Speed")
+    elif found and all(len(v) == 1 for v in found.values()) and \
+            R.rates_cover_class({b: {"rate": v[0]} for b, v in found.items()}, R.marketing_class(title + " " + sp)) and R.band_enum(sp) is False:
+        # v2: a per-band rate list that sums to the class number (GL-BE3600: 688 + 2882) names every radio: complete enumeration
+        R.add_6ghz(pr, ADAPTER, snap, False, sp, "model_code", model, "Wi-Fi Speed")
     if gen == "wifi6" and "6" in found:
         gen = "wifi6e"
     add("wifi.generation", gen, proto, "Protocol")

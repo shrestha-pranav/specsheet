@@ -8,21 +8,18 @@
 # (preview dataset only) until a human ledger line (ledger.jsonl) accepts or rejects it.
 format: specsheet.policies/2
 claim_policies:
-- id: claim/mfr-structured-datasheet@2
-  since: '2026-11-23'
-  supersedes: claim/mfr-structured-datasheet@1
-  rationale: 'Deterministic extraction of the manufacturer''s own structured specification data: Lenovo PSREF model tables (adapter + psref-mapping single-target
-    columns), Tripp Lite product JSON/datasheet tables, CyberPower item JSON + datasheets, and label-mapping transforms applied to those two manufacturers''
-    labelled tables. Values must normalise to the profile type (normalize.py) or the claim stays a candidate. Adapter versions are pinned: a parser bump
-    needs a re-audit and a policy @N+1. @2: explicit per-source key allowlist (review 2 risk 1).'
+- id: claim/mfr-structured-datasheet@3
+  since: '2026-11-24'
+  supersedes: claim/mfr-structured-datasheet@2
+  rationale: 'Same sources, kinds, tiers, normalisation and per-source key allowlists as @2 (no widening, no narrowing), re-issued for the parser bump lenovo_psref@2 -> @3. The one change: a PSREF Max Memory cell in the newer layout is prefixed with the platform it applies to (''Arrow Lake: up to 64GB DDR5-5600'', ''Lunar Lake: 32GB soldered memory, not upgradable''); the row is already that MTM''s own cell, so the label is dropped from the value (raw keeps the full literal) and it normalises. A cell listing several variants (^|^) is resolved only by the ECC / Non-ECC split (ThinkPad P16 Gen 3, T16g Gen 3), read from the same MTM''s Memory cell; any other multi-variant cell, or a Memory cell that does not say ECC/Non-ECC, keeps the literal (does not normalise: unknown). tripplite@2 and cyberpower@1 unchanged.'
   audit:
-    by: A3-impl r4
-    at: '2026-11-23'
-    evidence: 'key allowlist = exactly the keys @1 accepted in the last release import (accepted_digest 707f0510...), per source: no widening, no narrowing.'
-    parsers: {lenovo_psref@2: 'sha256:ec6a55f8081086820989', tripplite@2: 'sha256:949811b25418d7a2b724', cyberpower@1: 'sha256:a3e88411366c8d320d51'}
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+    by: A2 preset fill
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; claim diff base vs new parser over every stored US PSREF row (58,235 claims): 177 mem.max values change (the platform label or ECC split resolved; raw unchanged), all 177 now normalise (P16 Gen 3 / T16g Gen 3 64 -> 192GB Non-ECC, E14/E16 Gen 7, T14/T16 Gen 6/7, E14/E16 Gen 8/4); 0 other claims change; platform label checked against each MTM Processor (Lunar Lake = Core Ultra 2xxV soldered, Arrow Lake = 2xxU/H). tests/test_preset_fill_laptops.py'
+    parsers: {lenovo_psref@3: 'sha256:758b48fedf2b491a03d4', tripplite@2: 'sha256:949811b25418d7a2b724', cyberpower@1: 'sha256:a3e88411366c8d320d51'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [lenovo_psref@2, import.py+psref-mapping@1, tripplite@2, cyberpower@1, import.py+label-mapping@1]
+    extractors: [lenovo_psref@3, import.py+psref-mapping@1, tripplite@2, cyberpower@1, import.py+label-mapping@1]
     source_ids: [lenovo-psref, tripplite, cyberpower]
     kinds: [official]
     tiers: [manufacturer]
@@ -41,27 +38,25 @@ claim_policies:
         load.voltage, outlets.count, outlets.covers, outlets.switch, phys.dimensions, phys.material, phys.mounting, phys.weight_lb, safety.breaker, safety.led_details,
         surge.dataline, surge.emi_rfi, surge.joules, surge.max_spike_voltage, surge.max_surge_current, surge.response_time, surge.vpr_max, type.ul1363_listed,
         type.ul1449_edition, type.ul1449_listed, usb.pd, usb.ports, usb.total_w]
-- id: claim/asus-techspec-typed@2
-  since: '2026-11-23'
-  supersedes: claim/asus-techspec-typed@1
-  rationale: 'ASUS techspec tables (asus@1): labelled manufacturer cells, but model-level pages often append option notes and disclaimers. Only values that
-    normalise to a typed profile value (number/integer/bool/enum), plus the processor, colour, webcam and OS cells (single literal statements), are accepted;
-    other free text stays a preview candidate. @2: the type-class rule (spec_types + also_keys) is replaced by an explicit key allowlist.'
+- id: claim/asus-techspec-typed@3
+  since: '2026-11-24'
+  supersedes: claim/asus-techspec-typed@2
+  rationale: 'Same rules as @2 (labelled ASUS techspec / ROG JSON-LD cells, only values that normalise, explicit key allowlist), re-issued for asus@1 -> @2. WIDENING: mem.max and mem.soldered added to the asus-us allowlist. asus@2 derives them from the Memory cell text only (crawler/adapters/asus.py memory_facts, quote kept): mem.max from the option''s own ''Max Capacity:N GB'' / ''Memory Max Up to:N GB'' / ''Max Total system memory up to:N GB''; mem.soldered = soldered for on-board/on-package memory with no SO-DIMM only when the option says ''No expansion possible'' or its stated max equals the on-board amount, socketed for SO-DIMM with no on-board memory, mixed for both. Every option of a model code must state the fact and agree, otherwise nothing; two on-board amounts in one option and footnote-only options say nothing; never from absence. All other asus claims are byte-identical.'
   audit:
-    by: A3-impl r4
-    at: '2026-11-23'
-    evidence: 'key allowlist = exactly the keys @1 accepted in the last release import (accepted_digest 707f0510...), per source: no widening, no narrowing.'
-    parsers: {asus@1: 'sha256:628db32b5ba83fa291c6'}
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+    by: A2 preset fill
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; claim diff base vs new parser over every stored asus-us snapshot (142 pages): +315 mem.max (64GB 155, 32GB 76, 16GB 30, 8GB 14, 128GB 13, 96GB 12, 40/4/48), +302 mem.soldered (socketed 160, soldered 121, mixed 21), 0 removed, 0 other changes. tests/test_preset_fill_laptops.py (positive + refused cases)'
+    parsers: {asus@2: 'sha256:882e02a6786b8e27beab'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [asus@1]
+    extractors: [asus@2]
     source_ids: [asus-us]
     kinds: [official]
     tiers: [manufacturer]
     statuses: [known, not_applicable]
     require_normalized: true
     keys:
-      asus-us: [cpu.model, disp.size, gen.color, in.webcam, mem.size, phys.weight, pwr.battery_wh, stor.size, sw.os]
+      asus-us: [cpu.model, disp.size, gen.color, in.webcam, mem.max, mem.size, mem.soldered, phys.weight, pwr.battery_wh, stor.size, sw.os]
 - id: claim/cpu-split@2
   since: '2026-11-23'
   supersedes: claim/cpu-split@1
@@ -81,36 +76,36 @@ claim_policies:
     keys:
       asus-us: [cpu.base_clock, cpu.boost_clock, cpu.cache, cpu.cores, cpu.cores_threads, cpu.model, cpu.threads]
       lenovo-psref: [cpu.base_clock, cpu.boost_clock, cpu.cache, cpu.cores, cpu.cores_threads, cpu.model, cpu.threads]
-- id: claim/mfr-monitor-structured@3
+- id: claim/mfr-monitor-structured@4
   since: '2026-11-24'
-  supersedes: claim/mfr-monitor-structured@2
-  rationale: 'Same meaning as @2 (per-source key allowlists, kinds, tiers, normalisation) for lg_us@1 and asus_monitors@1, re-issued for the parser bump lenovo_monitors@1 -> @2: usb.usbc_pd_w is read one port line at a time, only from a USB-C/Thunderbolt/USB4 line the maker marks USB upstream, number before or after PD (''up to 90W PD'', ''USB PD 3.1 up to 140W'', ''Alt Mode, up to 75W''); downstream charging ports never count; two upstream ports with different wattages write nothing. WIDENING: usb.usbc_pd_w added to the lenovo-psref-monitors allowlist (53 PSREF families). All other Lenovo claims are byte-identical to @1 output.'
+  supersedes: claim/mfr-monitor-structured@3
+  rationale: 'Same meaning as @3 for every key it already accepted, re-issued for three parser bumps (lenovo_monitors@2 -> @3, lg_us@1 -> @2, asus_monitors@1 -> @2; shared helper crawler/adapters/_monports.py). WIDENING: (1) usb.usbc_inputs for all three sources, counted from the maker''s full structured port list (Lenovo PSREF Rear/Side/Left/Right/Front/Top/Bottom Ports, ASUS techspec I/O Ports lines, LG Input/Output group): USB-C/Thunderbolt/USB4 ports that take video (Alt Mode, DisplayPort, Thunderbolt; LG: DP Alternate Mode, a USB-C power-delivery or max-resolution row), never downstream/out/data-only ports; a USB-C port of unstated role, a multi-port daisy-chain or upstream+downstream line writes nothing. 0 only under coordinator ruling 1 (complete enumeration): the list names a video input, no USB-C port on it takes video, and no USB-C mention anywhere else on the page; the claim carries the basis condition {basis: complete_enumeration} with the full list as raw. LG ''USB-C (DP Alternate Mode): No'' (no Thunderbolt) writes 0 as a stated value. (2) gen.size_class for lg-us and asus-us-monitors under coordinator ruling 3: LG ''Screen Size Class (diagonal)'' ''22" Class (21.5" diagonal)'' -> 22 stated (kind official); where only a diagonal is printed (ASUS Panel Size (inch), LG Screen Size) the class is kind derived by round half up to the whole inch, locator.derivation size_class_round_half_up@1, the stated diagonal as raw. kinds widened to [official, derived] for gen.size_class only (no other key emits derived). All other claims are byte-identical to the @3 parsers'' output.'
   audit:
-    by: A2 coverage r2
+    by: A2 preset fill
     at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD): lenovo-psref-monitors +53 usb.usbc_pd_w, 0 other changes'
+    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; claim diff old (copy of crawler/ before the change) vs new parsers over every stored snapshot: lg-us +492 gen.size_class, +440 usb.usbc_inputs; asus-us-monitors +315 gen.size_class, +308 usb.usbc_inputs; lenovo-psref-monitors +186 usb.usbc_inputs; 0 removed; fixtures tests/test_preset_fill_monitors.py'
     parsers:
-      lenovo_monitors@2: 'sha256:ed0431bb405523a78915'
-      lg_us@1: 'sha256:51da673073084332f227'
-      asus_monitors@1: 'sha256:21ba35a4d7bbafdaff71'
+      lenovo_monitors@3: 'sha256:2a8164ba93f3240a0030'
+      lg_us@2: 'sha256:aa21c2db2583ef6b77b3'
+      asus_monitors@2: 'sha256:06b1bcd48df53b338599'
   approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [lenovo_monitors@2, lg_us@1, asus_monitors@1]
+    extractors: [lenovo_monitors@3, lg_us@2, asus_monitors@2]
     source_ids: [lenovo-psref-monitors, lg-us, asus-us-monitors]
-    kinds: [official]
+    kinds: [official, derived]
     tiers: [manufacturer]
     statuses: [known, not_applicable]
     require_normalized: true
     keys:
       lenovo-psref-monitors: [color.dci_p3, color.srgb, ergo.vesa, ergo.weight, ergo.weight_panel, gen.color, gen.curvature, gen.size_class, hdr.contrast_static,
         hdr.marketed_label, hdr.sdr_typ, panel.bit_depth, panel.surface, panel.technology, pwr.max, pwr.typical, res.aspect, res.height_px, res.native,
-        res.ppi, res.refresh_max, res.vrr_types, res.width_px, sup.warranty_years, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
-      lg-us: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.viewable_diag, hdr.contrast_static, hdr.sdr_typ, motion.gtg_marketed,
-        panel.surface, panel.technology, pwr.external_adapter, pwr.max, pwr.typical, res.aspect, res.height_px, res.native, res.refresh_max, res.vrr_types,
-        res.width_px, sup.warranty_years, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count]
-      asus-us-monitors: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.viewable_diag, hdr.contrast_static, hdr.marketed_label,
-        hdr.peak_marketed, hdr.sdr_typ, motion.gtg_marketed, panel.surface, panel.technology, pwr.typical, res.aspect, res.height_px, res.native, res.refresh_max,
-        res.vrr_types, res.width_px, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
+        res.ppi, res.refresh_max, res.vrr_types, res.width_px, sup.warranty_years, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
+      lg-us: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.size_class, gen.viewable_diag, hdr.contrast_static, hdr.sdr_typ,
+        motion.gtg_marketed, panel.surface, panel.technology, pwr.external_adapter, pwr.max, pwr.typical, res.aspect, res.height_px, res.native, res.refresh_max,
+        res.vrr_types, res.width_px, sup.warranty_years, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count]
+      asus-us-monitors: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.size_class, gen.viewable_diag, hdr.contrast_static,
+        hdr.marketed_label, hdr.peak_marketed, hdr.sdr_typ, motion.gtg_marketed, panel.surface, panel.technology, pwr.typical, res.aspect, res.height_px, res.native,
+        res.refresh_max, res.vrr_types, res.width_px, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
 - id: claim/energystar-certified-power@2
   since: '2026-11-23'
   supersedes: claim/energystar-certified-power@1
@@ -153,20 +148,20 @@ claim_policies:
     keys: [hdr.vesa_tier]
     statuses: [known]
     require_normalized: true
-- id: claim/mfr-ssd-structured@4
+- id: claim/mfr-ssd-structured@5
   since: '2026-11-24'
-  supersedes: claim/mfr-ssd-structured@3
-  rationale: 'Same keys, sources, kinds and rules as @3, re-issued for sandisk_ssd@3 -> @4 and teamgroup_ssd@3 -> @4 (both import crawler/adapters/_ssdprose.py). The one change: an explicit page sentence that calls the drive DRAM-less and says nothing about HMB now writes hw.dram_type = dramless (new profile value: HMB unstated; hw.hmb_support stays unknown, never assumed). A hedged/comparative sentence still says nothing, except the self-description ''this DRAM-less drive ...'' (its comparison is about another attribute). A sentence naming HMB still writes dramless_hmb; two values on a page = nothing.'
+  supersedes: claim/mfr-ssd-structured@4
+  rationale: 'Same keys, sources, kinds and rules as @4, re-issued for sandisk_ssd@4 -> @5 and teamgroup_ssd@4 -> @5 (both import crawler/adapters/_ssd.py). Changes: (1) coordinator ruling 5: a table cell reading DRAM-less / None / No = hw.dram_type dramless (HMB unknown); dramless_none only when the cell explicitly denies HMB; a cell naming HMB = dramless_hmb. TEAMGROUP ''DRAM Cache: NO'' (122 configurations) moves dramless_none -> dramless. (2) ruling 4: if.protocol for a portable drive is affirmative only: new profile value usb when the interface cell names a USB 2/3.x interface (usb_uasp only if it says UASP); Thunderbolt or USB4 cells, connector-only cells and silence write nothing, never not_applicable. (3) SanDisk internal drives with no Interface row take nvme / sata_ahci from the maker''s own product name (SKU title, else og:title) only when it names exactly one of NVMe / SATA. No key added.'
   audit:
-    by: A2 coverage r3
+    by: A2 preset fill
     at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-a2-coverage-r3.md; claim diff old (git worktree of HEAD) vs new parsers over every stored snapshot: sandisk +22 hw.dram_type=dramless (SN7100S 16, SN7100 4, SN7100X 2), 0 removed; teamgroup 0 changes'
+    evidence: 'tests/test_preset_fill_ssds.py (positive + refused fixtures); claim diff old (/tmp copy of crawler/ before the edit) vs new parsers over every stored snapshot: sandisk +67 if.protocol=usb, +36 nvme (SN8100 8, SN7100S 16, SN5100 4, NAS 800 4, GX PRO 850P 4), +4 sata_ahci (WD Green 2.5in); teamgroup +25 if.protocol=usb, 122 hw.dram_type dramless_none -> dramless; 0 other changes'
     parsers:
-      sandisk_ssd@4: 'sha256:05de40f98b4ac34391f0'
-      teamgroup_ssd@4: 'sha256:8e46fb3a4a5c7bbf19b4'
+      sandisk_ssd@5: 'sha256:2d85f3bba7fc90807c22'
+      teamgroup_ssd@5: 'sha256:88817563932faa004f57'
   approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [sandisk_ssd@4, teamgroup_ssd@4]
+    extractors: [sandisk_ssd@5, teamgroup_ssd@5]
     source_ids: [sandisk-us-ssd, teamgroup-us-ssd]
     kinds: [official]
     tiers: [manufacturer]
@@ -176,23 +171,19 @@ claim_policies:
       perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption,
       therm.temp_operating, port.drop]
     require_normalized: true
-- id: claim/mfr-ssd-samsung@2
-  since: '2026-11-23'
-  supersedes: claim/mfr-ssd-samsung@1
-  rationale: 'samsung.com/us spec API (samsung_ssd@1), same per-field rule and "up to" speed conditioning as claim/mfr-ssd-structured@1, but gen.capacity
-    is NOT accepted: A2 found a real page defect (990 PRO 2TB heatsink row states 1TB), so capacity stays a candidate until a human accepts it or the adapter
-    derives it from the part number. id.msrp_us stays a candidate (price at fetch time). @2 (parsers samsung_ssd@2 / sandisk_ssd@2 / teamgroup_ssd@2) REPLACES
-    the @1 ''up to'' rule: an ''up to'' speed is accepted as a qualified (qualifier up_to) rated figure; it carries cache_state=in_slc_cache ONLY when the
-    claim''s own text evidences the cache (Samsung ''Measured with Intelligent TurboWrite technology being activated''); ''up to'' alone never implies a
-    cache state (review 2 risk 2).'
+- id: claim/mfr-ssd-samsung@3
+  since: '2026-11-24'
+  supersedes: claim/mfr-ssd-samsung@2
+  rationale: 'Same keys and rules as @2 (gen.capacity and id.msrp_us still NOT accepted; up-to speed rule unchanged), re-issued for samsung_ssd@2 -> @3. Changes: (1) ruling 5 via _ssd.dram(): a Cache Memory cell that names HMB (''HMB (Host Memory Buffer)'', 990 EVO / 990 EVO Plus) = hw.dram_type dramless_hmb (was nothing). (2) _ssd.interface() reads ''PCIe® 5.0 x4'' / ''PCIe® Gen 4.0 x 4'' (the registered mark broke the regex): 9100 PRO and 980 PRO gain if.protocol nvme, if.pcie_gen, if.pcie_lanes. (3) ruling 4: portable if.protocol = usb only from a USB 2/3.x Interface cell; USB4 cells write nothing. (4) a non-portable SKU with no Interface row takes if.protocol nvme from its own product name (JSON-LD name ''990 PRO ... SSD NVMe™ M.2''). No key added.'
   audit:
-    by: A3-impl r4
-    at: '2026-11-23'
-    evidence: 'Same keys as @1; parser @2 drops the unconditional cache_state condition (A3 r4 diff: 5 Samsung claims keep it on evidence).'
-    parsers: {samsung_ssd@2: 'sha256:a6cbc9077c793c287d62'}
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+    by: A2 preset fill
+    at: '2026-11-24'
+    evidence: 'tests/test_preset_fill_ssds.py; claim diff old vs new over every stored snapshot: +20 if.protocol=usb (USB4 Gen 3x2 SKUs excluded), +14 if.protocol=nvme, +9 if.pcie_gen, +9 if.pcie_lanes, +7 hw.dram_type=dramless_hmb; 0 removed'
+    parsers:
+      samsung_ssd@3: 'sha256:ad67b32e468f26b4c5f5'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [samsung_ssd@2]
+    extractors: [samsung_ssd@3]
     source_ids: [samsung-us-ssd]
     kinds: [official]
     tiers: [manufacturer]
@@ -202,25 +193,21 @@ claim_policies:
       perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption,
       therm.temp_operating, port.drop]
     require_normalized: true
-- id: claim/mfr-routers-structured@2
-  since: '2026-11-23'
-  supersedes: claim/mfr-routers-structured@1
-  rationale: 'Wi-Fi routers/mesh, manufacturer-owned spec tables: TP-Link US product + support pages (tplink_routers@1), NETGEAR US product pages (netgear_routers@1),
-    ASUS US techspec tables (asus_routers@1). Per field: only the listed keys, only values that normalise to the profile type. Per-band rates and streams
-    come from text segments that start at a band marker, never from the class number (AX5400); widths 320 MHz only with a 6 GHz radio; stream counts only
-    from an explicit NxN. Fetch-time facts (id.msrp_us, sup.latest_firmware_date), the free-text fields (antennas, QoS, power input) and anything the pages
-    do not state (SoC vendor/model, FCC ID, support end date) are NOT accepted: preview candidates or absent. gen.device_type / gen.product_line are accepted
-    only for TP-Link and ASUS (URL section), see claim/mfr-routers-class@1. @2: re-issued because @1 was edited in place (key list sup.hardware_versions
-    -> sup.hardware_version, REV report) and its parser tplink_routers changed meaning under @1 (default-revision facts moved to the revision entity); tplink_routers
-    is now @2.'
+- id: claim/mfr-routers-structured@3
+  since: '2026-11-24'
+  supersedes: claim/mfr-routers-structured@2
+  rationale: 'Same sources, kinds, tiers, statuses and key list as @2, re-issued for tplink_routers@2 -> @3, netgear_routers@1 -> @2, asus_routers@1 -> @2 (all import crawler/adapters/_router.py). WIDENING (values, not keys): wifi.has_6ghz may now be False, under coordinator ruling 1 (2026-11-24, complete-enumeration negatives): only when the maker''s own spec table prints a complete band list that names 2.4 + 5 GHz and no 6 GHz (_router.band_enum: every GHz figure in the cell is a band token, no ''up to''/''or''/''optional'' hedge, a stated Dual/Tri/Quad-Band count must equal the radios listed). Lists: NETGEAR ''WiFi Bands'' / ''Simultaneous Dual-Band WiFi ...'' rows of the two-cell spec table (every band row of the page must be such a list; an MLO or beamforming row can only say True); ASUS ''Operating Frequency''; TP-Link ''Frequency'', or a ''WiFi Speeds'' row whose per-band rates sum to its class number within 3 % (BE3600 = 2882 + 688), so no radio is missing. The False claim carries condition basis=complete_enumeration (routers profile basis_condition) and keeps the list as raw. True is also read from NETGEAR band rows naming 6 GHz (Orbi 770/870/970, RS300-RS700S) and a TP-Link ''Frequency'' row. NETGEAR ''WiFi Bands'' rows also give per-band rates and NxN streams (RS150 ''5 GHz (3x3), 4.3 Gbps''); their ''160 to 20 MHz'' widths are not read; where the table row has no rates they come from the page''s own product-attribute record (c_wifiBands, only the record whose nearest c_modelNumber is the page model, one distinct value), e.g. RS300 ''5GHz (2x2), 2.9Gbps'', RBE870 ''5 GHz (4x4/240 MHz): 8,640 Mbps''. All other claims are byte-identical to @2 output.'
   audit:
-    by: A3-impl r4
-    at: '2026-11-23'
-    evidence: Key list = @1 as committed in ba3b2e0; tplink_routers@2 = the committed revision-aware parser (no code change in r4, version bump only).
-    parsers: {tplink_routers@2: 'sha256:c7318e9238be7635b158', netgear_routers@1: 'sha256:a5e3fcb76ca453cc808d', asus_routers@1: 'sha256:1dedfbe9a8ca77b32bb1'}
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+    by: A2 preset fill
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; claim diff over every stored snapshot, frozen pre-edit copy of crawler/ vs new parsers: tplink +52 has_6ghz=false, asus +64 has_6ghz=false (Operating Frequency), netgear +21 has_6ghz=true, +8 has_6ghz=false, +12 rate_5, +1 rate_5_2, +11 rate_24, +7 rate_6, +11 streams_5, +10 streams_24, +7 streams_6; 0 removed, 0 changed. Fixtures tests/test_preset_fill_routers.py (positive, complete-enumeration false, refused).'
+    parsers:
+      tplink_routers@3: 'sha256:19f0ca2101fbc63e219c'
+      netgear_routers@2: 'sha256:7a28aa0c5a72eea2a5a2'
+      asus_routers@2: 'sha256:1eaec9d51b370875bbc9'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [tplink_routers@2, netgear_routers@1, asus_routers@1]
+    extractors: [tplink_routers@3, netgear_routers@2, asus_routers@2]
     source_ids: [tplink-us-routers, netgear-us-routers, asus-us-routers]
     kinds: [official]
     tiers: [manufacturer]
@@ -231,20 +218,20 @@ claim_policies:
       port.multigig_count, port.wan_lan_configurable, port.usb_count, port.usb_standard, mesh.supported, mesh.systems, mesh.coverage_sqft, sw.vpn_server,
       sw.vpn_client, sw.wireguard, sw.operating_modes, sw.parental_controls, isp.ipv6, phys.weight, phys.dimensions, sup.hardware_version]
     require_normalized: true
-- id: claim/mfr-routers-class@2
-  since: '2026-11-23'
-  supersedes: claim/mfr-routers-class@1
-  rationale: 'Device class and product line derived from the manufacturer''s own URL section (TP-Link wifi-router vs deco-mesh-wifi, ASUS wifi-routers vs
-    whole-home-mesh-systems and the asus-zenwifi / asus-gaming-routers group). NETGEAR is excluded: its class comes from a model-prefix heuristic (rbs =
-    satellite) and stays a preview candidate. @2: parser tplink_routers@2 (see claim/mfr-routers-structured@2).'
+- id: claim/mfr-routers-class@3
+  since: '2026-11-24'
+  supersedes: claim/mfr-routers-class@2
+  rationale: 'Same meaning as @2 (device class and product line from the maker''s own URL section, TP-Link and ASUS only; NETGEAR excluded), re-issued only for the parser bumps tplink_routers@3 and asus_routers@2 (see claim/mfr-routers-structured@3); gen.device_type / gen.product_line output is byte-identical.'
   audit:
-    by: A3-impl r4
-    at: '2026-11-23'
-    evidence: Same keys as @1.
-    parsers: {tplink_routers@2: 'sha256:c7318e9238be7635b158', asus_routers@1: 'sha256:1dedfbe9a8ca77b32bb1'}
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+    by: A2 preset fill
+    at: '2026-11-24'
+    evidence: 'claim diff (frozen pre-edit crawler/ vs new): 0 changes on gen.device_type / gen.product_line for tplink-us-routers and asus-us-routers.'
+    parsers:
+      tplink_routers@3: 'sha256:19f0ca2101fbc63e219c'
+      asus_routers@2: 'sha256:1eaec9d51b370875bbc9'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [tplink_routers@2, asus_routers@1]
+    extractors: [tplink_routers@3, asus_routers@2]
     source_ids: [tplink-us-routers, asus-us-routers]
     kinds: [official]
     tiers: [manufacturer]
@@ -449,36 +436,46 @@ claim_policies:
       csa-dcl-robovac:
       - smart.matter
     require_normalized: true
-- id: claim/mfr-power-banks-structured@6
+- id: claim/mfr-power-banks-structured@7
   since: '2026-11-24'
-  supersedes: claim/mfr-power-banks-structured@5
-  rationale: 'Same sources, per-source keys, kinds, tiers and normalisation as @5, re-issued for the r7 bump of all nine extractors (@3 -> @4) after _powerbank.energy changed: (1) a Wh pair whose figures the cell labels (rated / typical) keeps BOTH, each with the basis condition energy_basis (research/power-banks/spec-profile.yaml basis_conditions), an unlabelled figure of a pair stays an unresolved preview claim; (2) Wh is matched case-insensitively, so CUKTECH PB200 ''72Wh/73.44wh'' is now an unlabelled pair (unresolved) instead of a published 72 Wh.'
+  supersedes: claim/mfr-power-banks-structured@6
+  rationale: 'Same sources, kinds, tiers and normalisation as @6, re-issued for the A2 preset-fill bump of all nine extractors (@4 -> @5). Changes:
+    (1) pd.pps false is now possible, ONLY by complete enumeration (A1 ruling 1, coordinator 2026-11-24): UGREEN (ugreen_powerbanks@5) writes false
+    when its spec block prints the port inventory (''Ports USB-A*1 USB-C*2''), every inventory output port has its own protocol list in the
+    ''Support Protocol'' block, no list is open-ended (''etc.'') and none names PPS; the claim carries the basis condition basis=complete_enumeration
+    (research/power-banks/spec-profile.yaml condition + pd.pps basis_conditions) and keeps the list as raw. (2) pd.pps true also from a per-port
+    protocol list naming PPS (UGREEN) and from an Anker output protocol row named PPS (''PPS: 65W'', ''[USB-C]-PPS: ...''); never from a USB-A row.
+    (3) UGREEN per-port ''USB-C1 Output: ... USB-C2 Output: ...'' rows are read as the port list (out.ports, out.max_single_port_w, pd.max_fixed_voltage).
+    (4) WIDENING: out.max_single_port_w added to the belkin-us-powerbanks and mophie-us-powerbanks allowlists. Belkin only from a figure the maker
+    labels single-port (''140W Single 158W Shared'', ''Maximum single USB-C output: Up to 100W'', At a Glance ''up to 65W from a single USB-C port'');
+    mophie only as the max of an Output row whose every entry names exactly one port (''1 USB-C Port - 100W1 USB-C Port - 45W...''); ''2 USB-C Ports
+    - 45W'', ''Cable and Port: 20W'' and bare wattages write nothing. INIU, CUKTECH, EcoFlow, SHARGE and KUXIU: version bump only (shared module), 0 claim changes.'
   audit:
-    by: A2 coverage r2
+    by: A2 preset fill
     at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD): cuktech PB200 cap.energy_wh 72 -> unresolved; no other change (no stored page labels a pair)'
+    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; claim diff base (copy of crawler/ before this round) vs new parsers over every stored snapshot of the nine sources: +2 anker pd.pps true (A1259, A1339), +6 belkin out.max_single_port_w (BBA009 15, BBA019 140, BBA024 100, BPB020 65, BPB040 140, BPD010 15), +7 mophie out.max_single_port_w, ugreen +2 out.max_single_port_w / +2 out.ports / +2 pd.max_fixed_voltage (35524, two handles), +5 pd.pps true, +2 pd.pps false basis=complete_enumeration (25208, 90597A); 1 ugreen pd.pps true re-raw (65958: now the protocol list); 0 removals; INIU/CUKTECH/EcoFlow/SHARGE/KUXIU 0 changes. Fixtures tests/test_preset_fill_powerbanks.py.'
     parsers:
-      anker_powerbanks@4: 'sha256:6431ffeefa8076fd168d'
-      belkin_powerbanks@4: 'sha256:c6830273335aadf98f01'
-      cuktech_powerbanks@4: 'sha256:ff5624eccd55cd794b7d'
-      iniu_powerbanks@4: 'sha256:ff5624eccd55cd794b7d'
-      ugreen_powerbanks@4: 'sha256:ff5624eccd55cd794b7d'
-      ecoflow_powerbanks@4: 'sha256:fd4bf165b8d63ffd3df6'
-      sharge_powerbanks@4: 'sha256:fd4bf165b8d63ffd3df6'
-      kuxiu_powerbanks@4: 'sha256:fd4bf165b8d63ffd3df6'
-      mophie_powerbanks@4: 'sha256:fd4bf165b8d63ffd3df6'
+      anker_powerbanks@5: 'sha256:c133eb53d9980d795941'
+      belkin_powerbanks@5: 'sha256:abb5bf59fadce0dc1ae3'
+      cuktech_powerbanks@5: 'sha256:a95b2d2a86119ba7adc7'
+      iniu_powerbanks@5: 'sha256:a95b2d2a86119ba7adc7'
+      ugreen_powerbanks@5: 'sha256:a95b2d2a86119ba7adc7'
+      ecoflow_powerbanks@5: 'sha256:ba2e0f46dd314701b79d'
+      sharge_powerbanks@5: 'sha256:ba2e0f46dd314701b79d'
+      kuxiu_powerbanks@5: 'sha256:ba2e0f46dd314701b79d'
+      mophie_powerbanks@5: 'sha256:ba2e0f46dd314701b79d'
   approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
     extractors:
-    - anker_powerbanks@4
-    - belkin_powerbanks@4
-    - cuktech_powerbanks@4
-    - iniu_powerbanks@4
-    - ugreen_powerbanks@4
-    - ecoflow_powerbanks@4
-    - sharge_powerbanks@4
-    - kuxiu_powerbanks@4
-    - mophie_powerbanks@4
+    - anker_powerbanks@5
+    - belkin_powerbanks@5
+    - cuktech_powerbanks@5
+    - iniu_powerbanks@5
+    - ugreen_powerbanks@5
+    - ecoflow_powerbanks@5
+    - sharge_powerbanks@5
+    - kuxiu_powerbanks@5
+    - mophie_powerbanks@5
     source_ids:
     - anker-us-powerbanks
     - belkin-us-powerbanks
@@ -517,6 +514,7 @@ claim_policies:
       - cap.class_mah
       - out.cable_note
       - out.max_output_w
+      - out.max_single_port_w
       - out.usb_a_count
       - out.usb_c_count
       - phys.dimensions
@@ -620,23 +618,24 @@ claim_policies:
       mophie-us-powerbanks:
       - cap.cell_mah
       - out.max_output_w
+      - out.max_single_port_w
       - phys.dimensions
       - phys.weight
     require_normalized: true
-- id: claim/mfr-power-stations-structured@3
+- id: claim/mfr-power-stations-structured@4
   since: '2026-11-24'
-  supersedes: claim/mfr-power-stations-structured@2
-  rationale: 'Same meaning as @2, re-issued because the five station extractors import _powerbank and were bumped @2 -> @3 (r7 energy-pair rule; stations read Wh with _powerstation, so no station rule or claim changed).'
+  supersedes: claim/mfr-power-stations-structured@3
+  rationale: 'Same meaning, extractors (same versions), sources, keys and rules as @3. Re-issued only because the four shopify_powerstations extractors import shopify_powerbanks, which changed for UGREEN power banks (A2 preset fill 2026-11-24), so their parser fingerprint moved; no station code changed.'
   audit:
-    by: A2 coverage r2
+    by: A2 preset fill
     at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD): 0 claim changes on all five sources'
+    evidence: 'claim diff base vs new parsers over every stored snapshot of ecoflow/bluetti/jackery/goalzero-us-stations: 1378 claims, byte-identical (0 changes). ankersolix_stations unchanged (pin kept).'
     parsers:
       ankersolix_stations@3: 'sha256:94260f9f8155895c1b47'
-      bluetti_stations@3: 'sha256:10d735d9bf31702f867e'
-      ecoflow_stations@3: 'sha256:10d735d9bf31702f867e'
-      goalzero_stations@3: 'sha256:10d735d9bf31702f867e'
-      jackery_stations@3: 'sha256:10d735d9bf31702f867e'
+      bluetti_stations@3: 'sha256:eb67456307649422d053'
+      ecoflow_stations@3: 'sha256:eb67456307649422d053'
+      goalzero_stations@3: 'sha256:eb67456307649422d053'
+      jackery_stations@3: 'sha256:eb67456307649422d053'
   approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
     extractors:
@@ -795,31 +794,33 @@ claim_policies:
       - phys.weight
       - ups.supported
       - ups.switchover_ms
-- id: claim/tvs-structured@2
-  since: '2026-11-23'
-  supersedes: claim/tvs-structured@1
-  rationale: '@1 plus one source: Vizio US product pages (vizio-us-tvs, vizio_tvs@1), the maker''s own server-rendered labelled spec table, keyed by the
-    model number printed in the page''s Energy Guide (equal to the canonical URL; a page where they disagree, or that has no spec rows, yields nothing).
-    Every @1 rule is carried over unchanged for the four sources it already covered; the Vizio key list is explicit and follows the same review-3
-    rules: refresh.native_hz only from the "Refresh Rate" row (a cell naming two rates is skipped, "Dynamic Motion Rate" goes to refresh.marketing);
-    vrr.supported only when the row is a bare affirmative feature name (HDMI VRR / FreeSync tiers); HDR formats only from the list the row prints,
-    a format not listed stays unknown; hdr.dimming_zones only from an explicit "x<N>" zone count; hdmi.ports_4k120 never (Vizio prints no per-port 4K
-    rate); no power figures (the Energy Guide prints a cost, not watts); never refresh.max_hz or hdr.peak_nits. Hisense was not built (spec data sits
-    behind an undocumented API that timed out; the one alternative origin was refused), DOE CCMS answers 403.'
+- id: claim/tvs-structured@3
+  since: '2026-11-24'
+  supersedes: claim/tvs-structured@2
+  rationale: 'Same sources, kinds, tiers, statuses, normalisation and per-source key lists as @2, re-issued for the shared row mapper change
+    (crawler/adapters/_tv.py; lg_tvs, tcl_tvs, vizio_tvs, samsung_tvs bumped to @2, energystar_tvs unchanged). Two changes: (1) coordinator ruling 2,
+    backlight value table: a row labelled exactly "Backlight Type" whose WHOLE value is Full Array LED / Active Full Array / Mini LED / Edge(-lit) LED /
+    Direct(-lit) LED writes panel.display_tech = lcd, only when no display-type row resolved the technology; "Full Array LED" / "Active Full Array" also
+    write panel.backlight = direct_led. Any other value (Vizio "DLED", "Local Dimming", extra words) writes nothing. (2) LG "Latest HDMI (4K @ 120Hz):
+    HDMI ports 3,4" is an explicit port list: hdmi.ports_4k120 = the number of distinct ports listed. LG "Nea (supports 4K 120Hz, eARC, ...)" without a
+    per-port count stays unresolved as before. WIDENING: panel.display_tech added to the vizio-us-tvs key list. The LG "Direct" table row is A2''s
+    reading of the ruling (LED backlight rows) and is flagged for A1 review.'
   audit:
-    by: A2 tvs r2
-    at: '2026-11-23'
-    evidence: Parsed all 179 Vizio snapshots (79 model numbers, 74 legacy pages without spec rows yield an absence); per-key value histograms checked;
-      fixtures in tests/test_tvs_vizio.py (6 tests). The four @1 parsers are byte-identical to the @1 audit.
+    by: A2 preset fill
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; claim diff old (frozen copy of crawler/ before the edit) vs new parsers over every stored
+      snapshot: lg-us-tvs +166 panel.display_tech lcd (Backlight Type Direct 165 / Edge 1) and +50 hdmi.ports_4k120 (Latest HDMI rows, mostly
+      discontinued models), vizio-us-tvs +92 panel.display_tech lcd and +86 panel.backlight direct_led, tcl-us-tvs +4 panel.display_tech lcd,
+      samsung-us-tvs 0; 0 removed, 0 changed. Fixtures tests/test_preset_fill_tvs.py.'
     parsers:
       energystar_tvs@1: sha256:35b90bbed61b2720ad7c
-      samsung_tvs@1: sha256:6671f4bf6d2b8ecdac67
-      lg_tvs@1: sha256:8381b9a9945f5471873e
-      tcl_tvs@1: sha256:2710e28e9980fbe72ab2
-      vizio_tvs@1: sha256:55121e0b1ed6942efc45
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+      samsung_tvs@2: sha256:d15a3d05ad3c1c18a0fb
+      lg_tvs@2: sha256:9c1c25739c3ca2832cfb
+      tcl_tvs@2: sha256:52d486210210d51f16c7
+      vizio_tvs@2: sha256:d22cd6571719a485b285
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [energystar_tvs@1, samsung_tvs@1, lg_tvs@1, tcl_tvs@1, vizio_tvs@1]
+    extractors: [energystar_tvs@1, samsung_tvs@2, lg_tvs@2, tcl_tvs@2, vizio_tvs@2]
     source_ids: [energystar-tvs, samsung-us-tvs, lg-us-tvs, tcl-us-tvs, vizio-us-tvs]
     kinds: [official]
     tiers: [manufacturer, regulatory]
@@ -853,7 +854,7 @@ claim_policies:
          vrr.supported]
       vizio-us-tvs:
         [conn.ethernet, conn.usb_count, conn.wifi, gen.size_class, gen.viewable_diag, hdmi.count, hdr.dimming_zones, hdr.dolby_vision, hdr.formats,
-         hdr.hdr10plus, hdr.local_dimming, panel.backlight, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand,
+         hdr.hdr10plus, hdr.local_dimming, panel.backlight, panel.display_tech, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand,
          phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, refresh.marketing, refresh.native_hz,
          res.class, res.height_px, res.native, res.width_px, sup.warranty, vrr.supported]
 - id: claim/tvs-es-certification-coverage@1
@@ -1068,19 +1069,19 @@ claim_policies:
       asus-us-monitors: [flk.pwm, usb.usbc_pd_w]
       lg-us: [flk.pwm]
       lenovo-psref-monitors: [flk.pwm]
-- id: claim/mfr-ssd-kingston@2
+- id: claim/mfr-ssd-kingston@3
   since: '2026-11-24'
-  supersedes: claim/mfr-ssd-kingston@1
-  rationale: 'Same keys and rules as @1 for kingston_ssd@1 -> @2. The parser now also reads the older two-column datasheet layout (NV2, NV1, A2000: upper-case SPECIFICATIONS, label lines or ''>>Label value'', part numbers in the right column cut off before rows are read) into the same rows; per-capacity rows written as ''X MB/s (250GB)'' or two ''CAP - value'' pairs on one line are split per capacity. Output for the six current-layout datasheets is byte-identical to @1.'
+  supersedes: claim/mfr-ssd-kingston@2
+  rationale: 'Same keys and rules as @2, re-issued for kingston_ssd@2 -> @3. Changes: ruling 4: the XS2000 datasheet''s ''Interface: USB 3.2 Gen 2x2'' now also writes if.protocol usb (affirmative only); a DRAM cache cell other than ''Yes'' goes through _ssd.dram() (ruling 5: ''No''/''None'' = dramless, HMB unknown; none printed today). No key added.'
   audit:
-    by: A2 coverage r3
+    by: A2 preset fill
     at: '2026-11-24'
-    evidence: 'claim diff old (git worktree of HEAD) vs new over all 9 stored datasheets: +132 claims, 0 removed, all on SNV2S (5 part numbers), SNVS (4), SA2000M8 (3); spot-checked against the PDFs (NV2 250GB 3,000/1,300 MB/s 80TBW; A2000 3D TLC, 5-year warranty). NV2/NV1 print NAND ''3D'' only and no DRAM row: those stay unknown.'
+    evidence: 'claim diff old vs new over all 9 stored datasheets: +4 if.protocol=usb (SXS2000 part numbers), 0 other changes'
     parsers:
-      kingston_ssd@2: 'sha256:7642be0126681cbc4120'
+      kingston_ssd@3: 'sha256:3480518802b8d7e319ce'
   approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [kingston_ssd@2]
+    extractors: [kingston_ssd@3]
     source_ids: [kingston-us-ssd]
     kinds: [official]
     tiers: [manufacturer]
@@ -1089,19 +1090,20 @@ claim_policies:
     keys:
       kingston-us-ssd: [end.mtbf, end.tbw, end.warranty_years, gen.capacity, gen.device_class, gen.form_factor, hw.controller, hw.controller_vendor,
         hw.dram_type, hw.nand_type, if.pcie_gen, if.pcie_lanes, if.protocol, if.usb_standard, perf.seq_read, perf.seq_write, therm.temp_operating]
-- id: claim/mfr-routers-direct@1
+- id: claim/mfr-routers-direct@2
   since: '2026-11-24'
-  rationale: 'Ubiquiti UniFi gateways + access points from techspecs.ui.com (ubiquiti_routers@1: the page''s labelled technicalSpecification tree, per-band rows are children named by their band) and GL.iNet routers from the Specifications table of their own store pages (glinet_routers@1; comparison tables on the same page are never read). Only the listed keys, only values that normalise. Per-band streams only from an NxN band row, widths only from that band''s ''(BWnnn)'' max-rate row, has_6ghz only True. hw.soc_vendor only where the maker names the vendor (GL.iNet ''MediaTek Quad-core''), hw.soc_model only from an explicit part (IPQ6000, MT7981B); Ubiquiti names CPU cores (''Cortex-A53''), never the SoC, so it writes cores/GHz only. Ubiquiti port.lan_count = Port Layout total minus the stated default WAN ports (console/MGMT excluded). gen.device_type from the maker''s own classification (URL section / Shopify product_type). port.poe is the maker''s power-method / PoE-budget text.'
+  supersedes: claim/mfr-routers-direct@1
+  rationale: 'Same sources, kinds, tiers, statuses and per-source key lists as @1, re-issued for ubiquiti_routers@1 -> @2 and glinet_routers@1 -> @2. WIDENING (values, not keys): wifi.has_6ghz may now be False under coordinator ruling 1 (2026-11-24): Ubiquiti only when every per-band group of the technicalSpecification tree (MIMO, Max. Data Rate / Throughput, TX power, antenna gain: one row per radio) names the same radios, both 2.4 and 5 GHz and no 6 GHz; GL.iNet only when the Specifications table ''Wi-Fi Speed'' row lists one rate per band, the rates sum to the class number of the product title within 3 % (GL-BE3600: 688 + 2882), and the list names 2.4 + 5 GHz and no 6 GHz (no class number, e.g. GL-MT3600BE = nothing). The False claim carries condition basis=complete_enumeration and keeps the list as raw. All other claims byte-identical to @1.'
   audit:
-    by: A2 coverage r3
+    by: A2 preset fill
     at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-a2-coverage-r3.md; 53 Ubiquiti + 45 GL.iNet pages parsed (35 GL.iNet with a spec table), spot-checked UDR7, U7-Pro, UDM-Beast, EF-Core, GL-MT6000, GL-BE9300, GL-MT3000 against the pages'
+    evidence: 'claim diff (frozen pre-edit crawler/ vs new) over every stored snapshot: ubiquiti +26 has_6ghz=false (U7 Lite/LR/Mesh/IW/Outdoor/Industrial, UCG-Industrial, U6/UAP dual-band), glinet +5 has_6ghz=false (GL-BE3600, GL-BE6500, GL-AX1800, GL-MT3000, GL-X3000); 0 removed. Fixtures tests/test_preset_fill_routers.py.'
     parsers:
-      ubiquiti_routers@1: 'sha256:138542eeff2a206ce032'
-      glinet_routers@1: 'sha256:0cc737c8a6fbac3f78a1'
+      ubiquiti_routers@2: 'sha256:a29e90e84a4437e64803'
+      glinet_routers@2: 'sha256:d440ceafec3f4b9058ce'
   approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [ubiquiti_routers@1, glinet_routers@1]
+    extractors: [ubiquiti_routers@2, glinet_routers@2]
     source_ids: [ubiquiti-us-routers, glinet-us-routers]
     kinds: [official]
     tiers: [manufacturer]
@@ -1116,56 +1118,59 @@ claim_policies:
       glinet-us-routers: [gen.device_type, hw.cpu_cores, hw.cpu_ghz, hw.flash_mb, hw.ram_mb, hw.soc_model, hw.soc_vendor, phys.dimensions, phys.weight,
         port.lan_count, port.lan_max_mbps, port.multigig_count, port.usb_count, port.usb_standard, port.wan_lan_configurable, port.wan_speed_mbps,
         wifi.generation, wifi.has_6ghz, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_6_mbps]
-- id: claim/mfr-monitor-benq@1
+- id: claim/mfr-monitor-benq@2
   since: '2026-11-24'
-  rationale: 'BenQ US monitor spec pages (benq_monitors@1: server-rendered spec-container name/detail rows, one model per page). flk.pwm = none ONLY from an affirmative ''Flicker-free Technology: Yes'' row, stored as the maker''s declaration with the literal quoted (same meaning as claim/monitor-flicker-label-map@1: TUV flicker-free may be tested at default brightness only; never a measurement; No/blank/silence writes nothing). usb.usbc_pd_w only from the ''Power Delivery(USB C / Thunderbolt)'' row or an upstream ''USB C(PowerDelivery NNW, ...)'' port label with exactly one figure; downstream charging ports never count; two figures (''35W / 96W'') write nothing. Panel type only IPS/VA/TN/QD-OLED/WOLED as printed; refresh = the maximum stated.'
+  supersedes: claim/mfr-monitor-benq@1
+  rationale: 'Every @1 rule unchanged (flk.pwm none only from an affirmative ''Flicker-free Technology: Yes''; usb.usbc_pd_w from exactly one upstream figure; panel type as printed; refresh = maximum stated), re-issued for benq_monitors@1 -> @2 (shared helper crawler/adapters/_monports.py). WIDENING: usb.usbc_inputs from the Connectivity section (one row per port type with its count): USB-C/Thunderbolt rows naming DP Alt Mode / Thunderbolt and not downstream/out/data-only, counted from the row''s number; a USB-C input row without a number (''Yes'') writes nothing; 0 only under coordinator ruling 1 (complete enumeration: a video input listed, no USB-C video input, USB-C not named anywhere else on the page, e.g. a PD row or a cable in Accessories), with {basis: complete_enumeration} and the section as raw. CHANGE: gen.size_class from a fractional ''Screen Size'' (23.8 inch, 21.5 inch) is the panel diagonal, so it is now kind derived, round half up (24, 22; ruling 3, locator.derivation size_class_round_half_up@1) instead of publishing 23.8 as a class; whole-inch values stay official. kinds widened to [official, derived] for that case.'
   audit:
-    by: A2 coverage r3
+    by: A2 preset fill
     at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-a2-coverage-r3.md; 136 spec pages, 134 parsed (2 are editions/bundles without one model code); flk.pwm 122, usb.usbc_pd_w 68; spot-checked EX2710S, PD2706U, GW2490'
+    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; claim diff old vs new parser over every stored snapshot: +130 usb.usbc_inputs (69 x1, 2 x2, 59 complete-enumeration 0); gen.size_class 61 fractional official values replaced by 61 derived whole-inch values; 0 other changes; fixtures tests/test_preset_fill_monitors.py'
     parsers:
-      benq_monitors@1: 'sha256:f308344e2cec95880ec1'
+      benq_monitors@2: 'sha256:ccdb39bc225356f22cb1'
   approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [benq_monitors@1]
+    extractors: [benq_monitors@2]
     source_ids: [benq-us-monitors]
-    kinds: [official]
+    kinds: [official, derived]
     tiers: [manufacturer]
     statuses: [known]
     require_normalized: true
     keys:
-      benq-us-monitors: [ergo.vesa, flk.cert, flk.pwm, gen.size_class, panel.technology, pwr.max, res.height_px, res.refresh_max, res.width_px, usb.usbc_pd_w]
+      benq-us-monitors: [ergo.vesa, flk.cert, flk.pwm, gen.size_class, panel.technology, pwr.max, res.height_px, res.refresh_max, res.width_px, usb.usbc_inputs, usb.usbc_pd_w]
 relation_policies:
-- id: rel/source-stated-hierarchy@4
+- id: rel/source-stated-hierarchy@5
   since: '2026-11-24'
-  supersedes: rel/source-stated-hierarchy@3
-  rationale: 'Same rules as @3 with three parser versions bumped (sandisk_ssd@4 -> @4, teamgroup_ssd@4 -> @4: hw.dram_type prose only; kingston_ssd@2 -> @2: older datasheet layout, the same part number -> part-number stem links for the new NV2/NV1/A2000 part numbers). No identifier logic changed; no new method.'
+  supersedes: rel/source-stated-hierarchy@4
+  rationale: 'Same rules, methods and types as @4; parser pins only (A2 preset fill: lenovo_psref@3, asus@2, lenovo_monitors@3, samsung_ssd@3,
+    sandisk_ssd@5, teamgroup_ssd@5, kingston_ssd@3, tplink_routers@3). Every bump changes claim mapping only (mem.max/mem.soldered, usb.usbc_inputs /
+    gen.size_class, hw.dram_type / if.protocol, wifi.has_6ghz); no identifier, alias or relation code changed. No new method.'
   audit:
-    by: A2 coverage r3
+    by: A2 preset fill
     at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-a2-coverage-r3.md; identifier diff old vs new: sandisk/teamgroup unchanged, kingston +12 part numbers (3 new stems)'
+    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; git diff of the eight adapters touches no identifiers/aliases/relations code; import relation counts compared before/after.'
     parsers:
-      lenovo_psref@2: 'sha256:ec6a55f8081086820989'
-      asus@1: 'sha256:628db32b5ba83fa291c6'
+      lenovo_psref@3: 'sha256:758b48fedf2b491a03d4'
+      asus@2: 'sha256:882e02a6786b8e27beab'
       dell@1: 'sha256:13cd4d61b81c005021b6'
       surface@1: 'sha256:80cd87b7b1b87d6969e9'
       razer@1: 'sha256:8752d0e2f07ae8b46ff2'
       samsung@1: 'sha256:d0e9cabff53a15285159'
-      lenovo_monitors@2: 'sha256:ed0431bb405523a78915'
-      samsung_ssd@2: 'sha256:a6cbc9077c793c287d62'
-      sandisk_ssd@4: 'sha256:05de40f98b4ac34391f0'
-      teamgroup_ssd@4: 'sha256:8e46fb3a4a5c7bbf19b4'
-      kingston_ssd@2: 'sha256:7642be0126681cbc4120'
-      tplink_routers@2: 'sha256:c7318e9238be7635b158'
+      lenovo_monitors@3: 'sha256:2a8164ba93f3240a0030'
+      samsung_ssd@3: 'sha256:ad67b32e468f26b4c5f5'
+      sandisk_ssd@5: 'sha256:2d85f3bba7fc90807c22'
+      teamgroup_ssd@5: 'sha256:88817563932faa004f57'
+      kingston_ssd@3: 'sha256:3480518802b8d7e319ce'
+      tplink_routers@3: 'sha256:19f0ca2101fbc63e219c'
       crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'
   approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   rules:
   - method: adapter:lenovo-psref
     types: [member_of_family, configuration_of]
-    parsers: [lenovo_psref@2]
+    parsers: [lenovo_psref@3]
   - method: adapter:asus-us
     types: [member_of_family]
-    parsers: [asus@1]
+    parsers: [asus@2]
   - method: adapter:dell-us
     types: [member_of_family]
     parsers: [dell@1]
@@ -1180,22 +1185,22 @@ relation_policies:
     parsers: [samsung@1]
   - method: adapter:lenovo-psref-monitors
     types: [package_of]
-    parsers: [lenovo_monitors@2]
+    parsers: [lenovo_monitors@3]
   - method: adapter:samsung-us-ssd
     types: [member_of_family, configuration_of]
-    parsers: [samsung_ssd@2]
+    parsers: [samsung_ssd@3]
   - method: adapter:sandisk-us-ssd
     types: [member_of_family, configuration_of]
-    parsers: [sandisk_ssd@4]
+    parsers: [sandisk_ssd@5]
   - method: adapter:teamgroup-us-ssd
     types: [member_of_family, configuration_of]
-    parsers: [teamgroup_ssd@4]
+    parsers: [teamgroup_ssd@5]
   - method: adapter:kingston-us-ssd
     types: [member_of_family, configuration_of]
-    parsers: [kingston_ssd@2]
+    parsers: [kingston_ssd@3]
   - method: adapter:tplink-us-routers
     types: [variant_of]
-    parsers: [tplink_routers@2]
+    parsers: [tplink_routers@3]
   - method: page-variants:anker
     types: [configuration_of]
     parsers: [crawlpy-strips@1]
@@ -1205,19 +1210,19 @@ relation_policies:
   - method: page-variants:belkin
     types: [configuration_of]
     parsers: [crawlpy-strips@1]
-- id: rel/bundle-contents@3
+- id: rel/bundle-contents@4
   since: '2026-11-24'
-  supersedes: rel/bundle-contents@2
-  rationale: 'Same rules and transform (bundles@2) as @2, re-issued only because four station extractors were bumped @2 -> @3 (r7 shared _powerbank change, no station or bundle rule changed).'
+  supersedes: rel/bundle-contents@3
+  rationale: 'Same rules, parsers (same versions) and transform (bundles@2) as @3. Re-issued only because bluetti/ecoflow/jackery_stations@3 (shopify_powerstations) import shopify_powerbanks, which changed for UGREEN power banks (A2 preset fill 2026-11-24): fingerprint moved, no station or bundle code changed.'
   audit:
-    by: A2 coverage r2
+    by: A2 preset fill
     at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD)'
+    evidence: 'claim diff base vs new parsers over every stored snapshot of the station sources: byte-identical; bundle transform untouched.'
     parsers:
       ankersolix_stations@3: 'sha256:94260f9f8155895c1b47'
-      bluetti_stations@3: 'sha256:10d735d9bf31702f867e'
-      ecoflow_stations@3: 'sha256:10d735d9bf31702f867e'
-      jackery_stations@3: 'sha256:10d735d9bf31702f867e'
+      bluetti_stations@3: 'sha256:eb67456307649422d053'
+      ecoflow_stations@3: 'sha256:eb67456307649422d053'
+      jackery_stations@3: 'sha256:eb67456307649422d053'
       dreame_robovac@2: 'sha256:82418fe203d439831b23'
       narwal_robovac@2: 'sha256:2f212aa7076aff13a250'
       bundles@2: 'sha256:673c815897604268136d'
@@ -3350,3 +3355,779 @@ retired_policies:
     types: [configuration_of]
     parsers: [crawlpy-strips@1]
   retired: {at: '2026-11-24', superseded_by: rel/source-stated-hierarchy@4, reason: 'parser bumps sandisk_ssd@4, teamgroup_ssd@4, kingston_ssd@2; @3 meaning frozen as locked'}
+- id: claim/mfr-structured-datasheet@2
+  since: '2026-11-23'
+  supersedes: claim/mfr-structured-datasheet@1
+  rationale: 'Deterministic extraction of the manufacturer''s own structured specification data: Lenovo PSREF model tables (adapter + psref-mapping single-target
+    columns), Tripp Lite product JSON/datasheet tables, CyberPower item JSON + datasheets, and label-mapping transforms applied to those two manufacturers''
+    labelled tables. Values must normalise to the profile type (normalize.py) or the claim stays a candidate. Adapter versions are pinned: a parser bump
+    needs a re-audit and a policy @N+1. @2: explicit per-source key allowlist (review 2 risk 1).'
+  audit:
+    by: A3-impl r4
+    at: '2026-11-23'
+    evidence: 'key allowlist = exactly the keys @1 accepted in the last release import (accepted_digest 707f0510...), per source: no widening, no narrowing.'
+    parsers: {lenovo_psref@2: 'sha256:ec6a55f8081086820989', tripplite@2: 'sha256:949811b25418d7a2b724', cyberpower@1: 'sha256:a3e88411366c8d320d51'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+  match:
+    extractors: [lenovo_psref@2, import.py+psref-mapping@1, tripplite@2, cyberpower@1, import.py+label-mapping@1]
+    source_ids: [lenovo-psref, tripplite, cyberpower]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    require_normalized: true
+    keys:
+      lenovo-psref: [cpu.ai_pc_category, cpu.chipset, cpu.model, cpu.npu_tops, disp.color_calibration, disp.size, disp.touch, gen.announce_date, gen.color,
+        gen.country_region, gen.region, gpu.model, in.fingerprint, in.kb_layout, in.tpm, in.webcam, input.pen, input.touchpad, mem.max, mem.size, phys.dimensions,
+        phys.material, phys.surface_treatment, phys.weight, port.card_reader, port.docking, port.ethernet, port.usbc_list, pwr.battery_wh, pwr.charger_w,
+        stor.size, stor.slots, sw.end_of_support, sw.included_upgrade, sw.os, sw.warranty, wl.wifi, wl.wwan]
+      tripplite: [cert.cew_usd, cert.warranty_years, cord.gauge_awg, cord.jacket, cord.length_ft, cord.plug_style, cord.plug_type, load.max_amps, load.max_watts,
+        load.voltage, outlets.count, outlets.right_angle, outlets.rotating, outlets.switch, phys.dimensions, phys.material, phys.weight_lb, safety.auto_shutoff,
+        safety.led_details, surge.dataline, surge.emi_rfi, surge.joules, surge.max_surge_current, surge.response_time, surge.vpr_max, type.ul1363_listed,
+        type.ul1449_listed, usb.total_w]
+      cyberpower: [cert.cew_usd, cert.listing_mark, cert.warranty_years, cord.length_ft, cord.plug_style, cord.plug_type, load.max_amps, load.max_watts,
+        load.voltage, outlets.count, outlets.covers, outlets.switch, phys.dimensions, phys.material, phys.mounting, phys.weight_lb, safety.breaker, safety.led_details,
+        surge.dataline, surge.emi_rfi, surge.joules, surge.max_spike_voltage, surge.max_surge_current, surge.response_time, surge.vpr_max, type.ul1363_listed,
+        type.ul1449_edition, type.ul1449_listed, usb.pd, usb.ports, usb.total_w]
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-structured-datasheet@3, reason: 'parser bump lenovo_psref@3 (platform-labelled Max Memory cells); @2 meaning frozen as locked'}
+- id: claim/asus-techspec-typed@2
+  since: '2026-11-23'
+  supersedes: claim/asus-techspec-typed@1
+  rationale: 'ASUS techspec tables (asus@1): labelled manufacturer cells, but model-level pages often append option notes and disclaimers. Only values that
+    normalise to a typed profile value (number/integer/bool/enum), plus the processor, colour, webcam and OS cells (single literal statements), are accepted;
+    other free text stays a preview candidate. @2: the type-class rule (spec_types + also_keys) is replaced by an explicit key allowlist.'
+  audit:
+    by: A3-impl r4
+    at: '2026-11-23'
+    evidence: 'key allowlist = exactly the keys @1 accepted in the last release import (accepted_digest 707f0510...), per source: no widening, no narrowing.'
+    parsers: {asus@1: 'sha256:628db32b5ba83fa291c6'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+  match:
+    extractors: [asus@1]
+    source_ids: [asus-us]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    require_normalized: true
+    keys:
+      asus-us: [cpu.model, disp.size, gen.color, in.webcam, mem.size, phys.weight, pwr.battery_wh, stor.size, sw.os]
+  retired: {at: '2026-11-24', superseded_by: claim/asus-techspec-typed@3, reason: 'parser bump asus@2 + widening mem.max/mem.soldered (Memory cell text); @2 meaning frozen as locked'}
+- id: claim/mfr-monitor-structured@3
+  since: '2026-11-24'
+  supersedes: claim/mfr-monitor-structured@2
+  rationale: 'Same meaning as @2 (per-source key allowlists, kinds, tiers, normalisation) for lg_us@1 and asus_monitors@1, re-issued for the parser bump lenovo_monitors@1 -> @2: usb.usbc_pd_w is read one port line at a time, only from a USB-C/Thunderbolt/USB4 line the maker marks USB upstream, number before or after PD (''up to 90W PD'', ''USB PD 3.1 up to 140W'', ''Alt Mode, up to 75W''); downstream charging ports never count; two upstream ports with different wattages write nothing. WIDENING: usb.usbc_pd_w added to the lenovo-psref-monitors allowlist (53 PSREF families). All other Lenovo claims are byte-identical to @1 output.'
+  audit:
+    by: A2 coverage r2
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD): lenovo-psref-monitors +53 usb.usbc_pd_w, 0 other changes'
+    parsers:
+      lenovo_monitors@2: 'sha256:ed0431bb405523a78915'
+      lg_us@1: 'sha256:51da673073084332f227'
+      asus_monitors@1: 'sha256:21ba35a4d7bbafdaff71'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [lenovo_monitors@2, lg_us@1, asus_monitors@1]
+    source_ids: [lenovo-psref-monitors, lg-us, asus-us-monitors]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    require_normalized: true
+    keys:
+      lenovo-psref-monitors: [color.dci_p3, color.srgb, ergo.vesa, ergo.weight, ergo.weight_panel, gen.color, gen.curvature, gen.size_class, hdr.contrast_static,
+        hdr.marketed_label, hdr.sdr_typ, panel.bit_depth, panel.surface, panel.technology, pwr.max, pwr.typical, res.aspect, res.height_px, res.native,
+        res.ppi, res.refresh_max, res.vrr_types, res.width_px, sup.warranty_years, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
+      lg-us: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.viewable_diag, hdr.contrast_static, hdr.sdr_typ, motion.gtg_marketed,
+        panel.surface, panel.technology, pwr.external_adapter, pwr.max, pwr.typical, res.aspect, res.height_px, res.native, res.refresh_max, res.vrr_types,
+        res.width_px, sup.warranty_years, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count]
+      asus-us-monitors: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.viewable_diag, hdr.contrast_static, hdr.marketed_label,
+        hdr.peak_marketed, hdr.sdr_typ, motion.gtg_marketed, panel.surface, panel.technology, pwr.typical, res.aspect, res.height_px, res.native, res.refresh_max,
+        res.vrr_types, res.width_px, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-monitor-structured@4, reason: 'parser bumps lenovo_monitors@3 / lg_us@2 / asus_monitors@2 (usb.usbc_inputs from full port lists, gen.size_class stated or derived); @3 meaning frozen as locked'}
+- id: claim/mfr-monitor-benq@1
+  since: '2026-11-24'
+  rationale: 'BenQ US monitor spec pages (benq_monitors@1: server-rendered spec-container name/detail rows, one model per page). flk.pwm = none ONLY from an affirmative ''Flicker-free Technology: Yes'' row, stored as the maker''s declaration with the literal quoted (same meaning as claim/monitor-flicker-label-map@1: TUV flicker-free may be tested at default brightness only; never a measurement; No/blank/silence writes nothing). usb.usbc_pd_w only from the ''Power Delivery(USB C / Thunderbolt)'' row or an upstream ''USB C(PowerDelivery NNW, ...)'' port label with exactly one figure; downstream charging ports never count; two figures (''35W / 96W'') write nothing. Panel type only IPS/VA/TN/QD-OLED/WOLED as printed; refresh = the maximum stated.'
+  audit:
+    by: A2 coverage r3
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r3.md; 136 spec pages, 134 parsed (2 are editions/bundles without one model code); flk.pwm 122, usb.usbc_pd_w 68; spot-checked EX2710S, PD2706U, GW2490'
+    parsers:
+      benq_monitors@1: 'sha256:f308344e2cec95880ec1'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [benq_monitors@1]
+    source_ids: [benq-us-monitors]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      benq-us-monitors: [ergo.vesa, flk.cert, flk.pwm, gen.size_class, panel.technology, pwr.max, res.height_px, res.refresh_max, res.width_px, usb.usbc_pd_w]
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-monitor-benq@2, reason: 'parser bump benq_monitors@2 (usb.usbc_inputs from Connectivity, fractional Screen Size -> derived class); @1 meaning frozen as locked'}
+- id: claim/mfr-power-banks-structured@6
+  since: '2026-11-24'
+  supersedes: claim/mfr-power-banks-structured@5
+  rationale: 'Same sources, per-source keys, kinds, tiers and normalisation as @5, re-issued for the r7 bump of all nine extractors (@3 -> @4) after _powerbank.energy changed: (1) a Wh pair whose figures the cell labels (rated / typical) keeps BOTH, each with the basis condition energy_basis (research/power-banks/spec-profile.yaml basis_conditions), an unlabelled figure of a pair stays an unresolved preview claim; (2) Wh is matched case-insensitively, so CUKTECH PB200 ''72Wh/73.44wh'' is now an unlabelled pair (unresolved) instead of a published 72 Wh.'
+  audit:
+    by: A2 coverage r2
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD): cuktech PB200 cap.energy_wh 72 -> unresolved; no other change (no stored page labels a pair)'
+    parsers:
+      anker_powerbanks@4: 'sha256:6431ffeefa8076fd168d'
+      belkin_powerbanks@4: 'sha256:c6830273335aadf98f01'
+      cuktech_powerbanks@4: 'sha256:ff5624eccd55cd794b7d'
+      iniu_powerbanks@4: 'sha256:ff5624eccd55cd794b7d'
+      ugreen_powerbanks@4: 'sha256:ff5624eccd55cd794b7d'
+      ecoflow_powerbanks@4: 'sha256:fd4bf165b8d63ffd3df6'
+      sharge_powerbanks@4: 'sha256:fd4bf165b8d63ffd3df6'
+      kuxiu_powerbanks@4: 'sha256:fd4bf165b8d63ffd3df6'
+      mophie_powerbanks@4: 'sha256:fd4bf165b8d63ffd3df6'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors:
+    - anker_powerbanks@4
+    - belkin_powerbanks@4
+    - cuktech_powerbanks@4
+    - iniu_powerbanks@4
+    - ugreen_powerbanks@4
+    - ecoflow_powerbanks@4
+    - sharge_powerbanks@4
+    - kuxiu_powerbanks@4
+    - mophie_powerbanks@4
+    source_ids:
+    - anker-us-powerbanks
+    - belkin-us-powerbanks
+    - cuktech-us-powerbanks
+    - iniu-us-powerbanks
+    - ugreen-us-powerbanks
+    - ecoflow-us-powerbanks
+    - sharge-us-powerbanks
+    - kuxiu-us-powerbanks
+    - mophie-us-powerbanks
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    keys:
+      anker-us-powerbanks:
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.builtin_cable
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - pd.max_fixed_voltage
+      - pd.pps
+      - phys.dimensions
+      - phys.weight
+      belkin-us-powerbanks:
+      - cap.class_mah
+      - out.cable_note
+      - out.max_output_w
+      - out.usb_a_count
+      - out.usb_c_count
+      - phys.dimensions
+      iniu-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      cuktech-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      ugreen-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      ecoflow-us-powerbanks:
+      - cap.cell_mah
+      - cap.energy_wh
+      - in.max_w
+      - out.max_single_port_w
+      - out.max_total_w
+      - phys.dimensions
+      - phys.weight
+      sharge-us-powerbanks:
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      kuxiu-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - phys.dimensions
+      - phys.weight
+      mophie-us-powerbanks:
+      - cap.cell_mah
+      - out.max_output_w
+      - phys.dimensions
+      - phys.weight
+    require_normalized: true
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-power-banks-structured@7, reason: 'parser bumps @4 -> @5 (A2 preset fill: PPS protocol rows, pd.pps false by complete enumeration (A1 ruling 1), labelled single-port W for Belkin/mophie/UGREEN); @6 meaning frozen as locked'}
+- id: claim/mfr-power-stations-structured@3
+  since: '2026-11-24'
+  supersedes: claim/mfr-power-stations-structured@2
+  rationale: 'Same meaning as @2, re-issued because the five station extractors import _powerbank and were bumped @2 -> @3 (r7 energy-pair rule; stations read Wh with _powerstation, so no station rule or claim changed).'
+  audit:
+    by: A2 coverage r2
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD): 0 claim changes on all five sources'
+    parsers:
+      ankersolix_stations@3: 'sha256:94260f9f8155895c1b47'
+      bluetti_stations@3: 'sha256:10d735d9bf31702f867e'
+      ecoflow_stations@3: 'sha256:10d735d9bf31702f867e'
+      goalzero_stations@3: 'sha256:10d735d9bf31702f867e'
+      jackery_stations@3: 'sha256:10d735d9bf31702f867e'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors:
+    - ankersolix_stations@3
+    - bluetti_stations@3
+    - ecoflow_stations@3
+    - goalzero_stations@3
+    - jackery_stations@3
+    source_ids:
+    - ecoflow-us-stations
+    - bluetti-us-stations
+    - jackery-us-stations
+    - goalzero-us-stations
+    - ankersolix-us-stations
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    keys:
+      ecoflow-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - conn.wireless
+      - exp.expandable
+      - exp.max_batteries
+      - exp.max_wh
+      - gen.warranty_years
+      - in.ac_w
+      - in.car_w
+      - in.solar_port_w
+      - in.solar_ports
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_boost_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      bluetti-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - cert.marks
+      - cert.ul2743
+      - conn.wireless
+      - exp.expandable
+      - gen.warranty_years
+      - in.ac_w
+      - in.max_w
+      - in.passthrough
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_boost_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ac_waveform
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - out.wireless_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      jackery-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - gen.warranty_years
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      goalzero-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - cert.marks
+      - exp.expandable
+      - gen.warranty_years
+      - in.ac_w
+      - in.recharge_ac_h
+      - in.recharge_solar_h
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ac_waveform
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      ankersolix-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - conn.wireless
+      - exp.expandable
+      - exp.max_batteries
+      - exp.max_wh
+      - gen.warranty_years
+      - in.ac_w
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-power-stations-structured@4, reason: 'shopify_powerstations fingerprint moved (imports shopify_powerbanks, changed for UGREEN); no station claim changed'}
+- id: rel/bundle-contents@3
+  since: '2026-11-24'
+  supersedes: rel/bundle-contents@2
+  rationale: 'Same rules and transform (bundles@2) as @2, re-issued only because four station extractors were bumped @2 -> @3 (r7 shared _powerbank change, no station or bundle rule changed).'
+  audit:
+    by: A2 coverage r2
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD)'
+    parsers:
+      ankersolix_stations@3: 'sha256:94260f9f8155895c1b47'
+      bluetti_stations@3: 'sha256:10d735d9bf31702f867e'
+      ecoflow_stations@3: 'sha256:10d735d9bf31702f867e'
+      jackery_stations@3: 'sha256:10d735d9bf31702f867e'
+      dreame_robovac@2: 'sha256:82418fe203d439831b23'
+      narwal_robovac@2: 'sha256:2f212aa7076aff13a250'
+      bundles@2: 'sha256:673c815897604268136d'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  rules:
+  - method: bundle:ankersolix-us-stations
+    types: [contains]
+    parsers: [ankersolix_stations@3+bundles@2]
+  - method: bundle:bluetti-us-stations
+    types: [contains]
+    parsers: [bluetti_stations@3+bundles@2]
+  - method: bundle:ecoflow-us-stations
+    types: [contains]
+    parsers: [ecoflow_stations@3+bundles@2]
+  - method: bundle:jackery-us-stations
+    types: [contains]
+    parsers: [jackery_stations@3+bundles@2]
+  - method: bundle:dreame-us-robovac
+    types: [contains]
+    parsers: [dreame_robovac@2+bundles@2]
+  - method: bundle:narwal-us-robovac
+    types: [contains]
+    parsers: [narwal_robovac@2+bundles@2]
+  retired: {at: '2026-11-24', superseded_by: rel/bundle-contents@4, reason: 'shopify_powerstations fingerprint moved (imports shopify_powerbanks); no station or bundle rule changed'}
+- id: rel/source-stated-hierarchy@4
+  since: '2026-11-24'
+  supersedes: rel/source-stated-hierarchy@3
+  rationale: 'Same rules as @3 with three parser versions bumped (sandisk_ssd@4 -> @4, teamgroup_ssd@4 -> @4: hw.dram_type prose only; kingston_ssd@2 -> @2: older datasheet layout, the same part number -> part-number stem links for the new NV2/NV1/A2000 part numbers). No identifier logic changed; no new method.'
+  audit:
+    by: A2 coverage r3
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r3.md; identifier diff old vs new: sandisk/teamgroup unchanged, kingston +12 part numbers (3 new stems)'
+    parsers:
+      lenovo_psref@2: 'sha256:ec6a55f8081086820989'
+      asus@1: 'sha256:628db32b5ba83fa291c6'
+      dell@1: 'sha256:13cd4d61b81c005021b6'
+      surface@1: 'sha256:80cd87b7b1b87d6969e9'
+      razer@1: 'sha256:8752d0e2f07ae8b46ff2'
+      samsung@1: 'sha256:d0e9cabff53a15285159'
+      lenovo_monitors@2: 'sha256:ed0431bb405523a78915'
+      samsung_ssd@2: 'sha256:a6cbc9077c793c287d62'
+      sandisk_ssd@4: 'sha256:05de40f98b4ac34391f0'
+      teamgroup_ssd@4: 'sha256:8e46fb3a4a5c7bbf19b4'
+      kingston_ssd@2: 'sha256:7642be0126681cbc4120'
+      tplink_routers@2: 'sha256:c7318e9238be7635b158'
+      crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  rules:
+  - method: adapter:lenovo-psref
+    types: [member_of_family, configuration_of]
+    parsers: [lenovo_psref@2]
+  - method: adapter:asus-us
+    types: [member_of_family]
+    parsers: [asus@1]
+  - method: adapter:dell-us
+    types: [member_of_family]
+    parsers: [dell@1]
+  - method: adapter:microsoft-surface
+    types: [member_of_family, configuration_of]
+    parsers: [surface@1]
+  - method: adapter:razer-us
+    types: [member_of_family, configuration_of]
+    parsers: [razer@1]
+  - method: adapter:samsung-us
+    types: [member_of_family, configuration_of]
+    parsers: [samsung@1]
+  - method: adapter:lenovo-psref-monitors
+    types: [package_of]
+    parsers: [lenovo_monitors@2]
+  - method: adapter:samsung-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [samsung_ssd@2]
+  - method: adapter:sandisk-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [sandisk_ssd@4]
+  - method: adapter:teamgroup-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [teamgroup_ssd@4]
+  - method: adapter:kingston-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [kingston_ssd@2]
+  - method: adapter:tplink-us-routers
+    types: [variant_of]
+    parsers: [tplink_routers@2]
+  - method: page-variants:anker
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:baseus
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:belkin
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  retired: {at: '2026-11-24', superseded_by: rel/source-stated-hierarchy@5, reason: 'parser pin bumps (A2 preset fill: lenovo_psref@3, asus@2, lenovo_monitors@3, samsung_ssd@3, sandisk_ssd@5, teamgroup_ssd@5, kingston_ssd@3, tplink_routers@3); @4 meaning frozen as locked'}
+- id: claim/mfr-routers-structured@2
+  since: '2026-11-23'
+  supersedes: claim/mfr-routers-structured@1
+  rationale: 'Wi-Fi routers/mesh, manufacturer-owned spec tables: TP-Link US product + support pages (tplink_routers@1), NETGEAR US product pages (netgear_routers@1),
+    ASUS US techspec tables (asus_routers@1). Per field: only the listed keys, only values that normalise to the profile type. Per-band rates and streams
+    come from text segments that start at a band marker, never from the class number (AX5400); widths 320 MHz only with a 6 GHz radio; stream counts only
+    from an explicit NxN. Fetch-time facts (id.msrp_us, sup.latest_firmware_date), the free-text fields (antennas, QoS, power input) and anything the pages
+    do not state (SoC vendor/model, FCC ID, support end date) are NOT accepted: preview candidates or absent. gen.device_type / gen.product_line are accepted
+    only for TP-Link and ASUS (URL section), see claim/mfr-routers-class@1. @2: re-issued because @1 was edited in place (key list sup.hardware_versions
+    -> sup.hardware_version, REV report) and its parser tplink_routers changed meaning under @1 (default-revision facts moved to the revision entity); tplink_routers
+    is now @2.'
+  audit:
+    by: A3-impl r4
+    at: '2026-11-23'
+    evidence: Key list = @1 as committed in ba3b2e0; tplink_routers@2 = the committed revision-aware parser (no code change in r4, version bump only).
+    parsers: {tplink_routers@2: 'sha256:c7318e9238be7635b158', netgear_routers@1: 'sha256:a5e3fcb76ca453cc808d', asus_routers@1: 'sha256:1dedfbe9a8ca77b32bb1'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+  match:
+    extractors: [tplink_routers@2, netgear_routers@1, asus_routers@1]
+    source_ids: [tplink-us-routers, netgear-us-routers, asus-us-routers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    keys: [gen.pack_count, wifi.generation, wifi.marketing_class, wifi.band_count, wifi.has_6ghz, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_5_2_mbps,
+      wifi.rate_6_mbps, wifi.streams_24, wifi.streams_5, wifi.streams_5_2, wifi.streams_6, wifi.max_width_5_mhz, wifi.max_width_6_mhz, wifi.qam_max, wifi.mlo,
+      wifi.mu_mimo, wifi.ofdma, wifi.wpa3, hw.cpu_cores, hw.cpu_ghz, hw.ram_mb, hw.flash_mb, port.wan_speed_mbps, port.wan_type, port.lan_count, port.lan_max_mbps,
+      port.multigig_count, port.wan_lan_configurable, port.usb_count, port.usb_standard, mesh.supported, mesh.systems, mesh.coverage_sqft, sw.vpn_server,
+      sw.vpn_client, sw.wireguard, sw.operating_modes, sw.parental_controls, isp.ipv6, phys.weight, phys.dimensions, sup.hardware_version]
+    require_normalized: true
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-routers-structured@3, reason: 'parser bumps tplink_routers@3 / netgear_routers@2 / asus_routers@2 (has_6ghz false from a complete band list, coordinator ruling 1; NETGEAR WiFi Bands rows); @2 meaning frozen as locked'}
+- id: claim/mfr-routers-class@2
+  since: '2026-11-23'
+  supersedes: claim/mfr-routers-class@1
+  rationale: 'Device class and product line derived from the manufacturer''s own URL section (TP-Link wifi-router vs deco-mesh-wifi, ASUS wifi-routers vs
+    whole-home-mesh-systems and the asus-zenwifi / asus-gaming-routers group). NETGEAR is excluded: its class comes from a model-prefix heuristic (rbs =
+    satellite) and stays a preview candidate. @2: parser tplink_routers@2 (see claim/mfr-routers-structured@2).'
+  audit:
+    by: A3-impl r4
+    at: '2026-11-23'
+    evidence: Same keys as @1.
+    parsers: {tplink_routers@2: 'sha256:c7318e9238be7635b158', asus_routers@1: 'sha256:1dedfbe9a8ca77b32bb1'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+  match:
+    extractors: [tplink_routers@2, asus_routers@1]
+    source_ids: [tplink-us-routers, asus-us-routers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys: [gen.device_type, gen.product_line]
+    require_normalized: true
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-routers-class@3, reason: 'parser bumps tplink_routers@3 / asus_routers@2 only (no class change); @2 meaning frozen as locked'}
+- id: claim/mfr-routers-direct@1
+  since: '2026-11-24'
+  rationale: 'Ubiquiti UniFi gateways + access points from techspecs.ui.com (ubiquiti_routers@1: the page''s labelled technicalSpecification tree, per-band rows are children named by their band) and GL.iNet routers from the Specifications table of their own store pages (glinet_routers@1; comparison tables on the same page are never read). Only the listed keys, only values that normalise. Per-band streams only from an NxN band row, widths only from that band''s ''(BWnnn)'' max-rate row, has_6ghz only True. hw.soc_vendor only where the maker names the vendor (GL.iNet ''MediaTek Quad-core''), hw.soc_model only from an explicit part (IPQ6000, MT7981B); Ubiquiti names CPU cores (''Cortex-A53''), never the SoC, so it writes cores/GHz only. Ubiquiti port.lan_count = Port Layout total minus the stated default WAN ports (console/MGMT excluded). gen.device_type from the maker''s own classification (URL section / Shopify product_type). port.poe is the maker''s power-method / PoE-budget text.'
+  audit:
+    by: A2 coverage r3
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r3.md; 53 Ubiquiti + 45 GL.iNet pages parsed (35 GL.iNet with a spec table), spot-checked UDR7, U7-Pro, UDM-Beast, EF-Core, GL-MT6000, GL-BE9300, GL-MT3000 against the pages'
+    parsers:
+      ubiquiti_routers@1: 'sha256:138542eeff2a206ce032'
+      glinet_routers@1: 'sha256:0cc737c8a6fbac3f78a1'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [ubiquiti_routers@1, glinet_routers@1]
+    source_ids: [ubiquiti-us-routers, glinet-us-routers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      ubiquiti-us-routers: [gen.device_type, gen.product_line, hw.cpu_cores, hw.cpu_ghz, hw.flash_mb, hw.ram_mb, hw.soc_model, hw.soc_vendor, isp.ipv6,
+        mesh.coverage_sqft, mesh.supported, phys.dimensions, phys.weight, port.lan_count, port.lan_max_mbps, port.multigig_count, port.poe,
+        port.wan_lan_configurable, port.wan_speed_mbps, port.wan_type, pwr.max_w, sw.vpn_client, sw.vpn_server, sw.wireguard, wifi.band_count,
+        wifi.generation, wifi.has_6ghz, wifi.max_width_5_mhz, wifi.max_width_6_mhz, wifi.mu_mimo, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_6_mbps,
+        wifi.streams_24, wifi.streams_5, wifi.streams_6, wifi.wpa3]
+      glinet-us-routers: [gen.device_type, hw.cpu_cores, hw.cpu_ghz, hw.flash_mb, hw.ram_mb, hw.soc_model, hw.soc_vendor, phys.dimensions, phys.weight,
+        port.lan_count, port.lan_max_mbps, port.multigig_count, port.usb_count, port.usb_standard, port.wan_lan_configurable, port.wan_speed_mbps,
+        wifi.generation, wifi.has_6ghz, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_6_mbps]
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-routers-direct@2, reason: 'parser bumps ubiquiti_routers@2 / glinet_routers@2 (has_6ghz false from a complete band list, coordinator ruling 1); @1 meaning frozen as locked'}
+- id: claim/mfr-ssd-structured@4
+  since: '2026-11-24'
+  supersedes: claim/mfr-ssd-structured@3
+  rationale: 'Same keys, sources, kinds and rules as @3, re-issued for sandisk_ssd@3 -> @4 and teamgroup_ssd@3 -> @4 (both import crawler/adapters/_ssdprose.py). The one change: an explicit page sentence that calls the drive DRAM-less and says nothing about HMB now writes hw.dram_type = dramless (new profile value: HMB unstated; hw.hmb_support stays unknown, never assumed). A hedged/comparative sentence still says nothing, except the self-description ''this DRAM-less drive ...'' (its comparison is about another attribute). A sentence naming HMB still writes dramless_hmb; two values on a page = nothing.'
+  audit:
+    by: A2 coverage r3
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r3.md; claim diff old (git worktree of HEAD) vs new parsers over every stored snapshot: sandisk +22 hw.dram_type=dramless (SN7100S 16, SN7100 4, SN7100X 2), 0 removed; teamgroup 0 changes'
+    parsers:
+      sandisk_ssd@4: 'sha256:05de40f98b4ac34391f0'
+      teamgroup_ssd@4: 'sha256:8e46fb3a4a5c7bbf19b4'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [sandisk_ssd@4, teamgroup_ssd@4]
+    source_ids: [sandisk-us-ssd, teamgroup-us-ssd]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    keys: [gen.capacity, gen.device_class, gen.form_factor, gen.weight, if.pcie_gen, if.pcie_lanes, if.protocol, if.nvme_version, if.usb_standard, if.usb_connector,
+      hw.controller, hw.controller_vendor, hw.dram_type, hw.dram_size, hw.dram_gen, hw.nand_type, hw.nand_vendor, perf.seq_read, perf.seq_write, perf.rand_read_iops_qd1,
+      perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption,
+      therm.temp_operating, port.drop]
+    require_normalized: true
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-ssd-structured@5, reason: 'parser bumps sandisk_ssd@5 / teamgroup_ssd@5 (_ssd.dram ruling 5, portable if.protocol ruling 4, product-name protocol); @4 meaning frozen as locked'}
+- id: claim/mfr-ssd-samsung@2
+  since: '2026-11-23'
+  supersedes: claim/mfr-ssd-samsung@1
+  rationale: 'samsung.com/us spec API (samsung_ssd@1), same per-field rule and "up to" speed conditioning as claim/mfr-ssd-structured@1, but gen.capacity
+    is NOT accepted: A2 found a real page defect (990 PRO 2TB heatsink row states 1TB), so capacity stays a candidate until a human accepts it or the adapter
+    derives it from the part number. id.msrp_us stays a candidate (price at fetch time). @2 (parsers samsung_ssd@2 / sandisk_ssd@2 / teamgroup_ssd@2) REPLACES
+    the @1 ''up to'' rule: an ''up to'' speed is accepted as a qualified (qualifier up_to) rated figure; it carries cache_state=in_slc_cache ONLY when the
+    claim''s own text evidences the cache (Samsung ''Measured with Intelligent TurboWrite technology being activated''); ''up to'' alone never implies a
+    cache state (review 2 risk 2).'
+  audit:
+    by: A3-impl r4
+    at: '2026-11-23'
+    evidence: 'Same keys as @1; parser @2 drops the unconditional cache_state condition (A3 r4 diff: 5 Samsung claims keep it on evidence).'
+    parsers: {samsung_ssd@2: 'sha256:a6cbc9077c793c287d62'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+  match:
+    extractors: [samsung_ssd@2]
+    source_ids: [samsung-us-ssd]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    keys: [gen.device_class, gen.form_factor, gen.weight, if.pcie_gen, if.pcie_lanes, if.protocol, if.nvme_version, if.usb_standard, if.usb_connector, hw.controller,
+      hw.controller_vendor, hw.dram_type, hw.dram_size, hw.dram_gen, hw.nand_type, hw.nand_vendor, perf.seq_read, perf.seq_write, perf.rand_read_iops_qd1,
+      perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption,
+      therm.temp_operating, port.drop]
+    require_normalized: true
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-ssd-samsung@3, reason: 'parser bump samsung_ssd@3 (_ssd.dram HMB cell, PCIe® interface regex, portable if.protocol, product-name protocol); @2 meaning frozen as locked'}
+- id: claim/mfr-ssd-kingston@2
+  since: '2026-11-24'
+  supersedes: claim/mfr-ssd-kingston@1
+  rationale: 'Same keys and rules as @1 for kingston_ssd@1 -> @2. The parser now also reads the older two-column datasheet layout (NV2, NV1, A2000: upper-case SPECIFICATIONS, label lines or ''>>Label value'', part numbers in the right column cut off before rows are read) into the same rows; per-capacity rows written as ''X MB/s (250GB)'' or two ''CAP - value'' pairs on one line are split per capacity. Output for the six current-layout datasheets is byte-identical to @1.'
+  audit:
+    by: A2 coverage r3
+    at: '2026-11-24'
+    evidence: 'claim diff old (git worktree of HEAD) vs new over all 9 stored datasheets: +132 claims, 0 removed, all on SNV2S (5 part numbers), SNVS (4), SA2000M8 (3); spot-checked against the PDFs (NV2 250GB 3,000/1,300 MB/s 80TBW; A2000 3D TLC, 5-year warranty). NV2/NV1 print NAND ''3D'' only and no DRAM row: those stay unknown.'
+    parsers:
+      kingston_ssd@2: 'sha256:7642be0126681cbc4120'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [kingston_ssd@2]
+    source_ids: [kingston-us-ssd]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      kingston-us-ssd: [end.mtbf, end.tbw, end.warranty_years, gen.capacity, gen.device_class, gen.form_factor, hw.controller, hw.controller_vendor,
+        hw.dram_type, hw.nand_type, if.pcie_gen, if.pcie_lanes, if.protocol, if.usb_standard, perf.seq_read, perf.seq_write, therm.temp_operating]
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-ssd-kingston@3, reason: 'parser bump kingston_ssd@3 (portable if.protocol ruling 4, DRAM cell via _ssd.dram); @2 meaning frozen as locked'}
+- id: claim/tvs-structured@2
+  since: '2026-11-23'
+  supersedes: claim/tvs-structured@1
+  rationale: '@1 plus one source: Vizio US product pages (vizio-us-tvs, vizio_tvs@1), the maker''s own server-rendered labelled spec table, keyed by the
+    model number printed in the page''s Energy Guide (equal to the canonical URL; a page where they disagree, or that has no spec rows, yields nothing).
+    Every @1 rule is carried over unchanged for the four sources it already covered; the Vizio key list is explicit and follows the same review-3
+    rules: refresh.native_hz only from the "Refresh Rate" row (a cell naming two rates is skipped, "Dynamic Motion Rate" goes to refresh.marketing);
+    vrr.supported only when the row is a bare affirmative feature name (HDMI VRR / FreeSync tiers); HDR formats only from the list the row prints,
+    a format not listed stays unknown; hdr.dimming_zones only from an explicit "x<N>" zone count; hdmi.ports_4k120 never (Vizio prints no per-port 4K
+    rate); no power figures (the Energy Guide prints a cost, not watts); never refresh.max_hz or hdr.peak_nits. Hisense was not built (spec data sits
+    behind an undocumented API that timed out; the one alternative origin was refused), DOE CCMS answers 403.'
+  audit:
+    by: A2 tvs r2
+    at: '2026-11-23'
+    evidence: Parsed all 179 Vizio snapshots (79 model numbers, 74 legacy pages without spec rows yield an absence); per-key value histograms checked;
+      fixtures in tests/test_tvs_vizio.py (6 tests). The four @1 parsers are byte-identical to the @1 audit.
+    parsers:
+      energystar_tvs@1: sha256:35b90bbed61b2720ad7c
+      samsung_tvs@1: sha256:6671f4bf6d2b8ecdac67
+      lg_tvs@1: sha256:8381b9a9945f5471873e
+      tcl_tvs@1: sha256:2710e28e9980fbe72ab2
+      vizio_tvs@1: sha256:55121e0b1ed6942efc45
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-23', note: approved by the repo owner via coordinator instruction 2026-11-23}
+  match:
+    extractors: [energystar_tvs@1, samsung_tvs@1, lg_tvs@1, tcl_tvs@1, vizio_tvs@1]
+    source_ids: [energystar-tvs, samsung-us-tvs, lg-us-tvs, tcl-us-tvs, vizio-us-tvs]
+    kinds: [official]
+    tiers: [manufacturer, regulatory]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      energystar-tvs:
+        [gen.viewable_diag, panel.display_tech, panel.quantum_dot, pic.auto_brightness, pwr.annual_kwh, pwr.energy_star, pwr.on_mode_doe_w,
+         pwr.on_mode_w, pwr.standby_w, res.height_px, res.native, res.width_px]
+      samsung-us-tvs:
+        [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.size_class,
+         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.max_input, hdmi.ports_4k120, hdr.dolby_vision, hdr.formats, hdr.hdr10plus, os.platform,
+         panel.display_tech, panel.marketing_class, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand,
+         phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, pwr.annual_kwh, pwr.max_w,
+         pwr.on_mode_w, pwr.standby_w, refresh.marketing, refresh.native_hz, res.class, res.height_px, res.native, res.width_px, vrr.formats,
+         vrr.supported]
+      lg-us-tvs:
+        [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.series, gen.size_class,
+         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.ports_4k120, hdr.dolby_vision, hdr.formats, hdr.hdr10plus, os.platform, os.version,
+         panel.backlight, panel.display_tech, panel.lcd_type, panel.marketing_class, phys.depth_no_stand, phys.depth_with_stand,
+         phys.height_no_stand, phys.height_with_stand, phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand,
+         phys.width_with_stand, pwr.annual_kwh, pwr.on_mode_w, pwr.standby_w, refresh.marketing, refresh.native_hz, res.class, res.height_px,
+         res.native, res.width_px, sup.warranty, vrr.formats, vrr.supported]
+      tcl-us-tvs:
+        [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.size_class,
+         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.ports_4k120, hdr.dimming_zones, hdr.dolby_vision, hdr.formats, hdr.hdr10plus,
+         hdr.local_dimming, os.platform, panel.backlight, panel.bit_depth, panel.display_tech, panel.lcd_type, panel.marketing_class,
+         panel.quantum_dot, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand, phys.vesa,
+         phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, pwr.annual_kwh, pwr.on_mode_w, pwr.standby_w,
+         refresh.dlg_hz, refresh.marketing, refresh.native_hz, res.class, res.height_px, res.native, res.width_px, sup.warranty, vrr.formats,
+         vrr.supported]
+      vizio-us-tvs:
+        [conn.ethernet, conn.usb_count, conn.wifi, gen.size_class, gen.viewable_diag, hdmi.count, hdr.dimming_zones, hdr.dolby_vision, hdr.formats,
+         hdr.hdr10plus, hdr.local_dimming, panel.backlight, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand,
+         phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, refresh.marketing, refresh.native_hz,
+         res.class, res.height_px, res.native, res.width_px, sup.warranty, vrr.supported]
+  retired: {at: '2026-11-24', superseded_by: claim/tvs-structured@3, reason: 'parser bumps lg_tvs/tcl_tvs/vizio_tvs/samsung_tvs@2 (_tv.py: ruling 2 backlight value table, LG Latest HDMI port list); @2 meaning frozen as locked'}

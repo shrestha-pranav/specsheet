@@ -453,8 +453,10 @@ specs:
   why: Upgradability
   traps:
   - '''Up to 64GB'' listing hides that it cannot be upgraded'
+  - 'ASUS ''16GB DDR5 on board, Max Capacity:32GB'' with no SO-DIMM named: a free slot is possible, so placement stays unknown (not soldered)'
   sources:
   - PSREF Max Memory/Slots, Dell manual Memory, Framework
+  - 'ASUS techspec Memory cell: on board / on package / SO-DIMM (asus@2)'
   example: soldered
   level: configuration
   identity_role: model_defining
@@ -482,8 +484,10 @@ specs:
   why: Max RAM possible for this config
   traps:
   - PSREF per-platform; max across family misleading
+  - 'Newer PSREF cells carry a platform label (''Arrow Lake: up to 64GB''); P16/T16g Gen 3 list ECC and Non-ECC maxima in one cell (pick by the MTM Memory cell)'
   sources:
   - PSREF Max Memory
+  - 'ASUS techspec Memory cell: Max Capacity / Memory Max Up to / Max Total system memory up to'
   example: '32'
   level: configuration
 - key: mem.channels

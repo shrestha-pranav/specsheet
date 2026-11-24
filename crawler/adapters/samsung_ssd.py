@@ -20,7 +20,7 @@ import _ssd as S
 import _lt as L
 import _run
 
-ID, VERSION, SOURCE = "samsung_ssd", 2, "samsung-us-ssd"
+ID, VERSION, SOURCE = "samsung_ssd", 3, "samsung-us-ssd"
 CATEGORIES = {"ssds"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.samsung.com"
@@ -130,11 +130,14 @@ class SamsungSsd:
         if (v := get("Interface (thru IMB)", "Interface")):
             if portable:
                 add("if.usb_standard", S.usb(v), v, "Interface")
+                add("if.protocol", S.usb_protocol(v), v, "Interface")      # v3: affirmative USB interface only (ruling 4)
             elif re.search(r"SATA", v, re.I):
                 add("if.protocol", "sata_ahci", v, "Interface")
             else:
                 for k, x in S.interface(v):
                     add(k, x, v, "Interface")
+        if not portable and not any(c["key"] == "if.protocol" for c in pr.claims) and re.search(r"\bNVMe\b", j.get("name") or ""):
+            add("if.protocol", "nvme", j["name"], "Product name")        # v3: the maker's own product name ('990 PRO ... SSD NVMe™ M.2') where no Interface row
         if (v := get("Controller")) and not re.search(r"DDR|DRAM", v, re.I):    # some rows carry the DRAM string in the Controller cell (source defect)
             add("hw.controller", v, v, "Controller")
             if re.search(r"Samsung|in-?house", v, re.I):

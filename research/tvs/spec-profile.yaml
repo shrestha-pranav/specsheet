@@ -148,8 +148,13 @@ specs:
   traps:
   - '"QLED", "QNED", "Neo QLED", "Mini LED", "Micro RGB" TVs are all LCDs; "LED TV" = LCD'
   - Micro LED (Samsung MNA.. ) is self-emissive; "Micro RGB"/"RGB Mini LED" is an LCD with an RGB LED backlight
-  sources: [ENERGY STAR display_type, LG 'Display Type', Samsung 'Product Type', TCL 'Display Technology']
+  - 'LG "Display Type" often prints only a resolution ("4K UHD"), which says nothing about the technology'
+  sources: [ENERGY STAR display_type, LG 'Display Type', Samsung 'Product Type', TCL 'Display Technology', "'Backlight Type' row (value table below)"]
   example: oled
+  note: 'Coordinator ruling 2 (2026-11-24), backlight value table: when no display-type row resolves the technology, a row labelled exactly
+    "Backlight Type" whose whole value is Full Array LED / Active Full Array / Mini LED / Edge(-lit) LED / Direct(-lit) LED writes lcd (a
+    backlit panel is an LCD), literal kept as raw (crawler/adapters/_tv.py BACKLIGHT_LCD). Any other value (Vizio "DLED", "Local Dimming",
+    a value with extra words) stays unresolved. "Direct" (LG) is A2''s reading of the table''s LED-backlight rows, flagged for A1 review.'
 - key: panel.oled_subtype
   label: OLED panel type
   group: panel

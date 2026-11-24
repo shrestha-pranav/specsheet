@@ -22,7 +22,7 @@ import _lt as L
 import _powerbank as P
 import _run
 
-VERSION = 4       # v4: r7 shared _powerbank (labelled Wh pairs keep both with energy_basis, case-insensitive Wh); v3: r6 a repeated identical port row is one port (_powerbank.port_segments); v2: review 3 (all-port totals, capacity bases, rated load, page/label identity conflicts)
+VERSION = 5       # v5 (A2 preset fill, UGREEN only): per-port "USB-C1 Output:" rows and the per-port Supported Protocol block (pd.pps true; false only from a complete per-port enumeration); v4: r7 shared _powerbank (labelled Wh pairs keep both with energy_basis, case-insensitive Wh); v3: r6 a repeated identical port row is one port (_powerbank.port_segments); v2: review 3 (all-port totals, capacity bases, rated load, page/label identity conflicts)
 CATEGORIES = {"power-banks"}
 DELAY = 1.0
 PB = re.compile(r"power ?bank|portable charger|battery pack", re.I)
@@ -195,6 +195,73 @@ def identity_check(ad, model, printed, handle, prod):
     return c, foreign
 
 
+UG_OUT = re.compile(r"(USB-[AC]\d?(?:/C\d)?)\s*Output\s*:\s*")
+UG_PORTNAME = r"(?:USB-[AC]\d?(?:\s*/\s*C\d)?(?:\s*/\s*C-Cab(?:el|le))?|Wire?less(?: charging)?)"
+
+
+def ugreen_outputs(blk):
+    """UGREEN 'USB-C1 Output: ... 100W Max USB-C2 Output: ... USB-A Output: ...' (one labelled row per port; the shared label split eats the
+    port names) -> 'USB-C1: ...; USB-C2: ...; USB-A: ...' for ports_from, or None. Only the first block, only when >= 2 port rows."""
+    ms = [m for m in UG_OUT.finditer(blk) if not re.match(r"(?i)protocol", blk[m.end():m.end() + 9])]
+    if len(ms) < 2:
+        return None
+    out = []
+    for i, m in enumerate(ms):
+        end = ms[i + 1].start() if i + 1 < len(ms) else len(blk)
+        seg = re.split(r"\s(?:USB-[AC]\d?(?:/C\d)?\s+)?(?:Input|Total|Ports|Dimensions|Weight|Protocols?|Capacity|Indicator)\b", blk[m.end():end])[0]
+        out.append(f"{m[1]}: {seg.strip(' ;,')}")
+    return "; ".join(out)
+
+
+def ugreen_protocols(blk):
+    """UGREEN per-port protocol lists -> [(port name, protocol list)] for OUTPUT ports, plus the literal. Two printed layouts:
+    'Support Protocol Input:USB-C1:PD3.0/... Output:USB-C1:PD3.0/PD2.0/PPS/... USB-C2:PD3.0/... USB-A:SCP/...' and
+    'USB-C1/C2 Output Protocols: PD3.0/PD2.0/PPS/... USB-A Output Protocols: SCP/...'. Wireless entries are dropped (not a wired port)."""
+    m = re.search(r"Support(?:ed)? Protocols?\s*:?\s*(?:Input(?: port)?\s*:.*?)?Output(?: port)?\s*:\s*(.*?)(?=\s(?:Wire?less charging\s*:|Learn More|Ports?\b|Dimensions|Weight|Display|Battery|Rated|Product)|$)", blk, re.S)
+    if m:
+        body, lit = m[1], m[0]
+        heads = list(re.finditer(r"(" + UG_PORTNAME + r")\s*:\s*", body))
+        ents = [(h[1], body[h.end(): heads[i + 1].start() if i + 1 < len(heads) else len(body)].strip(" ;,")) for i, h in enumerate(heads)]
+    else:
+        ents = [(x[1], x[2].strip()) for x in re.finditer(r"(USB-[AC]\d?(?:/C\d)?)\s*Output Protocols?\s*:\s*(.*?)(?=\s(?:USB-[AC]\d?(?:/C\d)?\s*Output Protocols?|Compatib|Learn More|Ports?\b|Dimensions)|$)", blk, re.S)]
+        lit = " ; ".join(f"{a}: {b}" for a, b in ents)
+    ents = [(n, v) for n, v in ents if not re.match(r"(?i)wire?less", n)]
+    return ents, lit
+
+
+def ugreen_pps(rows, blk, ports):
+    """-> (value, literal, conditions) or None. True when an output port's protocol list names PPS (or a USB-C port prints a PPS range).
+    False ONLY by complete enumeration (A1 ruling 2026-11-24): the spec block prints the port inventory ('Ports USB-A*1 USB-C*2'), every output
+    port of that inventory has its own protocol list, no list is open-ended ('etc.'), and none names PPS. Otherwise nothing."""
+    ents, lit = ugreen_protocols(blk)
+    if any(re.search(r"\bPPS\b", v) and not re.match(r"(?i)usb-a", n) for n, v in ents) or any(p["pps"] and p["type"] in ("usb_c", "cable_c") for p in ports):
+        return True, lit or (rows.get("Output") or ""), None
+    inv = rows.get("Ports") or ""
+    nc = re.search(r"USB-C\s*\*\s*(\d)", inv)
+    na = re.search(r"USB-A\s*\*\s*(\d)", inv)
+    if not ents or not (nc or na) or re.search(r"(?i)\betc\b|\bPPS\b", lit) or re.search(r"(?i)\binput\b", re.sub(r"(?i)^.*?Output", "", lit)):
+        return None
+    want = {f"C{i}" for i in range(1, int(nc[1]) + 1)} if nc else set()
+    want |= {f"A{i}" for i in range(1, int(na[1]) + 1)} if na else set()
+    got = set()
+    for n, _ in ents:
+        u = n.upper().replace(" ", "")
+        for kind in "CA":
+            cnt = len([w for w in want if w[0] == kind])
+            if not u.startswith(f"USB-{kind}"):
+                continue
+            nums = re.findall(r"(?:^USB-" + kind + r"|/" + kind + r")(\d)", u)
+            if nums:
+                got |= {kind + x for x in nums}
+            elif cnt == 1:
+                got.add(kind + "1")
+            else:
+                return None                       # 'USB-C: ...' on a two-C-port bank: which port is not stated
+    if not want or got != want:
+        return None
+    return False, lit, {"basis": "complete_enumeration"}
+
+
 def parse_shop(ad, snap, page, prod):
     pr, key = C.ParseResult(), snap.ref.key
     pr.sources = [L.source(snap, f"{ad.brand.upper()} US store page {key}")]
@@ -244,6 +311,8 @@ def parse_shop(ad, snap, page, prod):
         if cond:
             add("cap.rated_basis", b[1].strip() if b else None, rc, "Rated Capacity")
     out = rows.get("Output") or ""
+    if ad.brand == "ugreen" and (uo := ugreen_outputs(blk)):
+        out = uo
     if out:
         ports, combo, total, toks = P.ports_from(out, "out")
         tot = rows.get("Total Output")
@@ -256,7 +325,12 @@ def parse_shop(ad, snap, page, prod):
         add("out.simultaneous", combo, out, "Output")
         single = [p["max_w"] for p in ports if p["max_w"] and p["type"] != "wireless"]
         add("out.max_single_port_w", max(single) if single else None, out, "Output")
-        add("pd.pps", True if any(p["pps"] and p["type"] in ("usb_c", "cable_c", None) for p in ports) or re.search(r"\bPPS\b", rows.get("Supported Protocol", "") + rows.get("Protocols", "")) else None, out, "Output")
+        up = ugreen_pps(rows, blk, ports) if ad.brand == "ugreen" else None
+        if up:
+            add("pd.pps", up[0], up[1], "Supported Protocol (per output port)", up[2],
+                quote="every output port of the printed inventory lists its protocols; none names PPS" if up[0] is False else None)
+        else:
+            add("pd.pps", True if any(p["pps"] and p["type"] in ("usb_c", "cable_c", None) for p in ports) or re.search(r"\bPPS\b", rows.get("Supported Protocol", "") + rows.get("Protocols", "")) else None, out, "Output")
         vmax = [P.pdos(p["fixed_pdos"] or "")[3] for p in ports]
         add("pd.max_fixed_voltage", max([x for x in vmax if x] or [0]) or None, out, "Output")
     inp = rows.get("Input") or ""

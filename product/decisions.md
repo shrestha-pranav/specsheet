@@ -280,3 +280,49 @@ steps: `product/launch-checklist.md`.
 - Options: ad-hoc edits to built files [rejected: the next build reintroduces the value]; bucket-locked archive
   [rejected: blocks removal].
 - Reversible: yes. Owner action: DMCA agent designation goes with the legal review (needs an address of record).
+
+### D8 (2026-11-24, PM round 4): showcase presets are gated on an in-scope population, not the whole category
+- **Decision.** A preset's fill for each gate key = known / in-scope rows. A row is in scope when all four hold:
+  (1) it carries at least one source of a tier in `scope.sources` (default `manufacturer`; purifiers add `regulatory`,
+  because ENERGY STAR is where certified CADR lives); (2) its lifecycle is not `discontinued`, unless
+  `include_discontinued`; (3) no known value rules it out on a filter listed in `scope.by` (the population-defining
+  filter: "NVMe", "Wi-Fi 7", "120 Hz panel", "has USB-C", "45 W+ port"); (4) its status for that key is not
+  `not_applicable`. **Unknown always stays in**, and a key is never scoped by its own value, so the scope cannot
+  hide our own gaps. The gate passes when every key reaches `min_fill` (0.8) **and** at least `min_brands` (2) brands
+  have a known value on every gate key. The card must say what it covers: "Covers N brands (list) · X of Y
+  <category> in scope", plus excluded counts by reason and the brands that are not covered. The default list view
+  shows the in-scope rows, with a one-click "show all Y".
+- **Why.** The whole-category denominator measured the wrong thing. 2,855 of 4,234 monitors are ENERGY STAR or
+  DisplayHDR listing rows, and those lists never carry PWM or USB-C power. 637 of 1,371 TVs are discontinued LG
+  models (back to 2014 plasma). A 60 Hz TV cannot take 4K at 120 Hz. Under that denominator no preset could pass,
+  however good our maker coverage got. But "in scope" must not mean "rows where we happen to have the value":
+  every exclusion is a known fact about the row (its source class, its maker-stated lifecycle, a known value on
+  another key), never the absence of the measured value.
+- **Rejected.** (a) "Sold in the last N years": we have no dates to measure it with (`gen.release_year` is 0% in
+  monitors and routers). Maker-stated `discontinued` is the honest proxy, and the runner-up once release years fill.
+  (b) "Brands whose source publishes this key": it selects on the outcome. A parser bug that drops a field for a
+  whole brand (LG and ASUS monitors have 0 `gen.size_class` today while their pages print it) would vanish from the
+  denominator instead of showing as a gap. (c) The full shown slice (every other filter applied): it is honest, but
+  the weight and size filters push rows out unevenly. The match / might-match split already shows that uncertainty.
+- **Structural fixes made in `docs/presets.json`:**
+  - Purifier: filter price is preview-only by policy (`claim/air-purifiers-structured@1`: a dated store price), so the gate was 0% forever.
+    Now **smoke CADR ≥ 260 cfm**. The basis is the AHAM room-size rule (room area = 1.55 × smoke CADR, and
+    400 / 1.55 = 258). 191 of 206 values are ENERGY STAR-certified (AHAM AC-1). Per-dollar ranking is dropped until a
+    trusted filter-cost source exists. It passes today at 94.9%.
+  - Router: `wifi.streams_6` is printed only by ASUS and Ubiquiti (31 records). It is not carried in the index, so
+    the build always measured it as 0. TP-Link and NETGEAR barely print per-band stream counts, not even for 5 GHz
+    (TP-Link 0 of 106 rows, NETGEAR 4 of 60). Now: **"Wi-Fi 7 routers with a 6 GHz band, ranked by 5 GHz link rate"**. Every maker publishes per-band
+    PHY rates. Stream counts are shown as a column and not filtered.
+  - SSD: makers rarely print NAND type (TEAMGROUP 23 of 173, SanDisk pages 17 of 74). The preset is now
+    **DRAM-only** (the PCPartPicker ask), with NAND type as a column. A TLC preset returns only with a cleared NAND
+    source.
+  - Monitor: adds "has a USB-C input" (`usb.usbc_inputs ≥ 1`) as the population filter for the power-delivery fill.
+    Its fill drops to 0% until makers' port lists are parsed. That is the honest number: today we do not know which
+    monitors have USB-C.
+  - 4K120 TVs: the 120 Hz panel filter is now explicit. Power banks: scoped by the 45 W+ port.
+- **Today, under D8** (measured from records, not yet built): purifier 94.9% (passes) · 4K120 TVs 71.5% · ram 79.6%
+  (fails min_brands: ASUS has no `mem.max`) · TV panel 65.0% · SSD DRAM 40.5% · router 6 GHz 37.8% · power-bank PPS
+  11.2% · monitor 0%. The data work, ranked by effort per point: `team/briefs/pm-2026-11-24-preset-fill-a2.md`.
+  The presets.py and UI changes: `team/briefs/pm-2026-11-24-preset-scope-a4.md`.
+- **Reversible.** Yes. It is a build-time rule over a source file. Setting `scope.sources: null` and
+  `include_discontinued: true` restores the whole-category gate for any preset. Owner action: none.

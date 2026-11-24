@@ -37,3 +37,15 @@ HP QuickSpecs (support.hp.com timed out; PDFs exist per product, per-SKU option 
   soldered is stated, so both stay empty. Dual-mode panels ("240Hz / 440Hz") carry no single refresh value. "(peak)"-only nits are not SDR.
 - **Agreement checks.** soldered rows: Max Memory == Memory size in 619 of 624 (5 rows have a family-level "64GB soldered" max on a 32GB MTM:
   a PSREF cell inconsistency, left as published). socketed rows: max > size in 969, == size in 177 (fully populated slots, fine).
+
+## Preset fill (A2, 2026-11-24): ram-upgradable (mem.max, mem.soldered)
+- **PSREF newer layout.** The 177 US MTMs without mem.max (P16 Gen 3, T16g Gen 3, T14/T16 Gen 6/7, E14/E16 Gen 7/8 and Gen 3/4) did print
+  Max Memory, but prefixed with the platform ("Arrow Lake: up to 64GB DDR5-5600", "Lunar Lake: 32GB soldered memory, not upgradable"), which
+  did not normalise. The row is already that MTM's cell, so lenovo_psref@3 drops the label (raw keeps it). P16/T16g Gen 3 print both
+  "Models with Non-ECC memory: Up to 192GB" and "Models with ECC memory: Up to 128GB": resolved from the MTM's own Memory cell (all US rows are
+  Non-ECC). Any other multi-variant cell stays unknown. Label checked against the Processor on every row (Lunar Lake = 2xxV, soldered).
+- **ASUS.** asus@2 reads mem.max and mem.soldered from the Memory cell (rules in asus.py `memory_facts`): soldered needs "No expansion
+  possible" or max == on-board amount; on-board + max above it with no SO-DIMM named stays unknown (a free slot is possible); options of one
+  model code must agree. "Memory on Package" counts as on-board.
+- Coordinator rulings of 2026-11-24 (complete-enumeration negatives, Vizio backlight, monitor size class, portable SSD protocol, SSD DRAM-less)
+  do not touch laptops: no laptop negative is written from absence.

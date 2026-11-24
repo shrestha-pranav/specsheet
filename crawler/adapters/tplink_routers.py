@@ -17,6 +17,9 @@ Traps    : the spec table is the CURRENT hardware version only (the /v1/ and /v4
            never printed. 'AX3000' is a class sum. 'Dual-Band' + '4 Streams' is total streams over bands, not 4x4: only an explicit NxN
            (never present on TP-Link pages) would set wifi.streams_*. Firmware list is the US region; its newest 'Published Date' is
            a fetch-time fact (observed_at).
+v3 (2026-11-24, preset fill): wifi.has_6ghz False (condition basis=complete_enumeration, list kept as raw) only from a complete band list:
+           the 'Frequency' row ('2.4 GHz, 5 GHz'), or a 'WiFi Speeds' row whose per-band rates sum to its class number within 3 %; a stated
+           Dual/Tri/Quad-Band count must match. A 'Frequency' row naming 6 GHz also gives True.
 """
 import gzip, json, re, sys, time
 from pathlib import Path
@@ -26,7 +29,7 @@ import _router as R
 import _lt as L
 import _run
 
-ID, VERSION, SOURCE = "tplink_routers", 2, "tplink-us-routers"
+ID, VERSION, SOURCE = "tplink_routers", 3, "tplink-us-routers"
 CATEGORIES = {"routers"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.tp-link.com"
@@ -141,9 +144,20 @@ def parse_pages(snap, h, sup):
     add("gen.product_line", fam.replace("-", " ").title(), snap.ref.key, "URL")
     add("gen.device_type", "mesh_system" if mesh else "router", snap.ref.hints.get("kind"), "URL class")
     add("wifi.generation", R.generation(std) or R.generation(spd), std or spd, "Standards and Protocols" if std else "WiFi Speeds")
+    freq = " ".join(row("Frequency"))
     if std or spd:
         add("wifi.has_6ghz", True if re.search(r"6\s*GHz", std + " " + spd) else None, std or spd, "Standards and Protocols")
     mc = R.marketing_class(spd or allw)
+    # v3: has_6ghz False only from a complete band list (coordinator ruling 1): the 'Frequency' row, or a 'WiFi Speeds' row whose per-band
+    # rates sum to the class number (BE3600 = 2882 + 688) so no radio is missing; a stated Dual/Tri/Quad-Band count must agree.
+    if not re.search(r"6\s*GHz", std + " " + spd + " " + freq):
+        cnt = R.bands(cap)
+        if freq and R.band_enum(freq, cnt) is False:
+            R.add_6ghz(pr, ADAPTER, snap, False, freq, "model_code", model, "Frequency")
+        elif spd and R.rates_cover_class(R.per_band(spd), mc) and R.band_enum(spd, cnt) is False:
+            R.add_6ghz(pr, ADAPTER, snap, False, spd, "model_code", model, "WiFi Speeds")
+    elif R.band_enum(freq) is True and not re.search(r"6\s*GHz", std + " " + spd):
+        R.add_6ghz(pr, ADAPTER, snap, True, freq, "model_code", model, "Frequency")
     add("wifi.marketing_class", mc, spd, "WiFi Speeds")
     add("wifi.band_count", R.bands(cap) or R.bands(spd), cap, "WiFi Capacity")
     pb = R.per_band(spd)

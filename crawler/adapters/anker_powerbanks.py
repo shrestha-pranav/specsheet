@@ -22,7 +22,7 @@ import _lt as L
 import _powerbank as P
 import _run
 
-ID, VERSION, SOURCE = "anker_powerbanks", 4, "anker-us-powerbanks"     # r7: shared _powerbank changed (energy_basis pairs, case-insensitive Wh); v3: r6 shared _powerbank (repeated port row = one port); v2: review 3
+ID, VERSION, SOURCE = "anker_powerbanks", 5, "anker-us-powerbanks"     # v5 (A2 preset fill): a protocol row named PPS in the output section ('PPS: 65W', '[USB-C]-PPS: 3V-11V') = pd.pps true; r7: shared _powerbank changed (energy_basis pairs, case-insensitive Wh); v3: r6 shared _powerbank (repeated port row = one port); v2: review 3
 CATEGORIES = {"power-banks"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.anker.com"
@@ -196,7 +196,9 @@ def parse_page(snap, h):
             single = [x["max_w"] for x in ports if x["max_w"] and x["type"] != "wireless"]
             add("out.max_single_port_w", max(single) if single else None, raw, lab)
             add("out.ports", ports, raw, lab)
-            add("pd.pps", True if any(x["pps"] and x["type"] in ("usb_c", "cable_c") for x in ports) else None, raw, lab)
+            named = [n for n, _ in items if re.search(r"(?i)(?:^|[\]\s-])PPS$", n) and not re.search(r"(?i)usb-?a\b", n)]   # a protocol row named PPS (never a USB-A one)
+            add("pd.pps", True if named or any(x["pps"] and x["type"] in ("usb_c", "cable_c") for x in ports) else None, raw, lab,
+                quote=f"output protocol row '{named[0]}'" if named and not any(x["pps"] for x in ports) else None)
             vmax = [P.pdos(v)[3] for n, v in items if not n.lower().startswith("total")]
             add("pd.max_fixed_voltage", max([x for x in vmax if x] or [0]) or None, raw, lab)
         elif ll.startswith("dimensions"):

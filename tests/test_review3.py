@@ -235,9 +235,9 @@ class Fix3Conditions(unittest.TestCase):
 
 class Policies(unittest.TestCase):
     # r6: power banks re-issued as @5 (parser bump for the repeated-port-row fix); @4 joins the inert superseded set
-    NEW = {"claim/mfr-robovac-structured@5", "claim/mfr-power-banks-structured@6", "claim/dcl-matter-certified@2"}   # r7: power banks @5 -> @6
+    NEW = {"claim/mfr-robovac-structured@5", "claim/mfr-power-banks-structured@7", "claim/dcl-matter-certified@2"}   # r7: power banks @5 -> @6; A2 preset fill: @6 -> @7
     OLD = {"claim/mfr-robovac-structured@2", "claim/mfr-robovac-structured@3", "claim/mfr-robovac-structured@4",
-           "claim/mfr-power-banks-structured@2", "claim/mfr-power-banks-structured@3", "claim/mfr-power-banks-structured@4", "claim/mfr-power-banks-structured@5", "claim/dcl-matter-certified@1"}
+           "claim/mfr-power-banks-structured@2", "claim/mfr-power-banks-structured@3", "claim/mfr-power-banks-structured@4", "claim/mfr-power-banks-structured@5", "claim/mfr-power-banks-structured@6", "claim/dcl-matter-certified@1"}
 
     def test_consolidated_pending_policies_cover_every_current_extractor(self):
         dec = D.Decisions(ROOT / "data")

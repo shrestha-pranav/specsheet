@@ -28,7 +28,7 @@ import _ssd as S
 import _lt as L
 import _run
 
-ID, VERSION, SOURCE = "kingston_ssd", 2, "kingston-us-ssd"
+ID, VERSION, SOURCE = "kingston_ssd", 3, "kingston-us-ssd"
 CATEGORIES = {"ssds"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.kingston.com/datasheets/"
@@ -205,6 +205,7 @@ def parse_text(snap, txt):
             if re.search(r"USB", iface):
                 add("if.usb_standard", S.usb(iface), iface, "Interface")
                 add("gen.device_class", "portable_usb", iface, "Interface")
+                add("if.protocol", S.usb_protocol(iface), iface, "Interface")      # v3: affirmative USB interface only (ruling 4)
             else:
                 for k, x in S.interface(iface):
                     add(k, x, iface, "Interface")
@@ -216,7 +217,8 @@ def parse_text(snap, txt):
             if (nd := row("nand")):
                 add("hw.nand_type", S.nand_type(nd[0]), nd[0], "NAND")
             if (d := row("dram cache")):
-                add("hw.dram_type", "dram" if re.fullmatch(r"(?i)yes", d[0]) else None, d[0], "DRAM cache")
+                for k, x in ([("hw.dram_type", "dram")] if re.fullmatch(r"(?i)yes", d[0]) else S.dram(d[0])):   # v3: a 'No'/'None' cell = dramless (ruling 5)
+                    add(k, x, d[0], "DRAM cache")
             sq = row("sequential read/write", "sequential read / write")
             if sq and (v := per_cap(sq, caps).get(cap)) and (m := re.search(r"([\d,]+)\s*/\s*([\d,]+)\s*MB/s", v)):
                 add("perf.seq_read", S.n(m[1]), v, "Sequential Read/Write")
