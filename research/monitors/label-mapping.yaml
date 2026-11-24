@@ -1,0 +1,12 @@
+# Source-label -> profile-key mapping for monitors (A2 coverage 2026-11-24). Consumed by scripts/import.py (same contract as
+# research/power-strips/label-mapping.yaml): labels the monitor adapters keep in `fingerprints.unmapped` become extra claims with extractor
+# `import.py+label-mapping@1`, locator.label + quote "<label>: <literal>". Adapters are untouched (their parser pins stay valid).
+#
+# flk.pwm: the maker's own explicit flicker-free statement is stored as an OFFICIAL maker claim of 'none' with the literal quoted. It is a
+# declaration, not a measurement: TÜV Flicker Free and "Flicker Safe" can be tested at default brightness only (spec-profile trap), and a
+# measured claim (RTINGS / Notebookcheck) never overwrites it or is overwritten by it. "No" / silence writes nothing (not 'low-freq').
+rules:
+- {re: "^Flicker[- ]?free( Technology)?$", brands: [asus], maps_to: flk.pwm, transform: flicker_free}
+- {re: "^Flicker Safe(®)?:?$", brands: [lg], maps_to: flk.pwm, transform: flicker_free}
+- {re: "^(Other|Ergonomic) Certifications?$", brands: [lenovo], maps_to: flk.pwm, transform: flicker_free}
+- {label: "USB-C Power Delivery", brands: [asus], maps_to: usb.usbc_pd_w, transform: num, unit: W}

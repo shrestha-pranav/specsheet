@@ -399,6 +399,7 @@
             "same_package",
             "possible_match",
             "same_model",
+            "same_hardware_as",
             "different",
             "insufficient_evidence",
             "replaced_by"

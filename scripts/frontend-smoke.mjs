@@ -21,10 +21,11 @@ const context = vm.createContext({
   matchMedia:()=>({matches:false,addEventListener(){}}),
   fetch:async url => {requests.push(url); try { const body = await json(url.split('?')[0]); return {ok:true,json:async()=>body}; } catch (error) { if (error.code === 'ENOENT') return {ok:false,status:404}; throw error; }}
 });
-const names = ['facetControl','methodsDiffer','methodsFlag','categories','indexFor','detailFor','displayValue','initialState','categoryStateQuery','productUrl','validatedReturnQuery','returnWithIds','matchFacet','missingIssueUrl','correctionIssueUrl','renderTable','renderProduct','renderCompare','previewOverlay','revisionsMarkup','searchRows','extractIdentifiers','differingFields','cellValue','compareUrl','configTable','evidenceMarkup','valueWithContext'];
+const names = ['facetControl','methodsDiffer','methodsFlag','categories','indexFor','detailFor','displayValue','initialState','categoryStateQuery','productUrl','validatedReturnQuery','returnWithIds','matchFacet','missingIssueUrl','correctionIssueUrl','renderTable','renderProduct','renderCompare','previewOverlay','revisionsMarkup','searchRows','extractIdentifiers','differingFields','cellValue','compareUrl','configTable','evidenceMarkup','valueWithContext','renderPage','reportMiss'];
 const source = await readFile(resolve(root, 'docs/app.js'), 'utf8');
 assert(source.includes('  renderRoute();\n})();'), 'Application bootstrap changed; update harness');
 vm.runInContext(source.replace('  renderRoute();\n})();', `  globalThis.test = {${names.join(',')}};\n})();`), context);
+vm.runInContext(await readFile(resolve(root, 'docs/pages.js'), 'utf8'), context);
 const ui = context.test;
 const categories = await ui.categories();
 assert(!categories.some(c=>c.id === 'power-strips-demo'), 'Demo category must be hidden');
@@ -248,5 +249,47 @@ for (const category of categories) {
   assert.doesNotMatch(element('main').innerHTML, /\[object Object\]/, `${category.id}: no object coercion`);
   await ui.renderCompare(category, new URLSearchParams({ids:categoryRows.slice(0,2).map(r=>r.id).join(',')}), 0);
   assert.match(element('#comparison-table').innerHTML, /compare-table/, `${category.id}: comparison rendered`);
+}
+// A3 r8 / A4: certification-only listings are opt-in, flat, off by default; preview never relabels them as unreviewed.
+{
+  const ap = categories.find(c=>c.id === 'air-purifiers');
+  if (ap?.certification_only?.index?.length) {
+    Object.assign(ap, await json('api/v1/air-purifiers/schema.json'));
+    const def = await ui.indexFor(ap), withCert = await ui.indexFor(ap, false, true);
+    assert.equal(withCert.length, def.length + ap.certification_only.count, 'certonly adds exactly the certification-only rows');
+    assert(!def.some(r=>r.certonly), 'default listing excludes certification-only rows');
+    assert(withCert.filter(r=>r.certonly).every(r=>!r.unreviewed), 'certification-only rows are trusted, not unreviewed');
+    const pv = await ui.indexFor(ap, true), pvCert = await ui.indexFor(ap, true, true);
+    assert(!pv.some(r=>r.unreviewed && r.in_trusted), 'preview without the toggle never labels trusted certonly rows unreviewed');
+    assert.equal(pvCert.filter(r=>r.certonly).length, ap.certification_only.count, 'preview + certonly keeps every certonly row');
+    assert(!pvCert.some(r=>r.certonly && r.unreviewed), 'preview + certonly: none unreviewed');
+    assert.equal(ui.initialState(ap, new URLSearchParams('')).certonly, false, 'toggle off by default');
+    assert.equal(ui.initialState(ap, new URLSearchParams('certonly=1')).certonly, true);
+    assert.match(ui.categoryStateQuery(ui.initialState(ap, new URLSearchParams('certonly=1'))), /certonly=1/, 'toggle persists in the URL');
+    const certRow = withCert.find(r=>r.certonly);
+    await ui.renderProduct(ap, certRow.id, new URLSearchParams(), 0);
+    assert.match(element('main').innerHTML, /Certification-only listing/, 'detail shows the certification-only note');
+  }
+  const lp = categories.find(c=>c.id === 'laptops');
+  assert.equal(ui.initialState(lp, new URLSearchParams('certonly=1')).certonly, false, 'category without the rule ignores certonly');
+}
+// Legal pages, brand and contact placeholders (A4 site-legal).
+{
+  const site = await json('site.json');
+  for (const kind of ['terms','privacy','sources','about']) {
+    await ui.renderPage(kind, 0);
+    const html = element('main').innerHTML;
+    assert.match(html, new RegExp(site.legal_status), `${kind}: marked as draft`);
+    assert.doesNotMatch(html, /\[object Object\]|undefined/, `${kind}: no coercion artefacts`);
+    assert.doesNotMatch(html, /\$\d|per month|subscription|x402/i, `${kind}: no pricing or payment detail`);
+  }
+  await ui.renderPage('terms', 0);
+  assert.match(element('main').innerHTML, /paid tier is coming later/i);
+  await ui.renderPage('sources', 0);
+  assert.match(element('main').innerHTML, /github\.com\/shrestha-pranav\/specsheet\/issues/, 'takedown contact falls back to GitHub issues while email_enabled is false');
+  assert.doesNotMatch(element('main').innerHTML, /@knownspec\.com/, 'no placeholder-domain email published before the domain exists');
+  assert.match(element('main').innerHTML, /ENERGY STAR/, 'sources list generated from the policy file');
+  assert(site.api_origin === '' || /^https:/.test(site.api_origin), 'api_origin empty (beacon off) or https');
+  ui.reportMiss('laptops', 'zzz no such thing');   // no api_origin configured: must be a silent no-op
 }
 console.log(`Frontend behavior smoke passed: ${rows.length} laptop rows; shard loading, lazy detail cache, structured/literal ports, absence semantics, return state, private issue drafts.`);

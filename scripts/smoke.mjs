@@ -90,6 +90,26 @@ async function checkV1(category) {
     if (row.kind === 'revision') assert(row.parent_id, `${row.id}: revision row needs parent_id`);
     allPublished.add(row.id);
   }
+  // r8: certification-only entities (profile index_rows) are a separate compact shard: detail file + lookup, never a default index row.
+  const certIds = new Set();
+  if (category.certification_only) {
+    assert.deepEqual(entry.certification_only, category.certification_only, `${category.id}: manifest/categories certification_only mismatch`);
+    const crows = [];
+    for (const path of category.certification_only.index) crows.push(...await parse(join(root, path)));
+    assert.equal(crows.length, category.certification_only.count, `${category.id}: certonly rows vs count`);
+    const certKeys = new Set(category.certification_only.certification_keys);
+    for (const r of crows) {
+      assert(!ids.has(r.id) && !certIds.has(r.id), `${r.id}: certonly row also a default row or duplicated`); certIds.add(r.id);
+      assert.equal(r.scope, 'certification_only', `${r.id}: certonly row scope`);
+      assert(r.brand && r.name && Array.isArray(r.ids) && Array.isArray(r.search) && r.v, `${r.id}: certonly row shape`);
+      for (const k of Object.keys(r.v)) assert(certKeys.has(k), `${r.id}: certonly row carries non-certification key ${k}`);
+      const d = await parse(join(productDir, `${r.id}.json`));
+      assert.equal(d.index_scope, 'certification_only', `${r.id}: detail index_scope`);
+      for (const [k, sp] of Object.entries(d.specs)) if (sp.status === 'known' || sp.status === 'conflicted') assert(certKeys.has(k), `${r.id}: substantive ${k} on a certonly entity`);
+      allPublished.add(r.id);
+    }
+  }
+  for (const row of rows) assert(!certIds.has(row.id), `${row.id}: default row is certonly`);
   // trusted vs preview separation (review P0-1): trusted details carry review_scope=trusted and only approved relations;
   // preview rows/details live under preview/<cat>/, are flagged, and never feed facets or the identifier lookup.
   assert(category.preview && Array.isArray(category.preview.index), `${category.id}: preview entry missing`);
@@ -100,7 +120,8 @@ async function checkV1(category) {
   const lookupIds = new Set(Object.values(lookup).flat());
   for (const r of prows) {
     assert.equal(r.review_scope, 'preview', `${r.id}: preview row not flagged`);
-    assert.equal(r.in_trusted, ids.has(r.id), `${r.id}: in_trusted flag wrong`);
+    assert.equal(r.in_trusted, ids.has(r.id) || certIds.has(r.id), `${r.id}: in_trusted flag wrong`);
+    assert.equal(!!r.certonly, certIds.has(r.id), `${r.id}: preview certonly flag wrong`);
     if (!r.in_trusted) assert(!lookupIds.has(r.id), `${r.id}: preview-only entity leaked into lookup`);
     const pd = await parse(join(root, category.preview.products, `${r.id}.json`));
     assert.equal(pd.review_scope, 'preview'); assert.equal(pd.trusted, r.in_trusted);

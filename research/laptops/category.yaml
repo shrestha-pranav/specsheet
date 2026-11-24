@@ -3,4 +3,4 @@ description: US-market laptop configurations by manufacturer part number (Lenovo
 columns: [cpu.model, mem.size, stor.size, disp.size, gpu.model, pwr.battery_wh, phys.weight]
 market_filter: {markets: [US], identifier_suffix: {mtm: US}}
 variant_label: {specs: [cpu.model, mem.size, stor.size, gen.color], trim: {cpu.model: 40}}   # trim: cut at first comma, max N chars
-features: [cpu_split]
+features: [cpu_split, psref_split]

@@ -37,8 +37,10 @@ import jsonschema  # noqa: E402
 import yaml  # noqa: E402
 import _contract as C  # noqa: E402
 import _cpu  # noqa: E402
+import _lcell  # noqa: E402
 import bundles as B  # noqa: E402
 import tvcert as TC  # noqa: E402
+import xwalk as XW  # noqa: E402
 import registry  # noqa: E402
 import identity as I  # noqa: E402
 import normalize as N  # noqa: E402
@@ -475,6 +477,8 @@ def do_model(world, meta, sid, rec, pr, extra, stats):
         e.aliases.setdefault(a["text"], a["kind"])
     if "es_cert_scopes" in (cm.get("features") or []) and sid == (cm.get("es_cert") or {}).get("source"):
         TC.collect_exact(world, e, sid, rec, pr)                                  # r7: declared-alias re-audit input
+    if "same_hardware_relations" in (cm.get("features") or []) and sid == (cm.get("same_hardware") or {}).get("source"):
+        XW.collect(world, e, sid, rec, pr, PARSER["current"])                   # r8: declared same-hardware aliases (scripts/xwalk.py)
     bsk = B.collect(world, e, brand, mi, pr, sid, rec, ob, PARSER["current"], cm.get("bundles"), world.brand_names.get(brand, "")) \
         if "bundle_packages" in (cm.get("features") or []) else set()       # r6: bundle SKUs -> package candidates (scripts/bundles.py), minted after all sources
     pkg = (cm.get("package_markets") or {}).get("mtm")
@@ -516,9 +520,14 @@ def do_model(world, meta, sid, rec, pr, extra, stats):
     stats["claims_adapter"] += attach_claims(pr, rec, sid, lambda loc: by_rev.get(loc.get("hw_rev")) or by_code.get(loc.get("model_code")) or e, e)
     e.absences += [(a, ob) for a in pr["absences"]]
     stats["models"] += 1
-    for lab in (fp.get("unmapped") or {}):
+    um = fp.get("unmapped") or {}
+    if um and all(isinstance(v, dict) for v in um.values()):     # per-model-code unmapped rows (asus_monitors): this entity's own code only
+        um = um.get(mi["value"]) or {}
+    for lab in um:
         stats["labels"][(world.category, brand, lab)] += 1
-        stats["label_example"].setdefault((world.category, brand, lab), str(fp["unmapped"][lab])[:80])
+        stats["label_example"].setdefault((world.category, brand, lab), str(um[lab])[:80])
+        raw = " | ".join(map(str, um[lab])) if isinstance(um[lab], list) else str(um[lab])     # label-mapping.yaml input (A2 2026-11-24)
+        stats["label_values"].setdefault((world.category, brand, lab), []).append((e, raw, ob, rec["fetched_at"]))
 
 
 def stem_links(world, stats):
@@ -645,6 +654,8 @@ TRANSFORMS = {
     "material": lambda r: ("plastic" if "plastic" in r.lower() else "metal" if "metal" in r.lower() else None),
     "keyhole": lambda r: (["keyhole"] if _clean(r).lower().startswith("yes") else None),
     "pd_yesno": lambda r: (["PD"] if _clean(r).lower().startswith("yes") else None),
+    # maker's explicit flicker-free statement ("Flicker-free: Yes", "TÜV Rheinland Flicker Free") -> flk.pwm 'none' AS a maker claim (A2 2026-11-24)
+    "flicker_free": lambda r: ("none" if re.match(r"yes\b", _clean(r), re.I) or re.search(r"flicker[- ]?free", _clean(r), re.I) else None),
 }
 
 
@@ -825,6 +836,35 @@ def cpu_split(c, cid, keys):
     return out
 
 
+PSPLIT = "import.py+psref-split@1"
+PSPLIT_COLS = {"Display": (_lcell.display, {"panel_type": "disp.panel_type", "nits_sdr": "disp.nits_sdr", "refresh": "disp.refresh",
+                                            "resolution": "disp.resolution"}),
+               "Memory Slots": (_lcell.slots, {"total": "mem.slots", "soldered": "mem.soldered"}),
+               "Memory": (_lcell.memory, {"type": "mem.type"})}
+PSPLIT_CLASH = {"soldered": {"socketed", "mixed"}, "socketed": {"soldered", "mixed"}}
+
+
+def psref_split(c, cid, keys, cells):
+    """Literal PSREF multi-target cell (research/laptops/psref-mapping.yaml maps_to list) -> derived claims (crawler/adapters/_lcell.py).
+    A derived key equal to the literal's own key (mem.slots from Memory Slots) supersedes the literal. mem.soldered is dropped when the
+    MTM's Memory cell contradicts the board statement (Memory Slots 'no slots' vs Memory '... SODIMM')."""
+    fn, fmap = PSPLIT_COLS[(c.get("locator") or {}).get("column")]
+    parts = fn(c.get("value"))
+    if "soldered" in parts and _lcell.memory(cells.get("Memory")).get("soldered_hint") in PSPLIT_CLASH.get(parts["soldered"], ()):
+        parts.pop("soldered")
+    out = []
+    for f, k in fmap.items():
+        if f not in parts or k not in keys:
+            continue
+        d = {"id": None, "key": k, "status": "known", "kind": c.get("kind", "official"), "value": {"total": parts[f]} if f == "total" else parts[f],
+             "unit": None, "raw": c.get("raw"), "source": "s1", "method": {"stage": "derive", "extractor": PSPLIT},
+             "observed_at": c.get("observed_at"), "review": {"state": "candidate"}, "derived_from": [cid], "locator": dict(c.get("locator") or {}, split=f)}
+        if k == c.get("key"):
+            d["supersedes"] = cid
+        out.append(d)
+    return out
+
+
 IMPORTERS = {"lenovo-psref": do_lenovo, "asus": do_asus, "apple": do_apple, "generic": do_generic, "strip": do_strip, "model": do_model}
 
 
@@ -847,7 +887,8 @@ def main():
     locked_new, policy_lock_digest = dec.check_lock(write=not (bool(a.source) or a.no_mint))
     parsers = {sid: registry.parser_info(sid) for sid, m in registry.SOURCES.items()}
     current_fp = {v["parser"]: v["fingerprint"] for v in parsers.values() if v["parser"]}
-    current_fp.update({B.TRANSFORM: B.fingerprint(), TC.TRANSFORM: TC.fingerprint()})     # r7: shared transforms are pinned like parsers
+    current_fp.update({B.TRANSFORM: B.fingerprint(), TC.TRANSFORM: TC.fingerprint(), XW.TRANSFORM: XW.fingerprint()})     # r7: shared transforms are pinned like parsers
+    current_fp[PSPLIT] = "sha256:" + hashlib.sha256(Path(_lcell.__file__).read_bytes()).hexdigest()[:20]       # psref-split cell parser, pinned like a parser
     drift = dec.parser_drift(current_fp)
     for pid, ex, old, new in drift:
         print(f"PARSER DRIFT: {pid} audited {ex} at {old}, code is now {new}: re-audit + new policy id", file=sys.stderr)
@@ -906,6 +947,7 @@ def main():
             B.mint(w, cat_stats[cat], {"K": K, "add_ident": add_ident, "add_src": add_src, "link": link, "parser": PARSER, "slug": slug})
         if "es_cert_scopes" in metas[cat]["features"]:      # r7: certification scopes + declared-alias audit + reviewed crosswalks (scripts/tvcert.py)
             TC.apply(w, cat_stats[cat], {"link": link, "parser": PARSER, "crosswalks": data / "decisions" / "tv-crosswalks.yaml"})
+        XW.apply(w, cat_stats[cat], {"link": link, "parser": PARSER, "decisions": data / "decisions"})     # r8: crosswalks + same_hardware_as
     ignored_rows = []
     rules = {c: load_label_rules(c) for c in worlds}
     for sid, st in stats.items():
@@ -1008,6 +1050,7 @@ def main():
     for w in worlds.values():
         B.finalize(w)               # package contents (entity ids now exist)
         TC.finalize(w, dec, {"add_src": add_src, "crosswalks": data / "decisions" / "tv-crosswalks.yaml"})   # r7: decided coverage edges -> allowlisted transfer
+        XW.finalize(w, dec, {"add_src": add_src})       # r8: decided same_hardware_as edges -> certification-only transfer
     # ------------------------------------------------------------------ write
     dbp = Path(a.db); dbp.parent.mkdir(parents=True, exist_ok=True)
     tmp = dbp.with_suffix(".tmp")
@@ -1048,7 +1091,8 @@ def main():
             tier_of = {snap: s["tier"] for snap, s in e.srcs.items()}
             seen, rows = set(), []
             work = list(e.claims)
-            states = {}
+            states, pdid = {}, {}
+            cells = {(c.get("locator") or {}).get("column"): c.get("value") for c, ob in e.claims if ob[0] == "lenovo-psref" and (c.get("locator") or {}).get("column")}
             i = 0
             while i < len(work):
                 c, ob = work[i]; i += 1
@@ -1087,13 +1131,18 @@ def main():
                     parent_state = states.get((c.get("derived_from") or [None])[0])
                     if parent_state != "accepted":
                         state, did = "candidate", None
+                if doc["method"]["extractor"] == PSPLIT and state == "accepted" and did and did.startswith("claim/"):
+                    # parent accepted, or a parent that is a candidate only because the multi-target literal cannot normalise (no human decision on it)
+                    ps, pd = pdid.get((c.get("derived_from") or [None])[0], ("rejected", None))
+                    if not (ps == "accepted" or (ps == "candidate" and pd is None)):
+                        state, did = "candidate", None
                 doc["review"] = {"state": state, "by": did}
                 errs = list(CLAIM_VALIDATOR.iter_errors(doc))
                 if errs:
                     msg = errs[0].message[:120]
                     invalid[(cat, sid, mk or k, msg)] += 1; invalid_ex.setdefault((cat, sid, mk or k, msg), canon(doc)[:200])
                     continue
-                states[cid] = state
+                states[cid] = state; pdid[cid] = (state, did)
                 review_counts[cat][state] += 1
                 rows.append((cid, e.id, k, mk, c["status"], doc["kind"], canon(doc.get("conditions") or {}), (c.get("measurement") or {}).get("mode"),
                              json.dumps(c.get("value")), int(ok), json.dumps(nv) if ok else None, canon(nx) if nx else None, doc.get("unit"), c.get("raw"), doc["source"],
@@ -1104,6 +1153,10 @@ def main():
                     digest.update(canon(["r", e.id, cid]).encode())
                 if "cpu_split" in metas[cat]["features"] and mk == "cpu.model" and not c.get("derived_from"):
                     for d in cpu_split(c, cid, keys):
+                        d["_cid"] = stable_cid(sid, ref, d, d["key"])
+                        work.append((d, ob))
+                if "psref_split" in metas[cat]["features"] and sid == "lenovo-psref" and loc.get("column") in PSPLIT_COLS and not c.get("derived_from"):
+                    for d in psref_split(c, cid, keys, cells):
                         d["_cid"] = stable_cid(sid, ref, d, d["key"])
                         work.append((d, ob))
             con.executemany("INSERT INTO claims VALUES (" + ",".join("?" * 25) + ")", rows)

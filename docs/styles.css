@@ -63,3 +63,4 @@ main[tabindex="-1"]:focus{outline:none}
 .methods-flag{display:inline-block;margin-left:4px;padding:0 5px;border:1px solid var(--warn);border-radius:3px;font-size:11px;font-weight:650;color:var(--warn);white-space:nowrap}
 .port-table td.num{text-align:left}.port-table .pdo-line{display:block;font-size:12px;color:var(--muted)}
 .bundle-list,.bundle-contents{list-style:none;padding-left:0;margin:6px 0}.bundle-list>li{padding:8px 0;border-top:1px solid var(--line,#ddd)}.bundle-contents{padding-left:14px;font-size:14px}.bundle-contents li{margin:2px 0}
+.prose{max-width:72ch}.prose h2{margin-top:26px;font-size:18px}.prose ul{padding-left:22px}.prose li{margin:6px 0}.draft-banner{margin-top:0}.footer-links{display:block}.credit-list li{margin:5px 0}.site-footer nav a{color:var(--muted)}

@@ -50,3 +50,12 @@ which input port does full refresh, DSC, USB-C PD real wattage, dead-pixel/OLED 
 2. VESA certified list: confirm whether a JSON/CSV endpoint exists behind the page.
 3. Should motion.gtg_measured etc. be claim-kind "measured" with a `source_class` in the record format (A3)?
 4. TVs sold as monitors (Samsung Odyssey/LG OLED) overlap with the TV category.
+
+## Zero-fill audit (A2, 2026-11-24)
+- `flk.pwm`: ASUS techspec ("Flicker-free: Yes"), LG ("Flicker Safe: Yes") and Lenovo PSREF (certification cell "TÜV Rheinland Flicker
+  Free") print explicit flicker-free statements; the adapters left them unmapped. Now mapped by research/monitors/label-mapping.yaml to
+  flk.pwm = none as an official maker declaration (claim/monitor-flicker-label-map@1). No source publishes a PWM frequency.
+  Dell, BenQ and MSI have no monitor adapter yet (P1 brand work), so their flicker-free claims are not ingested.
+- `usb.usbc_pd_w`: dropped where the maker prints it. ASUS "USB-C Power Delivery: N W" was read only on pages with bare I/O lines (fixed
+  via label-mapping); Lenovo PSREF writes "up to 90W PD" (number before "PD") which lenovo_monitors@1 misses (~60 models). That needs an
+  adapter fix + re-issuing claim/mfr-monitor-structured@2 and rel/source-stated-hierarchy@2 (lenovo_monitors@1 is pinned in both): not done.

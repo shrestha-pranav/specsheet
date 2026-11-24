@@ -457,6 +457,79 @@
           }
         }
       }
+    },
+    "same_hardware": {
+      "type": "array",
+      "description": "r8 (scripts/xwalk.py): an ENERGY STAR declared_same_hardware alias that is also another entity's model key. The two stay separate entities (no merge, ids kept); role=declared_alias on the alias entity (target = certified base), role=certified_base on the base (alias_id). Over an approved edge only certification keys transfer (`transferred`). Trusted details list approved edges; previews also list proposals.",
+      "items": {
+        "type": "object",
+        "required": [
+          "relation",
+          "role",
+          "alias",
+          "method",
+          "status"
+        ],
+        "properties": {
+          "relation": {
+            "const": "same_hardware_as"
+          },
+          "role": {
+            "enum": [
+              "declared_alias",
+              "certified_base"
+            ]
+          },
+          "alias": {
+            "type": "string"
+          },
+          "target": {
+            "type": "string"
+          },
+          "alias_id": {
+            "type": "string"
+          },
+          "record": {
+            "type": "string"
+          },
+          "declaration": {
+            "type": "string"
+          },
+          "date_certified": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "method": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "approved",
+              "proposed"
+            ]
+          },
+          "decision": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "transferred": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "index_scope": {
+      "enum": [
+        "certification_only"
+      ],
+      "description": "r8: present when the trusted record holds only certification / regulatory metadata (profile index_rows): the entity is in lookup and products/ and in <cat>/index-certonly*.json, not in the default index shards."
     }
   }
 }

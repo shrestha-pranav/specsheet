@@ -1,6 +1,6 @@
 profile_format: specsheet.category-profile/1
 category: air-purifiers
-version: 0.1.0
+version: 0.1.1
 label: Air purifiers
 market: US
 status: draft
@@ -76,6 +76,18 @@ conditions:
 - {id: filter_stage, label: Filter stage, type: enum, enum: [hepa, carbon, pre_filter, set, composite, washable, non_woven, other],
    description: Which filter a type / life / part number / price belongs to; "set" = a combined replacement kit.}
 - {id: price_basis, label: Price basis, type: enum, enum: [displayed, list, sale], description: Which price a dated filter price is.}
+index_rows:
+  why: 'r8 (coordinator decision 2026-11-24). A CARB listing (certified, type, date, EO number) or an ENERGY STAR membership without measured
+    values tells a buyer nothing to compare on, and 925 CARB-only entities would bury the 217 with specs. An entity whose trusted values are
+    all certification_keys stays in lookup, keeps its detail file and id, and is published in the compact index-certonly shard instead of
+    the default grid. gen.brand counts as substantive only so that this list stays "certification / regulatory metadata" exactly.'
+  certification_keys: [ozone.carb_certified, ozone.carb_type, ozone.carb_date, ozone.carb_eo, eff.energy_star, eff.most_efficient, cert.maker_listed]
+  substantive_keys: [gen.brand, cadr.smoke_cfm, cadr.dust_cfm, cadr.pollen_cfm, cadr.pm25_cfm, cadr.unspecified_cfm, room.size_sqft,
+    room.coverage_sqft, room.ach_at_size, filter.true_hepa, filter.hepa_class, filter.hepa_grade, filter.types, filter.part_number,
+    filter.price_usd, filter.life_months, tech.technologies, ozone.es_emissions_ppb, noise.db, fan.speeds, pwr.rated_w, pwr.speed_w,
+    pwr.standby_w, pwr.voltage, pwr.annual_kwh, eff.smoke_cadr_per_w, eff.dust_cadr_per_w, eff.pollen_cadr_per_w, eff.ief, smart.wifi,
+    smart.voice, sensor.air_quality, feat.auto_mode, feat.sleep_mode, feat.timer, feat.filter_indicator, phys.width_in, phys.depth_in,
+    phys.height_in, phys.dimensions_text, phys.weight_lb, sup.warranty_years]
 groups:
 - {id: general, label: General & identity, order: 0}
 - {id: cadr, label: Clean air delivery (CADR), order: 1}

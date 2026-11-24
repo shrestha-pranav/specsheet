@@ -1,0 +1,26 @@
+# A2 discovery, USB chargers (US). Probed 2026-11-24 with the shared crawler client (honest UA "specsheet-crawler/0.1"), robots honoured,
+# <=1 req/s per host, no spoofing, no Bright Data. status: adapter = built+run; viable = probed OK, not built; skipped = probed, reason given.
+manufacturers:
+  anker: {status: adapter, module: anker_chargers, how: "server-sitemap-index-products.xml + charger collections -> /products/<a2xxx|a12[01]x|a1a0x|b2xxx>; __NEXT_DATA__ productSpecs + key_parameter", refs: 31}
+  belkin: {status: adapter, module: belkin_chargers, how: "sitemap-variant_products_us_001.xml -> WCA/WCB/WCC/WCH/BBC/CCA/CCB/CCC/INC/ENA model pages; spec-attr table", refs: 42}
+  ugreen: {status: adapter, module: shopify_chargers, how: "us.ugreen.com products.json + page spec table", refs: 27}
+  satechi: {status: adapter, module: shopify_chargers, how: "satechi.net products.json + Tech Specs lines", refs: 15}
+  choetech: {status: adapter, module: shopify_chargers, how: "choetech.com products.json (US/non-EU titles) + spec table", refs: 24}
+  aukey: {status: adapter, module: shopify_chargers, note: "pages carry no spec rows; identity only (preview)", refs: 19}
+  cuktech: {status: adapter, module: shopify_chargers, note: "6 of 11 pages print no Model row", refs: 11}
+  iniu: {status: adapter, module: shopify_chargers, refs: 8}
+  hyper: {status: adapter, module: shopify_chargers, host: www.hypershop.com, refs: 8}
+  native_union: {status: adapter, module: shopify_chargers, refs: 7}
+  mophie: {status: adapter, module: shopify_chargers, note: "one 'Output' wattage only -> out.rated_w", refs: 10}
+  plugable: {status: adapter, module: shopify_chargers, note: "no spec rows; PS-6CC/10CC are USB-C-powered charging hubs", refs: 7}
+  nekteck: {status: adapter, module: shopify_chargers, note: "no spec rows", refs: 5}
+  sharge: {status: adapter, module: shopify_chargers, note: "charger pages print no Product Model row -> nothing minted", refs: 5}
+  baseus: {status: skipped, note: "products.json 200 (32 charger pages) but specs are images and SKUs are colour SKUs; v0 Baseus ids retired"}
+  spigen: {status: skipped, note: "US store lists 2 car chargers, no wall chargers; v0 ArcStation ids retired"}
+  ecoflow: {status: skipped, note: "us.ecoflow.com products.json lists no RAPID chargers"}
+  lisen: {status: skipped, note: "store SKUs are Amazon ASINs, no maker model numbers"}
+  esr: {status: skipped, note: "store SKUs are Amazon ASINs"}
+  apple: {status: skipped, note: "robots allow /shop/product but specs are JS-rendered; Apple model numbers (A2305) live on support pages"}
+  voltme: {status: blocked, note: "products.json 403; not retried"}
+  cablematters: {status: blocked, note: "robots.txt disallows /products.json for '*'"}
+  twelvesouth: {status: viable, note: "Shopify, no charger titles matched the filter (PlugBug naming)"}

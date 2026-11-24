@@ -1,0 +1,20 @@
+{"title": "Anker 735 Nano II 65W 3-Port GaN Charger - $24.99 + Free Shipping", "expect": "anker-a2667", "note": ""}
+{"title": "[Amazon] Anker Prime 6-Port 200W GaN Charger $69.99", "expect": "anker-a2683", "note": ""}
+{"title": "Anker 30W Nano USB-C Charger, 2 Pack $19", "expect": null, "note": "2-pack is a package, not the single model"}
+{"title": "Belkin BoostCharge Pro 4-Port GaN 108W WCH010dqWH", "expect": "belkin-wch010", "note": "colour SKU in title"}
+{"title": "Belkin 20W USB-C Wall Charger WCA006 (white) $9.99 @ Walmart", "expect": "belkin-wca006", "note": ""}
+{"title": "UGREEN Nexode 300W 8-Port Desktop Charger $159.99", "expect": "ugreen-75752", "note": ""}
+{"title": "UGREEN 45W 2-Port Nexode USB C Charger", "expect": "ugreen-90572", "note": ""}
+{"title": "UGREEN Nexode Pro 160W 4 Port GaN Charger 25094", "expect": "ugreen-25094", "note": ""}
+{"title": "Anker 140W USB-C Charger (Anker Prime, 3-port) A2687", "expect": null, "note": "A2687 is 160W: title contradicts the model (wattage)"}
+{"title": "Choetech 67W GaN charger PD6011 USB C", "expect": "choetech-pd6011", "note": ""}
+{"title": "Native Union Fast GaN 67W Charger", "expect": null, "note": "ambiguous FAST-PD67 / FAST-PD67-2CA"}
+{"title": "Anker Prime Power Bank 26K 300W", "expect": "anker-a110a", "note": ""}
+{"title": "INIU Portable Charger 20000mAh P51L-P1 USB C", "expect": "iniu-p51l-p1", "note": ""}
+{"title": "Samsung T7 Shield 2TB (MU-PE2T0S/AM) $119.99", "expect": "samsung-mu-pe2t0s-am", "note": ""}
+{"title": "WD Black SN7100 2TB NVMe SSD", "expect": null, "note": "no SKU, names unreliable"}
+{"title": "LG 65\" UT7550 4K TV 65UT7550AUA", "expect": "lg-65ut7550aua", "note": ""}
+{"title": "Samsung 65\" Class S90F OLED QN65S90FAFXZA", "expect": "samsung-qn65s90fafxza", "note": ""}
+{"title": "TCL 65\" QM7 QLED Google TV", "expect": null, "note": "no model number"}
+{"title": "LG 27GX790A-B 27 inch OLED 480Hz monitor", "expect": "lg-27gx790a-b", "note": ""}
+{"title": "ASUS ProArt PA32UCX-PK 32\" 4K", "expect": "asus-pa32ucx-pk", "note": ""}

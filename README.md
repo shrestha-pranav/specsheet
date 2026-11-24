@@ -43,3 +43,12 @@ Not self-hosted (no ports, no Caddy route); public prototype on GitHub Pages, se
 - Merge/quality report: `python3 -I scripts/merge.py --find`.
 - Design: `ARCHITECTURE.md` (v0.2; section 0 = accepted review changes). Review: `reviews/2026-11-22-astra.md`.
 - Corrections: GitHub issues.
+
+## License
+
+- Code: Apache-2.0 (`LICENSE`).
+- Dataset: ODbL 1.0, with individual facts not claimed and US federal-government-sourced values in the public
+  domain. Attribution line for produced works: "Data: specsheet (ODbL), sources linked per value".
+- Documentation prose: CC BY 4.0.
+
+Details in `DATA-LICENSE.md`. Brand, domain and contact placeholders live in one file, `docs/site.json`.

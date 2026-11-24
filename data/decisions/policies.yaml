@@ -944,11 +944,7 @@ claim_policies:
       carb_airpurifiers@1: sha256:44ddcd770c6ab43e412d
       levoit_airpurifiers@1: sha256:18b3c2189006ad84c2f8
       winix_airpurifiers@1: sha256:52bcd9424007c89b002f
-  approval:
-    state: pending
-    by: null
-    at: null
-    note: needs a human approval (handle + date); the authoring agent cannot approve its own audit
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf)}
   match:
     extractors: [energystar_airpurifiers@1, carb_airpurifiers@1, levoit_airpurifiers@1, winix_airpurifiers@1]
     source_ids: [energystar-airpurifiers, carb-airpurifiers, levoit-us-airpurifiers, winix-us-airpurifiers]
@@ -969,6 +965,131 @@ claim_policies:
         [cadr.dust_cfm, cadr.pollen_cfm, cadr.smoke_cfm, fan.speeds, feat.auto_mode, feat.filter_indicator, feat.sleep_mode, feat.timer,
          filter.life_months, filter.part_number, filter.true_hepa, filter.types, noise.db, phys.depth_in, phys.height_in, phys.weight_lb,
          phys.width_in, room.ach_at_size, room.coverage_sqft, room.size_sqft, smart.voice, smart.wifi, sup.warranty_years, tech.technologies]
+- id: claim/air-purifiers-es-same-hardware@1
+  since: '2026-11-24'
+  rationale: 'r8 identity follow-up (b). An ENERGY STAR declared_same_hardware alias that is also the exact model key of another entity of the
+    same brand (Blueair 4312112000, a CARB entity, is declared "same as 4312111000, except for color") stays a separate entity. Over an APPROVED
+    same_hardware_as edge (rel/air-purifiers-es-same-hardware@1) the alias entity receives ONLY eff.energy_star = true, copied from the base''s
+    own dated ES claim (raw + locator name the record, the base model and the declaration). Separate extractor and allowlist from the direct ES
+    claims of claim/air-purifiers-structured@1: CADR, efficiency, power, ozone ppb, filters and features never transfer (scripts/xwalk.py
+    checks that transfer_keys are profile certification_keys). 3 edges today, all approvable.'
+  audit:
+    by: A3-impl r8
+    at: '2026-11-24'
+    evidence: scripts/xwalk.py (same_hardware, finalize); fixtures tests/test_r8.py (exact declaration transfers only eff.energy_star; conflict,
+      market, undated, several bases and model_variant aliases transfer nothing; ids unchanged).
+    parsers:
+      energystar_airpurifiers@1: sha256:9fbfd29f2f1b9475842e
+      xwalk@1: 'sha256:78e55bedfb7171b5c219'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [energystar_airpurifiers_same_hardware@1]
+    source_ids: [energystar-airpurifiers]
+    kinds: [official]
+    tiers: [regulatory]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      energystar-airpurifiers: [eff.energy_star]
+- id: claim/mfr-chargers-structured@1
+  since: '2026-11-24'
+  rationale: 'USB chargers (category chargers, superseding the v0 gan-chargers pilot): the makers'' own labelled US store spec rows (Anker Specifications
+    table + key_parameter list, Belkin Technical Specifications, Shopify store spec tables / label-value rows). Labelled fields only, never titles,
+    prose or prices, with review-3 rules from the start: (1) out.max_total_w only from a row the maker labels total (Total Output / Total Wattage /
+    Anker Total Capacity in W); out.all_ports_w only with explicit port membership (a printed combination naming every individual port, or an
+    N-ports-in-use row with N = the printed port count); additive splits, subsets and unmatched in-use rows stay status-unknown; a single unlabelled
+    wattage (Belkin Wattage, mophie Output) is out.rated_w, never total or single-port, and is unresolved when the maker title prints a different
+    single wattage; (2) per-port PDOs and PPS ranges as printed (wattage never computed from V x A; per-port protocol lists are not PDOs);
+    pd.pps / pd.epr / phys.foldable_plug affirmative only (EPR = a printed fixed PDO of 28 V or more); (3) identity = the maker model number or the
+    documented SKU-stem rule per brand (research/chargers/identity.md); pages with several model numbers, N-pack/bundle pages, wireless and 2/3-in-1
+    sets mint nothing. NOT accepted (preview only): gen.gan and gen.form_factor (title-derived), gen.product_line (title), pd.protocols (literal
+    maker tokens, not normalised), id.msrp_us (dated price), every status-unknown claim.'
+  audit:
+    by: A1+A2 chargers
+    at: '2026-11-24'
+    evidence: Parsed every stored snapshot of the charger sources; per-key sanity checks (single-port <= total, all-ports <= total, port rows
+      <= port count) and fixtures in tests/test_chargers.py; team/reports/2026-11-24-a12-chargers-matcher.md.
+    parsers:
+      anker_chargers@1: 'sha256:b973d314c48eccc758ab'
+      belkin_chargers@1: 'sha256:2d23c397d44b6d4f9f01'
+      ugreen_chargers@1: 'sha256:c66068f8903dbf47f73e'
+      iniu_chargers@1: 'sha256:c66068f8903dbf47f73e'
+      cuktech_chargers@1: 'sha256:c66068f8903dbf47f73e'
+      satechi_chargers@1: 'sha256:c66068f8903dbf47f73e'
+      mophie_chargers@1: 'sha256:c66068f8903dbf47f73e'
+      aukey_chargers@1: 'sha256:c66068f8903dbf47f73e'
+      hyper_chargers@1: 'sha256:c66068f8903dbf47f73e'
+      nativeunion_chargers@1: 'sha256:c66068f8903dbf47f73e'
+      choetech_chargers@1: 'sha256:c66068f8903dbf47f73e'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [anker_chargers@1, belkin_chargers@1, ugreen_chargers@1, iniu_chargers@1, cuktech_chargers@1, satechi_chargers@1, mophie_chargers@1, aukey_chargers@1, hyper_chargers@1, nativeunion_chargers@1, choetech_chargers@1]
+    source_ids: [anker-us-chargers, belkin-us-chargers, ugreen-us-chargers, iniu-us-chargers, cuktech-us-chargers, satechi-us-chargers, mophie-us-chargers, aukey-us-chargers, hyper-us-chargers, nativeunion-us-chargers, choetech-us-chargers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      anker-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.all_ports_w, out.max_single_port_w, out.max_total_w, out.port_count, out.ports, out.simultaneous, out.usb_a_count, out.usb_c_count, pd.epr, pd.max_fixed_voltage, pd.pps, pd.pps_max_current_a, pd.pps_max_voltage, phys.dimensions, phys.foldable_plug, phys.weight]
+      belkin-us-chargers: [out.port_count, out.rated_w, out.usb_a_count, out.usb_c_count, phys.dimensions]
+      ugreen-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.max_total_w, out.port_count, out.ports, out.rated_w, out.usb_a_count, out.usb_c_count, pd.epr, pd.max_fixed_voltage, pd.pps, pd.pps_max_current_a, pd.pps_max_voltage, phys.dimensions, phys.weight]
+      iniu-us-chargers: [gen.color, out.max_single_port_w, out.ports, pd.max_fixed_voltage]
+      cuktech-us-chargers: [in.rating, in.type, in.voltage_range, out.max_single_port_w, out.port_count, out.ports, out.usb_a_count, out.usb_c_count, pd.max_fixed_voltage, phys.dimensions, phys.weight]
+      satechi-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.ports, phys.foldable_plug, phys.weight]
+      mophie-us-chargers: [out.rated_w]
+      aukey-us-chargers: [gen.color, out.max_single_port_w, out.ports]
+      hyper-us-chargers: [gen.color, out.max_single_port_w, out.ports, out.rated_w]
+      nativeunion-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.ports, pd.max_fixed_voltage, phys.weight]
+      choetech-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.max_total_w, out.ports, pd.max_fixed_voltage, phys.dimensions, phys.weight]
+- id: claim/psref-split@1
+  since: '2026-11-24'
+  rationale: 'import.py splits the Lenovo PSREF multi-target cells that research/laptops/psref-mapping.yaml maps to several keys (Display, Memory Slots,
+    Memory) with crawler/adapters/_lcell.py into disp.panel_type, disp.nits_sdr (the typical figure only; a peak figure is never SDR), disp.refresh
+    ({max} only when exactly one Hz figure is printed), disp.resolution, mem.slots ({total}), mem.soldered (soldered|socketed|mixed, from Memory
+    Slots, dropped when the MTM Memory cell contradicts it) and mem.type. Nothing is inferred from silence. A split claim is accepted only when its
+    parent literal is accepted, or is a candidate with no human decision because the multi-target literal itself cannot normalise (Memory Slots);
+    a rejected parent keeps the split a candidate. Before this policy these keys were 0% published (A2 coverage 2026-11-24).'
+  audit:
+    by: A2 coverage 2026-11-24
+    at: '2026-11-24'
+    evidence: crawler/adapters/_lcell.py run over all 2,103 US PSREF rows (panel 100%, nits 100%, refresh 75% = rows that print a Hz figure, slots and
+      soldered 98.9% = all but the 23 'Unified memory' rows); tests/test_psref_split.py.
+    parsers:
+      import.py+psref-split@1: 'sha256:b9f20a54131a77ef3542'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [import.py+psref-split@1]
+    source_ids: [lenovo-psref]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      lenovo-psref: [disp.nits_sdr, disp.panel_type, disp.refresh, disp.resolution, mem.slots, mem.soldered, mem.type]
+- id: claim/monitor-flicker-label-map@1
+  since: '2026-11-24'
+  rationale: 'Monitor labels the adapters keep unmapped, mapped by research/monitors/label-mapping.yaml (import.py+label-mapping@1, transform
+    flicker_free / num). flk.pwm = none only where the maker itself prints an explicit flicker-free statement (ASUS techspec "Flicker-free: Yes",
+    LG "Flicker Safe: Yes", Lenovo PSREF certification cell naming TÜV Rheinland Flicker Free); stored as an official maker declaration with the
+    literal quoted, never as a measurement; "No" or silence writes nothing. usb.usbc_pd_w from the ASUS "USB-C Power Delivery" row, which the
+    adapter only read when bare I/O port lines were present. Adapters untouched, so their audited parser pins are unchanged.'
+  audit:
+    by: A2 coverage 2026-11-24
+    at: '2026-11-24'
+    evidence: research/monitors/label-mapping.yaml; scratch import 2026-11-24 (claims per source in team/reports/2026-11-24-a2-coverage.md).
+    parsers: {}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [import.py+label-mapping@1]
+    source_ids: [asus-us-monitors, lg-us, lenovo-psref-monitors]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      asus-us-monitors: [flk.pwm, usb.usbc_pd_w]
+      lg-us: [flk.pwm]
+      lenovo-psref-monitors: [flk.pwm]
 relation_policies:
 - id: rel/source-stated-hierarchy@2
   since: '2026-11-23'
@@ -1108,6 +1229,45 @@ relation_policies:
   - method: crosswalk:reviewed
     types: [same_model]
     parsers: [tvcert@1]
+- id: rel/air-purifiers-es-same-hardware@1
+  since: '2026-11-24'
+  rationale: 'r8 identity follow-up (b). Rule for an ES declared same-hardware alias that is also another source''s model key: no merge, both ids
+    kept; a directed same_hardware_as edge alias -> certified base carrying the ES evidence (record, declaration clause, date). Approved only for
+    method es-declared:exact: the raw clause is an exact affirmative declaration (no "only difference", "identical in performance",
+    "derivative", negation), the record states United States, the certification is dated, the alias is declared under one base, and no
+    compare_key (CARB type, smoke/dust/pollen CADR, technologies) disagrees. es-declared:not-exact / market / undated / several-bases / conflict
+    stay proposals. model_variant aliases get no edge.'
+  audit:
+    by: A3-impl r8
+    at: '2026-11-24'
+    evidence: scripts/xwalk.py; fixtures tests/test_r8.py.
+    parsers:
+      energystar_airpurifiers@1: sha256:9fbfd29f2f1b9475842e
+      xwalk@1: 'sha256:78e55bedfb7171b5c219'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  rules:
+  - method: es-declared:exact
+    types: [same_hardware_as]
+    parsers: [energystar_airpurifiers@1+xwalk@1]
+- id: rel/air-purifiers-crosswalk@1
+  since: '2026-11-24'
+  rationale: 'r8 identity follow-ups (a) and (c). A typed same_model link between two model strings of one brand (Levoit marketing "Core 400S" vs
+    label code "LAP-C401S-WUSR"; Coway / Blueair page names vs ES / CARB codes) only from a reviewed pair in
+    data/decisions/air-purifier-crosswalks.yaml that passes scripts/xwalk.py: human by + date, one page''s quote naming both exact strings,
+    both exact entities exist and differ, one stated market on pair and both entities, no contradictory pair, no compare_key disagrees. No
+    merge, no claim transfer. The file has no pairs today (no source prints both namespaces); its proposals are possible_match
+    (crosswalk:proposal), which no policy approves.'
+  audit:
+    by: A3-impl r8
+    at: '2026-11-24'
+    evidence: scripts/xwalk.py crosswalks(); fixtures tests/test_r8.py.
+    parsers:
+      xwalk@1: 'sha256:78e55bedfb7171b5c219'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  rules:
+  - method: crosswalk:reviewed
+    types: [same_model]
+    parsers: [xwalk@1]
 retired_policies:
 - id: rel/bundle-contents@1
   since: '2026-11-23'

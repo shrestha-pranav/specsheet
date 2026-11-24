@@ -11,3 +11,7 @@ raw/
 # Generated site data: published from the orphan gh-pages branch by scripts/release.sh, never committed to main
 # (takes effect once docs/api is removed from the index: git rm -r -q --cached docs/api)
 docs/api/
+api-worker/r2-data/
+api-worker/node_modules/
+api-worker/.wrangler/
+api-worker/.dev.vars

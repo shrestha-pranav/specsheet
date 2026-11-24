@@ -22,9 +22,14 @@
   const returnParam = (query) => query ? `&return=${encoded(query)}` : '';
   const productUrl = (category, id, query = '', ids = []) => { const parts = [query ? `return=${encoded(query)}` : '', ids.length ? `ids=${encoded(ids.join(','))}` : ''].filter(Boolean); return `#/product/${encoded(category)}/${encoded(id)}${parts.length ? `?${parts.join('&')}` : ''}`; };
   const compareUrl = (category, ids, differences = false, query = '', options = {}) => `#/compare/${encoded(category)}?ids=${encoded(ids.join(','))}${differences ? '&diff=1' : ''}${options.detail ? '&detail=1' : ''}${options.model ? `&model=${encoded(options.model)}` : ''}${returnParam(query)}`;
+  // Brand, domain, role addresses and API origin come from site.json (one place to change). Defaults keep the app working if it fails to load.
+  let SITE = {brand:'specsheet', domain:'knownspec.com', repo:'shrestha-pranav/specsheet', api_origin:'', tagline:'Structured specs with context', contacts:{corrections:'corrections', legal:'legal', hello:'hello'}, legal_status:'Draft pending owner review'};
+  const siteEmail = role => `${SITE.contacts[role] || role}@${SITE.domain}`;
+  const issuesUrl = () => `https://github.com/${SITE.repo}/issues/new`;
+  const correctionsMail = (subject = 'Correction') => SITE.email_enabled ? `<a href="mailto:${escapeHtml(siteEmail('corrections'))}?subject=${encoded(subject)}">${escapeHtml(siteEmail('corrections'))}</a>` : `<a href="${escapeHtml(issuesUrl())}?title=${encoded(subject)}">a GitHub issue</a>`;
   const BUILD = document.querySelector('meta[name="specsheet-build"]')?.content || '';
   const getJson = async (url) => { const response = await fetch(BUILD ? `${url}${url.includes('?') ? '&' : '?'}v=${BUILD}` : url); if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); };
-  const issueBase = 'https://github.com/shrestha-pranav/specsheet/issues/new';
+  const issueBase = () => `https://github.com/${SITE.repo}/issues/new`;
   const normalizeQuery = query => query.trim().replace(/\s+/g, ' ').toLocaleLowerCase();
   const validGtin = digits => { let sum = 0; [...digits].reverse().forEach((digit, index) => { sum += Number(digit) * (index % 2 ? 3 : 1); }); return sum % 10 === 0; };
   const identifierGuess = query => {
@@ -95,11 +100,11 @@
   const missingIssueUrl = (categoryId, query) => {
     const payload = {category:categoryId, query, query_norm:normalizeQuery(query), identifier_guess:identifierGuess(query), build:BUILD};
     const params = new URLSearchParams({template:'missing-product.yml',payload:JSON.stringify(payload)});
-    return `${issueBase}?${params}`;
+    return `${issueBase()}?${params}`;
   };
   const correctionIssueUrl = (entityId, key, shownValue) => {
     const payload = {entity_id:entityId,key,shown_value:shownValue,claimed_value:'',evidence_url:'',build:BUILD};
-    return `${issueBase}?${new URLSearchParams({template:'field-correction.yml',payload:JSON.stringify(payload)})}`;
+    return `${issueBase()}?${new URLSearchParams({template:'field-correction.yml',payload:JSON.stringify(payload)})}`;
   };
   const categories = () => categoriesPromise ||= getJson('api/v1/categories.json').then(items => {
     const visible = items.filter(item => item.id !== 'power-strips-demo');
@@ -114,18 +119,22 @@
   const loadShards = (paths) => Promise.all(paths.map(path => getJson(`api/v1/${path}`))).then(shards => shards.flat());
   // Trusted rows only, unless the reader opted in to the unreviewed preview index. Preview is strictly additive: every trusted row keeps
   // its accepted facts, preview claims attach as separate candidates, and preview-only identities are appended.
-  const indexFor = (category, preview = false) => {
+  // Certification-only listings (category.certification_only.index) are trusted rows hidden from the default grid; opt-in, flat toggle.
+  const indexFor = (category, preview = false, certonly = false) => {
     const wantPreview = preview && !!category.preview?.index;
-    const key = wantPreview ? `${category.id}:preview` : category.id;
+    const wantCert = certonly && !!category.certification_only?.index?.length;
+    const key = `${category.id}${wantPreview ? ':preview' : ''}${wantCert ? ':certonly' : ''}`;
     if (!indexCache.has(key)) indexCache.set(key, (async () => {
       if (!category.index) return getJson(`api/v1/${category.products}`);
       // Revision rows (opt-in per category) are children of their model, never separate products in counts or listings.
       const trusted = (await loadShards(category.index)).map(toRow).filter(row => row.kind !== 'revision');
+      if (wantCert) trusted.push(...(await loadShards(category.certification_only.index)).map(toRow).map(row => ({...row, certonly:true})));
       if (!wantPreview) return trusted;
       const merged = trusted.map(row => ({...row, unreviewed:false, candidates:{}, unreviewedKeys:new Set()}));
       const known = new Map(merged.map(row => [row.id, row]));
       for (const row of (await loadShards(category.preview.index)).map(toRow).filter(row => row.kind !== 'revision')) {
         const base = known.get(row.id);
+        if (!base && row.in_trusted) continue;   // trusted but hidden (certification-only listings off): never an unreviewed candidate
         if (!base) { row.unreviewed = true; row.candidates = {}; row.unreviewedKeys = new Set(Object.keys(row.specs).filter(k => row.specs[k].status === 'known')); merged.push(row); continue; }
         for (const [key, spec] of Object.entries(row.specs)) {
           if (spec.status !== 'known') continue;
@@ -158,9 +167,12 @@
       const targets = (await redirectsPromise)[productId]?.replaced_by || [];
       if (targets.length > 1) { const split = new Error('This product was split into several records.'); split.targets = targets; throw split; }
       if (targets.length === 1 && targets[0] !== productId) return getJson(`api/v1/${encoded(categoryId)}/products/${encoded(targets[0])}.json`);
+      const retired = (await redirectsPromise)[productId];
+      if (retired && !targets.length && retired.reason) throw new Error(`This record was retired: ${retired.reason}`);
       throw error;
     }).then(normalizeRecord).catch(error => { detailCache.delete(key); throw error; }));
     if (!preview) return detailCache.get(key);
+    detailCache.get(key).catch(() => {});   // preview-only products have no trusted file: the 404 is expected, not unhandled
     // Opt-in: trusted record plus the unreviewed delta (or a preview-only record when no trusted one exists).
     const category = categoryCache.get(categoryId) || {};
     return previewDetail(category, productId).then(delta => {
@@ -281,7 +293,7 @@
   };
   const errorPanel = (title, message, action = '<a href="#/">Return to catalogue</a>') => `<section class="state-panel" role="alert"><h1>${escapeHtml(title)}</h1><p>${escapeHtml(message)}</p><div class="inline-actions">${action}</div></section>`;
   const setLoading = (label) => { main.innerHTML = `<div class="loading" role="status">${escapeHtml(label)}</div>`; };
-  const setTitle = (title) => { document.title = `${title} — specsheet`; };
+  const setTitle = (title) => { document.title = `${title} — ${SITE.brand}`; };
   const schemeQuery = matchMedia('(prefers-color-scheme: dark)');
   const applyTheme = (theme) => { document.documentElement.dataset.theme = theme === 'system' ? (schemeQuery.matches ? 'dark' : 'light') : theme; themeSelect.value = theme; };
   let savedTheme = 'system';
@@ -291,16 +303,58 @@
   schemeQuery.addEventListener('change', () => { if (themeSelect.value === 'system') applyTheme('system'); });
   themeSelect.addEventListener('change', () => { applyTheme(themeSelect.value); try { localStorage.setItem('specsheet-theme', themeSelect.value); } catch { /* keep session choice */ } });
 
+  const wordmarkParts = brand => { for (const suffix of ['sheet', 'spec']) if (brand.endsWith(suffix) && brand.length > suffix.length) return [brand.slice(0, -suffix.length), suffix]; return [brand, '']; };
+  const applySite = () => {
+    const mark = document.querySelector('[data-wordmark]');
+    if (mark) { const [strong, light] = wordmarkParts(SITE.brand); mark.innerHTML = `${escapeHtml(strong)}<span>${escapeHtml(light)}</span><i aria-hidden="true"></i>`; mark.setAttribute?.('aria-label', `${SITE.brand} home`); }
+    const line = document.querySelector('[data-brand-line]'); if (line) line.textContent = `${SITE.brand} · ${SITE.tagline}`;
+    document.querySelectorAll?.('[data-email]').forEach(a => { if (!SITE.email_enabled) { a.href = issuesUrl(); a.textContent = 'GitHub issues'; return; } const address = siteEmail(a.dataset.email); a.href = `mailto:${address}`; a.textContent = address; });
+    document.querySelectorAll?.('[data-repo]').forEach(a => { a.href = `https://github.com/${SITE.repo}`; });
+    document.querySelectorAll?.('[data-repo-issue]').forEach(a => { a.href = `${issueBase()}?title=Correction%3A%20`; });
+  };
+  let siteReady;
+  const loadSite = () => siteReady ||= getJson('site.json').then(config => { SITE = {...SITE, ...config, contacts:{...SITE.contacts, ...config.contacts}}; applySite(); }).catch(() => { /* keep defaults */ });
+  let sourcesPromise;
+  const PAGE_TITLES = {terms:'Terms of use', privacy:'Privacy', sources:'Sources and credit', about:'About'};
+  async function renderPage(kind, sequence) {
+    const pages = window.SpecsheetPages;
+    if (!pages) { main.innerHTML = errorPanel('Page unavailable', 'This page could not be loaded.'); return; }
+    let data = null;
+    if (kind === 'sources') { sourcesPromise ||= getJson('sources.json').catch(() => { sourcesPromise = null; return null; }); data = await sourcesPromise; }
+    if (sequence !== routeSequence) return;
+    setTitle(PAGE_TITLES[kind]);
+    main.innerHTML = `${crumb([{name:PAGE_TITLES[kind]}])}${pages[kind](SITE, data)}`;
+    main.focus();
+  }
+  // Zero-result searches: anonymous count only, and only when an API origin is configured (off on GitHub Pages). Debounced so typing does not report partial words.
+  let missTimer, lastMiss = '';
+  const reportMiss = (categoryId, query) => {
+    clearTimeout(missTimer);
+    const text = normalizeQuery(query || '').slice(0, 80);
+    if (!SITE.api_origin || text.length < 3 || text === lastMiss || typeof navigator === 'undefined' || !navigator.sendBeacon) return;
+    missTimer = setTimeout(() => { lastMiss = text; try { navigator.sendBeacon(`${SITE.api_origin.replace(/\/$/, '')}/v1/miss`, new Blob([JSON.stringify({category:categoryId, q:text})], {type:'application/json'})); } catch { /* best effort */ } }, 1500);
+  };
+
   async function renderRoute() {
     const sequence = ++routeSequence;
     const route = parseRoute();
     setLoading('Loading catalogue…');
+    await loadSite();
+    if (sequence !== routeSequence) return;
+    if (PAGE_TITLES[route.kind] && !route.parts.length) { await renderPage(route.kind, sequence); return; }
     try {
       const all = await categories();
       if (sequence !== routeSequence) return;
       if (route.kind === 'home') { renderHome(all); main.focus(); return; }
       const category = categoryCache.get(route.parts[0]);
-      if (!category) { main.innerHTML = errorPanel('Category not found', 'This category is not in the current static dataset.'); return; }
+      if (!category) {
+        // A retired category id redirects through redirects.json ('category:<old id>' -> replaced_by), e.g. the v0 gan-chargers pilot -> chargers.
+        redirectsPromise ||= getJson('api/v1/redirects.json');
+        const moved = ((await redirectsPromise.catch(() => ({})))[`category:${route.parts[0]}`]?.replaced_by || [])[0];
+        if (sequence !== routeSequence) return;
+        if (moved && categoryCache.get(moved)) { location.replace(`#/${[route.kind, moved, ...route.parts.slice(1)].map(encoded).join('/')}${location.hash.includes('?') ? location.hash.slice(location.hash.indexOf('?')) : ''}`); return; }
+        main.innerHTML = errorPanel('Category not found', 'This category is not in the current static dataset.'); return;
+      }
       if (category.schema && !category.schemaLoaded) {
         const schema = await getJson(`api/v1/${category.schema}`);
         if (sequence !== routeSequence) return;
@@ -339,7 +393,7 @@
     return {q: params.get('q') || '', brand: params.get('brand') || '', filters,
       sort: ['coverage','brand','name','model',...category.fields.map(f => f.key)].includes(params.get('sort')) ? params.get('sort') : 'coverage',
       dir: params.has('dir') ? (params.get('dir') === 'desc' ? 'desc' : 'asc') : (params.get('sort') && params.get('sort') !== 'coverage' ? 'asc' : 'desc'),
-      preview: params.get('preview') === '1' && !!category.preview, view: params.get('view') === 'grouped' ? 'grouped' : 'flat', cols, ids, page:Math.max(1, Number.parseInt(params.get('page') || '1', 10) || 1)};
+      preview: params.get('preview') === '1' && !!category.preview, certonly: params.get('certonly') === '1' && !!category.certification_only?.index?.length, view: params.get('view') === 'grouped' ? 'grouped' : 'flat', cols, ids, page:Math.max(1, Number.parseInt(params.get('page') || '1', 10) || 1)};
   }
   function categoryStateQuery(state) {
     const params = new URLSearchParams();
@@ -347,6 +401,7 @@
     if (state.brand) params.set('brand', state.brand);
     for (const [key, value] of Object.entries(state.filters)) if (value) params.set(key, value);
     if (state.preview) params.set('preview', '1');
+    if (state.certonly) params.set('certonly', '1');
     if (state.view === 'grouped') params.set('view', 'grouped');
     if (state.sort !== 'coverage') params.set('sort', state.sort);
     if (state.dir !== (state.sort === 'coverage' ? 'desc' : 'asc')) params.set('dir', state.dir);
@@ -390,6 +445,8 @@
     }
     return `<div class="filter-field"><label for="facet-${field.key}">${label}</label><input id="facet-${field.key}" type="search" data-filter="${key}" value="${value}" placeholder="Contains…"></div>`;
   };
+  const certonlyControl = (category, state) => category.certification_only?.index?.length
+    ? `<div class="preview-toggle"><label><input type="checkbox" id="certonly-toggle" ${state.certonly ? 'checked' : ''}>Include certification-only listings (${Number(category.certification_only.count) || 0})</label><p>Products that appear only in a certification list, with no manufacturer specifications yet. Hidden by default.</p></div>` : '';
   const previewControl = (category, state, rows = []) => {
     if (!category.preview) return '';
     const only = rows.filter(row => row.unreviewed).length, withCandidates = rows.filter(row => !row.unreviewed && row.unreviewedKeys?.size).length;
@@ -453,7 +510,7 @@
   async function renderCategory(category, params, sequence) {
     setLoading(`Loading ${category.name}…`);
     const state = initialState(category, params);
-    const rows = await indexFor(category, state.preview);
+    const rows = await indexFor(category, state.preview, state.certonly);
     if (sequence !== routeSequence) return;
     setTitle(category.name);
     const droppedIds = state.ids.filter(id => !rows.some(row => row.id === id));
@@ -462,7 +519,7 @@
     for (const row of rows) if (row.kind === 'configuration' && row.parent_id) configTotals.set(row.parent_id, (configTotals.get(row.parent_id) || 0) + 1);
     const hasConfigs = configTotals.size > 0;
     const droppedNote = droppedIds.length ? `${droppedIds.length} selected ${droppedIds.length === 1 ? 'product was' : 'products were'} removed from your selection because ${category.preview && !state.preview ? 'unreviewed candidate rows are off' : 'not in this catalogue'}.` : '';
-    main.innerHTML = `${crumb([{name:category.name}])}<div class="page-head"><h1>${escapeHtml(category.name)} ${demoBadge(category)}</h1><p class="intro">${escapeHtml(category.description)} ${escapeHtml(reviewNote(category))} Open a product to inspect its sources and uncertainty.</p></div><div class="catalogue-layout"><aside class="filter-rail"><details open><summary>Filters</summary>${previewControl(category, state, rows)}${filterMarkup(category, rows, state)}</details></aside><section class="catalogue-results" aria-label="Products"><div class="results-head"><label class="search-field" for="product-search">Search name, brand, identifier or a pasted retail title<input id="product-search" type="search" placeholder="Search products…" value="${escapeHtml(state.q)}" autocomplete="off"></label><div><h2>Compare the facts</h2><p>Choose 2–4 products to compare.</p></div></div><div class="results-tools"><span class="meta" id="result-count" role="status"></span><label class="sort-control">Sort <select id="sort-select" aria-label="Sort products"><option value="coverage">Most complete first</option><option value="brand">Brand</option><option value="name">Product name</option><option value="model">${escapeHtml(modelLabel(category))}</option><option value="__column" disabled>Column (use header)</option></select></label>${hasConfigs ? `<label class="sort-control">View <select id="view-select" aria-label="Result view"><option value="flat" ${state.view === 'flat' ? 'selected' : ''}>Flat list</option><option value="grouped" ${state.view === 'grouped' ? 'selected' : ''}>Grouped by model</option></select></label>` : ''}<details class="column-menu"><summary>Choose columns</summary><div class="column-options"><button type="button" id="reset-columns">Reset to default columns</button>${[...new Set(category.fields.map(field => field.group))].map(group => `<fieldset><legend>${escapeHtml(groupLabel(category,group))}</legend>${category.fields.filter(field => field.group === group).map(field => `<label><input type="checkbox" data-column="${escapeHtml(field.key)}" ${state.cols.includes(field.key) ? 'checked' : ''}>${escapeHtml(field.label)}</label>`).join('')}</fieldset>`).join('')}</div></details></div><p class="request-prompt">Can’t find it? <a id="request-product" href="${escapeHtml(missingIssueUrl(category.id, state.q))}" target="_blank" rel="noopener noreferrer">Prepare GitHub issue draft</a> for a product request. ${requestNote} A draft opens only if you choose this link.</p><div id="selection-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div><p id="selection-notice" class="inline-notice" role="status" ${droppedNote ? '' : 'hidden'}>${escapeHtml(droppedNote)}</p><div id="compare-shelf"></div><div id="results-table"></div><div id="pagination"></div></section></div>`;
+    main.innerHTML = `${crumb([{name:category.name}])}<div class="page-head"><h1>${escapeHtml(category.name)} ${demoBadge(category)}</h1><p class="intro">${escapeHtml(category.description)} ${escapeHtml(reviewNote(category))} Open a product to inspect its sources and uncertainty.</p></div><div class="catalogue-layout"><aside class="filter-rail"><details open><summary>Filters</summary>${certonlyControl(category, state)}${previewControl(category, state, rows)}${filterMarkup(category, rows, state)}</details></aside><section class="catalogue-results" aria-label="Products"><div class="results-head"><label class="search-field" for="product-search">Search name, brand, identifier or a pasted retail title<input id="product-search" type="search" placeholder="Search products…" value="${escapeHtml(state.q)}" autocomplete="off"></label><div><h2>Compare the facts</h2><p>Choose 2–4 products to compare.</p></div></div><div class="results-tools"><span class="meta" id="result-count" role="status"></span><label class="sort-control">Sort <select id="sort-select" aria-label="Sort products"><option value="coverage">Most complete first</option><option value="brand">Brand</option><option value="name">Product name</option><option value="model">${escapeHtml(modelLabel(category))}</option><option value="__column" disabled>Column (use header)</option></select></label>${hasConfigs ? `<label class="sort-control">View <select id="view-select" aria-label="Result view"><option value="flat" ${state.view === 'flat' ? 'selected' : ''}>Flat list</option><option value="grouped" ${state.view === 'grouped' ? 'selected' : ''}>Grouped by model</option></select></label>` : ''}<details class="column-menu"><summary>Choose columns</summary><div class="column-options"><button type="button" id="reset-columns">Reset to default columns</button>${[...new Set(category.fields.map(field => field.group))].map(group => `<fieldset><legend>${escapeHtml(groupLabel(category,group))}</legend>${category.fields.filter(field => field.group === group).map(field => `<label><input type="checkbox" data-column="${escapeHtml(field.key)}" ${state.cols.includes(field.key) ? 'checked' : ''}>${escapeHtml(field.label)}</label>`).join('')}</fieldset>`).join('')}</div></details></div><p class="request-prompt">Can’t find it? <a id="request-product" href="${escapeHtml(missingIssueUrl(category.id, state.q))}" target="_blank" rel="noopener noreferrer">Prepare GitHub issue draft</a> for a product request, or email ${correctionsMail('Product request')}. ${requestNote} A draft opens only if you choose this link.</p><div id="selection-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div><p id="selection-notice" class="inline-notice" role="status" ${droppedNote ? '' : 'hidden'}>${escapeHtml(droppedNote)}</p><div id="compare-shelf"></div><div id="results-table"></div><div id="pagination"></div></section></div>`;
     const mobileQuery = matchMedia('(max-width: 800px)');
     const filterDisclosure = main.querySelector('.filter-rail > details');
     filterDisclosure.open = !mobileQuery.matches;
@@ -473,6 +530,11 @@
       const names = [...new Set(all.filter(row => row.unreviewed).map(row => row.brand).filter(Boolean))].sort();
       if (sequence === routeSequence && brandNote.isConnected && names.length) brandNote.textContent = ` (${names.length > 4 ? `${names.slice(0,4).join(', ')} and ${names.length - 4} more` : names.join(', ')})`;
     }).catch(() => { /* the toggle works without the brand hint */ });
+    main.querySelector('#certonly-toggle')?.addEventListener('change', event => {
+      state.certonly = event.target.checked; state.page = 1;
+      persistCategoryState(category, state);
+      renderCategory(category, new URLSearchParams(categoryStateQuery(state)), sequence).then(() => main.querySelector('#certonly-toggle')?.focus());
+    });
     main.querySelector('#preview-toggle')?.addEventListener('change', event => {
       state.preview = event.target.checked; state.page = 1;
       persistCategoryState(category, state);
@@ -601,9 +663,10 @@
   function emptyState(category, state, ctx) {
     const q = state.q.trim();
     const searched = `Searched brand, name, variant and identifiers across ${ctx.total} ${state.preview ? 'accepted and unreviewed candidate' : 'catalogue'} products.`;
-    const request = `<a class="button-link" href="${escapeHtml(missingIssueUrl(category.id, state.q))}" target="_blank" rel="noopener noreferrer">Prepare GitHub issue draft</a><small>${requestNote} An unmatched title is not a confirmed missing product.</small>`;
+    const request = `<a class="button-link" href="${escapeHtml(missingIssueUrl(category.id, state.q))}" target="_blank" rel="noopener noreferrer">Prepare GitHub issue draft</a><small>or email ${correctionsMail('Product request')}. ${requestNote} An unmatched title is not a confirmed missing product.</small>`;
     if (q && ctx.baseCount > 0) return `<div class="empty-table"><strong>${ctx.baseCount} ${ctx.baseCount === 1 ? 'product matches' : 'products match'} this search but ${ctx.baseCount === 1 ? 'is' : 'are'} hidden by the active filters</strong><p>Clear the filters to see ${ctx.baseCount === 1 ? 'it' : 'them'}.</p><div class="empty-actions"><button type="button" data-empty-clear>Clear filters</button></div></div>`;
     if (q) {
+      reportMiss(category.id, q);
       const terms = [...ctx.found.identifiers, ...ctx.found.terms.filter(term => !ctx.found.identifiers.some(id => id.toLocaleLowerCase() === term))].slice(0, 4);
       return `<div class="empty-table"><strong>No match for this search</strong><p>${searched} ${ctx.found.identifiers.length ? `Identifiers looked for: ${escapeHtml(ctx.found.identifiers.join(', '))}. ` : 'No model number was recognised in the text. '}A failed search does not show that the product is absent from the catalogue or the market.</p><div class="empty-actions">${terms.map(term => `<button type="button" data-broaden="${escapeHtml(term)}">Search only “${escapeHtml(term)}”</button>`).join('')}${activeFilters(state) ? '<button type="button" data-empty-clear>Clear filters</button>' : ''}${category.preview && !state.preview ? '<button type="button" data-empty-preview>Also search unreviewed candidates</button>' : ''}</div><div class="empty-request">${request}</div></div>`;
     }
@@ -711,7 +774,7 @@
       return;
     }
     const groups = [...new Set(category.fields.map(field => field.group))];
-    main.innerHTML = `${crumb([{name:category.name,url:backUrl},{name:record.name}])}<div class="page-head"><h1>${escapeHtml(record.name)} ${demoBadge(record)}${record.previewOnly ? ` ${unreviewedBadge}` : ''}</h1><p class="intro">${escapeHtml(record.brand)}${record.family ? ` · ${escapeHtml(record.family)}` : ''}${record.model ? ` · <span class="code">${escapeHtml(record.model)}</span>` : ''}</p><p class="review-line">${record.previewOnly ? unreviewedBadge : record.demo ? '' : record.record_format ? acceptedBadge : '<span class="badge">Legacy pilot record, not reviewed</span>'} <span class="muted">${record.previewOnly ? 'No review decision covers this product yet.' : record.record_format ? 'Reviewed for inclusion from the cited sources; this is not independent testing.' : ''}</span></p>${revisionLine(category, record)}</div>${record.kind === 'model' || record.kind === 'family' ? `<div class="callout">This is a ${record.kind} page, not a purchasable product. Exact specifications belong to a configuration, identified by ${escapeHtml(modelLabel(category))}.</div>` : ''}${record.previewOnly ? '<div class="callout">Unreviewed preview record: no review decision covers this product yet. Every value below is a candidate and may be wrong.</div>' : ''}${record.demo ? '<div class="callout">Fictional demo data. Values and identifiers on this page do not describe a real product.</div>' : ''}<div class="detail-grid"><div class="detail-main"><div class="callout">${escapeHtml(record.identity_caveat || 'Identity has not been independently verified.')}</div>${groups.map((group, groupIndex) => `<section class="detail-section" data-spec-group="${groupIndex}"><h2>${escapeHtml(group)}</h2><div class="table-scroll" role="region" aria-label="${escapeHtml(groupLabel(category, group))} specifications" tabindex="0"><table class="spec-table"><tbody>${category.fields.filter(field => field.group === group).sort((a,b) => a.priority-b.priority).map(field => { const spec = specObject(record, field.key); return `<tr><th scope="row">${escapeHtml(field.label)}</th><td class="value-cell">${displayValue(spec, field)}</td><td class="evidence-cell">${evidenceMarkup(record, spec)}</td></tr>`; }).join('')}</tbody></table></div></section>`).join('')}<section class="detail-section" id="documents-section"><h2>Documents</h2>${record.documents.length ? `<ul class="source-list">${record.documents.map(doc => { const url = safeUrl(doc.url); return `<li>${url ? `<a href="${escapeHtml(url)}">${escapeHtml(doc.label || url)}</a>` : escapeHtml(doc.label || 'Unlinked document')}</li>`; }).join('')}</ul>` : '<p class="muted">No manuals or specification sheets are linked yet.</p>'}</section><section class="detail-section"><h2>Media</h2>${record.media.length ? `<ul class="source-list">${record.media.map(item => { const url = safeUrl(item.url); return `<li>${url ? `<a href="${escapeHtml(url)}">${escapeHtml(item.label || url)}</a>` : escapeHtml(item.label || 'Unlinked media')}</li>`; }).join('')}</ul>` : '<p class="muted">No product images or media are linked yet.</p>'}</section></div><aside class="detail-side"><h2>Record context</h2><dl><dt>Brand</dt><dd>${escapeHtml(record.brand)}</dd><dt>Family hint</dt><dd>${escapeHtml(record.family || 'Not recorded')}</dd><dt>Model hint</dt><dd class="code">${escapeHtml(record.model || 'Not recorded')}</dd><dt>Variant hint</dt><dd>${escapeHtml(record.variant || 'Not resolved')}</dd><dt>Record confidence</dt><dd>${escapeHtml(record.confidence?.level || 'Not rated')} <span class="muted">(${escapeHtml(record.confidence?.scope || 'record')})</span></dd></dl><section class="detail-section"><h2>Identifiers</h2>${record.identifiers.length ? `<ul class="source-list">${record.identifiers.map(id => `<li><span class="code">${escapeHtml(id.value)}</span><br><span class="muted">${escapeHtml(id.scheme)} · ${escapeHtml(id.issuer || 'Issuer unspecified')}${id.market ? ` · ${escapeHtml(id.market)}` : ''} · ${escapeHtml(id.package_level || 'scope unverified')}</span></li>`).join('')}</ul>` : '<p>No identifiers recorded.</p>'}</section><section class="detail-section"><h2>Source links</h2>${record.sources.length ? `<ul class="source-list">${record.sources.map(source => { const url = safeUrl(source.url); return `<li>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.label)}</a>` : escapeHtml(source.label)}</li>`; }).join('')}</ul>` : '<p class="muted">No source links; this is demo data.</p>'}</section>${record.marketing_terms.length ? `<section class="detail-section"><h2>Marketing terms</h2><p>${escapeHtml(record.marketing_terms.join(', '))}</p></section>` : ''}<section class="detail-section"><h2>Record notes</h2><p>${escapeHtml(record.notes || 'No notes recorded.')}</p></section></aside></div>`;
+    main.innerHTML = `${crumb([{name:category.name,url:backUrl},{name:record.name}])}<div class="page-head"><h1>${escapeHtml(record.name)} ${demoBadge(record)}${record.previewOnly ? ` ${unreviewedBadge}` : ''}</h1><p class="intro">${escapeHtml(record.brand)}${record.family ? ` · ${escapeHtml(record.family)}` : ''}${record.model ? ` · <span class="code">${escapeHtml(record.model)}</span>` : ''}</p><p class="review-line">${record.previewOnly ? unreviewedBadge : record.demo ? '' : record.record_format ? acceptedBadge : '<span class="badge">Legacy pilot record, not reviewed</span>'} <span class="muted">${record.previewOnly ? 'No review decision covers this product yet.' : record.record_format ? 'Reviewed for inclusion from the cited sources; this is not independent testing.' : ''}</span></p>${revisionLine(category, record)}</div>${record.kind === 'model' || record.kind === 'family' ? `<div class="callout">This is a ${record.kind} page, not a purchasable product. Exact specifications belong to a configuration, identified by ${escapeHtml(modelLabel(category))}.</div>` : ''}${record.index_scope === 'certification_only' ? '<p class="muted">Certification-only listing: this product appears only in a certification list, and no manufacturer specifications are recorded yet.</p>' : ''}${record.previewOnly ? '<div class="callout">Unreviewed preview record: no review decision covers this product yet. Every value below is a candidate and may be wrong.</div>' : ''}${record.demo ? '<div class="callout">Fictional demo data. Values and identifiers on this page do not describe a real product.</div>' : ''}<div class="detail-grid"><div class="detail-main"><div class="callout">${escapeHtml(record.identity_caveat || 'Identity has not been independently verified.')}</div>${groups.map((group, groupIndex) => `<section class="detail-section" data-spec-group="${groupIndex}"><h2>${escapeHtml(group)}</h2><div class="table-scroll" role="region" aria-label="${escapeHtml(groupLabel(category, group))} specifications" tabindex="0"><table class="spec-table"><tbody>${category.fields.filter(field => field.group === group).sort((a,b) => a.priority-b.priority).map(field => { const spec = specObject(record, field.key); return `<tr><th scope="row">${escapeHtml(field.label)}</th><td class="value-cell">${displayValue(spec, field)}</td><td class="evidence-cell">${evidenceMarkup(record, spec)}</td></tr>`; }).join('')}</tbody></table></div></section>`).join('')}<section class="detail-section" id="documents-section"><h2>Documents</h2>${record.documents.length ? `<ul class="source-list">${record.documents.map(doc => { const url = safeUrl(doc.url); return `<li>${url ? `<a href="${escapeHtml(url)}">${escapeHtml(doc.label || url)}</a>` : escapeHtml(doc.label || 'Unlinked document')}</li>`; }).join('')}</ul>` : '<p class="muted">No manuals or specification sheets are linked yet.</p>'}</section><section class="detail-section"><h2>Media</h2>${record.media.length ? `<ul class="source-list">${record.media.map(item => { const url = safeUrl(item.url); return `<li>${url ? `<a href="${escapeHtml(url)}">${escapeHtml(item.label || url)}</a>` : escapeHtml(item.label || 'Unlinked media')}</li>`; }).join('')}</ul>` : '<p class="muted">No product images or media are linked yet.</p>'}</section></div><aside class="detail-side"><h2>Record context</h2><dl><dt>Brand</dt><dd>${escapeHtml(record.brand)}</dd><dt>Family hint</dt><dd>${escapeHtml(record.family || 'Not recorded')}</dd><dt>Model hint</dt><dd class="code">${escapeHtml(record.model || 'Not recorded')}</dd><dt>Variant hint</dt><dd>${escapeHtml(record.variant || 'Not resolved')}</dd><dt>Record confidence</dt><dd>${escapeHtml(record.confidence?.level || 'Not rated')} <span class="muted">(${escapeHtml(record.confidence?.scope || 'record')})</span></dd></dl><section class="detail-section"><h2>Identifiers</h2>${record.identifiers.length ? `<ul class="source-list">${record.identifiers.map(id => `<li><span class="code">${escapeHtml(id.value)}</span><br><span class="muted">${escapeHtml(id.scheme)} · ${escapeHtml(id.issuer || 'Issuer unspecified')}${id.market ? ` · ${escapeHtml(id.market)}` : ''} · ${escapeHtml(id.package_level || 'scope unverified')}</span></li>`).join('')}</ul>` : '<p>No identifiers recorded.</p>'}</section><section class="detail-section"><h2>Source links</h2>${record.sources.length ? `<ul class="source-list">${record.sources.map(source => { const url = safeUrl(source.url); return `<li>${url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.label)}</a>` : escapeHtml(source.label)}</li>`; }).join('')}</ul>` : '<p class="muted">No source links; this is demo data.</p>'}</section>${record.marketing_terms.length ? `<section class="detail-section"><h2>Marketing terms</h2><p>${escapeHtml(record.marketing_terms.join(', '))}</p></section>` : ''}<section class="detail-section"><h2>Record notes</h2><p>${escapeHtml(record.notes || 'No notes recorded.')}</p></section></aside></div>`;
     if (record.record_format) {
       const relation = record.relations?.find(link => link.type === 'configuration_of' && link.status === 'approved');
       if (relation) main.querySelector('.detail-grid').insertAdjacentHTML('beforebegin', `<p class="model-link">This is a configuration. <a href="${productUrl(category.id, relation.target, returnQuery)}">View its model and other configurations</a>.</p>`);

@@ -37,6 +37,11 @@ class ReplayTest(unittest.TestCase):
         cls.tmp = Path(tempfile.mkdtemp())
         cls.live = snapshot(STATE)
 
+    @classmethod
+    def tearDownClass(cls):
+        # Each run writes ~650 MB of SQLite copies; without this they leaked into /tmp.
+        shutil.rmtree(cls.tmp, ignore_errors=True)
+
     def test_1_delete_and_replay_reproduces_state(self):
         out = run(self.tmp / "replay.sqlite", ROOT / "data")
         self.assertEqual(out["ids"]["new"], 0, "replay must not mint")

@@ -1,0 +1,22 @@
+format: specsheet.model-crosswalks/1
+# Reviewed model-string crosswalks for air purifiers (A3-impl r8; read by scripts/xwalk.py, feature model_crosswalks; rel/air-purifiers-crosswalk@1).
+# A decision file: only a HUMAN reviewer handle may appear in `by`. Same shape as tv-crosswalks.yaml pairs, without a suffix rule (the two
+# namespaces here share no structure a rule could check).
+#
+# pairs: {brand, a, b, market, evidence: {url, quote}, by, at}. Enter a pair ONLY when one source page prints BOTH exact strings for the
+#   same unit (the quote must contain both). A pair that passes the guards yields an approvable `same_model` link a -> b; nothing merges, no
+#   claim transfers, both public ids stay.
+# proposals: {brand, a, b, why}. Unreviewed candidates: a possible_match proposal for review, approvable by no policy.
+#
+# Status 2026-11-24 (checked against raw/): no source prints both namespaces for one unit.
+#   - Levoit: each levoit.com page's Model row prints EITHER the marketing model (Core 400S, CORE 200S, Core 300S, Core 300, Core P350) OR a
+#     label code (LAP-C601S-WUS, LAP-C161-WUS, LAP-V102S-WUS, ...); titles print the retail name 'Core 600S-P', which is neither string.
+#     ENERGY STAR files 'Core 400S' (pd 4027325) and 'LAP-C401S-WUSR' (pd 4429169) as separate records with different UPCs and neither
+#     record names the other. So: no pair, proposals only.
+#   - Coway / Blueair (item c): their US pages are not crawled and print no ES / CARB model number; the mechanism is ready, no pairs.
+pairs: []
+proposals:
+  - {brand: levoit, a: Core 400S, b: LAP-C401S-WUSR, why: 'label-code convention C401S = Core 400S (spec-profile per_brand.levoit); no source prints both'}
+  - {brand: levoit, a: Core 400S, b: LAP-C401S-KUSR, why: 'same convention, colour K; no source prints both'}
+  - {brand: levoit, a: CORE 200S, b: LAP-C201S-AUSR, why: 'label-code convention C201S = Core 200S; no source prints both'}
+  - {brand: levoit, a: CORE 200S, b: LAP-C201S-MUSW, why: 'same convention, colour M; no source prints both'}

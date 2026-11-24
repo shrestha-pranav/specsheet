@@ -1,0 +1,26 @@
+{
+  "name": "specsheet-api-worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --persist-to .wrangler/state",
+    "seed": "node scripts/seed-local-r2.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test test/*.test.mjs test/*.test.ts"
+  },
+  "dependencies": {
+    "@x402/core": "^2.32.0",
+    "@x402/evm": "^2.32.0",
+    "@x402/hono": "^2.32.0",
+    "hono": "^4.13.21"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5",
+    "@x402/fetch": "^2.32.0",
+    "miniflare": "^4",
+    "typescript": "^5",
+    "viem": "^2.58.6",
+    "wrangler": "^4"
+  }
+}

@@ -1,0 +1,285 @@
+{
+ "generated_from": "data/decisions/policies.yaml",
+ "sources": [
+  {
+   "id": "anker-us-chargers",
+   "credit": "Anker official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "anker-us-powerbanks",
+   "credit": "Anker official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "ankersolix-us-stations",
+   "credit": "Anker SOLIX official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "asus-us",
+   "credit": "ASUS official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "asus-us-monitors",
+   "credit": "ASUS official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "asus-us-routers",
+   "credit": "ASUS official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "aukey-us-chargers",
+   "credit": "Aukey official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "belkin-us-chargers",
+   "credit": "Belkin official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "belkin-us-powerbanks",
+   "credit": "Belkin official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "bluetti-us-stations",
+   "credit": "Bluetti official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "carb-airpurifiers",
+   "credit": "California Air Resources Board certified air cleaner list",
+   "public_domain": false
+  },
+  {
+   "id": "choetech-us-chargers",
+   "credit": "Choetech official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "csa-dcl-robovac",
+   "credit": "CSA Distributed Compliance Ledger (Matter)",
+   "public_domain": false
+  },
+  {
+   "id": "cuktech-us-chargers",
+   "credit": "CUKTECH official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "cuktech-us-powerbanks",
+   "credit": "CUKTECH official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "cyberpower",
+   "credit": "CyberPower official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "displayhdr",
+   "credit": "VESA DisplayHDR certified products list",
+   "public_domain": false
+  },
+  {
+   "id": "dreame-us-robovac",
+   "credit": "Dreame official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "ecoflow-us-powerbanks",
+   "credit": "EcoFlow official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "ecoflow-us-stations",
+   "credit": "EcoFlow official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "ecovacs-us-robovac",
+   "credit": "Ecovacs official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "energystar-airpurifiers",
+   "credit": "U.S. EPA ENERGY STAR certified product data",
+   "public_domain": true
+  },
+  {
+   "id": "energystar-monitors",
+   "credit": "U.S. EPA ENERGY STAR certified product data",
+   "public_domain": true
+  },
+  {
+   "id": "energystar-tvs",
+   "credit": "U.S. EPA ENERGY STAR certified product data",
+   "public_domain": true
+  },
+  {
+   "id": "goalzero-us-stations",
+   "credit": "Goal Zero official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "hyper-us-chargers",
+   "credit": "Hyper official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "iniu-us-chargers",
+   "credit": "INIU official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "iniu-us-powerbanks",
+   "credit": "INIU official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "irobot-us-robovac",
+   "credit": "iRobot official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "jackery-us-stations",
+   "credit": "Jackery official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "kuxiu-us-powerbanks",
+   "credit": "KUXIU official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "lenovo-psref",
+   "credit": "Lenovo PSREF (Product Specifications Reference)",
+   "public_domain": false
+  },
+  {
+   "id": "lenovo-psref-monitors",
+   "credit": "Lenovo PSREF (Product Specifications Reference)",
+   "public_domain": false
+  },
+  {
+   "id": "levoit-us-airpurifiers",
+   "credit": "Levoit official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "lg-us",
+   "credit": "LG official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "lg-us-tvs",
+   "credit": "LG official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "mophie-us-chargers",
+   "credit": "mophie official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "mophie-us-powerbanks",
+   "credit": "mophie official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "mova-us-robovac",
+   "credit": "Mova official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "narwal-us-robovac",
+   "credit": "Narwal official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "nativeunion-us-chargers",
+   "credit": "Nativeunion official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "netgear-us-routers",
+   "credit": "Netgear official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "roborock-us-robovac",
+   "credit": "Roborock official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "samsung-us-ssd",
+   "credit": "Samsung official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "samsung-us-tvs",
+   "credit": "Samsung official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "sandisk-us-ssd",
+   "credit": "Sandisk official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "satechi-us-chargers",
+   "credit": "Satechi official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "sharge-us-powerbanks",
+   "credit": "Sharge official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "tcl-us-tvs",
+   "credit": "TCL official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "teamgroup-us-ssd",
+   "credit": "TeamGroup official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "tplink-us-routers",
+   "credit": "TP-Link official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "tripplite",
+   "credit": "Tripp Lite official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "ugreen-us-chargers",
+   "credit": "UGREEN official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "ugreen-us-powerbanks",
+   "credit": "UGREEN official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "vizio-us-tvs",
+   "credit": "Vizio official specification pages",
+   "public_domain": false
+  },
+  {
+   "id": "winix-us-airpurifiers",
+   "credit": "Winix official specification pages",
+   "public_domain": false
+  }
+ ]
+}

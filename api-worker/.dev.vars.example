@@ -1,0 +1,12 @@
+# Copy to .dev.vars (gitignored). Placeholders only - never commit real values.
+# Wallet that receives USDC. Use a Base Sepolia address you control for testing.
+PAY_TO=0xYOUR_TESTNET_RECEIVING_ADDRESS
+# Paid mode is OFF by default; enable only for local testing:
+# PAID_ENABLED=true
+# Optional overrides (defaults are in wrangler.jsonc):
+# X402_NETWORK=eip155:84532
+# FACILITATOR_URL=https://x402.org/facilitator
+# Mainnet only, together with X402_NETWORK=eip155:8453 and a mainnet FACILITATOR_URL:
+# ALLOW_MAINNET=true
+# CDP_API_KEY_ID=placeholder
+# CDP_API_KEY_SECRET=placeholder

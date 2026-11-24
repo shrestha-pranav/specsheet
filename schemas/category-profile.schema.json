@@ -186,6 +186,34 @@
         }
       }
     },
+    "index_rows": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "substantive_keys",
+        "certification_keys"
+      ],
+      "description": "r8 (scripts/v1_publish.py): which trusted facts make an entity a row of the default trusted grid. The two lists partition every spec key of the profile (checked by scripts/catmeta.py). An entity whose trusted values are all on certification_keys (certification / regulatory metadata: listing, type, EO number, membership without measured values) is published in lookup, as a detail file and in the compact index-certonly shard, but is not a default index row. Absent = every entity with a trusted value is a row.",
+      "properties": {
+        "substantive_keys": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/specKey"
+          },
+          "uniqueItems": true
+        },
+        "certification_keys": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/specKey"
+          },
+          "uniqueItems": true
+        },
+        "why": {
+          "type": "string"
+        }
+      }
+    },
     "changelog": {
       "type": "array",
       "items": {

@@ -5,7 +5,15 @@ description: "Portable room air cleaners by manufacturer model number (Levoit LA
   CARB certification (dated, mechanical vs electronic), Wi-Fi. Sources: ENERGY STAR Certified Room Air Cleaners, the CARB certified list,
   Levoit and Winix US pages."
 columns: [cadr.smoke_cfm, room.size_sqft, filter.true_hepa, noise.db, ozone.carb_certified, eff.energy_star, smart.wifi]
-features: [stem_links]
+features: [stem_links, model_crosswalks, same_hardware_relations]
+# r8 (scripts/xwalk.py). Reviewed model-string crosswalks (Levoit 'Core 400S' vs 'LAP-C401S-WUSR'; Coway / Blueair page names vs ES / CARB
+# codes): pairs only when ONE source page prints both strings for the same unit, else a proposal. compare_keys: a pair or a declared
+# same-hardware alias whose stated values disagree on one of these is not linked.
+crosswalks: {file: air-purifier-crosswalks.yaml, compare_keys: [ozone.carb_type, cadr.smoke_cfm, cadr.dust_cfm, cadr.pollen_cfm, tech.technologies]}
+# An ES declared_same_hardware alias that is also another entity's model key: separate entities + same_hardware_as (no merge); over an
+# approved edge only the dated ENERGY STAR certification transfers (claim/air-purifiers-es-same-hardware@1, its own extractor).
+same_hardware: {source: energystar-airpurifiers, extractor: energystar_airpurifiers_same_hardware@1, transfer_keys: [eff.energy_star],
+  compare_keys: [ozone.carb_type, cadr.smoke_cfm, cadr.dust_cfm, cadr.pollen_cfm, tech.technologies]}
 # Stem = PROPOSALS only (possible_match), never a merge (identity.md). Strips colour/market tails so siblings are proposed for review:
 # Coway '(W)' / '(BG)' / '_WT' / '_GR'; a digit-then-dash colour+market block (Levoit
 # 'LAP-C401S-WUSR' -> 'LAP-C401S'). same_source: CARB lists

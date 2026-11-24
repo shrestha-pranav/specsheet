@@ -1,0 +1,24 @@
+{
+  // Local-only project. Never run `wrangler deploy` / `wrangler login` from agent sessions (see README "Owner deploy steps").
+  "name": "specsheet-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "r2_buckets": [
+    // Local dev uses a simulated bucket under .wrangler/state (filled by `npm run seed`). For production, create a
+    // real bucket with this name (or edit it) - see README.
+    { "binding": "DATA", "bucket_name": "specsheet-data" }
+  ],
+  "vars": {
+    // Free tier lives on GH Pages; /v1/* free paths redirect here. CONFIRM the real Pages URL.
+    "STATIC_ORIGIN": "https://shrestha-pranav.github.io/specsheet",
+    // x402 network (CAIP-2). Default Base Sepolia testnet. Mainnet (eip155:8453) additionally needs ALLOW_MAINNET=true
+    // and FACILITATOR_URL set to a mainnet-capable facilitator.
+    "X402_NETWORK": "eip155:84532",
+    "FACILITATOR_URL": "https://x402.org/facilitator",
+    "ALLOW_MAINNET": "false",
+    // Master switch: paid routes answer 503 "coming soon" and vanish from OpenAPI/llms.txt/MCP until "true".
+    "PAID_ENABLED": "false"
+    // PAY_TO is a secret/env var, intentionally NOT here: `wrangler secret put PAY_TO` (prod) or .dev.vars (local).
+  }
+}

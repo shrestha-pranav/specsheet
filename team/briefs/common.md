@@ -36,4 +36,4 @@ Policies: new auto-accept policies need explicit source_ids/extractors/keys allo
 Other agents may be editing in parallel: keep shared-script edits (scripts/*.py, registry.py) minimal and list every shared-file change in your report.
 Never run git stash/checkout/reset/restore in the shared working tree: parallel agents have uncommitted work. Compare against old output with `git worktree add /tmp/x HEAD` instead.
 Builds: run bare import.py/build.py as `flock /tmp/specsheet-release.lock <cmd>`. release.sh takes that lock itself, so NEVER wrap release.sh in flock (deadlock).
-Approvals: never fill approval.by/at. New policies land pending; the repo owner approves (owner approved all active policies 2026-11-23). Superseded versions move to retired_policies verbatim with a retired: {at, superseded_by, reason} line.
+Approvals: agents never fill approval.by/at. New policies land pending; the coordinator approves on the owner's standing authority (granted 2026-11-24) after review. Superseded versions move to retired_policies verbatim with a retired: {at, superseded_by, reason} line.

@@ -1,0 +1,30 @@
+name: USB chargers
+description: 'USB wall chargers, multi-port GaN and desktop charging stations, travel and car chargers by manufacturer model number (Anker A2147, Belkin
+  WCH010, UGREEN 15202, AUKEY PA-C4): labelled total output vs all-ports-at-once output vs best single port, per-port USB PD fixed PDOs and PPS ranges,
+  EPR (28 V+), port counts, input, size and weight. Sources: thirteen maker US stores. Supersedes the v0 gan-chargers pilot (old ids redirect).'
+columns:
+- out.max_total_w
+- out.max_single_port_w
+- out.port_count
+- pd.pps_max_current_a
+- phys.weight
+brand_names:
+  anker: Anker
+  belkin: Belkin
+  ugreen: UGREEN
+  iniu: INIU
+  cuktech: CUKTECH
+  satechi: Satechi
+  mophie: mophie
+  aukey: AUKEY
+  hyper: HyperJuice (Targus)
+  native_union: Native Union
+  plugable: Plugable
+  nekteck: Nekteck
+  choetech: CHOETECH
+# importer 'model' needs an explicit identity scope (review 2 risk 4). Every source is a US storefront printing the maker's own model number or the
+# documented SKU-stem rule (research/chargers/identity.md); the key is (brand, normalised model), market not in the key. Two different STATED
+# markets are still quarantined, never merged.
+identity_scope:
+  cross_market_brands: "*"
+  market_scoped_brands: []

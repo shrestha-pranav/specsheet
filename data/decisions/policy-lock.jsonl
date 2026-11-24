@@ -43,3 +43,9 @@
 {"at": "2026-11-23T20:49:08Z", "id": "rel/tvs-es-certification-scope@1", "sha256": "sha256:8e4635ee2ecd341fc92dcaeee50fb64d71559ffa3d137c3c9c3c44897fae7ad2"}
 {"at": "2026-11-23T20:49:08Z", "id": "rel/tvs-crosswalk@1", "sha256": "sha256:132f25270fcbe6b66c0455b75b6ade3318e5de87039950b210cf65fb300fb502"}
 {"at": "2026-11-23T23:26:40Z", "id": "claim/air-purifiers-structured@1", "sha256": "sha256:8bc0f3d794dd027335b8368742a28380526a1bbca12344ce208dbb1e23cd4a77"}
+{"at": "2026-11-24T09:44:28Z", "id": "claim/air-purifiers-es-same-hardware@1", "sha256": "sha256:abbed5150634dfe15fad4176e93dad6110e340d1a32fdbdc40180628837464db"}
+{"at": "2026-11-24T09:44:28Z", "id": "rel/air-purifiers-es-same-hardware@1", "sha256": "sha256:b3a80b1d91ccad51b6f2c73684809531ad9e3a17d444738b1cd75f7d9afe366a"}
+{"at": "2026-11-24T09:44:28Z", "id": "rel/air-purifiers-crosswalk@1", "sha256": "sha256:0d7a7e4ce788bfc9c9a491a750e23136266748cf23e7fe52d911fb75eae602e6"}
+{"at": "2026-11-24T09:57:18Z", "id": "claim/mfr-chargers-structured@1", "sha256": "sha256:cd0ddc98e3c42e8a21de8b71c422af60b2c055bb981d0ad1ffc6307926510341"}
+{"at": "2026-11-24T10:18:23Z", "id": "claim/psref-split@1", "sha256": "sha256:951aba43edecc498dc27b37ed30d3316bf9ec7c94b9cae658e0cedc189bfae02"}
+{"at": "2026-11-24T10:18:23Z", "id": "claim/monitor-flicker-label-map@1", "sha256": "sha256:d89bddbe49615b2ba8057401dd1cd6ecb070f1c6fe86fd559dfc662e8a304d78"}

@@ -11,7 +11,7 @@ stem, by spec match, or by a shared certification.
   `possible_match` (193 proposals in the first import), never merge.
 - Levoit prints two kinds of model string: label codes (`LAP-C601S-WUS`, on 8 levoit.com pages) and marketing models (`Core 400S`,
   `CORE 200S`, `Core 300`). ENERGY STAR files both kinds as separate records (`Core 400S` and `LAP-C401S-WUSR` are two pd_ids). They stay
-  separate entities: no Levoit source states which label code a marketing model is (open issue).
+  separate entities: no Levoit source states which label code a marketing model is. r8: reviewed pairs live in `data/decisions/air-purifier-crosswalks.yaml` (only when one page prints both strings; none today, 4 proposals = possible_match).
 - Pages without a model row give no entity (9 Levoit pages print no Model row; Winix 5530 prints no Model Name). The URL / title is never
   promoted to a model number.
 
@@ -26,8 +26,9 @@ stem, by spec match, or by a shared certification.
 - `additional_model_information`: a token is `declared_same_hardware` only inside a clause with the partner's own same-hardware statement
   ("is same as model X, except model number", "identical except model number/name", "same as X, except for color"); "identical in
   performance ... only difference is ..." (Winix C710/C610) is NOT. Everything else is `model_variant` (unverified alias). Declared aliases are
-  aliases on the certified model; they are not merged with a separate CARB entity of the same string (open issue for A3: an exact-string
-  alias that is also another source's key).
+  aliases on the certified model; they are not merged with a separate CARB entity of the same string. r8 rule (scripts/xwalk.py): such an
+  alias entity gets a `same_hardware_as` edge to the certified base with the ES evidence; over an approved edge only the dated
+  eff.energy_star transfers (3 today: Blueair 4312112000, 1831024000, Sharp SAP5682SAW). Ids never merge.
 - CARB: one ref per (brand, model) exact string. CARB facts reach an ENERGY STAR / maker model only through that exact string (95 refs were
   admitted purely as exact peers). CARB-only models are minted only for 23 major brands with a certification dated 2019 or later.
 

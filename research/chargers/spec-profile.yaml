@@ -1,0 +1,608 @@
+profile_format: specsheet.category-profile/1
+category: chargers
+version: 1.0.0
+label: USB chargers
+market: US
+status: draft
+scope: USB wall chargers (single- and multi-port, GaN or silicon), desktop USB charging stations and travel chargers sold in the US, plus 12/24 V USB car
+  chargers. Excludes wireless/MagSafe/Qi chargers and stands, power banks (category power-banks, including wall-charger/power-bank hybrids), surge strips
+  with USB (category power-strips), docks and hubs, and laptop-brand barrel adapters.
+identity:
+  levels:
+  - level: family
+    label: Product line
+    meaning: Anker Prime / Nano, Belkin BoostCharge Pro, UGREEN Nexode. Browse only.
+    key_schemes:
+    - mfr_family
+    inherits: false
+  - level: model
+    label: Model
+    meaning: 'The maker''s model number: Anker A2147, Belkin WCH010, UGREEN item 15202, AUKEY PA-C4, CHOETECH PD6011. Colour SKUs of one model are the same
+      model.'
+    key_schemes:
+    - mfr_model
+    inherits: true
+  - level: configuration
+    label: Colour / orderable SKU
+    meaning: Anker A2147113 vs A2147123 (colour); Belkin WCH010dqBK; Satechi ST-COTG45Y vs -P. Same electrical specs.
+    key_schemes:
+    - mfr_sku
+    inherits: true
+  - level: package
+    label: Bundle / multipack / GTIN
+    meaning: Charger + cable bundles and 2-packs, own GTIN. A bundle or N-pack page is never a model.
+    key_schemes:
+    - gtin
+    inherits: true
+  primary_key: Manufacturer model number (Anker A2147). Marketing names ('511 Charger (Nano 3)', 'Nano II 65W'), marketing numbers (511, 735), colour SKUs
+    and retailer titles are aliases.
+  per_brand:
+    anker: A/B + 4 characters from the variant SKU stem (A2688141 -> A2688; B120F); marketing numbers 313/511/735 and names (Nano II) are aliases
+    belkin: 3 letters + 3 digits (WCH010, BBC013, CCA004) from productGroupID / variant SKU; colour SKU WCH010dqBK
+    ugreen: 5-digit item number printed as SKU (15202, 35538A); label model CD-style codes are rarely printed
+    satechi: ST- SKU minus region (-EU/-UK/-AU/-KR) and colour letter
+    aukey: PA-/CC- model in the maker's title (PA-C4, CC-P4)
+    choetech: PD####/C#### in the maker's title (PD6011)
+    hyper: HJ + 4 digits (HJ1402) from SKU HJ1402NA
+    native_union: FAST-PD67 from FAST-PD67-BLK-INT
+    mophie: 9-digit part number (no model printed)
+    iniu: Cougar A11-E1 / car I710 from the D01- SKU stem
+    cuktech: Model row (AD653N)
+    plugable: SKU (PS-30C1B; colour letter is part of the model)
+    nekteck: SKU minus -SPNK
+  schemes:
+  - scheme: mfr_family
+    level: family
+  - scheme: mfr_model
+    level: model
+    normalize: upper_strip_spaces
+  - scheme: mfr_sku
+    level: configuration
+    normalize: upper_keep_slash
+  - scheme: gtin
+    issuer: GS1
+    level: package
+  variant_axes:
+  - gen.color
+  model_defining:
+  - out.max_total_w
+  - out.ports
+  - out.port_count
+  note: identity.md. A different wattage or port layout is a different model even when the marketing name barely changes (Nano II 65W A2663 vs 735 Nano
+    II 65W A2667).
+units:
+  system: us_customary
+  display:
+    mm: in
+    g: oz
+  custom:
+  - unit: h
+    base: h
+    factor: 1
+  - unit: cycles
+    base: cycles
+    factor: 1
+conditions: []
+groups:
+- id: general
+  label: General & identity
+  order: 0
+- id: output
+  label: Output & ports
+  order: 1
+- id: pd
+  label: USB PD / PPS
+  order: 2
+- id: input
+  label: Input
+  order: 3
+- id: phys
+  label: Physical
+  order: 4
+specs:
+- key: gen.product_line
+  label: Product line
+  group: general
+  type: text
+  unit: null
+  tier: important
+  why: Lines group generations (Anker Prime / Nano, Belkin BoostCharge Pro, UGREEN Nexode); browse only, never inherited
+  level: family
+  facet: false
+  traps:
+  - Anker renames lines (PowerCore -> 5xx/7xx numbers -> Prime/Nano); the model number is the only stable key
+  sources:
+  - Maker title (Anker/Belkin line prefix)
+  example: Anker Prime
+- key: gen.form_factor
+  label: Form factor
+  group: general
+  type: enum
+  unit: null
+  tier: core
+  why: A wall brick, a desktop station and a car charger are different purchases
+  level: model
+  facet:
+    kind: enum
+    column: false
+  traps:
+  - 'Derived from the maker''s title/slug: preview only, never accepted by a policy'
+  sources:
+  - Maker title (derived)
+  example: wall
+  enum:
+  - wall
+  - desktop
+  - travel
+  - car
+- key: gen.color
+  label: Colour
+  group: general
+  type: list
+  unit: null
+  tier: detail
+  why: Colour SKUs are the same model
+  level: configuration
+  facet: false
+  sources:
+  - Store variant option
+  example:
+  - Black
+  - White
+- key: gen.gan
+  label: GaN
+  group: general
+  type: bool
+  unit: null
+  tier: important
+  why: 'Gallium-nitride power stage: smaller/cooler at the same wattage'
+  level: model
+  facet:
+    kind: enum
+  traps:
+  - 'Affirmative only: never false. A title saying GaN is the maker''s claim but title-derived (preview); a labelled ''Technology: GaN'' row is trusted'
+  - Silicon chargers rarely say they are silicon, so absence is unknown, not false
+  sources:
+  - Labelled Technology row; maker title (preview)
+  example: true
+- key: out.max_total_w
+  label: Maximum total output
+  group: output
+  type: number
+  unit: W
+  tier: core
+  why: 'The charger''s labelled total: what it can deliver across ports in its best combination (a 100W 3-port brick)'
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 20
+    - 35
+    - 45
+    - 65
+    - 100
+    - 140
+    - 200
+    column: true
+  traps:
+  - 'Only a row the maker LABELS as total (''Total Output'', ''Total Wattage'', Anker ''Total Capacity: 100W''); never the title, never a sum of ports,
+    never the largest port'
+  - 'Not the all-ports figure: Anker A2688 is 100 W total but 89 W with all three ports in use (out.all_ports_w)'
+  - A page whose title prints a different single wattage than its total row is left unresolved
+  sources:
+  - Anker Specifications table / key_parameter; UGREEN/Choetech spec table 'Total Output'
+  example: 100
+- key: out.all_ports_w
+  label: All-ports simultaneous output
+  group: output
+  type: number
+  unit: W
+  tier: important
+  why: What you get with every port loaded at once; usually lower than the total
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 30
+    - 65
+    - 100
+    - 150
+  traps:
+  - 'Review 3: accepted only with explicit port membership: a printed combination whose members name every individual port (C1+C2+A: 89W) or an ''N Ports
+    in Use'' row with N = the printed port count'
+  - Additive splits ('45W + 7.5W + 7.5W'), subset combinations and '&' rows stay unresolved (literal kept)
+  sources:
+  - Anker 'N Ports in Use' rows; printed combination tables
+  example: 89
+- key: out.max_single_port_w
+  label: Best single-port output
+  group: output
+  type: number
+  unit: W
+  tier: core
+  why: Can one port charge a 100 W laptop at full speed?
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 20
+    - 30
+    - 45
+    - 65
+    - 100
+    - 140
+    column: true
+  traps:
+  - Largest per-port maximum PRINTED in the port table ('(100W Max)'); never computed from V x A (9V2.22A is not 20 W)
+  sources:
+  - Per-port output rows
+  example: 100
+- key: out.rated_w
+  label: Rated output (basis not stated)
+  group: output
+  type: number
+  unit: W
+  tier: important
+  why: Some makers print one wattage without saying total or per port (Belkin 'Wattage', mophie 'Output')
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 20
+    - 35
+    - 45
+    - 65
+    - 100
+    - 140
+  traps:
+  - Kept apart from total and single-port so it never ranks with them
+  - Unresolved when the maker's title prints a different single wattage (Belkin BBC032 title 65W, Wattage 20W)
+  sources:
+  - Belkin Technical Specifications 'Wattage'; mophie 'Output'; Amazon-attribute 'Wattage' rows on UGREEN/Baseus
+  example: 65
+- key: out.port_count
+  label: Ports
+  group: output
+  type: integer
+  unit: null
+  tier: core
+  why: How many devices at once
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 2
+    - 3
+    - 4
+    - 6
+    column: true
+  traps:
+  - From a labelled port-count row only; the port table is not counted
+  sources:
+  - Anker 'Total number of ports'; Belkin 'Number of USB-C/USB-A ports'; 'Total USB Ports'
+  example: 3
+- key: out.usb_c_count
+  label: USB-C ports
+  group: output
+  type: integer
+  unit: null
+  tier: core
+  why: USB-C ports (laptops, phones)
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 1
+    - 2
+    - 3
+  sources:
+  - Anker 'Total number of ports'; Belkin 'Number of USB-C Ports'
+  example: 2
+- key: out.usb_a_count
+  label: USB-A ports
+  group: output
+  type: integer
+  unit: null
+  tier: important
+  why: Legacy USB-A ports
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 0
+    - 1
+    - 2
+  sources:
+  - Anker 'Total number of ports'; Belkin 'Number of USB-A ports'
+  example: 1
+- key: out.ports
+  label: Port table (PDOs)
+  group: output
+  type: list
+  unit: null
+  tier: core
+  why: 'Per-port PD fixed PDOs, PPS ranges and per-port maximum: whether a phone gets 45 W PPS or a laptop gets 20V/5A or 28V/5A EPR'
+  level: model
+  facet: false
+  items:
+    id_field: name
+    fields:
+    - key: name
+      type: text
+      label: Port
+    - key: type
+      type: enum
+      enum:
+      - usb_c
+      - usb_a
+      - cable_c
+      - cable_lightning
+      - wireless
+      - ac
+      - dc
+      label: Type
+    - key: direction
+      type: enum
+      enum:
+      - out
+      - in
+      - in_out
+      label: Direction
+    - key: max_w
+      type: number
+      unit: W
+      label: Max W
+    - key: fixed_pdos
+      type: text
+      label: Fixed PDOs
+    - key: pps
+      type: text
+      label: PPS ranges
+  display:
+    kind: object_table
+  traps:
+  - Ports sharing a PDO list are one row ('USB-C1/C2')
+  - A nameless single Output row becomes a port named 'Output' (type unknown)
+  - Per-port protocol lists (QC/SCP/AFC) are not PDO tables and are never read as PDOs
+  - Maker typos are kept as printed (UGREEN Uno 65W 'USB-C1 ... 15W Max')
+  sources:
+  - Anker Specifications table / key_parameter; spec tables 'USB-C1 Output' etc.
+  example:
+  - name: USB-C1/C2
+    type: usb_c
+    direction: out
+    max_w: 100
+    fixed_pdos: 5V3A 9V3A 15V3A 20V5A
+    pps: 3.3-21V 5A
+- key: out.simultaneous
+  label: Printed port combinations
+  group: output
+  type: text
+  unit: null
+  tier: important
+  why: 'How power splits when several ports are used (C1+C2: 65W+30W)'
+  level: model
+  facet: false
+  traps:
+  - Literal combinations as printed; never summed
+  sources:
+  - Dual/Triple/Multi-port output rows
+  example: 'USB-C1 + USB-C2: 65W + 30W'
+- key: pd.pps
+  label: PPS support
+  group: pd
+  type: bool
+  unit: null
+  tier: core
+  why: Samsung 25/45 W Super Fast Charging and many laptops need USB PD PPS
+  level: model
+  facet:
+    kind: enum
+  traps:
+  - 'Affirmative only: a printed PPS range on a port or a protocol row naming PPS; never false'
+  - A '3-11V' range on a USB-A port is QC/proprietary
+  sources:
+  - Per-port PDO list; protocol row
+  example: true
+- key: pd.pps_max_current_a
+  label: Highest PPS current
+  group: pd
+  type: number
+  unit: A
+  tier: important
+  why: 'The acceptance query: chargers with a documented PPS profile of 3 A or more (Galaxy 45 W needs 5 A PPS)'
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 2
+    - 3
+    - 5
+  traps:
+  - Max current over the PPS/variable ranges printed for the ports, as printed; no range = absent
+  sources:
+  - Per-port PDO list
+  example: 5
+- key: pd.pps_max_voltage
+  label: Highest PPS voltage
+  group: pd
+  type: number
+  unit: V
+  tier: detail
+  why: 11 V vs 21 V PPS ranges serve different devices
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 11
+    - 16
+    - 21
+  sources:
+  - Per-port PDO list
+  example: 21
+- key: pd.max_fixed_voltage
+  label: Highest fixed PDO voltage
+  group: pd
+  type: number
+  unit: V
+  tier: important
+  why: 20 V for most laptops; 28/36/48 V = USB PD 3.1 EPR
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 12
+    - 20
+    - 28
+    - 48
+  sources:
+  - Per-port PDO list
+  example: 20
+- key: pd.epr
+  label: USB PD 3.1 EPR (28 V+)
+  group: pd
+  type: bool
+  unit: null
+  tier: important
+  why: 140 W+ laptop charging over USB-C needs EPR fixed PDOs (28/36/48 V)
+  level: model
+  facet:
+    kind: enum
+  traps:
+  - True only when a 28 V or higher fixed PDO is printed; 'PD 3.1' alone does not imply EPR; never false
+  sources:
+  - Per-port PDO list
+  example: true
+- key: pd.protocols
+  label: Fast-charge protocols
+  group: pd
+  type: list
+  unit: null
+  tier: detail
+  why: QC/AFC/SCP for non-PD phones
+  level: model
+  facet: false
+  sources:
+  - INIU 'Supported Protocol'; UGREEN 'Protocols'
+  example:
+  - PD 3.0
+  - QC 3.0
+  - AFC
+  traps:
+  - Literal tokens; QC/SCP/AFC names vary per maker; not normalised, not accepted by policy
+- key: in.rating
+  label: Input rating
+  group: input
+  type: text
+  unit: null
+  tier: detail
+  why: Universal 100-240 V input matters for travel
+  level: model
+  facet: false
+  traps:
+  - 'Amazon-attribute ''Input Voltage: 240 volts'' is not a rating and is not read'
+  sources:
+  - Input row
+  example: 100-240V~ 50/60Hz 1.8A Max
+- key: in.voltage_range
+  label: Input voltage range
+  group: input
+  type: text
+  unit: null
+  tier: important
+  why: 100-240 V works worldwide with a plug adapter
+  level: model
+  facet:
+    kind: enum
+  sources:
+  - Input row
+  example: 100-240 V
+- key: in.type
+  label: Input type
+  group: input
+  type: enum
+  unit: null
+  tier: core
+  why: Mains (AC) wall/desktop vs 12/24 V vehicle DC
+  level: model
+  facet:
+    kind: enum
+  traps:
+  - From the input row (Hz / '~' = AC; 12/24 V DC = vehicle), not from the title
+  sources:
+  - Input row
+  example: ac_mains
+  enum:
+  - ac_mains
+  - dc_vehicle
+- key: phys.weight
+  label: Weight
+  group: phys
+  type: number
+  unit: g
+  tier: core
+  why: Travel weight
+  level: model
+  facet:
+    kind: range
+    bins:
+    - 50
+    - 100
+    - 200
+    - 400
+    column: true
+  sources:
+  - Weight row (oz/lb converted)
+  example: 120
+- key: phys.dimensions
+  label: Dimensions
+  group: phys
+  type: object
+  unit: mm
+  tier: detail
+  why: Pocketability
+  level: model
+  fields:
+  - key: w
+    type: number
+  - key: d
+    type: number
+  - key: h
+    type: number
+  facet: false
+  sources:
+  - Dimensions row (in converted to mm)
+  example:
+    w: 53
+    d: 42.6
+    h: 31.5
+    unit: mm
+- key: phys.foldable_plug
+  label: Foldable plug
+  group: phys
+  type: bool
+  unit: null
+  tier: detail
+  why: Folding prongs for pockets and bags
+  level: model
+  facet:
+    kind: enum
+  traps:
+  - Affirmative only, from a labelled Plug row; never false
+  sources:
+  - Plug row
+  example: true
+- key: id.msrp_us
+  label: Store price (US)
+  group: general
+  type: number
+  unit: USD
+  tier: detail
+  why: Price context; fetch-time fact, never a trusted spec
+  level: configuration
+  facet: false
+  sources:
+  - Store variant price at fetch time
+  example: 119.99
+  traps:
+  - Dated store price at fetch; never accepted by a policy (preview)

@@ -255,7 +255,7 @@ def stamp_build():
     schema crashed the category page (2026-11-22). Every asset and data URL carries the build id."""
     import hashlib, re as _re
     h = hashlib.sha256()
-    for f in sorted(API.rglob("*.json")) + [OUT / "app.js", OUT / "styles.css"]:
+    for f in sorted(API.rglob("*.json")) + [OUT / "app.js", OUT / "styles.css", OUT / "pages.js", OUT / "site.json", OUT / "sources.json"]:
         if f in (API / "manifest.json", API / "build.json"):
             continue   # derived from the hash (manifest carries it)
         h.update(f.read_bytes())
@@ -269,6 +269,7 @@ def stamp_build():
     html = idx.read_text()
     html = _re.sub(r'href="styles\.css(\?v=[0-9a-f]+)?"', f'href="styles.css?v={build}"', html)
     html = _re.sub(r'src="app\.js(\?v=[0-9a-f]+)?"', f'src="app.js?v={build}"', html)
+    html = _re.sub(r'src="pages\.js(\?v=[0-9a-f]+)?"', f'src="pages.js?v={build}"', html)
     html = _re.sub(r'<meta name="specsheet-build" content="[0-9a-f]*">\n?', '', html)
     html = html.replace('<meta charset="utf-8">', f'<meta charset="utf-8">\n  <meta name="specsheet-build" content="{build}">', 1)
     idx.write_text(html)
@@ -280,10 +281,10 @@ def main():
     ap.add_argument("--no-state", action="store_true", help="skip the profile-driven categories (laptops, power-strips); needs no state/specsheet.sqlite")
     args = ap.parse_args()
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    chargers, lookup = charger_records()
+    # The v0 gan-chargers pilot (data/gan-chargers, charger_records) is retired from publication (2026-11-24): superseded by the profile-driven
+    # `chargers` category; old ids are kept or redirected through data/_ids (tombstones.jsonl -> redirects.json, incl. category:gan-chargers).
     strips = strip_records()
     categories = [
-        {"id": "gan-chargers", "name": "USB-C wall chargers", "description": "Cross-brand power, ports, and USB PD capability.", "count": len(chargers), "demo": False, "products": "gan-chargers/products.json", "fields": CHARGER_FIELDS},
         {"id": "power-strips-demo", "name": "Power strips (demo)", "description": "Fictional demonstration of a second category schema.", "count": len(strips), "demo": True, "products": "power-strips-demo/products.json", "fields": STRIP_FIELDS},
     ]
     if not args.no_state:
@@ -292,7 +293,7 @@ def main():
             raise SystemExit(f"{v1_publish.DB} missing: run scripts/import.py first (or pass --no-state to build chargers only)")
     if API.exists():
         shutil.rmtree(API)
-    for category, records in ((categories[0], chargers), (categories[1], strips)):
+    for category, records in ((categories[0], strips),):
         folder = API / category["id"]
         dump(folder / "schema.json", {"id": category["id"], "fields": category["fields"], "version": 1})
         index = []
@@ -311,14 +312,18 @@ def main():
         dump(API / "lookup" / "identifiers.json", {})
         dump(API / "redirects.json", {})
     dump(API / "categories.json", categories)
-    dump(API / "lookup" / "models.json", lookup)
     dump(API / "manifest.json", {"dataset_version": "1.0.0", "build": "", "generated_at": __import__("time").strftime("%FT%TZ", __import__("time").gmtime()),
                                  "record_format": "specsheet.record/1", "categories": manifest_cats, "release": release})
     (API / "README.md").write_text("# Static dataset v1\n\n`manifest.json` lists categories with schema versions, index shards and facets. Contract: `team/briefs/a4-contract.md`.\n\nLegacy v0 files (`categories.json` fields, `<cat>/products.json`) remain for the chargers pilot and the demo category; profile-driven categories (see ARCHITECTURE 15.9) also ship a slim `products.json` (column fields only) so the current UI keeps working until A4 switches to `index*.json` + `facets.json`. Every specification has `{value,status,sources,...}`; `status` is known, unknown, conflicted, not_yet_extracted, not_applicable, or not_published. Only known values are established for filtering. Profile-driven categories: the trusted files (`<cat>/index*.json`, `facets.json`, `products/`) contain only claims accepted by a recorded decision (`data/decisions/`: human ledger line or versioned auto-accept policy, id in `manifest.release.policies`) and approved links; unreviewed candidates and proposed links live separately under `preview/<cat>/` (rows flagged `review_scope: preview`, details are deltas over the trusted record). Per-category `market_filter` (category.yaml) applies, e.g. laptops are US-market only (Lenovo `US` MTMs). The `power-strips-demo` entries are fictional.\n")
     (OUT / ".nojekyll").write_text("")
+    if not args.no_state:       # title matcher index (scripts/match.py): alias phrases + the retired v0 pilot names, resolved through redirects
+        import match
+        print("aliases:", json.dumps(match.write_aliases(API, legacy=[(r["id"], r["name"]) for r in charger_records()[0]])))
+    import site_meta
+    site_meta.generate()   # docs/{llms.txt,sitemap.xml,robots.txt,sources.json} + brand/JSON-LD stamp in index.html
     stamp_build()
     checked = check_js()
-    print(f"built {len(chargers)} charger and {len(strips)} demo products; checked {checked} JavaScript files/scripts")
+    print(f"built {len(strips)} demo products (v0 chargers pilot retired); checked {checked} JavaScript files/scripts")
     for cat, st in v1_stats.items():
         print(f"  {cat}: {json.dumps(st)}")
 

@@ -1,0 +1,16 @@
+{
+  "brand": "specsheet",
+  "domain": "knownspec.com",
+  "site_url": "https://shrestha-pranav.github.io/specsheet",
+  "repo": "shrestha-pranav/specsheet",
+  "api_origin": "",
+  "tagline": "Structured specs with context",
+  "contacts": {
+    "corrections": "corrections",
+    "legal": "legal",
+    "hello": "hello"
+  },
+  "legal_status": "Draft pending owner review",
+  "_note": "Single place for brand, domain, role-address placeholders and the API origin. Edit here, run scripts/build.py. The domain is not bought yet: the addresses are placeholders. api_origin stays empty on GitHub Pages (disables the search-miss beacon). email_enabled=false until the domain and its role addresses exist: contact links fall back to GitHub issues.",
+  "email_enabled": false
+}

@@ -25,3 +25,15 @@ HP QuickSpecs (support.hp.com timed out; PDFs exist per product, per-SKU option 
 - Same family spans Lunar Lake and Arrow Lake with different weight, wifi, PCIe gen, Pluton, color, memory speed. Treat platform variant as its own level.
 - Hidden/unpublished officially: CPU PL1/PL2, panel vendor, per-port PD out and side, real TGP for some, SSD model/vendor. These need reviews (notebookcheck) as secondary evidence with provenance.
 - Unit traps: gamut NTSC vs sRGB vs P3; nits SDR vs HDR peak; Wh vs hours; GB vs GiB.
+
+## Zero-fill audit (A2, 2026-11-24): what PSREF publishes vs what we dropped
+- **We dropped it (fixed).** `mem.soldered`, `mem.slots`, `disp.panel_type`, `disp.nits_sdr`, `disp.refresh` (+ `mem.type`, `disp.resolution`)
+  all live inside PSREF multi-target cells (Display, Memory Slots, Memory; psref-mapping.yaml `maps_to` lists). The adapter emits each cell
+  once under one key (Display -> disp.size) and import.py only maps single-target columns, so the other targets were never claimed
+  (`unmapped` reason `psref_column_multi_target_needs_parser`), and the Memory Slots literal could not normalise to an object. Fix:
+  `import.py+psref-split@1` (crawler/adapters/_lcell.py), policy claim/psref-split@1.
+- **PSREF does not publish it.** Refresh rate is absent from ~25% of US Display cells (mostly 2020-23 FHD TN/IPS 60 Hz panels):
+  no 60 Hz is inferred. 23 Strix Halo rows state "Unified memory, 16-channel" / "LPDDR5X ... Unified Memory": neither slots nor
+  soldered is stated, so both stay empty. Dual-mode panels ("240Hz / 440Hz") carry no single refresh value. "(peak)"-only nits are not SDR.
+- **Agreement checks.** soldered rows: Max Memory == Memory size in 619 of 624 (5 rows have a family-level "64GB soldered" max on a 32GB MTM:
+  a PSREF cell inconsistency, left as published). socketed rows: max > size in 969, == size in 177 (fully populated slots, fine).

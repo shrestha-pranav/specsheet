@@ -1,0 +1,88 @@
+{"title": "Anker 735 Charger (Nano II 65W) GaN 3-port $25.99 at Amazon", "expect": "anker-a2667", "note": "alias; lookalike of 737 / Nano 3"}
+{"title": "Anker 715 Charger (Nano II 65W) USB-C fast charger $29.99", "expect": "anker-a2663", "note": "alias; 715 vs 735 share 'Nano II 65W'"}
+{"title": "Anker 511 Charger (Nano 3) 30W USB-C GaN Charger $12.99", "expect": "anker-a2147", "note": "v0 pilot alias"}
+{"title": "Anker 523 Charger (Nano 3, 47W) 2-Port USB-C $22.99", "expect": "anker-a2039", "note": "alias"}
+{"title": "Anker Prime Charger (100W, 3 Ports, GaN) A2688 - $59.99 at Best Buy", "expect": "anker-a2688", "note": "model number"}
+{"title": "Anker Prime 160W 3-port charger with smart display for $79", "expect": "anker-a2687", "note": "brand + marketing name"}
+{"title": "Anker Prime Charger 200W 6-Port GaN desktop charger", "expect": "anker-a2683", "note": "alias without brackets"}
+{"title": "Anker Prime Charger (250W, 6 Ports, GaNPrime) $129.99", "expect": "anker-a2345", "note": "alias"}
+{"title": "Anker Nano Charger 70W 3 Ports USB-C GaN Wall Charger", "expect": "anker-a121a", "note": "alias; id kept from v0 (B121A)"}
+{"title": "Anker Nano Charger (30W) A2147 USB-C Charger, Pink", "expect": "anker-a2147", "note": "model number + colour"}
+{"title": "Anker 360 Charger (60W) 6-Port USB Desktop Charging Station", "expect": "anker-a2123", "note": "alias"}
+{"title": "Anker A121D Nano Charger 45W with Smart Display, foldable", "expect": "anker-a121d", "note": "model number"}
+{"title": "Anker Prime 67W GaN Wall Charger (3 Ports) A2669", "expect": "anker-a2669", "note": "model number"}
+{"title": "Belkin BoostCharge Pro 108W 4-Port GaN Charger WCH010 $49", "expect": "belkin-wch010", "note": "model number"}
+{"title": "Belkin BoostCharge Pro 65W Dual USB-C GaN Wall Charger $34.99 at Target", "expect": "belkin-wch013", "note": "exact name (BBC013 is the Amazon-channel twin)"}
+{"title": "Belkin UltraCharge 67W Retractable USB-C GaN Wall Charger", "expect": "belkin-wch022", "note": "alias"}
+{"title": "Belkin BoostCharge 37W Dual Car Charger with PPS CCB004 $14.99", "expect": "belkin-ccb004", "note": "car charger, model number"}
+{"title": "Belkin 200W 4-Port USB-C GaN Charger WCH015 - $89.99", "expect": "belkin-wch015", "note": "model number"}
+{"title": "UGREEN Nexode Pro 100W 3-Port Charger $39.99", "expect": "ugreen-15202", "note": "alias"}
+{"title": "UGREEN Nexode 500W 6-Port Desktop Charger 55549 $299", "expect": "ugreen-55549", "note": "item number with brand"}
+{"title": "UGREEN Nexode 100W 4-Port GaN Charger 40737 Amazon lightning deal", "expect": "ugreen-40737", "note": "item number"}
+{"title": "UGREEN Uno 100W 4-Port Charger robot face display", "expect": "ugreen-45514", "note": "alias"}
+{"title": "AUKEY Omnia II Mix 140W PA-B7O Wall Charger $45.99", "expect": "aukey-pa-b7o", "note": "model in title"}
+{"title": "AUKEY Swift 20W PD Wall Charger PA-F7T 2 for $15", "expect": "aukey-pa-f7t", "note": "model in title"}
+{"title": "Choetech PD6011 67W GaN charger dual USB-C foldable", "expect": "choetech-pd6011", "note": "model number"}
+{"title": "Satechi 165W USB-C 4-Port PD GaN Charger ST-UC165GM", "expect": "satechi-st-uc165gm", "note": "SKU = model"}
+{"title": "Native Union Fast GaN Charger PD 100W $59.99", "expect": "native-union-fast-pd100", "note": "alias"}
+{"title": "mophie speedport 67W wall charger, $24.99", "expect": "mophie-409919993", "note": "alias, no model number printed by mophie"}
+{"title": "HyperJuice Next 140W 4-Port GaN Wall Charger HJ1402NA", "expect": "hyper-hj1402", "note": "HJ1402NA = NA-plug SKU of HJ1402 (brand + marketing)"}
+{"title": "Anker 737 Charger (GaNPrime 120W) 3-Port $59.99", "expect": null, "note": "lookalike: 737 not in catalogue"}
+{"title": "Anker Nano II 65W USB-C Charger $27", "expect": null, "note": "ambiguous: 715 and 735 are both Nano II 65W"}
+{"title": "Anker 711 Charger (Nano II 30W) $15.99", "expect": null, "note": "lookalike of A2147 Nano 30W; 711/Nano II not in catalogue"}
+{"title": "Anker 727 Charging Station (GaNPrime 100W)", "expect": null, "note": "not in catalogue"}
+{"title": "Anker 323 Car Charger (52.5W) $9.99", "expect": null, "note": "A2735/B2735 preview-only twins"}
+{"title": "Belkin 65W Dual USB-C GaN Charger $29.99", "expect": null, "note": "ambiguous: BBC013 / WCH013 / ENA007"}
+{"title": "Belkin 45W USB-C charger", "expect": null, "note": "too generic"}
+{"title": "Apple 20W USB-C Power Adapter MHJA3AM/A $15.99", "expect": null, "note": "brand not in charger catalogue"}
+{"title": "Samsung 45W Power Adapter EP-T4510 Super Fast Charging 2.0", "expect": null, "note": "not in catalogue"}
+{"title": "UGREEN Nexode Air USB-C Charger 65W GaN Foldable Plug", "expect": null, "note": "lookalike: Air 65W page has no single item number"}
+{"title": "Baseus GaN5 Pro 65W 3-Port Charger $25.99", "expect": null, "note": "Baseus not built"}
+{"title": "Spigen ArcStation Pro 45W wall charger PE2104", "expect": null, "note": "v0-only, retired"}
+{"title": "Anker Nano Power Bank (30W, Built-In USB-C Cable) 10000mAh $19.99", "expect": "anker-a1259", "note": "alias"}
+{"title": "Anker Prime Power Bank (9.6K, 65W, Fusion) $69.99", "expect": "anker-a1339", "note": "alias"}
+{"title": "UGREEN Nexode Power Bank 20000mAh 100W 25188 $45.99", "expect": "ugreen-25188", "note": "item number"}
+{"title": "INIU Carry Power Bank 20000mAh 20W P51L-P1", "expect": "iniu-p51l-p1", "note": "model number"}
+{"title": "Anker MagGo Power Bank (10K, Slim) Qi2 magnetic $39.99", "expect": "anker-a1664", "note": "alias"}
+{"title": "Anker 737 Power Bank (PowerCore 24K) 140W $79.99", "expect": "anker-a1289", "note": "737 power bank vs 737 charger"}
+{"title": "Belkin UltraCharge Pro Power Bank 10K 60W BPB044", "expect": "belkin-bpb044", "note": "model number"}
+{"title": "Anker Prime Power Bank (26K, 300W) $129.99 at Amazon", "expect": "anker-a110a", "note": "alias"}
+{"title": "Anker 737 Power Bank (PowerCore 26K) $59", "expect": null, "note": "lookalike: 26K is a different 737 bank"}
+{"title": "Samsung 990 PRO 2TB NVMe SSD MZ-V9P2T0B/AM $129.99 at Best Buy", "expect": "samsung-mz-v9p2t0b-am", "note": "SKU (catalogue name says 1 TB: data issue)"}
+{"title": "WD_BLACK SN7100 1TB NVMe Gen4 SSD WDS100T4X0E $69.99", "expect": "western-digital-wds100t4x0e", "note": "SKU"}
+{"title": "SanDisk 2TB Extreme PRO Portable SSD V2 SDSSDE81-2T00-G25", "expect": "western-digital-sdssde81-2t00-g25", "note": "SKU with dashes"}
+{"title": "Samsung T7 Shield 4TB Portable SSD Beige MU-PE4T0S/AM", "expect": "samsung-mu-pe4t0s-am", "note": "SKU"}
+{"title": "Samsung 990 EVO Plus 4TB PCIe Gen4 SSD MZ-V9S4T0B/AM", "expect": "samsung-mz-v9s4t0b-am", "note": "SKU, capacity lookalike of 1TB/2TB"}
+{"title": "Samsung 980 PRO 2TB NVMe SSD $119", "expect": null, "note": "no SKU; catalogue names carry no reliable capacity"}
+{"title": "Crucial T705 2TB PCIe Gen5 NVMe SSD", "expect": null, "note": "brand not in catalogue"}
+{"title": "TEAMGROUP T-Force CARDEA A440 PRO 4TB M.2 SSD TM8FPR004T0C129", "expect": "team-tm8fpr004t0c129", "note": "SKU"}
+{"title": "LG 27G81ZA 27\" UltraGear OLED Gaming Monitor $599", "expect": "lg-27g81za", "note": "model"}
+{"title": "ASUS ProArt Display PA32UCXR 32\" 4K Mini LED monitor", "expect": "asus-pa32ucxr", "note": "model; lookalike of PA32UCX"}
+{"title": "ASUS ProArt PA32UCX 32-inch 4K HDR monitor", "expect": "asus-pa32ucx", "note": "model; not PA32UCX-PK / PA32UCXR"}
+{"title": "BenQ MA320UG 32-inch 4K monitor for Mac $699", "expect": "benq-ma320ug", "note": "model"}
+{"title": "Acer EK241Y 23.8\" Full HD 100Hz monitor $79.99 at Walmart", "expect": "acer-ek241y", "note": "model"}
+{"title": "Lenovo Legion 27U-20 Monitor 68A3GAC3US", "expect": "lenovo-68a3gac3us", "note": "MTM"}
+{"title": "Dell 32 Plus 4K Monitor S3225QS", "expect": null, "note": "not in catalogue"}
+{"title": "Samsung 55\" S90H OLED 4K TV QN55S90HAE $1,099 at Best Buy", "expect": "samsung-qn55s90hae", "note": "model"}
+{"title": "LG 75 inch UA7100 4K Smart TV 75UA7100AUB $449", "expect": "lg-75ua7100aub", "note": "model"}
+{"title": "TCL 115\" QM8 QD-Mini LED 115QM891G Google TV", "expect": "tcl-115qm891g", "note": "model"}
+{"title": "LG 98 Inch Class UT9000 4K TV 98UT9000PUA", "expect": "lg-98ut9000pua", "note": "model"}
+{"title": "LG OLED55C8AUA 55\" C8 OLED TV", "expect": "lg-oled55c8aua", "note": "model"}
+{"title": "LG 65UT7550AUA 65 inch UHD TV webOS 24", "expect": "lg-65ut7550aua", "note": "model; lookalike 55UT7550AUA"}
+{"title": "Sony BRAVIA 7 65\" K-65XR70 Mini LED TV", "expect": null, "note": "brand not in catalogue"}
+{"title": "LG 65\" C4 OLED evo TV", "expect": null, "note": "no model number; series not specific enough"}
+{"title": "Anker Nano 3 30W USB-C charger (511) – $12.99", "expect": "anker-a2147", "note": "deal shorthand"}
+{"title": "Anker Prime 100W GaN Charger 3-Port USB-C $54.99", "expect": "anker-a2688", "note": "shorthand, brand + marketing"}
+{"title": "Anker Charger 140W 4-Port PD 3.1 USB-C GaN", "expect": "anker-a2697", "note": "shorthand; id kept from v0 (B2697)"}
+{"title": "Anker Prime Charger (100W, 2 Ports)", "expect": null, "note": "lookalike: port count differs"}
+{"title": "Anker Nano Charger 65W USB-C", "expect": null, "note": "ambiguous Nano II 65W pair, no number"}
+{"title": "Belkin 108W 4-port GaN charger $59.99", "expect": "belkin-wch010", "note": "shorthand without line name (expected miss is acceptable)"}
+{"title": "UGREEN 100W USB C Charger, Nexode 4-Port GaN Fast Charger", "expect": "ugreen-40737", "note": "reordered alias"}
+{"title": "UGREEN 65W USB C Charger Nexode 3 Port GaN Fast Charger", "expect": "ugreen-10334", "note": "reordered alias; not Pro / Air"}
+{"title": "Satechi 200W USB-C 6-Port GaN Charger (Space Gray)", "expect": "satechi-st-c200gm", "note": "alias"}
+{"title": "mophie speedport 30W wall charger", "expect": null, "note": "wattage lookalike: no 30W speedport"}
+{"title": "Samsung 990 PRO 4TB NVMe SSD $279.99", "expect": "samsung-mz-v9p4t0b-am", "note": "no SKU; catalogue names say 1 TB (expected miss)"}
+{"title": "LG UltraGear 27GS95QE-B 27\" OLED 240Hz", "expect": "lg-27gs95qe-b", "note": "model with suffix"}
+{"title": "TP-Link Archer AX55 Pro WiFi 6 router $99", "expect": "tp-link-archer-ax55-pro", "note": "router lookalike: Pro"}
+{"title": "TP-Link Archer AX55 AX3000 WiFi 6 router", "expect": "tp-link-archer-ax55", "note": "router lookalike: not Pro"}
+{"title": "ASUS RT-AX88U Pro AX6000 router", "expect": "asus-rt-ax88u-pro", "note": "router model with Pro"}

@@ -1,0 +1,9 @@
+[Unit]
+Description=specsheet raw/ + sqlite backup to /mnt/hdd-3tb
+RequiresMountsFor=/mnt/hdd-3tb
+
+[Service]
+Type=oneshot
+ExecStart=%h/projects/specsheet/scripts/backup.sh
+Nice=15
+IOSchedulingClass=idle

@@ -56,6 +56,19 @@ def cert_out(ex, states):
     return [{k: c.get(k) for k in keep} for c in ex.get("certifications") or [] if c.get("status") in states]
 
 
+def shw_out(ex, states, files):
+    """r8 (scripts/xwalk.py): same_hardware_as evidence (ENERGY STAR declaration) of a declared alias entity or its certified base. Separate
+    entities, no merge; `transferred` = the certification keys copied over an approved edge."""
+    keep = ("relation", "role", "alias", "target", "alias_id", "record", "declaration", "date_certified", "method", "status", "decision", "transferred")
+    return [{k: x[k] for k in keep if k in x} for x in ex.get("same_hardware") or [] if x.get("status") in states
+            and (files is None or (x.get("target") or x.get("alias_id")) in files)]
+
+
+def cert_row(row):
+    """r8: compact row of the index-certonly shard (no status map, completeness or variant fields)."""
+    return dict({k: row[k] for k in ("id", "kind", "brand", "brand_id", "name", "ids", "search", "v", "lifecycle")}, scope="certification_only")
+
+
 def lookup_norm(scheme, v):
     return v if scheme == "gtin" else re.sub(r"[\s.\-]", "", v.upper())
 
@@ -226,6 +239,10 @@ def publish(api: Path, build_stats: dict):
         rows_p = [eid for eid in sorted(ents) if selectable(eid, preview[eid])]
         dropped_us = sum(1 for eid, e in ents.items() if e["kind"] != "family" and preview[eid] and not catmeta.passes_market_filter(cfg, idents[eid]))
         pub = set(rows_t)
+        # r8: profile index_rows. An entity whose trusted values are all certification keys keeps its detail file and lookup entries but is a
+        # row of the compact index-certonly shard, not of the default grid (catmeta.substantive_keys; None = no rule).
+        subst = cfg.get("substantive")
+        certonly = set() if subst is None else {eid for eid in rows_t if not any(has_value(r) for k, r in trusted[eid].items() if k in subst)}
         anc = set()
         for eid in rows_t:
             for r in (ents[eid]["parent_id"], ents[eid]["family_id"]):
@@ -316,7 +333,7 @@ def publish(api: Path, build_stats: dict):
                 row["review_scope"] = "preview"; row["in_trusted"] = eid in pub
             return row
 
-        out_rows, prev_rows, details, pdetails = [], [], {}, {}
+        out_rows, prev_rows, details, pdetails, cert_rows = [], [], {}, {}, []
         stats = collections.Counter()
         for eid in sorted(files_t):
             specs = {k: dict(v) for k, v in trusted[eid].items()}
@@ -344,11 +361,17 @@ def publish(api: Path, build_stats: dict):
             certs = cert_out(ex, ("approved",))
             if certs:
                 d["certifications"] = certs
+            shw = shw_out(ex, ("approved",), files_t)
+            if shw:
+                d["same_hardware"] = shw
+            if eid in certonly:
+                d["index_scope"] = "certification_only"
             if children.get(eid):
                 d["children"] = sorted(children[eid])
             details[eid] = d
             if eid in pub:
-                out_rows.append(row_of(eid, d, specs, "trusted"))
+                row = row_of(eid, d, specs, "trusted")
+                (cert_rows if eid in certonly else out_rows).append(cert_row(row) if eid in certonly else row)
                 for i in idents[eid]:
                     if i["valid"] and not i["disputed"] and i["scheme"] in ("mtm", "mfr_model", "mfr_sku", "gtin"):
                         lookup[f"{i['scheme']}:{lookup_norm(i['scheme'], i['value'])}"].add(eid)
@@ -381,8 +404,13 @@ def publish(api: Path, build_stats: dict):
             certs = cert_out(json.loads(ents[eid]["extra"] or "{}"), ("approved", "proposed"))
             if certs:
                 d["certifications"] = certs
+            shw = shw_out(json.loads(ents[eid]["extra"] or "{}"), ("approved", "proposed"), None)
+            if shw:
+                d["same_hardware"] = shw
             pdetails[eid] = d
             prev_rows.append(row_of(eid, d, specs, "preview"))
+            if eid in certonly:
+                prev_rows[-1]["certonly"] = True
             stats["preview_specs_delta"] += len(delta)
 
         validate_details(cat, list(details.values()) + list(pdetails.values()))
@@ -398,6 +426,12 @@ def publish(api: Path, build_stats: dict):
         for eid, d in pdetails.items():
             dump(pfolder / "products" / f"{eid}.json", d, compact=True)
         ppaths = write_shards(pfolder, prev_rows)
+        cert_entry = None
+        if subst is not None:
+            cpaths = write_shards(folder, cert_rows, "index-certonly")
+            cert_entry = {"index": [f"{cat}/{x}" for x in cpaths], "count": len(cert_rows), "certification_keys": sorted(fields.keys() - subst),
+                          "rule": "trusted record whose values are all certification / regulatory metadata (profile index_rows): in lookup and "
+                                  "products/, not a default index row"}
         # v0 compat: slim products.json (columns only) + fields the UI can drive
         compat_fields = [f for f in sch["fields"] if f["column"]]     # columns only (size budget: the UI reads index shards; this file is a v0 fallback)
         v0f = [{"key": f["key"], "label": f["label"], "group": f["group"], "type": V0_TYPE.get(f["type"], f["type"]) if f["type"] != "list" else "list", "unit": f["unit"],
@@ -419,12 +453,12 @@ def publish(api: Path, build_stats: dict):
                       "products": f"preview/{cat}/products/", "only_preview": sum(1 for r in prev_rows if not r["in_trusted"])}
         categories.append({"id": cat, "name": cfg["name"], "description": cfg["description"].strip(), "count": len(out_rows), "demo": False, "status": "accepted",
                            "schema": f"{cat}/schema.json", "index": [f"{cat}/{x}" for x in paths], "facets": f"{cat}/facets.json", "products": f"{cat}/products.json",
-                           "fields": v0f, "preview": prev_entry})
+                           "fields": v0f, "preview": prev_entry, **({"certification_only": cert_entry} if cert_entry else {})})
         manifest_cats.append({"id": cat, "schema_version": sch["schema_version"], "count": len(out_rows), "index": [f"{cat}/{x}" for x in paths], "facets": f"{cat}/facets.json",
-                              "demo": False, "preview": prev_entry})
+                              "demo": False, "preview": prev_entry, **({"certification_only": cert_entry} if cert_entry else {})})
         build_stats[cat] = {"rows": len(out_rows), "detail_files": len(details), "ancestor_only": len(anc), "us_filter_dropped": dropped_us, "shards": len(paths),
                             "preview_rows": len(prev_rows), "preview_only": prev_entry["only_preview"], "parent_cycles": len(cyc), "spec_status": dict(stats),
-                            "kinds": dict(collections.Counter(r["kind"] for r in out_rows))}
+                            "kinds": dict(collections.Counter(r["kind"] for r in out_rows)), "certonly_rows": len(cert_rows)}
     dump(api / "lookup" / "identifiers.json", {k: sorted(v) for k, v in sorted(lookup.items())}, compact=True)
     tomb = ROOT / "data" / "_ids" / "tombstones.jsonl"
     red = {}
@@ -441,7 +475,7 @@ def publish(api: Path, build_stats: dict):
     return categories, manifest_cats, release
 
 
-def write_shards(folder, rows):
+def write_shards(folder, rows, stem="index"):
     rows.sort(key=lambda r: (r["brand"], r["name"], r["id"]))
     shards, cur, size = [], [], 0
     for r in rows:
@@ -450,7 +484,7 @@ def write_shards(folder, rows):
             shards.append(cur); cur, size = [], 0
         cur.append(r); size += b
     shards.append(cur)
-    paths = ["index.json"] if len(shards) == 1 else [f"index-{n}.json" for n in range(len(shards))]
+    paths = [f"{stem}.json"] if len(shards) == 1 else [f"{stem}-{n}.json" for n in range(len(shards))]
     for pth, rws in zip(paths, shards):
         dump(folder / pth, rws, compact=True)
     return paths

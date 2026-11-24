@@ -1,0 +1,26 @@
+{
+  "_why": "Paid-tier artifacts (R2) omit anything research/data-licensing.md marks 'exclude/unclear'. Free static JSON on GH Pages is unaffected. Edit this file, rebuild with scripts/build_r2.py. Domains match exactly or as a parent domain.",
+  "exclude_categories": ["power-strips-demo"],
+  "exclude_demo_records": true,
+  "drop_record_fields": ["media"],
+  "exclude_source_domains": [
+    "psref.lenovo.com",
+    "displayhdr.org",
+    "on.dcl.csa-iot.org",
+    "iniushop.com",
+    "www.amazon.com",
+    "www.bhphotovideo.com",
+    "slickdeals.net",
+    "www.notebookcheck.net",
+    "www.techradar.com",
+    "www.androidauthority.com",
+    "www.gizmochina.com",
+    "the-gadgeteer.com",
+    "9to5toys.com",
+    "www.chargerlab.com",
+    "switchchargers.com",
+    "smartgadgetkit.com",
+    "furper.com",
+    "en.best-batteries.com"
+  ]
+}
