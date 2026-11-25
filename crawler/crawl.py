@@ -35,6 +35,18 @@ IMG_EXT = re.compile(r"\.(jpe?g|png|webp|avif|gif)(\?|$)", re.I)
 
 
 # ---------------------------------------------------------------- HTTP with per-host politeness
+_POLICY = []
+
+
+def crawl_mode(url):
+    """agent | human_only | none from data/source-policy.yaml (scripts/source_policy.py, the one policy reader)."""
+    if not _POLICY:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import source_policy
+        _POLICY.append(source_policy.load())
+    return _POLICY[0].crawl(url)
+
+
 class Net:
     def __init__(self):
         self.s = requests.Session()
@@ -67,6 +79,8 @@ class Net:
             lock = self.locks.setdefault(h, threading.Lock())
         if self.fails.get(h, 0) >= 15:
             return None
+        if crawl_mode(url) != "agent":       # D9: a crawl: human_only / none host is never fetched by an agent (data/source-policy.yaml)
+            return "policy"
         if not self.allowed(url):
             return "robots"
         for attempt in range(4):

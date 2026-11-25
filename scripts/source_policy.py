@@ -7,6 +7,7 @@
   Policy.disposition(url)            {free, paid, licence_grant, withhold_keys, domain, listed}
   Policy.gate(record, tier)          published record -> gated record | None (tier: free | paid)
   Policy.gate_spec(key, spec, tier, url_of, support)   one resolved spec (used by v1_publish before the source table is remapped)
+  Policy.crawl(url)                  agent | human_only | none: may OUR crawler fetch this host (D9, policy 2026-11-25.1)
   python3 -I scripts/source_policy.py [check|unlisted DOCS_API]
 
 Gate semantics (per value, per tier): a source the tier disallows, or whose `withhold_keys` contains the key, is removed. The value is
@@ -15,6 +16,11 @@ claims; without `support` the spec's sources[] are trusted to list supporters on
 becomes {status: not_published, value: null, sources: []}. A record none of whose own sources is allowed is omitted from the tier.
 Every kept sources[] entry carries licence_grant (a value is under our grant iff one of its sources has licence_grant: true).
 Expression guard: string values carrying markup or URLs (copied page text) are never published, names lose markup.
+
+Crawl permission (D9, 2026-11-25.1) is separate from publication: `crawl: agent` = our crawler may fetch it (robots still apply), `human_only` =
+agents never fetch it, a person may read it and cite it through the corrections flow (D9.2), `none` = excluded (nobody cites it; requires
+free: false). Absent = agent (a listed maker/government host, unchanged). Kind `measurement` = an independent measuring source (D10): it must
+state `crawl`, and its values are free, linked facts only (paid and licence_grant false).
 """
 import copy, hashlib, json, os, re, sys, urllib.parse
 from collections import Counter, defaultdict
@@ -30,7 +36,10 @@ TOP_KEYS = {"policy_version", "changelog", "defaults", "record_rules", "sources"
 DEFAULT_KEYS = {"unlisted", "fail_release_on_unlisted"}
 RULE_KEYS = {"drop_record_fields", "exclude_demo_records", "exclude_categories", "withheld_status"}
 SOURCE_KEYS = {"domain", "match", "kind", "credit", "free", "paid", "licence_grant", "evidence", "withhold_keys", "categories", "conditions",
-               "to_clear", "audit_ref", "inherit"}
+               "to_clear", "audit_ref", "inherit", "crawl", "path"}
+KINDS = {"government", "certification", "maker", "retail_or_review", "document_host", "measurement", "crowd"}
+MATCH = ("exact", "subdomains", "path_prefix")     # path_prefix (corrections flow, 2026-11-25.2): `path` under the domain or a subdomain of it
+CRAWL = ("agent", "human_only", "none")
 EVIDENCE_KEYS = {"level", "refs", "checked", "note"}
 LEVELS = {"fetched", "search", "blocked", "none"}
 FLAGS = ("free", "paid", "licence_grant")
@@ -116,14 +125,30 @@ def validate(doc):
         bad += [f"{tag}: unknown key {k!r}" for k in sorted(set(s) - SOURCE_KEYS)]
         if not dom or "/" in dom or ":" in dom:
             bad.append(f"{tag}: domain must be a bare hostname")
-        if dom in seen:
-            bad.append(f"{tag}: duplicate domain (also sources[{seen[dom]}])")
-        seen.setdefault(dom, i)
-        if s.get("match", "exact") not in ("exact", "subdomains"):
-            bad.append(f"{tag}: match must be exact|subdomains")
+        sk = dom + (str(s.get("path")) if s.get("match") == "path_prefix" else "")
+        if sk in seen:
+            bad.append(f"{tag}: duplicate domain (also sources[{seen[sk]}])")
+        seen.setdefault(sk, i)
+        if s.get("match", "exact") not in MATCH:
+            bad.append(f"{tag}: match must be exact|subdomains|path_prefix")
+        if (s.get("match") == "path_prefix") != ("path" in s) or ("path" in s and not re.fullmatch(r"/[^\s?#]+", str(s["path"]))):
+            bad.append(f"{tag}: match: path_prefix needs path: /<prefix> (and path is only valid with path_prefix)")
+        if s.get("kind") == "crowd" and s.get("match") != "path_prefix":
+            bad.append(f"{tag}: a crowd source is a path on a host (the repository's issues), match: path_prefix")
+        if s.get("kind") not in KINDS:
+            bad.append(f"{tag}: kind must be one of {sorted(KINDS)}")
+        if "crawl" in s and s["crawl"] not in CRAWL:
+            bad.append(f"{tag}: crawl must be agent|human_only|none")
         if not all(isinstance(s.get(f), bool) for f in FLAGS):
             bad.append(f"{tag}: free, paid and licence_grant must all be true|false")
             continue
+        if s.get("crawl") == "none" and s["free"]:
+            bad.append(f"{tag}: crawl: none is an excluded source and needs free: false")
+        if s.get("kind") == "measurement":
+            if "crawl" not in s:
+                bad.append(f"{tag}: a measurement source must state crawl: agent|human_only|none")
+            if s["paid"] or s["licence_grant"]:
+                bad.append(f"{tag}: measured third-party values are free linked facts only (D10): paid and licence_grant must be false")
         if s["licence_grant"] and not s["free"]:
             bad.append(f"{tag}: licence_grant without free")
         if s["paid"] and not s["licence_grant"]:
@@ -161,9 +186,14 @@ class Policy:
         self.exclude_demo = bool(rr.get("exclude_demo_records", True))
         self.exclude_categories = set(rr.get("exclude_categories") or [])
         self.withheld_status = rr.get("withheld_status") or "not_published"
-        self.exact, self.subs = {}, {}
+        self.exact, self.subs, self.paths = {}, {}, defaultdict(list)
         for s in doc.get("sources") or []:
+            if s.get("match") == "path_prefix":
+                self.paths[s["domain"].lower().rstrip(".")].append(s)
+                continue
             (self.subs if s.get("match") == "subdomains" else self.exact)[s["domain"].lower().rstrip(".")] = s
+        for v in self.paths.values():
+            v.sort(key=lambda s: -len(s["path"]))
         self._cache = {}
         self.unlisted = defaultdict(Counter)      # host -> {values, sources, documents} cited in what was published
 
@@ -177,6 +207,25 @@ class Policy:
             if s is not None:
                 return s
         return None
+
+    def entry_for(self, url):
+        """Entry for a full URL: a `path_prefix` entry of the host (or a parent domain) whose path prefixes the URL path wins over the
+        host entry (github.com/<repo>/issues is crowd; techpowerup.com/ssd-specs/ is excluded while its reviews are not)."""
+        h = host_of(url)
+        if not h:
+            return None
+        if self.paths:
+            try:
+                path = urllib.parse.urlsplit(str(url)).path or "/"
+            except ValueError:
+                path = "/"
+            parts = h.split(".")
+            for i in range(len(parts)):
+                for s in self.paths.get(".".join(parts[i:]), ()):
+                    pre = s["path"].rstrip("/")
+                    if path == pre or path.startswith(pre + "/"):
+                        return s
+        return self.entry(h)
 
     @staticmethod
     def split_ref(ref):
@@ -196,7 +245,7 @@ class Policy:
         url, lf = self.split_ref(url)
         linked_from = linked_from or lf
         h = host_of(url)
-        s = self.entry(h) if h else None
+        s = self.entry_for(url) if h else None
         if s is not None and s.get("kind") == "document_host" and linked_from:
             ph = host_of(linked_from)
             ps = self.entry(ph) if ph else None
@@ -208,14 +257,20 @@ class Policy:
                     d = dict(base, host=h, domain=s["domain"], listed=base["listed"], inherited_from=base["host"])
                     self._cache[ck] = d
                 return d
-        d = self._cache.get(h)
+        ck = (h, s["path"]) if s is not None and s.get("match") == "path_prefix" else h
+        d = self._cache.get(ck)
         if d is None:
             base = s if s is not None else self.unlisted_default
             d = {"free": base["free"], "paid": base["paid"], "licence_grant": base["licence_grant"],
                  "withhold_keys": list((s or {}).get("withhold_keys") or []), "domain": s["domain"] if s else None, "listed": s is not None,
                  "host": h}
-            self._cache[h] = d
+            self._cache[ck] = d
         return d
+
+    def crawl(self, url):
+        """agent | human_only | none for the host of url (subdomain match as disposition). Unlisted = agent (robots.txt still governs)."""
+        s = self.entry_for(self.split_ref(url)[0])
+        return (s or {}).get("crawl", "agent")
 
     def allowed(self, url, tier, key=None, linked_from=None):
         d = self.disposition(url, linked_from)
@@ -334,8 +389,8 @@ class Policy:
     def page_url(self, sources):
         """The record's own page: first source that is neither inherited (via) nor a document (linked_from) nor on a document host."""
         for s in sources or []:
-            e = self.entry(host_of(s.get("url")))
-            if not s.get("via") and not s.get("linked_from") and not (e and e.get("kind") == "document_host"):
+            e = self.entry_for(s.get("url"))
+            if not s.get("via") and not s.get("linked_from") and not s.get("evidence") and not (e and e.get("kind") in ("document_host", "crowd")):
                 return s.get("url")
         return None
 
@@ -415,6 +470,10 @@ class Policy:
             if not s.get("free"):
                 continue
             e = {"domain": s["domain"], "match": s.get("match", "exact"), "kind": s.get("kind"), "credit": s.get("credit") or s["domain"]}
+            if s.get("path"):
+                e["path"] = s["path"]
+            if s.get("crawl", "agent") != "agent":
+                e["crawl"] = s["crawl"]
             if s.get("categories"):
                 e["categories"] = s["categories"]
             if s.get("licence_grant"):

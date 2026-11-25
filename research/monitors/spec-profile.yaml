@@ -134,12 +134,15 @@ conditions:
   label: DisplayHDR CTS version
   type: text
 - id: basis
-  label: Evidence basis of a negative / zero value
+  label: Evidence basis of the value (negative by enumeration, or derived from a certification)
   type: enum
   enum:
   - complete_enumeration
+  - certification
   description: 'Coordinator ruling 1 (2026-11-24): a 0 / false written only because the maker''s own structured spec section enumerates
-    every port of that kind (the full input list) and the feature is not among them. The list is kept as raw.'
+    every port of that kind (the full input list) and the feature is not among them. The list is kept as raw. certification (D9/D10,
+    2026-11-25): a derived value that rests on a certification the maker prints, under the certifier''s published criteria (the claim''s
+    locator names the rule and the certificate reference).'
 groups:
 - id: general
   label: General & identity
@@ -1230,14 +1233,23 @@ specs:
   level: model
   traps:
   - '''Flicker-free'' certs (TUV) may be at default brightness only; measured by RTINGS'
+  - 'TÜV Eye Comfort 1-4 stars = "Flicker reduced", not flicker free: only the 5-star level maps (derive/tuv-eye-comfort-5star@1,
+    basis certification); 3-star, 4-star, unstarred and other 5-star TÜV marks (Native Gaming, Perceptual Color Volume) never map'
+  - 'User guides carry CRT boilerplate ("flat panel displays do not flicker the way CRTs do"): not a product claim, never maps'
   sources:
-  - RTINGS; Notebookcheck; TFTCentral
+  - Manufacturer spec page (Flicker-free statement); TÜV Rheinland Eye Comfort 5-star (derived, Certipedia 0217009904 star table);
+    Notebookcheck (measured, optical)
   example: none
   enum:
   - none
   - low-freq
   - high-freq
   - unknown
+  conditions:
+  - basis
+  - brightness_pct
+  basis_conditions:
+  - basis
 - key: flk.pwm_freq
   label: PWM frequency
   group: flicker

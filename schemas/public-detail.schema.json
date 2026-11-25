@@ -160,6 +160,15 @@
           "licence_grant": {
             "type": "boolean",
             "description": "data/source-policy.yaml: values citing this source are under our ODbL grant (true) or shown as facts with a link only (false)."
+          },
+          "evidence": {
+            "type": "string",
+            "pattern": "^https://",
+            "description": "Corrections flow (D9.2): the GitHub issue (or proposal file) whose reviewed evidence cites this page (E2 maker page, E3 measurement)."
+          },
+          "relicense": {
+            "const": false,
+            "description": "Crowd/correction-sourced values are excluded from any future alternative licence until the relicensing clause clears counsel (D9.2, Q1)."
           }
         },
         "not": {
@@ -534,6 +543,13 @@
         "certification_only"
       ],
       "description": "r8: present when the trusted record holds only certification / regulatory metadata (profile index_rows): the entity is in lookup and products/ and in <cat>/index-certonly*.json, not in the default index shards."
+    },
+    "corrections_pending": {
+      "type": "array",
+      "description": "PREVIEW ONLY (D9.2): open, unreviewed corrections. They publish no value, only the notice 'A correction is under review'. Trusted files never carry this field.",
+      "items": {"type": "object", "required": ["key", "ref"], "properties": {"key": {"type": "string"}, "ref": {"type": "string"}}}
     }
-  }
+  },
+  "if": {"properties": {"review_scope": {"const": "trusted"}}},
+  "then": {"not": {"required": ["corrections_pending"]}}
 }

@@ -10,12 +10,19 @@
 #   evidence       level: fetched | search | blocked | none, refs: [urls], checked: date. paid/licence_grant = yes
 #                  REQUIRES level fetched and a ref showing permission; the gate rejects the file otherwise.
 #   withhold_keys  [spec keys]  optional; these keys are withheld for this source in every tier (field-scope takedown)
-#   other keys     match (exact|subdomains), kind, credit, categories, conditions, to_clear, audit_ref. Anything else = invalid.
+#   crawl          agent|human_only|none (2026-11-25.1, D9): may OUR crawler fetch this host. agent = yes (robots.txt still applies);
+#                  human_only = agents never fetch it, a person may read and cite it (corrections flow, D9.2); none = excluded
+#                  (needs free: false). Absent = agent. Separate from publication (free/paid/licence_grant).
+#   kind           government | certification | maker | retail_or_review | document_host | measurement (independent measured
+#                  source, D10: must state crawl; paid and licence_grant false, values are free linked facts only)
+#   other keys     match (exact|subdomains), credit, categories, conditions, to_clear, audit_ref, inherit. Anything else = invalid.
 # Invariants enforced by the gate: licence_grant yes => free yes; paid yes => licence_grant yes.
 # Changing any disposition = bump policy_version (date.N), add a changelog line. Builds stamp the version into
 # manifest.json; a release refuses to promote with a policy version older than the one in git.
-policy_version: "2026-11-24.8"
+policy_version: "2026-11-25.2"
 changelog:
+  - {version: "2026-11-25.2", by: A3/A4 corrections flow, note: "D9.2 corrections. New match mode path_prefix (key path; matches the domain and its subdomains, longest prefix wins over the host entry) and kind crowd. Added github.com path /shrestha-pranav/specsheet/issues as crowd (E1/E4 contributor evidence: free yes, paid no; licence_grant NO until the owner approves the draft contributor-terms wording, Q1). Added techpowerup.com path /ssd-specs (excluded: free false, crawl none) so the SSD database is rejected while TechPowerUp reviews stay human_only."}
+  - {version: "2026-11-25.1", by: A3/A2 independent sources, note: "D9 dispositions (team/briefs/pm-2026-11-25-independent-sources-a2.md section 1). New key crawl (agent|human_only|none) and kind measurement (gate: scripts/source_policy.py validate + Policy.crawl). Added psrefstuff.lenovo.com, download.lenovo.com (maker, crawl agent), www.certipedia.com (certification, crawl agent, cert pages only). notebookcheck.net and chargerlab.com REPLACED (were retail_or_review, free false): now kind measurement, free true; notebookcheck crawl agent, chargerlab crawl human_only. Added measurement crawl human_only: tomshardware.com, techpowerup.com (whole domain: the gate matches hosts, not paths, so /ssd-specs/ links are rejected by the corrections flow), storagereview.com, tftcentral.co.uk, pcmonitors.info. Excluded (free false, crawl none): rtings.com, ssdwiki.com, hardware-corner.net, displayspecifications.com, monitornerds.com."}
   - {version: "2026-11-24.8", by: coordinator, note: "Codex review-6 fix 3: images.salsify.com reclassified maker -> document_host (inherit: linking_page); a shared CDN must not carry an unconditional disposition or act as an inheritance endpoint."}
   - {version: "2026-11-24.7", by: A2/A3 doc parsers r2, note: "Added images.teamgroupinc.com (TEAMGROUP's own spec-sheet PDF host, linked from www.teamgroupinc.com product pages; docspec@1 documents) with maker default disposition, same as www.teamgroupinc.com."}
   - {version: "2026-11-24.6", by: A3 document pipeline, note: "New kind document_host (inherit: linking_page): shared document CDNs carry the disposition of the maker page that linked the document (scripts/source_policy.py disposition(url, linked_from)); their own flags are the all-false fallback for a document with no linking page. Added cdn.shopify.com, cdn.shopifycdn.net and three per-customer CloudFront distributions seen hosting maker manuals (d2211byn0pk9fi, dix7fd4yse9rd, dz02g1kgtiysz). s3.belkin.com added as a Belkin maker host (maker default disposition)."}
@@ -73,6 +80,14 @@ sources:
      free: true, paid: false, licence_grant: false,
      evidence: {level: blocked, checked: 2026-11-24, refs: ["https://www.lenovo.com/us/en/legal/ (403 to automated fetch; search snippet: copying/redistribution needs prior written permission)"]},
      to_clear: "Written Lenovo permission (open-questions Q2)", audit_ref: "research/data-licensing.md#per-source (Lenovo PSREF row)"}
+  - {domain: psrefstuff.lenovo.com, match: exact, kind: maker, credit: "Lenovo PSREF datasheets", categories: [monitors, laptops], free: true, paid: false, licence_grant: false, crawl: agent,
+     evidence: {level: blocked, checked: 2026-11-25, refs: ["see psref.lenovo.com"]}, to_clear: "Lenovo permission (Q2)"}
+  - {domain: download.lenovo.com, match: exact, kind: maker, credit: "Lenovo user guides", categories: [monitors, laptops], free: true, paid: false, licence_grant: false, crawl: agent,
+     evidence: {level: blocked, checked: 2026-11-25, refs: ["robots: PDFs under /pccbbs/ allowed"]}}
+  - {domain: www.certipedia.com, match: exact, kind: certification, credit: "TÜV Rheinland Certipedia", free: true, paid: false, licence_grant: false, crawl: agent,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["https://www.certipedia.com/robots.txt (crawl-delay 10; /search disallowed)",
+       "https://www.certipedia.com/quality_marks/0217009904?locale=en (star table)"]},
+     conditions: ["Certificate pages only, ≥10 s between requests", "Never show the TÜV mark"], to_clear: "TÜV legal notice (imprint page unreadable to fetch)"}
   # Maker product pages: terms of use not audited. Shown free as facts + link; no grant, not paid.
   - {domain: www.lg.com, match: exact, kind: maker, credit: "LG official specification pages", categories: [monitors, tvs], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: www.asus.com, match: exact, kind: maker, credit: "ASUS official specification pages", categories: [laptops, monitors, routers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
@@ -117,17 +132,55 @@ sources:
   - {domain: www.hypershop.com, match: exact, kind: maker, credit: "HyperJuice (Targus) official specification pages", categories: [chargers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: us.narwal.com, match: exact, kind: maker, credit: "Narwal official specification pages", categories: [robot-vacuums], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: www.aukey.com, match: exact, kind: maker, credit: "AUKEY official specification pages", categories: [chargers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  # Independent measurement (D9/D10, 2026-11-25.1): free linked facts, never granted or sold. crawl says whether OUR agents may fetch them.
+  - {domain: notebookcheck.net, match: subdomains, kind: measurement, credit: "Notebookcheck (measured)", free: true, paid: false, licence_grant: false, crawl: agent,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["https://www.notebookcheck.net/Contact.270.0.html (quotes ≤100 words with visible link + name)",
+       "robots.txt: * disallows /nbcbattery/, /cdn-cgi/ only"]},
+     conditions: ["Name Notebookcheck and link the review on every value"]}
+  - {domain: chargerlab.com, match: subdomains, kind: measurement, credit: "ChargerLAB (measured)", free: true, paid: false, licence_grant: false, crawl: human_only,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["robots.txt: ClaudeBot/anthropic-ai/Claude-Web Disallow /; * Content-Signal ai-train=no, use=reference"]}}
+  - {domain: tomshardware.com, match: subdomains, kind: measurement, credit: "Tom's Hardware (measured)", free: true, paid: false, licence_grant: false, crawl: human_only,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["https://futureplc.com/terms-and-conditions-us/ (no robots/crawlers to extract data; linking allowed)"]}}
+  - {domain: techpowerup.com, match: subdomains, kind: measurement, credit: "TechPowerUp reviews (measured)", free: true, paid: false, licence_grant: false, crawl: human_only,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["robots.txt: Claude-User and anthropic-ai Disallow /; ClaudeBot/GPTBot group disallows /ssd-specs/; * header reserves AI use"]},
+     conditions: ["Reviews only. /ssd-specs/ (SSD database) is excluded: the gate matches hosts, not paths, so the corrections flow rejects /ssd-specs/ links"]}
+  - {domain: storagereview.com, match: subdomains, kind: measurement, credit: "StorageReview (measured)", free: true, paid: false, licence_grant: false, crawl: human_only,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["robots.txt allows *; terms: all rights reserved or none found (product/decisions.md D9)"]}, to_clear: "read terms"}
+  - {domain: tftcentral.co.uk, match: subdomains, kind: measurement, credit: "TFTCentral (measured)", free: true, paid: false, licence_grant: false, crawl: human_only,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["robots.txt allows *; terms: all rights reserved or none found (product/decisions.md D9)"]}, to_clear: "read terms"}
+  - {domain: pcmonitors.info, match: subdomains, kind: measurement, credit: "PCMonitors.info (measured)", free: true, paid: false, licence_grant: false, crawl: human_only,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["robots.txt allows *; terms: all rights reserved or none found (product/decisions.md D9)"]}, to_clear: "read terms"}
+  - {domain: techpowerup.com, match: path_prefix, path: /ssd-specs, kind: retail_or_review, free: false, paid: false, licence_grant: false, crawl: none,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["robots.txt: ClaudeBot/GPTBot group disallows /ssd-specs/; * header reserves AI use (product/decisions.md D9)"]},
+     conditions: ["Structured SSD database: excluded for agents and people alike (D9); TechPowerUp reviews keep the techpowerup.com entry above"]}
+  # Contributor evidence (D9.2, 2026-11-25.2): the issue itself is the source of an E1 label photo / E4 own measurement. E2/E3 corrections cite a
+  # maker / measurement page and take THAT domain's disposition. licence_grant moves to true (with these refs) once the owner approves the
+  # checkbox wording in .github/ISSUE_TEMPLATE/field-correction.yml (terms_version draft-2026-11-25); the relicensing clause is held for counsel.
+  - {domain: github.com, match: path_prefix, path: /shrestha-pranav/specsheet/issues, kind: crowd, credit: "Contributor evidence (GitHub issue)",
+     free: true, paid: false, licence_grant: false, crawl: human_only,
+     evidence: {level: fetched, checked: 2026-11-25, refs: [".github/ISSUE_TEMPLATE/field-correction.yml (contributor terms checkbox, DRAFT wording from product/decisions.md D9.2)"]},
+     conditions: ["Only E1/E4 claims with terms_ack cite this source", "No handle, name or email is stored; photos stay on GitHub (hash only)"],
+     to_clear: "Owner approves the contributor-terms wording (Q1); then a policy bump sets licence_grant: true"}
+  # Excluded (D9): nobody cites them, agents never fetch them.
+  - {domain: rtings.com, match: subdomains, kind: measurement, free: false, paid: false, licence_grant: false, crawl: none,
+     evidence: {level: search, checked: 2026-11-25, refs: ["paywalled since 2026 because of AI reuse [s]; terms URL 404 (product/decisions.md D9)"]}}
+  - {domain: ssdwiki.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, crawl: none,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["unsourced aggregator; self-contradicting on SN7100 DRAM (product/decisions.md D9)"]}}
+  - {domain: hardware-corner.net, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, crawl: none,
+     evidence: {level: none, checked: 2026-11-25, note: "aggregator, unsourced; a human may use it as a lead only (D9)"}}
+  - {domain: displayspecifications.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, crawl: none,
+     evidence: {level: none, checked: 2026-11-25, note: "aggregator, unsourced; a human may use it as a lead only (D9)"}}
+  - {domain: monitornerds.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, crawl: none,
+     evidence: {level: none, checked: 2026-11-25, note: "aggregator, unsourced; a human may use it as a lead only (D9)"}}
   # Retail, aggregators, reviews: editorial/retail content, low-tier evidence. Not used for any published value today.
   - {domain: amazon.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
   - {domain: bhphotovideo.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
   - {domain: slickdeals.net, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
-  - {domain: notebookcheck.net, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
   - {domain: techradar.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
   - {domain: androidauthority.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
   - {domain: gizmochina.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
   - {domain: the-gadgeteer.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
   - {domain: 9to5toys.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
-  - {domain: chargerlab.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
   - {domain: switchchargers.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
   - {domain: smartgadgetkit.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}
   - {domain: furper.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null, note: "third-party editorial/retail; never a source of record"}}

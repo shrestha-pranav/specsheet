@@ -1,27 +1,110 @@
-name: Correct a specification
-description: Report a field value with supporting evidence.
+name: Correct or fill a specification
+description: Fill or dispute one value, with evidence. A person reviews every correction before it is published.
 title: "Specification correction: "
 labels: [field-correction]
+# Corrections flow (product/decisions.md D9.2). scripts/corrections.py reads the `### <label>` headings of the rendered issue: keep the
+# labels below in step with FORM in that script. The contributor-terms wording is a DRAFT (terms_version draft-2026-11-25) pending owner
+# approval (open question Q1); change it only together with TERMS_VERSION in scripts/corrections.py.
 body:
   - type: markdown
     attributes:
-      value: "Review before submitting: GitHub issues are public. Include product information only. Opening this form does not submit a report."
+      value: |
+        **Text alone is not evidence. Photos stay on GitHub; we publish the value and a link to this issue.**
+        GitHub issues are public: include product information only, never personal details. We store no name, handle or email;
+        photos are recorded only as a fingerprint (hash). Opening this form does not submit anything.
   - type: textarea
     id: payload
     attributes:
       label: Catalogue field
-      description: Entity ID, field key, shown value, and dataset build supplied by the catalogue.
+      description: Entity id, field key, shown value and dataset build, filled in by the catalogue link. Leave as is.
     validations:
       required: true
-  - type: textarea
+  - type: input
     id: claimed_value
     attributes:
       label: Proposed value
+      description: The value as the evidence states it, with its unit (for example "45 W", "DDR4", "yes").
+    validations:
+      required: true
+  - type: dropdown
+    id: evidence_type
+    attributes:
+      label: Evidence type
+      options:
+        - "E1: photo of the product's own label, box or manual page (model number and fact in one frame)"
+        - "E2: maker page or document URL"
+        - "E3: independent measurement URL (a review site listed on our sources page)"
+        - "E4: my own measurement (meter or analyser photo plus method)"
     validations:
       required: true
   - type: input
     id: evidence_url
     attributes:
       label: Evidence URL
+      description: Required for E2 (the maker page or PDF) and E3 (the review page). Sites without a free disposition on our sources page are not accepted.
     validations:
-      required: true
+      required: false
+  - type: textarea
+    id: attachments
+    attributes:
+      label: Photos
+      description: Required for E1 and E4. Drag the photo(s) here. The model number and the fact must both be readable.
+    validations:
+      required: false
+  - type: dropdown
+    id: measurement_mode
+    attributes:
+      label: Measurement method
+      description: E3/E4 only.
+      options:
+        - "inspection: teardown or PCB photo"
+        - "optical: photodiode / oscilloscope flicker measurement"
+        - "advertised_by_device: USB-PD analyser readout of advertised PDOs"
+        - "sustained: power meter under sustained load"
+        - "peak: power meter, peak"
+        - "negotiated: negotiated contract read by a tester"
+    validations:
+      required: false
+  - type: input
+    id: conditions
+    attributes:
+      label: Conditions
+      description: Optional. Port, brightness, capacity, hardware revision, firmware; whatever the value depends on.
+    validations:
+      required: false
+  - type: textarea
+    id: applies_to
+    attributes:
+      label: Applies to (configurations)
+      description: Optional, for a family-wide fact. List the catalogue ids it applies to; nothing is implied for unlisted ones.
+    validations:
+      required: false
+  - type: input
+    id: extra_urls
+    attributes:
+      label: More evidence (second sample)
+      description: Optional. A family-wide measured fact needs two independent samples (or the maker statement below).
+    validations:
+      required: false
+  - type: input
+    id: single_design_url
+    attributes:
+      label: Maker statement that the line has one design
+      description: Optional. A maker page stating that every capacity or revision of the line uses the same design.
+    validations:
+      required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Contributor terms
+      description: "DRAFT wording, pending owner review (product/decisions.md D9.2)."
+      options:
+        - label: "I license this contribution under ODbL 1.0 (database) and DbCL 1.0 (contents). It is my own observation or a fact from the source I cite, and my photos stay mine: I only link them."
+          required: true
+  - type: checkboxes
+    id: coi
+    attributes:
+      label: Conflict of interest
+      options:
+        - label: "I work for or am paid by the maker. (Maker corrections are welcome, and are accepted with a maker page or document, E2.)"
+          required: false

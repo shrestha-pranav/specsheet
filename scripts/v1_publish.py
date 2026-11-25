@@ -232,6 +232,7 @@ def publish(api: Path, build_stats: dict, gate_out: dict | None = None):
         ents = {r["id"]: dict(r) for r in con.execute("SELECT * FROM entities WHERE category=?", (cat,))}
         idents, aliases, srcs, docs, rels = (collections.defaultdict(list) for _ in range(5))
         claims = collections.defaultdict(lambda: collections.defaultdict(list)); absn = collections.defaultdict(lambda: collections.defaultdict(list))
+        corr_ok, corr_src, corr_pending = (collections.defaultdict(set) for _ in range(3))
         for r in con.execute("SELECT i.* FROM identifiers i JOIN entities e ON e.id=i.entity_id WHERE e.category=?", (cat,)):
             idents[r["entity_id"]].append(dict(r))
         for r in con.execute("SELECT a.* FROM aliases a JOIN entities e ON e.id=a.entity_id WHERE e.category=?", (cat,)):
@@ -241,17 +242,31 @@ def publish(api: Path, build_stats: dict, gate_out: dict | None = None):
         links = {}
         if con.execute("SELECT 1 FROM sqlite_master WHERE name='source_links'").fetchone():     # document sources -> linking page (document_host policy)
             links = {(r["entity_id"], r["sid"]): r["linked_from"] for r in con.execute("SELECT * FROM source_links")}
+        evid = {}
+        if con.execute("SELECT 1 FROM sqlite_master WHERE name='source_evidence'").fetchone():     # corrections: the issue citing an E2/E3 page
+            evid = {(r["entity_id"], r["sid"]): r["evidence"] for r in con.execute("SELECT * FROM source_evidence")}
         for eid_, ss in srcs.items():
             for x in ss:
                 x["linked_from"] = links.get((eid_, x["sid"]))
+                x["evidence"] = evid.get((eid_, x["sid"]))
         for r in con.execute("SELECT r.* FROM relations r JOIN entities e ON e.id=r.entity_id WHERE e.category=?", (cat,)):
             rels[r["entity_id"]].append(dict(r))
         for r in con.execute("SELECT c.id, c.entity_id, c.mapped_key, c.status, c.kind, c.cond, c.mmode, c.norm_ok, c.norm_value, c.display, c.raw, c.source, "
                              "c.review, c.supersedes FROM claims c JOIN entities e ON e.id=c.entity_id WHERE e.category=? AND c.mapped_key IS NOT NULL", (cat,)):
+            if r["id"].startswith("c_corr_"):       # D9.2: a correction publishes only once a ledger line accepts it; open ones show a notice (preview)
+                (corr_ok if r["review"] == "accepted" else corr_src)[r["entity_id"]].add(r["source"])
+                if r["review"] != "accepted":
+                    if r["review"] == "candidate":
+                        corr_pending[r["entity_id"]].add((r["mapped_key"], r["id"].split("_")[2]))
+                    continue
             claims[r["entity_id"]][r["mapped_key"]].append({
                 "id": r["id"], "status": r["status"], "kind": r["kind"], "cond": json.loads(r["cond"] or "{}"), "mmode": r["mmode"], "ok": bool(r["norm_ok"]),
                 "value": json.loads(r["norm_value"]) if r["norm_value"] is not None else None, "nx": json.loads(r["display"]) if r["display"] else {},
                 "raw": r["raw"], "source": r["source"], "review": r["review"], "supersedes": r["supersedes"]})
+        for eid_, drop in corr_src.items():          # the source of an undecided/rejected correction is never listed
+            drop = drop - corr_ok[eid_]
+            if drop:
+                srcs[eid_] = [x for x in srcs[eid_] if x["sid"] not in drop]
         for r in con.execute("SELECT a.* FROM absences a JOIN entities e ON e.id=a.entity_id WHERE e.category=?", (cat,)):
             absn[r["entity_id"]][r["key"]].append(dict(r))
         for r in con.execute("SELECT d.* FROM documents d JOIN entities e ON e.id=d.entity_id WHERE e.category=?", (cat,)):
@@ -301,10 +316,16 @@ def publish(api: Path, build_stats: dict, gate_out: dict | None = None):
             if ents[eid]["parent_id"] in files_t:
                 children[ents[eid]["parent_id"]].append(eid)
 
+        def src_extra(s):
+            """linked_from (documents); evidence = the correction issue citing this page; crowd values are excluded from any future
+            alternative licence until the relicensing clause clears counsel (D9.2, Q1)."""
+            return dict(({"linked_from": s["linked_from"]} if s.get("linked_from") else {}), **({"evidence": s["evidence"]} if s.get("evidence") else {}),
+                        **({"relicense": False} if s["tier"] == "crowd" or s.get("evidence") else {}))
+
         def sources_for(eid, specs):
             """Own source table + one entry per ancestor source actually cited by an inherited spec (new local sid, ancestor's real URL)."""
             out = [dict({"id": s["sid"], "url": s["url"], "label": s["label"] or s["url"], "tier": s["tier"], "retrieved_at": s["retrieved_at"]},
-                        **({"linked_from": s["linked_from"]} if s.get("linked_from") else {})) for s in srcs[eid]]
+                        **src_extra(s)) for s in srcs[eid]]
             n, remap = len(out), {}
             for k, r in specs.items():
                 own = r.get("inherited_from")
@@ -317,7 +338,7 @@ def publish(api: Path, build_stats: dict, gate_out: dict | None = None):
                     if key not in remap and sid in table:
                         n += 1; remap[key] = f"s{n}"; s = table[sid]
                         out.append(dict({"id": remap[key], "url": s["url"], "label": s["label"] or s["url"], "tier": s["tier"], "retrieved_at": s["retrieved_at"], "via": own},
-                                        **({"linked_from": s["linked_from"]} if s.get("linked_from") else {})))
+                                        **src_extra(s)))
                     if key in remap:
                         new.append(remap[key])
                 specs[k] = dict(r, sources=new)
@@ -346,6 +367,7 @@ def publish(api: Path, build_stats: dict, gate_out: dict | None = None):
         def row_of(eid, d, specs, scope):
             e = ents[eid]
             v, s, x = {}, {}, {}
+            tier_of = {q["id"]: q.get("tier") for q in d["sources"]}
             for k in keep_vs:
                 r = specs.get(k)
                 if not r:
@@ -357,6 +379,17 @@ def publish(api: Path, build_stats: dict, gate_out: dict | None = None):
                     mb = {c: r["basis"][c] for c in method_keys.get(k, ()) if (r.get("basis") or {}).get(c) not in (None, METHOD_DEFAULTS[c])}
                     if mb:      # r6: the claim basis / operating mode of the headline value, same shape as the detail's specs[k].basis
                         x.setdefault(k, {})["basis"] = mb
+                    # D10: provenance of the headline (absent = maker/certified official) and disagreeing alternatives of another kind, so
+                    # presets break fill down by kind and a filter the alternative fails becomes "might match: sources disagree"
+                    pk = r.get("kind") or "official"
+                    tiers = {tier_of.get(q) for q in r.get("sources") or []}
+                    arith = pk == "derived" and (r.get("basis") or {}).get("basis") != "certification" and tiers <= {"manufacturer"}   # maker figures, rounded
+                    if (pk != "official" and not arith) or (pk == "official" and tiers == {"crowd"}):
+                        x.setdefault(k, {})["k"] = pk if pk != "official" else "label"
+                    alt = [{"v": a["value"], "k": a["kind"]} for a in r.get("alternatives") or [] if a.get("kind") != pk
+                           and json.dumps(a.get("value"), sort_keys=True) != json.dumps(r["value"], sort_keys=True)]
+                    if alt:
+                        x.setdefault(k, {})["alt"] = alt
                 elif r["status"] != "not_yet_extracted":
                     s[k] = r["status"]
             keyids = [f"{i['scheme']}:{i['value']}" for i in idents[eid] if i["valid"] and (i["role"] == "key" or i["scheme"] == "gtin")]
@@ -437,10 +470,12 @@ def publish(api: Path, build_stats: dict, gate_out: dict | None = None):
             srcs_out = sources_for(eid, specs)
             t = details.get(eid, {}).get("specs", {})
             delta = {k: specs[k] for k in sorted(specs) if json.dumps(t.get(k), sort_keys=True) != json.dumps(specs[k], sort_keys=True)}
-            if not delta and eid in pub:
+            if not delta and eid in pub and not corr_pending.get(eid):
                 continue
             d.update({"specs": delta, "sources": srcs_out, "trusted": eid in pub, "demo": False,
                       "notes": "PREVIEW: includes unreviewed candidate claims and proposed links. Not part of the trusted catalogue, facets or lookup."})
+            if corr_pending.get(eid):         # an open correction shows no value, only that it is under review (trusted files never carry it)
+                d["corrections_pending"] = [{"key": k, "ref": ref} for k, ref in sorted(corr_pending[eid])]
             certs = cert_out(json.loads(ents[eid]["extra"] or "{}"), ("approved", "proposed"))
             if certs:
                 d["certifications"] = certs

@@ -102,9 +102,13 @@
     const params = new URLSearchParams({template:'missing-product.yml',payload:JSON.stringify(payload)});
     return `${issueBase()}?${params}`;
   };
-  const correctionIssueUrl = (entityId, key, shownValue) => {
-    const payload = {entity_id:entityId,key,shown_value:shownValue,claimed_value:'',evidence_url:'',build:BUILD};
-    return `${issueBase()}?${new URLSearchParams({template:'field-correction.yml',payload:JSON.stringify(payload)})}`;
+  // Corrections flow (D9.2): the form (.github/ISSUE_TEMPLATE/field-correction.yml) asks for the value and the evidence; the payload only
+  // says which field. evidence_type prefills the form's dropdown where GitHub supports it.
+  const correctionIssueUrl = (entityId, key, shownValue, evidenceType = '') => {
+    const payload = {entity_id:entityId,key,shown_value:shownValue,build:BUILD};
+    const params = {template:'field-correction.yml',payload:JSON.stringify(payload)};
+    if (evidenceType) params.evidence_type = evidenceType;
+    return `${issueBase()}?${new URLSearchParams(params)}`;
   };
   const categories = () => categoriesPromise ||= getJson('api/v1/categories.json').then(items => {
     const visible = items.filter(item => item.id !== 'power-strips-demo');
@@ -177,7 +181,7 @@
     const category = categoryCache.get(categoryId) || {};
     return previewDetail(category, productId).then(delta => {
       if (delta && delta.trusted === false) return {...delta, previewOnly:true, previewSpecs:delta.specs};
-      return detailCache.get(key).then(trusted => ({...trusted, previewSpecs:delta?.specs || null, previewSources:delta?.sources || []}));
+      return detailCache.get(key).then(trusted => ({...trusted, previewSpecs:delta?.specs || null, previewSources:delta?.sources || [], corrections_pending:delta?.corrections_pending || []}));
     });
   };
   const parseRoute = () => {
@@ -265,6 +269,26 @@
   const basisLabels = {power_basis:{label:'Power basis',values:{energy_star_on_mode:'ENERGY STAR on-mode test',energy_star_sleep:'ENERGY STAR sleep-mode test'}}, cts_version:{label:'DisplayHDR CTS'}, cache_state:{label:'Cache state',values:{in_slc_cache:'in SLC cache'}}, claim_basis:{label:'Claim basis',values:{mfr_in_house_lab:'manufacturer in-house lab',mfr_unstated:'unstated',mfr_reported_certified:'manufacturer-reported certification',third_party_certified:'third-party certified',independent_measured:'independent measurement'}}, power_mode:{label:'Mode',values:{quiet:'quiet',standard:'standard',max:'max',unstated:'unstated'}}};
   const modeLabels = {negotiated:'negotiated', sustained:'sustained', peak:'peak', advertised_by_device:'advertised by device'};
   const kindLabels = {official:'Manufacturer-stated', measured:'Measured', derived:'Derived', reported:'Reported'};
+  // D10 provenance badge of one value (headline or alternative) from its kind and its cited sources. The tooltip gives method, conditions and links.
+  const sourceName = source => { const url = safeUrl(source.url); return (source.label || (url ? new URL(url).host : 'source')).replace(/\s*\((cited in )?correction [^)]*\)$/, ''); };
+  const provenance = (spec, sources = []) => {
+    const cited = (spec?.sources || []).map(id => (sources || []).find(source => source.id === id)).filter(Boolean);
+    const tiers = new Set(cited.map(source => source.tier));
+    const kind = spec?.kind || 'official';
+    const first = cited[0], date = (first?.retrieved_at || '').slice(0, 10);
+    let text;
+    if (kind === 'measured') text = tiers.has('crowd') && tiers.size === 1 ? 'Contributor measurement' : `Measured by ${first ? sourceName(first) : 'an independent source'}${date ? `, ${date}` : ''}`;
+    else if (kind === 'derived') text = spec?.basis?.basis === 'certification' ? `Derived from a certification${first ? ` printed by ${sourceName(first)}` : ''}` : `Derived from ${first ? sourceName(first) : 'stated figures'}`;
+    else if (kind === 'reported') text = `Reported by ${first ? sourceName(first) : 'a third party'}`;
+    else if (tiers.size === 1 && tiers.has('crowd')) text = 'Maker label (contributor photo)';
+    else if (cited.length && [...tiers].every(tier => tier === 'regulatory' || tier === 'certifier')) text = `Certified: ${sourceName(first)}`;
+    else text = 'Maker';
+    const tip = [spec?.measurement_mode ? `Method: ${modeLabels[spec.measurement_mode] || spec.measurement_mode}` : '', ...basisText(spec?.basis),
+      ...cited.map(source => `${sourceName(source)}${source.url ? ` <${source.url}>` : ''}${source.evidence ? ` (evidence: ${source.evidence})` : ''}`)].filter(Boolean).join('\n');
+    return {text, tip, cited, kind};
+  };
+  const provenanceBadge = (spec, sources) => { if (!spec || !['known', 'conflicted'].includes(spec.status) && !spec.kind) return ''; const p = provenance(spec, sources); const links = evidenceLinks(p.cited); return `<small class="prov-badge prov-${escapeHtml(p.kind)}" title="${escapeHtml(p.tip || p.text)}">${escapeHtml(p.text)}</small>${links.length ? ` <small class="value-note">${links.join(', ')}</small>` : ''}`; };
+  const evidenceLinks = (cited) => cited.filter(source => source.evidence && safeUrl(source.evidence)).map(source => `<a href="${escapeHtml(safeUrl(source.evidence))}" target="_blank" rel="noopener noreferrer">Correction evidence</a>`);
   const basisText = basis => Object.entries(basis || {}).map(([key, value]) => { const meta = basisLabels[key]; return `${meta?.label || key.replaceAll('_', ' ')}: ${key === 'cts_version' ? `v${value}` : (meta?.values?.[value] || String(value).replaceAll('_', ' '))}`; });
   const altSources = (item, sources) => (item.sources || []).map(id => (sources || []).find(source => source.id === id)).filter(Boolean).map(source => { const url = safeUrl(source.url); return url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.label || new URL(url).host)}</a>` : escapeHtml(source.label || 'Source'); });
   const alternativeItem = (item, field, sources) => {
@@ -272,11 +296,13 @@
     const shown = displayStructured(item.value, field) ?? escapeHtml(`${q ? `${q} ` : ''}${item.display || formatRaw(item.value, field)}`);
     const tags = [...basisText(item.basis), ...(item.measurement_mode ? [`Mode: ${modeLabels[item.measurement_mode] || item.measurement_mode}`] : [])];
     const links = altSources(item, sources);
-    return `<li class="alt-item"><strong class="alt-value">${shown}</strong> <span class="muted">${escapeHtml(kindLabels[item.kind] || 'Reported')}${tags.length ? ` · ${escapeHtml(tags.join(' · '))}` : ''}${links.length ? ` · ${links.join(', ')}` : ''}</span></li>`;
+    const prov = provenance(item, sources);
+    return `<li class="alt-item"><strong class="alt-value">${shown}</strong> <span class="muted"><span class="prov-badge prov-${escapeHtml(prov.kind)}" title="${escapeHtml(prov.tip || prov.text)}">${escapeHtml(prov.text)}</span>${tags.length ? ` · ${escapeHtml(tags.join(' · '))}` : ''}${links.length ? ` · ${links.join(', ')}` : ''}${evidenceLinks(prov.cited).length ? ` · ${evidenceLinks(prov.cited).join(', ')}` : ''}</span></li>`;
   };
   const valueWithContext = (spec, field, sources = []) => {
     const extra = [];
     const noHeadline = spec.status === 'unknown' && spec.alternatives?.length;
+    if (spec.status === 'known' && sources?.length && spec.sources?.length) extra.push(provenanceBadge(spec, sources));
     if (spec.inherited_from) extra.push(`<small class="value-note">From model ${escapeHtml(typeof spec.inherited_from === 'string' ? spec.inherited_from : spec.inherited_from.id || spec.inherited_from.name || JSON.stringify(spec.inherited_from))}</small>`);
     if (spec.status === 'known' && spec.basis && Object.keys(spec.basis).length) extra.push(`<small class="value-note">${escapeHtml(basisText(spec.basis).join(' · '))}</small>`);
     if (spec.revision_applicability) extra.push(`<small class="value-note revision-applicability">${spec.revision_applicability === 'all' ? 'Applies to all hardware revisions' : 'Revision not specified by source'}</small>`);
@@ -291,6 +317,8 @@
     if (!delta || record.previewOnly || (JSON.stringify([delta.value, delta.display, delta.qualifier]) === JSON.stringify([record.specs?.[key]?.value, record.specs?.[key]?.display, record.specs?.[key]?.qualifier]) && delta.status === record.specs?.[key]?.status)) return '';
     return `<div class="value-details preview-note candidate-value">${unreviewedBadge} ${displayValue(delta, field)}<div class="evidence-cell">${evidenceMarkup({sources:record.previewSources || [], record_format:true}, delta, {candidate:true})}</div></div>`;
   };
+  // D9.2: an open, unreviewed correction publishes no value, only this notice (it comes with the preview data).
+  const pendingCorrection = (record, key) => { const refs = (record.corrections_pending || []).filter(item => item.key === key).map(item => item.ref); if (!refs.length) return ''; return `<div class="correction-pending">${refs.map(ref => /^\d+$/.test(ref) ? `A correction is under review (<a href="https://github.com/${escapeHtml(SITE.repo)}/issues/${escapeHtml(ref)}" target="_blank" rel="noopener noreferrer">#${escapeHtml(ref)}</a>)` : `A correction is under review (proposal ${escapeHtml(ref)})`).join('<br>')}</div>`; };
   const errorPanel = (title, message, action = '<a href="#/">Return to catalogue</a>') => `<section class="state-panel" role="alert"><h1>${escapeHtml(title)}</h1><p>${escapeHtml(message)}</p><div class="inline-actions">${action}</div></section>`;
   const setLoading = (label) => { main.innerHTML = `<div class="loading" role="status">${escapeHtml(label)}</div>`; };
   const setTitle = (title) => { document.title = `${title} — ${SITE.brand}`; };
@@ -384,12 +412,24 @@
       + (scope.basis ? `<p class="preset-basis muted" title="${escapeHtml(title)}">${escapeHtml(firstSentence(scope.basis))}</p>` : '')
       + (notCovered ? `<p class="preset-notcovered muted">Not covered: ${escapeHtml(notCovered)}${(scope.not_covered || []).length > 4 ? ', …' : ''}.</p>` : '');
   };
-  const fillRequestUrl = preset => `${issueBase()}?${new URLSearchParams({title:`Data request: ${preset.gate.label} (${preset.category_name})`})}`;
+  // "Help fill this" opens the corrections form for the weakest key, with the preset's evidence type prefilled (D9.2).
+  const fillRequestUrl = preset => { const params = new URLSearchParams({template:'field-correction.yml', title:`Specification correction: ${preset.gate.label} (${preset.category_name})`, payload:JSON.stringify({category:preset.category, key:preset.gate.key, preset:preset.id, build:BUILD})}); if (preset.evidence_type) params.set('evidence_type', preset.evidence_type); return `${issueBase()}?${params}`; };
+  const KIND_WORDS = {official:'maker', label:'maker label (contributor photo)', derived:'derived', measured:'measured', reported:'reported'};
+  const kindBreakdown = preset => {
+    const key = (preset.gate.keys || []).find(item => item.key === preset.gate.key) || (preset.gate.keys || [])[0];
+    const parts = Object.entries(key?.by_kind || {}).filter(([, n]) => n);
+    const nonMaker = preset.gate.non_maker_brands || [];
+    if (!parts.length || (parts.length === 1 && parts[0][0] === 'official' && !nonMaker.length)) return '';
+    const order = ['official', 'label', 'derived', 'measured', 'reported'];
+    parts.sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0]));
+    return `<p class="preset-kinds muted" data-kinds>${escapeHtml(key.label)} known ${key.known.toLocaleString('en-US')}/${key.total.toLocaleString('en-US')}: ${parts.map(([kind, n]) => `${n.toLocaleString('en-US')} ${escapeHtml(KIND_WORDS[kind] || kind)}`).join(' · ')}</p>`
+      + (nonMaker.length ? `<p class="preset-nonmaker muted">Covered only by non-maker values: ${escapeHtml(nonMaker.map(item => `${item.brand} (${item.kinds.join(', ')})`).join(', '))}.</p>` : '');
+  };
   const presetCard = preset => {
     const gate = preset.gate, href = `#/category/${encoded(preset.category)}`;
-    if (!gate.passes) return `<article class="preset-card help" data-preset="${escapeHtml(preset.id)}"><h3>${escapeHtml(preset.title)}</h3><p class="preset-fill"><strong>Help fill this: ${gate.known} of ${gate.total} known</strong> for “${escapeHtml(gate.label)}” (${pct(gate.fill)}; needs ${pct(gate.min_fill)}${gate.min_brands && gate.scope && gate.fill >= gate.min_fill ? `, and ${gate.min_brands} brands with a value on every key` : ''}).</p>${scopeLines(preset)}${gate.missing_brands?.length ? `<p class="muted">No value yet for: ${escapeHtml(brandList(gate.missing_brands, gate.missing_brand_count))}.</p>` : ''}<p class="preset-links"><a data-request data-category="${escapeHtml(preset.category)}" href="${escapeHtml(fillRequestUrl(preset))}" target="_blank" rel="noopener noreferrer">Help fill this</a> <a href="${href}?preset=${encoded(preset.id)}">See what we have</a></p></article>`;
+    if (!gate.passes) return `<article class="preset-card help" data-preset="${escapeHtml(preset.id)}"><h3>${escapeHtml(preset.title)}</h3><p class="preset-fill"><strong>Help fill this: ${gate.known} of ${gate.total} known</strong> for “${escapeHtml(gate.label)}” (${pct(gate.fill)}; needs ${pct(gate.min_fill)}${gate.min_brands && gate.scope && gate.fill >= gate.min_fill ? `, and ${gate.min_brands} brands with a value on every key` : ''}).</p>${scopeLines(preset)}${kindBreakdown(preset)}${gate.missing_brands?.length ? `<p class="muted">No value yet for: ${escapeHtml(brandList(gate.missing_brands, gate.missing_brand_count))}.</p>` : ''}<p class="preset-links"><a data-request data-category="${escapeHtml(preset.category)}" href="${escapeHtml(fillRequestUrl(preset))}" target="_blank" rel="noopener noreferrer">Help fill this</a> <a href="${href}?preset=${encoded(preset.id)}">See what we have</a></p></article>`;
     const c = preset.count;
-    return `<article class="preset-card" data-preset="${escapeHtml(preset.id)}"><h3><a href="${href}?preset=${encoded(preset.id)}">${escapeHtml(preset.title)}</a></h3><p class="preset-fill"><strong>${c.matches} ${c.matches === 1 ? 'match' : 'matches'}</strong>${c.maybe ? `, ${c.maybe} more unknown, might match` : ''}</p><p class="muted">${gate.known} of ${gate.total} known for “${escapeHtml(gate.label)}” (${pct(gate.fill)})${gate.uncovered_brands?.length ? `. No value yet for ${escapeHtml(gate.uncovered_brands.map(item => item.brand).join(', '))}` : ''}.</p>${scopeLines(preset)}</article>`;
+    return `<article class="preset-card" data-preset="${escapeHtml(preset.id)}"><h3><a href="${href}?preset=${encoded(preset.id)}">${escapeHtml(preset.title)}</a></h3><p class="preset-fill"><strong>${c.matches} ${c.matches === 1 ? 'match' : 'matches'}</strong>${c.maybe ? `, ${c.maybe} more ${c.disagree ? `might match (${c.maybe - c.disagree} unknown, ${c.disagree} sources disagree)` : 'unknown, might match'}` : ''}</p><p class="muted">${gate.known} of ${gate.total} known for “${escapeHtml(gate.label)}” (${pct(gate.fill)})${gate.uncovered_brands?.length ? `. No value yet for ${escapeHtml(gate.uncovered_brands.map(item => item.brand).join(', '))}` : ''}.</p>${kindBreakdown(preset)}${scopeLines(preset)}</article>`;
   };
   const presetGallery = data => data.presets?.length ? `<section class="preset-gallery" aria-labelledby="preset-heading"><h2 id="preset-heading">Questions we can answer</h2><p class="muted">A question is answered only when at least ${pct(data.default_min_fill ?? 0.8)} of the products have the field it depends on. Otherwise we ask for help filling it instead of showing a mostly-unknown table.</p><div class="preset-grid">${data.presets.map(presetCard).join('')}</div></section>` : '';
   // Samsung-45-W style verdict from the per-port PDO table. Unknown is never no: a port that does not list PPS is unknown unless the product states no PPS.
@@ -578,8 +618,12 @@
     const hasActiveMore = more.some(field => Object.keys(state.filters).some(key => key.startsWith(`f_${field.key}_`) && state.filters[key]));
     return `<div class="filters-body"><div class="filter-field"><label for="brand-filter">Brand</label><select id="brand-filter"><option value="">All brands</option>${brands.map(brand => `<option value="${escapeHtml(brand)}" ${state.brand === brand ? 'selected' : ''}>${escapeHtml(brand)}</option>`).join('')}</select></div>${grouped(common)}${more.length ? `<details class="more-filters" ${hasActiveMore ? 'open' : ''}><summary>More filters (${more.length})</summary>${grouped(more)}</details>` : ''}<button type="button" class="rail-reset" id="clear-filters">Reset filters</button></div>`;
   };
-  const matchFacet = (row, field, filters) => {
-    const spec = specObject(row, field.key);
+  // D10: a known value with a disagreeing alternative of another kind (index x[k].alt) that falls on the other side of the filter is neither a
+  // match nor ruled out: it is "might match, sources disagree". Mirrors scripts/presets.py _verdict.
+  const altSpecs = spec => (isKnown(spec) && Array.isArray(spec.alt) ? spec.alt : []).map(alt => ({status:'known', value:alt.v}));
+  const disagrees = (row, field, filters) => { if (!facetActive(field, filters)) return false; const spec = specObject(row, field.key); const head = matchValue(spec, field, filters); return altSpecs(spec).some(alt => matchValue(alt, field, filters) !== head); };
+  const matchFacet = (row, field, filters) => matchValue(specObject(row, field.key), field, filters) && !disagrees(row, field, filters);
+  const matchValue = (spec, field, filters) => {
     if (['number','integer','range'].includes(field.type) && field.facet?.kind !== 'enum') {
       const minRaw = filters[facetKey(field, 'min')], maxRaw = filters[facetKey(field, 'max')];
       if (!minRaw && !maxRaw) return true;
@@ -600,7 +644,8 @@
   // A filter is "active" when it has a value; a row whose field is unknown is neither a match nor a mismatch for it (unknown is never no).
   const facetActive = (field, filters) => Object.keys(filters).some(key => key.startsWith(`f_${field.key}_`) && filters[key] && !['unknown','__unknown'].includes(filters[key]));
   const unknownBlocks = (row, field, filters) => facetActive(field, filters) && !isKnown(specObject(row, field.key));
-  const facetPass = (row, fields, filters, lenient) => fields.every(field => matchFacet(row, field, filters) || (lenient && unknownBlocks(row, field, filters)));
+  const facetPass = (row, fields, filters, lenient) => fields.every(field => matchFacet(row, field, filters) || (lenient && (unknownBlocks(row, field, filters) || disagrees(row, field, filters))));
+  const disagreeRow = (row, fields, filters) => fields.some(field => disagrees(row, field, filters));
   const coverage = row => { const parts = Object.values(row.completeness || {}); const total = parts.reduce((n, p) => n + p[1], 0); return total ? parts.reduce((n, p) => n + p[0], 0) / total : 0; };
   const getSortValue = (row, key) => {
     if (key === 'coverage') return coverage(row);
@@ -754,6 +799,7 @@
       const matched = inBrand.filter(row => facetPass(row, facetFields, state.filters, false));
       const maybeRows = inBrand.filter(row => !facetPass(row, facetFields, state.filters, false) && facetPass(row, facetFields, state.filters, true));
       const maybeIds = new Set(state.maybe ? maybeRows.map(row => row.id) : []);
+      const disagreeIds = new Set(maybeRows.filter(row => disagreeRow(row, facetFields, state.filters)).map(row => row.id));
       const filtered = (state.maybe ? [...matched, ...maybeRows] : matched)
         .sort((a, b) => { if (hasQuery) { const ma = found.matches.get(a.id), mb = found.matches.get(b.id); const delta = (ma.rank - mb.rank) || (mb.matched.length - ma.matched.length); if (delta) return delta; } return compareSort(a, b, state); });
       sortSelect.value = [...sortSelect.options].some(o => o.value === state.sort && !o.disabled) ? state.sort : '__column';
@@ -779,7 +825,7 @@
       const query = categoryStateQuery(state);
       const gridCfg = state.view === 'sizegrid' ? gridConfig(category) : null;
       if (gridCfg) main.querySelector('#results-table').innerHTML = filtered.length ? sizeGridMarkup(filtered, gridCfg) : emptyState(category, state, {found, total:pool.length, hiddenByFilters:base.length - filtered.length, baseCount:base.length});
-      else renderTable(category, pageUnits.flatMap(unit => unit.members), state, query, {found, total:pool.length, hiddenByFilters:base.length - filtered.length, baseCount:base.length, groupInfo, compared:selectedRows(rows, state), maybe:maybeIds});
+      else renderTable(category, pageUnits.flatMap(unit => unit.members), state, query, {found, total:pool.length, hiddenByFilters:base.length - filtered.length, baseCount:base.length, groupInfo, compared:selectedRows(rows, state), maybe:maybeIds, disagree:disagreeIds});
       for (const key of state.cols) { const f = category.fields.find(item => item.key === key); if (f && pageUnits.some(unit => unit.members.some(row => !isKnown(specObject(row, key))))) noteUnknown(category.id, key); }
       if (state.preset && !presetReported) { presetReported = true; if (presetById(category, state.preset)?.gate.passes) sendEvent('killer_query', category.id, {preset:state.preset, results:matched.length}); }
       main.querySelector('#pagination').innerHTML = pages > 1 && !(state.view === 'sizegrid' && gridConfig(category)) ? `<nav class="pagination" aria-label="Result pages"><button type="button" data-dir="prev" data-page="${state.page - 1}" ${state.page === 1 ? 'disabled' : ''}>Previous</button><span>Page ${state.page} of ${pages}</span><button type="button" data-dir="next" data-page="${state.page + 1}" ${state.page === pages ? 'disabled' : ''}>Next</button></nav>` : '';
@@ -834,7 +880,7 @@
       const groupHeader = info ? `<tr class="model-group"><th colspan="${fields.length + 4}" scope="rowgroup">Configurations of <a href="${productUrl(category.id, info.parent, query)}">${escapeHtml(info.name)}</a> <span class="muted">(${info.matching} matching of ${info.total} configurations)</span></th></tr>` : '';
       const why = ctx.found?.matches.get(row.id)?.why;
       const parentLine = row.kind === 'configuration' && row.parent_id ? `<small class="entity-kind">Configuration of <a href="${productUrl(category.id, row.parent_id, query)}">${escapeHtml(row.name)} (model)</a></small>` : row.kind ? `<small class="entity-kind">${escapeHtml(row.kind[0].toUpperCase() + row.kind.slice(1))}</small>` : '';
-      return `${groupHeader}<tr class="${state.ids.includes(row.id) ? 'selected' : ''}${row.unreviewed ? ' unreviewed' : ''}"><td class="select-cell"><input type="checkbox" data-select="${escapeHtml(row.id)}" aria-label="Select ${escapeHtml(row.name)} ${escapeHtml(row.model || '')} for comparison" ${state.ids.includes(row.id) ? 'checked' : ''} ${state.ids.length >= 4 && !state.ids.includes(row.id) ? 'disabled' : ''}></td><td class="col-brand">${escapeHtml(row.brand)}</td><td class="name-cell"><span class="brand-compact">${escapeHtml(row.brand)}</span><a href="${productUrl(category.id, row.id, query)}">${escapeHtml(row.name)}</a> ${demoBadge(row)}${row.unreviewed ? ` ${unreviewedBadge}` : ''}<span class="code id-compact">${escapeHtml(row.model || '—')}</span>${row.variant_label ? `<small class="variant-label">${escapeHtml(row.variant_label)}</small>` : ''}${parentLine}${ctx.maybe?.has(row.id) ? '<small class="maybe-tag">Unknown value, might match</small>' : ''}${why ? `<small class="match-why">${escapeHtml(why)}</small>` : ''}</td><td class="code col-model">${escapeHtml(row.model || '—')}</td>${fields.map(f => `<td class="${['number','integer'].includes(f.type) ? 'num' : ''}">${cellHtml(row, f)}</td>`).join('')}</tr>`;
+      return `${groupHeader}<tr class="${state.ids.includes(row.id) ? 'selected' : ''}${row.unreviewed ? ' unreviewed' : ''}"><td class="select-cell"><input type="checkbox" data-select="${escapeHtml(row.id)}" aria-label="Select ${escapeHtml(row.name)} ${escapeHtml(row.model || '')} for comparison" ${state.ids.includes(row.id) ? 'checked' : ''} ${state.ids.length >= 4 && !state.ids.includes(row.id) ? 'disabled' : ''}></td><td class="col-brand">${escapeHtml(row.brand)}</td><td class="name-cell"><span class="brand-compact">${escapeHtml(row.brand)}</span><a href="${productUrl(category.id, row.id, query)}">${escapeHtml(row.name)}</a> ${demoBadge(row)}${row.unreviewed ? ` ${unreviewedBadge}` : ''}<span class="code id-compact">${escapeHtml(row.model || '—')}</span>${row.variant_label ? `<small class="variant-label">${escapeHtml(row.variant_label)}</small>` : ''}${parentLine}${ctx.maybe?.has(row.id) ? (ctx.disagree?.has(row.id) ? '<small class="maybe-tag disagree" title="A maker value and a value of another kind (for example a measurement) fall on different sides of this filter">Sources disagree, might match</small>' : '<small class="maybe-tag">Unknown value, might match</small>') : ''}${why ? `<small class="match-why">${escapeHtml(why)}</small>` : ''}</td><td class="code col-model">${escapeHtml(row.model || '—')}</td>${fields.map(f => `<td class="${['number','integer'].includes(f.type) ? 'num' : ''}">${cellHtml(row, f)}</td>`).join('')}</tr>`;
     }).join('');
     target.innerHTML = `<div class="table-scroll" role="region" aria-label="Product comparison table" tabindex="0"><table><thead><tr><th scope="col" class="select-head">Select</th>${columnHeader('brand','Brand','col-brand')}${columnHeader('name','Product','name-head')}${columnHeader('model', modelLabel(category), 'col-model')}${fields.map(f => columnHeader(f.key, f.label)).join('')}</tr></thead><tbody>${body}</tbody></table></div>`;
   }
@@ -956,7 +1002,7 @@
         if (!field) return;
         const spec = specObject(record, field.key);
         const cell = row.querySelector('.value-cell');
-        cell.innerHTML = record.previewOnly ? previewMark(valueWithContext(spec, field, record.sources)) : valueWithContext(spec, field, record.sources) + previewOverlay(record, field.key, field);
+        cell.innerHTML = (record.previewOnly ? previewMark(valueWithContext(spec, field, record.sources)) : valueWithContext(spec, field, record.sources) + previewOverlay(record, field.key, field)) + pendingCorrection(record, field.key);
         row.querySelector('.evidence-cell')?.insertAdjacentHTML('beforeend', `<a class="correction-link" href="${escapeHtml(correctionIssueUrl(record.id, field.key, spec.status === 'known' ? formatRaw(spec.value, field) : statusLabel[spec.status] || 'Unknown'))}" target="_blank" rel="noopener noreferrer">Report a correction</a>`);
       });
       if (record.kind === 'model' && category.index) {

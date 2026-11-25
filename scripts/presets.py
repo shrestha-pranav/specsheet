@@ -29,6 +29,15 @@ def _known(row, key):
     return key in (row.get("v") or {})
 
 
+def _prov(row, key):
+    """D10 provenance of a known value from the index row: x[key].k (absent = official from the maker or a certifier; `label` = the
+    maker's own label read from a contributor photo, still official)."""
+    return ((row.get("x") or {}).get(key) or {}).get("k") or "official"
+
+
+NON_MAKER = ("derived", "measured", "reported")
+
+
 def _parse_filters(filters, fields):
     """{app url key: value} -> [(field, 'min'|'max'|'value', value)] for facet fields only (the app ignores the rest)."""
     out = []
@@ -44,7 +53,18 @@ def _parse_filters(filters, fields):
 
 
 def _verdict(row, field, suffix, value):
-    """'match' | 'unknown' | 'no' for one active filter, same rules as matchFacet (unknown is never no)."""
+    """'match' | 'unknown' | 'no' | 'disagree' for one active filter, same rules as matchFacet (unknown is never no). D10: when the
+    headline and a disagreeing alternative of another kind (index x[key].alt) fall on different sides of the filter, the row is
+    'disagree' (might match, "sources disagree"): never matched, never ruled out."""
+    v = _verdict1(row, field, suffix, value)
+    alts = ((row.get("x") or {}).get(field["key"]) or {}).get("alt") or []
+    if v in ("match", "no") and alts:
+        if any(_verdict1({"v": {field["key"]: a["v"]}}, field, suffix, value) != v for a in alts):
+            return "disagree"
+    return v
+
+
+def _verdict1(row, field, suffix, value):
     key = field["key"]
     kind = field["type"]
     facet = field.get("facet")
@@ -116,7 +136,9 @@ def measure(preset, category, schema, rows, default_min, default_min_brands=2, d
         pop = [r for r in pool if not ruled_out(r, key) and (r.get("s") or {}).get(key) != "not_applicable"]
         pops[key] = pop
         known = sum(1 for r in pop if _known(r, key))
-        per_key.append({"key": key, "label": fields[key]["label"], "known": known, "total": len(pop), "fill": round(known / len(pop), 4) if pop else 0.0})
+        by_kind = Counter(_prov(r, key) for r in pop if _known(r, key))       # D10: fill counts every kind, broken down on the card
+        per_key.append({"key": key, "label": fields[key]["label"], "known": known, "total": len(pop), "fill": round(known / len(pop), 4) if pop else 0.0,
+                        "by_kind": dict(sorted(by_kind.items()))})
     weakest = min(per_key, key=lambda k: k["fill"]) if per_key else None
     fill = weakest["fill"] if weakest else 1.0
     def brand_of(r):
@@ -126,6 +148,13 @@ def measure(preset, category, schema, rows, default_min, default_min_brands=2, d
         have = {brand_of(r) for r in pops[key] if _known(r, key) and brand_of(r)}
         covered = have if covered is None else covered & have
     covered = sorted(covered or [])
+    non_maker = []      # D10: brands whose known values on some gate key are all non-maker kinds (derived / measured / reported)
+    for b in covered:
+        for key in gate_keys:
+            ks = {_prov(r, key) for r in pops[key] if brand_of(r) == b and _known(r, key)}
+            if ks and ks <= set(NON_MAKER):
+                non_maker.append({"brand": b, "key": key, "kinds": sorted(ks)})
+                break
     brands_all = Counter(brand_of(r) for r in rows)
     in_scope_brands = {brand_of(r) for r in pool}
     tier_brands = {brand_of(r) for r in rest}
@@ -134,7 +163,8 @@ def measure(preset, category, schema, rows, default_min, default_min_brands=2, d
     passes = fill >= min_fill and (not gate_keys or len(covered) >= min_brands)
     gate = {"passes": passes, "min_fill": min_fill, "min_brands": min_brands, "fill": fill, "keys": per_key,
             "scope": {"basis": basis, "sources": sources, "include_discontinued": incl_disc, "in_scope": len(pool), "category_total": category_total, "covered_brands": covered,
-                      "excluded": {"source_tier": len(no_tier), "discontinued": len(discont), "by": by_count}, "not_covered": not_covered[:8]}}
+                      "excluded": {"source_tier": len(no_tier), "discontinued": len(discont), "by": by_count}, "not_covered": not_covered[:8]},
+            "non_maker_brands": non_maker}
     if weakest:
         pop = pops[weakest["key"]]
         have = Counter(brand_of(r) for r in pop if _known(r, weakest["key"]))
@@ -149,16 +179,17 @@ def measure(preset, category, schema, rows, default_min, default_min_brands=2, d
                     if b and n >= 10 and have_k[b] == 0:
                         seen.setdefault(b, {"brand": b, "rows": n, "label": fields[key]["label"]})
             gate["uncovered_brands"] = sorted(seen.values(), key=lambda b: -b["rows"])[:5]
-    matches = maybe = 0
+    matches = maybe = disagree = 0
     for r in pool:
         v = [_verdict(r, f, s, val) for f, s, val in active]
         if "no" in v:
             continue
-        if "unknown" in v:
+        if "unknown" in v or "disagree" in v:
             maybe += 1
+            disagree += "disagree" in v
         else:
             matches += 1
-    return gate, {"matches": matches, "maybe": maybe, "total": len(pool), "out_of_scope": category_total - len(pool)}
+    return gate, {"matches": matches, "maybe": maybe, "disagree": disagree, "total": len(pool), "out_of_scope": category_total - len(pool)}
 
 
 def build(api, categories, source=None):

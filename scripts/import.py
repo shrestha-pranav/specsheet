@@ -43,6 +43,7 @@ import tvcert as TC  # noqa: E402
 import xwalk as XW  # noqa: E402
 import docattach as DA  # noqa: E402
 import docspec_attach as DS  # noqa: E402
+import corrections as CR  # noqa: E402
 import registry  # noqa: E402
 import identity as I  # noqa: E402
 import normalize as N  # noqa: E402
@@ -789,6 +790,7 @@ def schema(con):
     CREATE TABLE aliases(entity_id TEXT, text TEXT, kind TEXT);
     CREATE TABLE entity_sources(entity_id TEXT, sid TEXT, url TEXT, tier TEXT, label TEXT, snapshot TEXT, retrieved_at TEXT);
     CREATE TABLE source_links(entity_id TEXT, sid TEXT, linked_from TEXT);
+    CREATE TABLE source_evidence(entity_id TEXT, sid TEXT, evidence TEXT);
     CREATE TABLE claims(id TEXT, entity_id TEXT, key TEXT, mapped_key TEXT, status TEXT, kind TEXT, cond TEXT, mmode TEXT, value TEXT,
                         norm_ok INT, norm_value TEXT, display TEXT, unit TEXT, raw TEXT, source TEXT, source_id TEXT, ref TEXT, snapshot TEXT,
                         locator TEXT, observed_at TEXT, extractor TEXT, review TEXT, decision TEXT, supersedes TEXT, doc TEXT,
@@ -1053,6 +1055,7 @@ def main():
                 conflict_rows.append((cat, "gtin", v, json.dumps(sorted(x.id for x in es)), "one GTIN on unrelated entities: review"))
                 events.append(("gtin_conflict", cat, None, [f"{cat}|gtin|GS1|{v}|"], None, {"ids": sorted(x.id for x in es)}))
 
+    corr_stats = CR.apply(worlds, events, data)        # D9.2: data/corrections/*.yaml -> correction@1 claims (candidates until a ledger line decides)
     for w in worlds.values():
         B.finalize(w)               # package contents (entity ids now exist)
         TC.finalize(w, dec, {"add_src": add_src, "crosswalks": data / "decisions" / "tv-crosswalks.yaml"})   # r7: decided coverage edges -> allowlisted transfer
@@ -1096,6 +1099,8 @@ def main():
                 con.execute("INSERT INTO entity_sources VALUES (?,?,?,?,?,?,?)", (e.id, sids[snap], s["url"], s["tier"], s["label"], snap, s["retrieved_at"]))
                 if s.get("linked_from"):       # document sources: the page the document was linked from (source policy document_host inheritance)
                     con.execute("INSERT INTO source_links VALUES (?,?,?)", (e.id, sids[snap], s["linked_from"]))
+                if s.get("evidence"):          # corrections: the issue that cites this page (E2/E3)
+                    con.execute("INSERT INTO source_evidence VALUES (?,?,?)", (e.id, sids[snap], s["evidence"]))
             tier_of = {snap: s["tier"] for snap, s in e.srcs.items()}
             seen, rows = set(), []
             work = list(e.claims)
@@ -1246,6 +1251,7 @@ def main():
               "policies": {"file": fdig(data / "decisions" / "policies.yaml"), "lock": policy_lock_digest, "active": [p["id"] for p in dec.active()],
                            "approval": dec.approvals(), "parser_drift": [list(x) for x in drift]},
               "ledger": {"digest": fdig(data / "decisions" / "ledger.jsonl"), "lines": dec.lines},
+              "corrections": {"digest": corr_stats.get("digest"), "files": corr_stats.get("files", 0), "claims": corr_stats.get("claims", 0)},
               "registry": {"digest": fdig(data / "_ids" / "registry.jsonl", data / "_ids" / "tombstones.jsonl"), "migrated_legacy_anchors": reg.migrated,
                            "ambiguous": len(reg.ambiguous), "rebind_attempts": len(reg.rebinds), "kind_changes": len(kind_changes)}}
     meta_rows = {"built_at": time.strftime("%FT%TZ", time.gmtime()), "sources": json.dumps(sorted(stats)), "accepted_digest": digest.hexdigest(),
@@ -1264,7 +1270,7 @@ def main():
                                    "relations": dict(collections.Counter(f"{r[3]}:{r[4].split(':')[0]}" for r in rel_rows))},
                       "source_stats": {k: {a: b for a, b in v.items() if isinstance(b, int) and b and a in ("models", "packages", "skipped_wildcard_pattern", "skipped_other_category", "regional_packages_not_published", "no_model_identifier")} for k, v in stats.items() if metas[registry.SOURCES[k]["category"]]["features"] is not None and registry.SOURCES[k].get("importer") == "model"},
                       "stem_proposals": {c: dict(v) for c, v in cat_stats.items()},
-                      "invalid_claims": sum(invalid.values()), "documents": dict(sorted(doc_stats.items())), "unmapped_rows": len(um_rows), "ignored_label_rows": len(ignored_rows),
+                      "invalid_claims": sum(invalid.values()), "corrections": corr_stats, "documents": dict(sorted(doc_stats.items())), "unmapped_rows": len(um_rows), "ignored_label_rows": len(ignored_rows),
                       "governance": {"policies_locked_now": locked_new, "parser_drift": len(drift), "pending_approval": sorted(k for k, v in dec.approvals().items() if v != "approved"),
                                      "registry": inputs["registry"], "raw_snapshots": inputs["raw_snapshots"], "parse_cache": dict(parse_cache),
                                      "html_entities_decoded": sum(v.get("html_entities_decoded", 0) for v in stats.values()),

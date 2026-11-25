@@ -13,6 +13,11 @@ v2 (2026-11-24): usb.usbc_pd_w read per port line, upstream USB-C/TB/USB4 only; 
 v3 (2026-11-24, preset fill): usb.usbc_inputs from every '<side> Ports' list of the spec tree (Rear/Side/Left/Right/Front/Top/Bottom):
   USB-C/TB/USB4 lines that name DP Alt Mode / DisplayPort / Thunderbolt and are not downstream/out/data-only; a USB-C line of unknown role
   writes nothing; 0 only as a complete enumeration (condition basis=complete_enumeration, every port line kept as raw).
+v4 (2026-11-25, independent sources #1): derived rule derive/tuv-eye-comfort-5star@1. An 'Other Certifications' line that is exactly
+  'TÜV Rheinland(R) Eye Comfort Certification (5-star)' -> flk.pwm 'none', kind derived, condition basis=certification, locator names the
+  rule and the certifier's star table (Certipedia 0217009904: 1-4 stars "Flicker reduced", 5 stars "Flicker free"). 3-star, 4-star,
+  unstarred, '2.0' and other 5-star TÜV marks (Native Gaming Performance, Perceptual Color Volume) never map. The label is NOT marked used,
+  so research/monitors/label-mapping.yaml still reads it for the maker's own 'Flicker Free' statement (official claim, unchanged).
 """
 import gzip, html, json, re, sys
 from pathlib import Path
@@ -22,7 +27,10 @@ import _run
 import lenovo_psref as LP
 import _monports as MP
 
-ID, VERSION, SOURCE = "lenovo_monitors", 3, "lenovo-psref-monitors"
+ID, VERSION, SOURCE = "lenovo_monitors", 4, "lenovo-psref-monitors"
+TUV5 = re.compile(r"T[ÜU]V Rheinland\W{0,3}\s*Eye Comfort Certification\s*\(5-star\)", re.I)
+TUV_RULE = "tuv-eye-comfort-5star@1"
+TUV_REF = "https://www.certipedia.com/quality_marks/0217009904?locale=en"
 ADAPTER = f"{ID}@{VERSION}"
 SKIP = re.compile(r"LFD|Tiny|TIO|Collaboration", re.I)
 PANEL = [(r"in-plane|\bIPS\b", "IPS"), (r"vertical alignment|\bVA\b", "VA"), (r"twisted|\bTN\b", "TN"), (r"QD-?OLED", "QD-OLED")]
@@ -226,6 +234,15 @@ class LenovoMonitors(LP.LenovoPsref):
             add("hdr.marketed_label", next(x for x in re.split(r" \| ", sf) if "HDR" in x)[:80], None, "Special Features")
         if "Case Color" in F:
             add("gen.color", txt("Case Color"), None, "Case Color")
+        for lab in ("Other Certifications", "Ergonomic Certifications"):      # v4: derived rule, label left unmapped on purpose (see docstring)
+            five = [x for x in F.get(lab, []) if TUV5.fullmatch(x.strip())]
+            if five:
+                c = C.claim(key, "flk.pwm", "none", None, five[0].strip(), "s1", ADAPTER, "psref_json", obs,
+                            {"label": lab, "basis": basis, "derivation": TUV_RULE, "certification": "TÜV Rheinland Eye Comfort (5-star)", "rule_ref": TUV_REF},
+                            f"{lab}: {five[0].strip()}", conditions={"basis": "certification"})
+                c["kind"] = "derived"
+                pr.claims.append(c)
+                break
         pr.fingerprints = {"raw": snap.snapshot, "basis": basis, "models": len(rows), "us": sum(m.get("Model", "").endswith("US") for m in rows),
                            "unmapped": {k: v for k, v in F.items() if k not in used}}
         return pr

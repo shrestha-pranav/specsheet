@@ -610,7 +610,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "pattern": "^c_[0-9a-f]{16}$",
+          "pattern": "^c_([0-9a-f]{16}|corr_(?:[0-9]+|a[0-9]+)_[0-9]+)$",
           "description": "sha256(entity|key|value|conditions|source url|extractor)[:16], so re-extraction is idempotent."
         },
         "key": {
@@ -665,7 +665,9 @@
                 "negotiated",
                 "sustained",
                 "peak",
-                "advertised_by_device"
+                "advertised_by_device",
+                "inspection",
+                "optical"
               ]
             },
             "instrument": {
@@ -1064,7 +1066,9 @@
                   "negotiated",
                   "sustained",
                   "peak",
-                  "advertised_by_device"
+                  "advertised_by_device",
+                  "inspection",
+                  "optical"
                 ]
               },
               "sources": {

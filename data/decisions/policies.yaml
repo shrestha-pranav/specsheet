@@ -76,21 +76,21 @@ claim_policies:
     keys:
       asus-us: [cpu.base_clock, cpu.boost_clock, cpu.cache, cpu.cores, cpu.cores_threads, cpu.model, cpu.threads]
       lenovo-psref: [cpu.base_clock, cpu.boost_clock, cpu.cache, cpu.cores, cpu.cores_threads, cpu.model, cpu.threads]
-- id: claim/mfr-monitor-structured@4
-  since: '2026-11-24'
-  supersedes: claim/mfr-monitor-structured@3
-  rationale: 'Same meaning as @3 for every key it already accepted, re-issued for three parser bumps (lenovo_monitors@2 -> @3, lg_us@1 -> @2, asus_monitors@1 -> @2; shared helper crawler/adapters/_monports.py). WIDENING: (1) usb.usbc_inputs for all three sources, counted from the maker''s full structured port list (Lenovo PSREF Rear/Side/Left/Right/Front/Top/Bottom Ports, ASUS techspec I/O Ports lines, LG Input/Output group): USB-C/Thunderbolt/USB4 ports that take video (Alt Mode, DisplayPort, Thunderbolt; LG: DP Alternate Mode, a USB-C power-delivery or max-resolution row), never downstream/out/data-only ports; a USB-C port of unstated role, a multi-port daisy-chain or upstream+downstream line writes nothing. 0 only under coordinator ruling 1 (complete enumeration): the list names a video input, no USB-C port on it takes video, and no USB-C mention anywhere else on the page; the claim carries the basis condition {basis: complete_enumeration} with the full list as raw. LG ''USB-C (DP Alternate Mode): No'' (no Thunderbolt) writes 0 as a stated value. (2) gen.size_class for lg-us and asus-us-monitors under coordinator ruling 3: LG ''Screen Size Class (diagonal)'' ''22" Class (21.5" diagonal)'' -> 22 stated (kind official); where only a diagonal is printed (ASUS Panel Size (inch), LG Screen Size) the class is kind derived by round half up to the whole inch, locator.derivation size_class_round_half_up@1, the stated diagonal as raw. kinds widened to [official, derived] for gen.size_class only (no other key emits derived). All other claims are byte-identical to the @3 parsers'' output.'
+- id: claim/mfr-monitor-structured@5
+  since: '2026-11-25'
+  supersedes: claim/mfr-monitor-structured@4
+  rationale: 'Same meaning as @4 (sources, kinds, tiers, statuses and per-source key allowlists unchanged: no widening, no narrowing), re-issued for the parser bump lenovo_monitors@3 -> @4. lenovo_monitors@4 adds exactly one claim type, flk.pwm none kind derived with condition basis=certification from an ''Other Certifications'' line ''TÜV Rheinland(R) Eye Comfort Certification (5-star)''; flk.pwm is NOT in this policy''s lenovo-psref-monitors keys, so that claim is accepted only by claim/derive-tuv-eye-comfort-5star@1 (pending A1 sign-off). Every other lenovo_monitors claim is byte-identical to @3 output. lg_us@2 and asus_monitors@2 unchanged.'
   audit:
-    by: A2 preset fill
-    at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; claim diff old (copy of crawler/ before the change) vs new parsers over every stored snapshot: lg-us +492 gen.size_class, +440 usb.usbc_inputs; asus-us-monitors +315 gen.size_class, +308 usb.usbc_inputs; lenovo-psref-monitors +186 usb.usbc_inputs; 0 removed; fixtures tests/test_preset_fill_monitors.py'
+    by: A2 independent sources
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a2-independent-sources.md; in-memory claim diff lenovo_monitors@3 (stored parsed cache) vs @4 over all 195 stored snapshots: +20 flk.pwm none derived (basis certification), 0 removed, 0 changed; fixtures tests/test_source_policy.py (TestTuvRule)'
     parsers:
-      lenovo_monitors@3: 'sha256:2a8164ba93f3240a0030'
+      lenovo_monitors@4: 'sha256:a60359a4eb4ee9dc306e'
       lg_us@2: 'sha256:aa21c2db2583ef6b77b3'
       asus_monitors@2: 'sha256:06b1bcd48df53b338599'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review; TÜV 5-star derivation signed off by coordinator as A1)}
   match:
-    extractors: [lenovo_monitors@3, lg_us@2, asus_monitors@2]
+    extractors: [lenovo_monitors@4, lg_us@2, asus_monitors@2]
     source_ids: [lenovo-psref-monitors, lg-us, asus-us-monitors]
     kinds: [official, derived]
     tiers: [manufacturer]
@@ -106,6 +106,33 @@ claim_policies:
       asus-us-monitors: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.size_class, gen.viewable_diag, hdr.contrast_static,
         hdr.marketed_label, hdr.peak_marketed, hdr.sdr_typ, motion.gtg_marketed, panel.surface, panel.technology, pwr.typical, res.aspect, res.height_px, res.native,
         res.refresh_max, res.vrr_types, res.width_px, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
+- id: claim/derive-tuv-eye-comfort-5star@1
+  since: '2026-11-25'
+  rationale: 'Derived rule derive/tuv-eye-comfort-5star@1 (product/decisions.md D9 decision 1b, D10; brief pm-2026-11-25-independent-sources-a2.md #1).
+    A maker-printed TÜV Rheinland Eye Comfort Certification at the 5-star level implies flk.pwm none: TÜV''s published star table (Certipedia ID
+    0217009904, https://www.certipedia.com/quality_marks/0217009904?locale=en) grades 1 to 4 stars "Flicker reduced" and 5 stars "Flicker free".
+    Accepted only as kind derived with condition basis=certification, the literal certification line as raw/quote and locator.derivation +
+    locator.rule_ref naming the rule and the star table. 3-star, 4-star, unstarred, "2.0" and other 5-star TÜV marks (Native Gaming Performance,
+    Perceptual Color Volume) never map: "reduced" is not "none". Headline order is unchanged (an official maker value outranks it, D10).
+    Scope: Lenovo PSREF monitor platform tables only (ASUS, BenQ and LG print no star level, checked over every stored snapshot 2026-11-25).
+    Needs A1 sign-off of the rule.'
+  audit:
+    by: A2 independent sources
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a2-independent-sources.md; lenovo_monitors@4 over 195 stored PSREF snapshots: 20 product families print the
+      5-star line (exact match), 6 print 3-star, 2 print 4-star, 82 unstarred: only the 20 map. tests/test_source_policy.py TestTuvRule'
+    parsers:
+      lenovo_monitors@4: 'sha256:a60359a4eb4ee9dc306e'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review; TÜV 5-star derivation signed off by coordinator as A1)}
+  match:
+    extractors: [lenovo_monitors@4]
+    source_ids: [lenovo-psref-monitors]
+    kinds: [derived]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      lenovo-psref-monitors: [flk.pwm]
 - id: claim/energystar-certified-power@2
   since: '2026-11-23'
   supersedes: claim/energystar-certified-power@1
@@ -1227,17 +1254,70 @@ claim_policies:
     statuses: [known]
     require_normalized: true
     keys: [if.protocol, hw.dram_type, hw.nand_type, hw.controller, flk.pwm, usb.usbc_pd_w]
-relation_policies:
-- id: rel/source-stated-hierarchy@5
-  since: '2026-11-24'
-  supersedes: rel/source-stated-hierarchy@4
-  rationale: 'Same rules, methods and types as @4; parser pins only (A2 preset fill: lenovo_psref@3, asus@2, lenovo_monitors@3, samsung_ssd@3,
-    sandisk_ssd@5, teamgroup_ssd@5, kingston_ssd@3, tplink_routers@3). Every bump changes claim mapping only (mem.max/mem.soldered, usb.usbc_inputs /
-    gen.size_class, hw.dram_type / if.protocol, wifi.has_6ghz); no identifier, alias or relation code changed. No new method.'
+- id: claim/belkin-support-articles@1
+  since: '2026-11-25'
+  rationale: 'Belkin US support articles (www.belkin.com/support-article/?articleNum=N; product/decisions.md D9 decision 1a; brief
+    pm-2026-11-25-independent-sources-a2.md #2), adapter belkin_support@1. Discovery = the product page''s own Support tab feed (robots-permitted;
+    never Search-Show). Identity = the ONE Belkin model code in the article title, which must be a known belkin-us-powerbanks model; titles with
+    several codes (BPB035/BBA007) or none (comparison charts) attach nothing. pd.pps true only from an affirmative block naming PPS and a USB-C
+    output (no question, no negation, not a table row, not under an Input heading; any negative PPS block voids it); never false.
+    out.max_single_port_w only from a figure for ONE named USB-C port or integrated USB-C cable (''USB-C: 5V/3A (15W Max)'', ''USB-C port: 30W Max
+    PPS'', ''20W max USB-C Power Delivery''), never from input/recharge, simultaneous/shared/combined/total or several-port lines; two figures or a
+    higher USB-A output figure = nothing. Quotes <= 125 chars.'
   audit:
-    by: A2 preset fill
-    at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; git diff of the eight adapters touches no identifiers/aliases/relations code; import relation counts compared before/after.'
+    by: A2 independent sources
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a2-independent-sources.md; 37 Support-tab feeds, 28 single-model articles fetched (1 req/s, all 200):
+      +1 pd.pps true (BPB024), +7 models out.max_single_port_w (BPB006 18, BPB011 15, BPB012 15, BPB014 20, BPB021 20, BPB024 30, BPB029 45);
+      tests/test_independent_sources.py BelkinSupport'
+    parsers:
+      belkin_support@1: 'sha256:779708d8e25d5a258343'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review; TÜV 5-star derivation signed off by coordinator as A1)}
+  match:
+    extractors: [belkin_support@1]
+    source_ids: [belkin-us-support]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      belkin-us-support: [out.max_single_port_w, pd.pps]
+- id: claim/lenovo-monitor-datasheets@1
+  since: '2026-11-25'
+  rationale: 'Lenovo monitor datasheets on psrefstuff.lenovo.com (policy 2026-11-25.1 maker, crawl agent; brief #4a), adapter lenovo_datasheets@1,
+    read only for product keys whose PSREF table carries no flicker fact. The sheet must print the model name. flk.pwm none (official) from a
+    product-feature line stating flicker-free (''TÜV Rheinland Flicker Free'', ''flicker-free''), the label-mapping flicker_free meaning; never
+    from CRT boilerplate, ''reduces flicker'', ''low flicker'' or a negated line. flk.pwm none (derived, basis certification) from an Eye Comfort
+    5-star line under the derive/tuv-eye-comfort-5star@1 rule (claim/derive-tuv-eye-comfort-5star@1 is locked to lenovo_monitors@4, so this
+    extractor is accepted here); 1-4-star or unstarred never map.'
+  audit:
+    by: A2 independent sources
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a2-independent-sources.md; 110 product keys tried (66 404 = no sheet, 44 PDFs): 2 flicker-free lines
+      (ThinkVision P49w-30 TÜV Rheinland Flicker Free, Lenovo C27q-30 flicker-free), 0 five-star lines; tests/test_independent_sources.py LenovoDatasheet'
+    parsers:
+      lenovo_datasheets@1: 'sha256:5d4b09d60c145dea97b4'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review; TÜV 5-star derivation signed off by coordinator as A1)}
+  match:
+    extractors: [lenovo_datasheets@1]
+    source_ids: [lenovo-psref-monitor-datasheets]
+    kinds: [official, derived]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      lenovo-psref-monitor-datasheets: [flk.pwm]
+relation_policies:
+- id: rel/source-stated-hierarchy@6
+  since: '2026-11-25'
+  supersedes: rel/source-stated-hierarchy@5
+  rationale: 'Same rules, methods and types as @5; one parser pin moves: lenovo_monitors@3 -> @4 (A2 independent sources: adds a derived flk.pwm
+    claim only; no identifier, alias or relation code changed). Without it every Lenovo monitor package_of relation fell back to proposed and the
+    231 US MTM package rows left the index. No new method.'
+  audit:
+    by: A2 independent sources
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a2-independent-sources.md; git diff of lenovo_monitors.py touches no identifiers/aliases/relations code; Lenovo monitor package rows compared before/after (231).'
     parsers:
       lenovo_psref@3: 'sha256:758b48fedf2b491a03d4'
       asus@2: 'sha256:882e02a6786b8e27beab'
@@ -1245,14 +1325,14 @@ relation_policies:
       surface@1: 'sha256:80cd87b7b1b87d6969e9'
       razer@1: 'sha256:8752d0e2f07ae8b46ff2'
       samsung@1: 'sha256:d0e9cabff53a15285159'
-      lenovo_monitors@3: 'sha256:2a8164ba93f3240a0030'
+      lenovo_monitors@4: 'sha256:a60359a4eb4ee9dc306e'
       samsung_ssd@3: 'sha256:ad67b32e468f26b4c5f5'
       sandisk_ssd@5: 'sha256:2d85f3bba7fc90807c22'
       teamgroup_ssd@5: 'sha256:88817563932faa004f57'
       kingston_ssd@3: 'sha256:3480518802b8d7e319ce'
       tplink_routers@3: 'sha256:19f0ca2101fbc63e219c'
       crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review; TÜV 5-star derivation signed off by coordinator as A1)}
   rules:
   - method: adapter:lenovo-psref
     types: [member_of_family, configuration_of]
@@ -1274,7 +1354,7 @@ relation_policies:
     parsers: [samsung@1]
   - method: adapter:lenovo-psref-monitors
     types: [package_of]
-    parsers: [lenovo_monitors@3]
+    parsers: [lenovo_monitors@4]
   - method: adapter:samsung-us-ssd
     types: [member_of_family, configuration_of]
     parsers: [samsung_ssd@3]
@@ -1412,6 +1492,109 @@ relation_policies:
     types: [same_model]
     parsers: [xwalk@1]
 retired_policies:
+- id: rel/source-stated-hierarchy@5
+  since: '2026-11-24'
+  supersedes: rel/source-stated-hierarchy@4
+  rationale: 'Same rules, methods and types as @4; parser pins only (A2 preset fill: lenovo_psref@3, asus@2, lenovo_monitors@3, samsung_ssd@3,
+    sandisk_ssd@5, teamgroup_ssd@5, kingston_ssd@3, tplink_routers@3). Every bump changes claim mapping only (mem.max/mem.soldered, usb.usbc_inputs /
+    gen.size_class, hw.dram_type / if.protocol, wifi.has_6ghz); no identifier, alias or relation code changed. No new method.'
+  audit:
+    by: A2 preset fill
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; git diff of the eight adapters touches no identifiers/aliases/relations code; import relation counts compared before/after.'
+    parsers:
+      lenovo_psref@3: 'sha256:758b48fedf2b491a03d4'
+      asus@2: 'sha256:882e02a6786b8e27beab'
+      dell@1: 'sha256:13cd4d61b81c005021b6'
+      surface@1: 'sha256:80cd87b7b1b87d6969e9'
+      razer@1: 'sha256:8752d0e2f07ae8b46ff2'
+      samsung@1: 'sha256:d0e9cabff53a15285159'
+      lenovo_monitors@3: 'sha256:2a8164ba93f3240a0030'
+      samsung_ssd@3: 'sha256:ad67b32e468f26b4c5f5'
+      sandisk_ssd@5: 'sha256:2d85f3bba7fc90807c22'
+      teamgroup_ssd@5: 'sha256:88817563932faa004f57'
+      kingston_ssd@3: 'sha256:3480518802b8d7e319ce'
+      tplink_routers@3: 'sha256:19f0ca2101fbc63e219c'
+      crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  rules:
+  - method: adapter:lenovo-psref
+    types: [member_of_family, configuration_of]
+    parsers: [lenovo_psref@3]
+  - method: adapter:asus-us
+    types: [member_of_family]
+    parsers: [asus@2]
+  - method: adapter:dell-us
+    types: [member_of_family]
+    parsers: [dell@1]
+  - method: adapter:microsoft-surface
+    types: [member_of_family, configuration_of]
+    parsers: [surface@1]
+  - method: adapter:razer-us
+    types: [member_of_family, configuration_of]
+    parsers: [razer@1]
+  - method: adapter:samsung-us
+    types: [member_of_family, configuration_of]
+    parsers: [samsung@1]
+  - method: adapter:lenovo-psref-monitors
+    types: [package_of]
+    parsers: [lenovo_monitors@3]
+  - method: adapter:samsung-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [samsung_ssd@3]
+  - method: adapter:sandisk-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [sandisk_ssd@5]
+  - method: adapter:teamgroup-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [teamgroup_ssd@5]
+  - method: adapter:kingston-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [kingston_ssd@3]
+  - method: adapter:tplink-us-routers
+    types: [variant_of]
+    parsers: [tplink_routers@3]
+  - method: page-variants:anker
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:baseus
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:belkin
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  retired: {at: '2026-11-25', superseded_by: rel/source-stated-hierarchy@6, reason: 'parser pin lenovo_monitors@3 -> @4; @5 meaning frozen as locked'}
+- id: claim/mfr-monitor-structured@4
+  since: '2026-11-24'
+  supersedes: claim/mfr-monitor-structured@3
+  rationale: 'Same meaning as @3 for every key it already accepted, re-issued for three parser bumps (lenovo_monitors@2 -> @3, lg_us@1 -> @2, asus_monitors@1 -> @2; shared helper crawler/adapters/_monports.py). WIDENING: (1) usb.usbc_inputs for all three sources, counted from the maker''s full structured port list (Lenovo PSREF Rear/Side/Left/Right/Front/Top/Bottom Ports, ASUS techspec I/O Ports lines, LG Input/Output group): USB-C/Thunderbolt/USB4 ports that take video (Alt Mode, DisplayPort, Thunderbolt; LG: DP Alternate Mode, a USB-C power-delivery or max-resolution row), never downstream/out/data-only ports; a USB-C port of unstated role, a multi-port daisy-chain or upstream+downstream line writes nothing. 0 only under coordinator ruling 1 (complete enumeration): the list names a video input, no USB-C port on it takes video, and no USB-C mention anywhere else on the page; the claim carries the basis condition {basis: complete_enumeration} with the full list as raw. LG ''USB-C (DP Alternate Mode): No'' (no Thunderbolt) writes 0 as a stated value. (2) gen.size_class for lg-us and asus-us-monitors under coordinator ruling 3: LG ''Screen Size Class (diagonal)'' ''22" Class (21.5" diagonal)'' -> 22 stated (kind official); where only a diagonal is printed (ASUS Panel Size (inch), LG Screen Size) the class is kind derived by round half up to the whole inch, locator.derivation size_class_round_half_up@1, the stated diagonal as raw. kinds widened to [official, derived] for gen.size_class only (no other key emits derived). All other claims are byte-identical to the @3 parsers'' output.'
+  audit:
+    by: A2 preset fill
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; claim diff old (copy of crawler/ before the change) vs new parsers over every stored snapshot: lg-us +492 gen.size_class, +440 usb.usbc_inputs; asus-us-monitors +315 gen.size_class, +308 usb.usbc_inputs; lenovo-psref-monitors +186 usb.usbc_inputs; 0 removed; fixtures tests/test_preset_fill_monitors.py'
+    parsers:
+      lenovo_monitors@3: 'sha256:2a8164ba93f3240a0030'
+      lg_us@2: 'sha256:aa21c2db2583ef6b77b3'
+      asus_monitors@2: 'sha256:06b1bcd48df53b338599'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [lenovo_monitors@3, lg_us@2, asus_monitors@2]
+    source_ids: [lenovo-psref-monitors, lg-us, asus-us-monitors]
+    kinds: [official, derived]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    require_normalized: true
+    keys:
+      lenovo-psref-monitors: [color.dci_p3, color.srgb, ergo.vesa, ergo.weight, ergo.weight_panel, gen.color, gen.curvature, gen.size_class, hdr.contrast_static,
+        hdr.marketed_label, hdr.sdr_typ, panel.bit_depth, panel.surface, panel.technology, pwr.max, pwr.typical, res.aspect, res.height_px, res.native,
+        res.ppi, res.refresh_max, res.vrr_types, res.width_px, sup.warranty_years, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
+      lg-us: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.size_class, gen.viewable_diag, hdr.contrast_static, hdr.sdr_typ,
+        motion.gtg_marketed, panel.surface, panel.technology, pwr.external_adapter, pwr.max, pwr.typical, res.aspect, res.height_px, res.native, res.refresh_max,
+        res.vrr_types, res.width_px, sup.warranty_years, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count]
+      asus-us-monitors: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.size_class, gen.viewable_diag, hdr.contrast_static,
+        hdr.marketed_label, hdr.peak_marketed, hdr.sdr_typ, motion.gtg_marketed, panel.surface, panel.technology, pwr.typical, res.aspect, res.height_px, res.native,
+        res.refresh_max, res.vrr_types, res.width_px, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
+  retired: {at: '2026-11-25', superseded_by: claim/mfr-monitor-structured@5, reason: 'parser bump lenovo_monitors@4 (derived TÜV 5-star flk.pwm, accepted by claim/derive-tuv-eye-comfort-5star@1); @4 meaning frozen as locked'}
 - id: claim/document-power-pdo@3
   since: '2026-11-24'
   supersedes: claim/document-power-pdo@1

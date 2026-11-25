@@ -49,6 +49,20 @@ def known_values(rec):
     return out
 
 
+def crowd_keys(rec):
+    """D9.2: values that came through the corrections flow (a crowd source, or a page cited by a correction issue) -> {key: {kind, tier:
+    crowd, source_tier}}, so /v1/changes marks every crowd-sourced change with its kind."""
+    by = {s["id"]: s for s in rec.get("sources") or []}
+    out = {}
+    for key, sp in rec["specs"].items():
+        if sp.get("status") != "known":
+            continue
+        cs = [by[x] for x in sp.get("sources") or [] if x in by and (by[x].get("tier") == "crowd" or by[x].get("evidence"))]
+        if cs:
+            out[key] = {"kind": sp.get("kind") or "official", "tier": "crowd", "source_tier": cs[0].get("tier")}
+    return out
+
+
 def withheld_keys(rec, pol):
     return sorted(k for k, sp in rec["specs"].items() if sp.get("status") == pol.withheld_status)
 
@@ -104,7 +118,8 @@ def build_category(cat, docs, pol, tier, out, shard_hex=2):
             if i in prods:
                 gz.write(json.dumps(prods[i], ensure_ascii=False, separators=(",", ":"), sort_keys=True).encode() + b"\n")
     withheld = {r["id"]: withheld_keys(prods[r["id"]], pol) for r in rows}
-    return rows, withheld, cov, {"id": cat["id"], "count": len(rows), "legacy": bool(cat.get("legacy")),
+    crowd = {r["id"]: c for r in rows if (c := crowd_keys(prods[r["id"]]))}
+    return rows, (withheld, crowd), cov, {"id": cat["id"], "count": len(rows), "legacy": bool(cat.get("legacy")),
                                  "keys": sorted({k for r in rows for k in r["v"]}),  # Worker filter/fields bound (D3.6)
                                  "bulk": f"bulk/{cat['id']}.jsonl.gz", "bulk_bytes": os.path.getsize(bulk), "sha256": {
                                      "index": sha256_file(os.path.join(out, "index", cat["id"] + ".json")), "bulk": sha256_file(bulk)}}
@@ -136,7 +151,7 @@ def sha256_file(p):
         return hashlib.sha256(f.read()).hexdigest()
 
 
-def diff_rows(old, new, withheld=None):
+def diff_rows(old, new, withheld=None, crowd=None):
     """old/new: {id: v}; withheld: {id: [keys now withheld by the source policy]}. Added/removed ids plus per-key [old,new] for changed
     rows. A key that was published and is now withheld is {key, change: "withdrawn"} with NO previous value (never re-publish it)."""
     withheld = withheld or {}
@@ -149,7 +164,8 @@ def diff_rows(old, new, withheld=None):
             wd = set(withheld.get(i) or ())
             fields = {k: [old[i].get(k), new[i].get(k)] for k in ks if old[i].get(k) != new[i].get(k) and not (k in wd and k not in new[i])}
             w = [{"key": k, "change": "withdrawn"} for k in ks if k in wd and k in old[i] and k not in new[i]]
-            changed.append(dict({"id": i, "fields": fields}, **({"withdrawn": w} if w else {})))
+            cr = {k: (crowd or {}).get(i, {})[k] for k in fields if k in (crowd or {}).get(i, {})}
+            changed.append(dict({"id": i, "fields": fields}, **({"withdrawn": w} if w else {}), **({"crowd": cr} if cr else {})))
     return {"added": added[:MAX_CHANGE_ROWS], "removed": removed[:MAX_CHANGE_ROWS], "changed": changed[:MAX_CHANGE_ROWS],
             "counts": {"added": len(added), "removed": len(removed), "changed": len(changed)}}
 
@@ -196,8 +212,10 @@ def main():
     release, created = latest_release(a.releases, a.release)
     created = created or man.get("generated_at")
     metas, snap, wsnap, covs = [], {}, {}, {}
+    csnap = {}
     for c in cats:
-        rows, withheld, cov, meta = build_category(c, a.docs, pol, a.tier, a.out, a.shard_hex)
+        rows, (withheld, crowd), cov, meta = build_category(c, a.docs, pol, a.tier, a.out, a.shard_hex)
+        csnap[c["id"]] = crowd
         metas.append(meta)
         covs[c["id"]] = cov
         snap[c["id"]] = {r["id"]: r["v"] for r in rows}
@@ -221,9 +239,9 @@ def main():
         cats_diff = {}
         for cid, cur in snap.items():
             if prev is not None and cid in prev:
-                d = diff_rows(prev[cid], cur, wsnap[cid])
+                d = diff_rows(prev[cid], cur, wsnap[cid], csnap[cid])
             elif prev is not None:
-                d = diff_rows({}, cur)  # new category since previous release
+                d = diff_rows({}, cur, None, csnap[cid])  # new category since previous release
             else:
                 continue
             if any(d["counts"].values()):

@@ -216,7 +216,8 @@ class Fixture(unittest.TestCase):
 
     def test_f7_host_matching(self):
         pol = SP.load()
-        self.assertFalse(pol.disposition("https://psrefstuff.lenovo.com/x")["listed"])
+        self.assertFalse(pol.disposition("https://pcsupport.lenovo.com/x")["listed"])
+        self.assertTrue(pol.disposition("https://psrefstuff.lenovo.com/x")["listed"], "listed since 2026-11-25.1 (PSREF datasheets)")
         self.assertTrue(pol.disposition("https://psref.lenovo.com/x")["listed"])
         for u in ("https://amazon.com/x", "https://www.amazon.com/x", "https://smile.amazon.com/x", "https://WWW.AMAZON.COM./x", "https://www.amazon.com:443/x"):
             self.assertEqual(pol.disposition(u)["domain"], "amazon.com", u)
@@ -332,10 +333,113 @@ class Fixture(unittest.TestCase):
         for p in (CODE / "api-worker" / "src").glob("*.ts"):
             self.assertNotIn("licensing-exclusions", p.read_text())
 
+    def test_f17_crawl_key_and_measurement_kind(self):
+        """Policy 2026-11-25.1 (D9): crawl agent|human_only|none and kind measurement; the crawler refuses human_only/none hosts."""
+        base = (FX / "policy.yaml").read_text()
+        good = '{domain: www.maker.example, match: exact, kind: maker, credit: "WidgetCo pages", free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}'
+        meas = '{domain: lab.example, match: subdomains, kind: measurement, credit: "Lab", free: true, paid: false, licence_grant: false, crawl: %s, evidence: {level: none, checked: null}}'
+        ok_cases = {"agent": good + "\n  - " + meas % "agent", "human_only": good + "\n  - " + meas % "human_only",
+                    "maker with crawl": good.replace("licence_grant: false,", "licence_grant: false, crawl: agent,"),
+                    "excluded": good + "\n  - " + (meas % "none").replace("free: true", "free: false")}
+        bad_cases = {"bad crawl value": good + "\n  - " + meas % "sometimes",
+                     "measurement without crawl": good + "\n  - " + (meas % "agent").replace(" crawl: agent,", ""),
+                     "measurement granted": good + "\n  - " + (meas % "agent").replace("paid: false, licence_grant: false", "paid: true, licence_grant: true"),
+                     "crawl none but free": good + "\n  - " + meas % "none",
+                     "unknown kind": good.replace("kind: maker", "kind: blog")}
+        for name, rep in list(ok_cases.items()) + list(bad_cases.items()):
+            with tempfile.NamedTemporaryFile("w", suffix=".yaml") as f:
+                f.write(base.replace(good, rep)); f.flush()
+                if name in ok_cases:
+                    pol = SP.load(f.name)
+                    if "lab.example" in rep:
+                        self.assertEqual(pol.crawl("https://www.lab.example/review"), rep.split("crawl: ")[1].split(",")[0], name)
+                else:
+                    with self.assertRaises(SystemExit, msg=name):
+                        SP.load(f.name)
+        pol = SP.load()
+        self.assertGreaterEqual(pol.version, "2026-11-25.1")      # 2026-11-25.2 (corrections flow) adds path_prefix + crowd
+        want = {"https://www.notebookcheck.net/Review.1.0.html": ("agent", True, "measurement"),
+                "https://www.chargerlab.com/x/": ("human_only", True, "measurement"),
+                "https://www.tomshardware.com/reviews/x": ("human_only", True, "measurement"),
+                "https://www.techpowerup.com/ssd-specs/x": ("none", False, "measurement"),     # 2026-11-25.2: path_prefix /ssd-specs excluded (host entry stays measurement)
+                "https://www.techpowerup.com/review/x": ("human_only", True, "measurement"),
+                "https://www.storagereview.com/review/x": ("human_only", True, "measurement"),
+                "https://tftcentral.co.uk/reviews/x": ("human_only", True, "measurement"),
+                "https://pcmonitors.info/reviews/x": ("human_only", True, "measurement"),
+                "https://www.rtings.com/monitor/x": ("none", False, "measurement"),
+                "https://ssdwiki.com/x": ("none", False, None), "https://www.displayspecifications.com/x": ("none", False, None),
+                "https://www.hardware-corner.net/x": ("none", False, None), "https://www.monitornerds.com/x": ("none", False, None),
+                "https://www.certipedia.com/quality_marks/0217009904": ("agent", True, "certification"),
+                "https://psrefstuff.lenovo.com/syspool/Sys/PDF/datasheet/x.pdf": ("agent", True, "maker"),
+                "https://download.lenovo.com/pccbbs/x.pdf": ("agent", True, "maker"),
+                "https://www.belkin.com/support-article/?articleNum=1": ("agent", True, "maker"),
+                "https://unlisted.example/x": ("agent", True, None)}
+        for u, (crawl, free, kind) in want.items():
+            e = pol.entry(SP.host_of(u)) or {}
+            self.assertEqual((pol.crawl(u), pol.disposition(u)["free"]), (crawl, free), u)
+            if kind:
+                self.assertEqual(e.get("kind"), kind, u)
+            self.assertFalse(pol.disposition(u)["paid"] or pol.disposition(u)["licence_grant"], u)
+        doms = [s["domain"] for s in pol.doc["sources"]]
+        self.assertEqual((doms.count("notebookcheck.net"), doms.count("chargerlab.com")), (1, 1), "replaced, not duplicated")
+        import site_meta
+        fo = {s["domain"]: s for s in site_meta.sources()["facts_only"]}
+        self.assertEqual(fo["chargerlab.com"]["crawl"], "human_only")
+        self.assertNotIn("crawl", fo["notebookcheck.net"])
+        self.assertNotIn("rtings.com", fo)
+        sys.path.insert(0, str(CODE / "crawler"))
+        import crawl as CR
+        for u in ("https://www.chargerlab.com/x", "https://www.tomshardware.com/x", "https://www.rtings.com/x"):
+            self.assertEqual(CR.NET.get(u, 0), "policy", "no request is made to a human_only/none host")
+
     def test_real_policy_valid(self):
         pol = SP.load()
         self.assertEqual(SP.validate(pol.doc), [])
         self.assertTrue(pol.disposition("https://data.energystar.gov/x")["paid"])
+
+
+class TestTuvRule(unittest.TestCase):
+    """derive/tuv-eye-comfort-5star@1 (lenovo_monitors@4): only the exact Eye Comfort 5-star line maps to flk.pwm none, kind derived."""
+    @staticmethod
+    def parse(certs):
+        sys.path.insert(0, str(CODE / "crawler" / "adapters"))
+        import lenovo_monitors as LM, _contract as C
+        feats = [{"FName": "Other Certifications", "FVs": [{"FVGs": [{"FVGItem": [{"AttV": c} for c in certs]}]}]}]
+        blob = {"product_key": "ThinkVision_T27_40_Monitor", "info": {"ProductName": "ThinkVision T27-40"}, "models": [],
+                "platform_spec": {"GeneralSpecData": [{"GeneralSpecJson": json.dumps({"data": {"SpecData": [{"L2": [{"Features": feats}]}]}})}]}}
+
+        class Blobs:
+            def read(self, sha, ext):
+                return gzip.compress(json.dumps(blob).encode())
+        snap = C.Snapshot("sha256:x", C.Ref("lenovo-psref-monitors", "ThinkVision_T27_40_Monitor", "https://psref.lenovo.com/Product/x"), 200,
+                          "2026-11-25T00:00:00Z", "https://psref.lenovo.com/Product/x", {})
+        return [c for c in LM.LenovoMonitors().parse(snap, Blobs(), None).claims if c["key"] == "flk.pwm"]
+
+    def test_five_star_maps(self):
+        cs = self.parse(["TÜV Rheinland® Low Blue Light (Hardware Solution)", "TÜV Rheinland® Eye Comfort Certification (5-star)"])
+        self.assertEqual(len(cs), 1)
+        c = cs[0]
+        self.assertEqual((c["value"], c["kind"], c["conditions"], c["locator"]["derivation"]), ("none", "derived", {"basis": "certification"}, "tuv-eye-comfort-5star@1"))
+        self.assertIn("0217009904", c["locator"]["rule_ref"])
+        self.assertEqual(c["raw"], "TÜV Rheinland® Eye Comfort Certification (5-star)")
+
+    def test_never_maps(self):
+        for cert in ("TÜV Rheinland® Eye Comfort Certification (4-star)", "TÜV Rheinland® Eye Comfort Certification (3-star)",
+                     "TÜV Rheinland® Eye Comfort Certification", "TÜV Rheinland® Eye Comfort Certification 2.0",
+                     "TÜV Rheinland® 5-Star Native Gaming Performance Certification", "TÜV Rheinland® Perceptual Color Volume (5-star)",
+                     "TÜV Rheinland® Flicker Free"):
+            self.assertEqual(self.parse([cert]), [], cert)
+
+    def test_policy_accepts_only_derived(self):
+        sys.path.insert(0, str(CODE / "scripts"))
+        import decisions as D
+        pol = next(p for p in D.Decisions(CODE / "data").claim_policies if p["id"] == "claim/derive-tuv-eye-comfort-5star@1")
+        ctx = {"source_id": "lenovo-psref-monitors", "extractor": "lenovo_monitors@4", "key": "flk.pwm", "kind": "derived", "tier": "manufacturer",
+               "status": "known", "normalized": True}
+        self.assertTrue(D.Decisions._match(pol, ctx))
+        self.assertFalse(D.Decisions._match(pol, dict(ctx, kind="official")))
+        self.assertFalse(D.Decisions._match(pol, dict(ctx, key="flk.cert")))
+        a = pol["approval"]; self.assertIn(a["state"], ("pending", "approved")); self.assertTrue(a["state"] == "pending" or (a.get("by") and a.get("at")))  # human-approved 2026-11-25
 
 
 if __name__ == "__main__":

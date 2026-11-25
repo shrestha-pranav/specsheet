@@ -8,6 +8,8 @@ data/decisions/ledger.jsonl   append-only human decisions, later lines win for t
   {"action": "merge", "anchors": ["<anchor>", ...], ...}            # allows a quarantined multi-hit observation to unify entities
   {"action": "split", "anchors": ["<anchor>", ...], ...}            # vetoes a merge/relation between entities holding these anchors
 LLM agents may PROPOSE ledger lines in a report; only a human handle may appear in `by` for approve/merge/accept.
+accept_claim/reject_claim may carry an optional "evidence": "<issue url>" (corrections flow, D9.2). Corrections (extractor correction@1,
+claim ids c_corr_*) are decided ONLY by a ledger line: no policy may name correction@*, and an agent-looking `by` on a c_corr_ line fails.
 
 Governance (review 2 risk 1):
   - a policy's MEANING is frozen per id: data/decisions/policy-lock.jsonl records sha256(canonical policy minus `approval`) the first time
@@ -18,7 +20,7 @@ Governance (review 2 risk 1):
   - `audit: {by, at, evidence, parsers: {extractor: parser_fingerprint}}` records what was audited; `approval: {state: pending|approved,
     by, at}` records who approved it. Parser drift (current fingerprint != audited one) is reported, and is fatal under --strict-parsers.
 """
-import fnmatch, hashlib, json, time
+import fnmatch, hashlib, json, re, time
 from pathlib import Path
 
 import yaml
@@ -38,6 +40,7 @@ def _legacy(a):
 def _hit(ledger_anchor, a):
     return ledger_anchor == a or ledger_anchor == _legacy(a)
 
+AGENT_BY = re.compile(r"^agent:|\b(claude|codex|gpt|llm|bot|copilot|a[1-9])\b", re.I)     # never a reviewer handle on a correction decision
 ACTIONS = {"accept_claim", "reject_claim", "approve_relation", "reject_relation", "merge", "split"}
 
 
@@ -66,6 +69,8 @@ class Decisions:
                 self.lines += 1
                 a = d["action"]
                 if a in ("accept_claim", "reject_claim"):
+                    if str(d.get("claim", "")).startswith("c_corr_") and AGENT_BY.search(str(d["by"])):
+                        raise SystemExit(f"ledger.jsonl:{n}: a correction is decided by a person; {d['by']!r} looks like an agent (D9.2)")
                     self.claims[d["claim"]] = d
                 elif a in ("approve_relation", "reject_relation"):
                     self.relations[(d["from"], d["type"], d["to"])] = d
@@ -88,6 +93,8 @@ class Decisions:
             miss = [f for f in ("keys", "source_ids", "extractors") if not m.get(f)]
             if miss:
                 raise SystemExit(f"policies.yaml {p['id']}: claim policies need explicit {miss} (review 2: no type-class or open-ended acceptance)")
+            if any(str(x).startswith("correction@") for x in m.get("extractors") or []) or "corrections" in (m.get("source_ids") or []):
+                raise SystemExit(f"policies.yaml {p['id']}: no auto-accept policy may name correction@1; every correction needs a human ledger line (D9.2)")
             if isinstance(m["keys"], dict) and set(m["keys"]) - set(m["source_ids"]):
                 raise SystemExit(f"policies.yaml {p['id']}: keys{{source}} names a source not in source_ids")
         for p in self.relation_policies:

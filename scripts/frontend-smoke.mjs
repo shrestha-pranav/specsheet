@@ -21,7 +21,7 @@ const context = vm.createContext({
   matchMedia:()=>({matches:false,addEventListener(){}}),
   fetch:async url => {requests.push(url); try { const body = await json(url.split('?')[0]); return {ok:true,json:async()=>body}; } catch (error) { if (error.code === 'ENOENT') return {ok:false,status:404}; throw error; }}
 });
-const names = ['facetControl','methodsDiffer','methodsFlag','categories','indexFor','detailFor','displayValue','initialState','categoryStateQuery','productUrl','validatedReturnQuery','returnWithIds','matchFacet','missingIssueUrl','correctionIssueUrl','renderTable','renderProduct','renderCompare','previewOverlay','revisionsMarkup','searchRows','extractIdentifiers','differingFields','cellValue','compareUrl','configTable','evidenceMarkup','valueWithContext','renderPage','reportMiss','loadPresets','presetCard','presetGallery','facetPass','facetActive','pdoVerdict','pdoSection','sizeGridRows','sizeGridMarkup','sendEvent','noteUnknown','pct','inPresetScope'];
+const names = ['facetControl','methodsDiffer','methodsFlag','categories','indexFor','detailFor','displayValue','initialState','categoryStateQuery','productUrl','validatedReturnQuery','returnWithIds','matchFacet','missingIssueUrl','correctionIssueUrl','renderTable','renderProduct','renderCompare','previewOverlay','revisionsMarkup','searchRows','extractIdentifiers','differingFields','cellValue','compareUrl','configTable','evidenceMarkup','valueWithContext','renderPage','reportMiss','loadPresets','presetCard','presetGallery','facetPass','facetActive','pdoVerdict','pdoSection','sizeGridRows','sizeGridMarkup','sendEvent','noteUnknown','pct','inPresetScope','provenance','pendingCorrection','kindBreakdown','fillRequestUrl'];
 const source = await readFile(resolve(root, 'docs/app.js'), 'utf8');
 assert(source.includes('  renderRoute();\n})();'), 'Application bootstrap changed; update harness');
 vm.runInContext(source.replace('  renderRoute();\n})();', `  globalThis.test = {${names.join(',')}};\n})();`), context);
@@ -409,5 +409,52 @@ function d8Gate(preset, all, facets, scope, minFill = preset.min_fill ?? 0.8, mi
   ui.noteUnknown('laptops', 'mem.soldered');
   assert(source.split('\n').some(line => line.includes('/v1/event`') && line.includes("type:'text/plain'")), 'event beacon sends text/plain');
   assert(!/localStorage\.setItem\([^)]*(preset|event)/.test(source) && !/document\.cookie/.test(source), 'no cookies or stored ids');
+}
+// ---- corrections flow (D9.2) + D10 provenance, kind breakdown and sources-disagree
+{
+  const src = (id, tier, extra = {}) => ({id, url:`https://example.com/${id}`, label:`Src ${id}`, tier, retrieved_at:'2026-11-20T00:00:00Z', ...extra});
+  const issue = 'https://github.com/shrestha-pranav/specsheet/issues/12';
+  const cases = [
+    [{kind:'official', sources:['a']}, [src('a', 'manufacturer')], /^Maker$/],
+    [{kind:'official', sources:['a']}, [src('a', 'crowd', {label:'Contributor photo of the product label (correction 12)', url:issue})], /^Maker label \(contributor photo\)$/],
+    [{kind:'official', sources:['a']}, [src('a', 'regulatory', {label:'ENERGY STAR'})], /^Certified: ENERGY STAR$/],
+    [{kind:'derived', sources:['a']}, [src('a', 'certifier', {label:'TÜV 5-star'})], /^Derived from TÜV 5-star$/],
+    [{kind:'derived', sources:['a'], basis:{basis:'certification'}}, [src('a', 'manufacturer', {label:'Lenovo PSREF'})], /^Derived from a certification printed by Lenovo PSREF$/],
+    [{kind:'measured', sources:['a'], measurement_mode:'advertised_by_device'}, [src('a', 'measurement', {label:'ChargerLAB (measured) (cited in correction 12)', evidence:issue})], /^Measured by ChargerLAB \(measured\), 2026-11-20$/],
+    [{kind:'measured', sources:['a']}, [src('a', 'crowd', {url:issue})], /^Contributor measurement$/],
+    [{kind:'reported', sources:['a']}, [src('a', 'retailer', {label:'Shop'})], /^Reported by Shop$/],
+  ];
+  for (const [spec, sources, want] of cases) assert.match(ui.provenance(spec, sources).text, want, `badge ${want}`);
+  const tip = ui.provenance({kind:'measured', sources:['a'], measurement_mode:'advertised_by_device'}, [src('a', 'measurement', {evidence:issue})]).tip;
+  assert.match(tip, /Method: advertised by device/); assert(tip.includes(issue), 'tooltip links the correction issue');
+  const field = {key:'k', label:'K', type:'enum', enum:['x', 'y']};
+  const detail = ui.valueWithContext({status:'known', value:'x', kind:'measured', sources:['a'], alternatives:[{value:'y', kind:'official', sources:['b']}]}, field, [src('a', 'measurement', {evidence:issue}), src('b', 'manufacturer')]);
+  assert.match(detail, /prov-badge prov-measured/); assert.match(detail, /Maker/); assert.match(detail, /Correction evidence/, 'alternative or headline links the issue');
+  // an open correction: no value, only the notice; trusted records (no corrections_pending) never show it
+  assert.equal(ui.pendingCorrection({corrections_pending:[{key:'k', ref:'12'}]}, 'k').includes('A correction is under review (<a href="https://github.com/shrestha-pranav/specsheet/issues/12"'), true);
+  assert.match(ui.pendingCorrection({corrections_pending:[{key:'k', ref:'a3'}]}, 'k'), /proposal a3/);
+  assert.equal(ui.pendingCorrection({}, 'k'), ''); assert.equal(ui.pendingCorrection({corrections_pending:[{key:'other', ref:'1'}]}, 'k'), '');
+  // D10 might-match: a disagreeing alternative of another kind on the other side of the filter is neither a match nor ruled out
+  const bool = {key:'b', type:'bool', facet:true};
+  const agree = {specs:{b:{status:'known', value:false}}}, split = {specs:{b:{status:'known', value:false, k:'official', alt:[{v:true, k:'measured'}]}}};
+  const same = {specs:{b:{status:'known', value:false, alt:[{v:false, k:'measured'}]}}};
+  assert.equal(ui.facetPass(agree, [bool], {f_b_value:'no'}, false), true);
+  assert.equal(ui.facetPass(split, [bool], {f_b_value:'no'}, false), false, 'sources disagree: not a match');
+  assert.equal(ui.facetPass(split, [bool], {f_b_value:'no'}, true), true, 'sources disagree: might match');
+  assert.equal(ui.facetPass(split, [bool], {f_b_value:'yes'}, true), true, 'sources disagree the other way: might match, never ruled out');
+  assert.equal(ui.facetPass(same, [bool], {f_b_value:'no'}, false), true, 'an agreeing alternative changes nothing');
+  // preset card: per-kind fill breakdown and brands covered only by non-maker values
+  const preset = {id:'p', category:'monitors', category_name:'Monitors', title:'T', count:{matches:3, maybe:2, disagree:1, total:5, out_of_scope:0},
+    gate:{passes:true, fill:0.9, min_fill:0.8, key:'flk.pwm', label:'PWM', known:9, total:10, keys:[{key:'flk.pwm', label:'PWM', known:9, total:10, by_kind:{official:6, derived:2, measured:1}}],
+      non_maker_brands:[{brand:'Acme', key:'flk.pwm', kinds:['measured']}], scope:{basis:'', in_scope:10, category_total:10, covered_brands:['Acme', 'Beta'], excluded:{}, not_covered:[]}}};
+  const card = ui.presetCard(preset);
+  assert.match(card, /PWM known 9\/10: 6 maker · 2 derived · 1 measured/); assert.match(card, /Covered only by non-maker values: Acme \(measured\)/);
+  assert.match(card, /2 more might match \(1 unknown, 1 sources disagree\)/);
+  const help = new URL(ui.fillRequestUrl({...preset, evidence_type:'E3', gate:{...preset.gate, passes:false}}));
+  assert.equal(help.searchParams.get('template'), 'field-correction.yml'); assert.equal(help.searchParams.get('evidence_type'), 'E3');
+  assert.equal(JSON.parse(help.searchParams.get('payload')).key, 'flk.pwm', 'help-fill links prefill the key');
+  const corr = new URL(ui.correctionIssueUrl('e1', 'k', 'v', 'E1'));
+  assert.deepEqual(Object.keys(JSON.parse(corr.searchParams.get('payload'))).sort(), ['build', 'entity_id', 'key', 'shown_value'], 'payload names the field only');
+  assert.equal(corr.searchParams.get('evidence_type'), 'E1');
 }
 console.log(`Frontend behavior smoke passed: ${rows.length} laptop rows; shard loading, lazy detail cache, structured/literal ports, absence semantics, return state, private issue drafts.`);

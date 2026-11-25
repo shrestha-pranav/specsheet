@@ -1,7 +1,7 @@
 {
  "generated_from": "data/source-policy.yaml",
- "policy_version": "2026-11-24.8",
- "policy_sha256": "b212afbcd36ad98ef447838996d5b299127e8c80cf33b1562a9cad374c27a60f",
+ "policy_version": "2026-11-25.2",
+ "policy_sha256": "1fdb0b7542bbc892b63bb5fd4974fa2fb3091af68ad8aa41391d90b63d1f52e4",
  "license_scope": "compilation + values whose sources[] include licence_grant:true; other values are facts with links, not licensed by us",
  "granted": [
   {
@@ -46,6 +46,34 @@
    "kind": "maker",
    "credit": "Lenovo PSREF (Product Specifications Reference)",
    "to_clear": "Written Lenovo permission (open-questions Q2)"
+  },
+  {
+   "domain": "psrefstuff.lenovo.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Lenovo PSREF datasheets",
+   "categories": [
+    "monitors",
+    "laptops"
+   ],
+   "to_clear": "Lenovo permission (Q2)"
+  },
+  {
+   "domain": "download.lenovo.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Lenovo user guides",
+   "categories": [
+    "monitors",
+    "laptops"
+   ]
+  },
+  {
+   "domain": "www.certipedia.com",
+   "match": "exact",
+   "kind": "certification",
+   "credit": "TÜV Rheinland Certipedia",
+   "to_clear": "TÜV legal notice (imprint page unreadable to fetch)"
   },
   {
    "domain": "www.lg.com",
@@ -445,6 +473,66 @@
    "categories": [
     "chargers"
    ]
+  },
+  {
+   "domain": "notebookcheck.net",
+   "match": "subdomains",
+   "kind": "measurement",
+   "credit": "Notebookcheck (measured)"
+  },
+  {
+   "domain": "chargerlab.com",
+   "match": "subdomains",
+   "kind": "measurement",
+   "credit": "ChargerLAB (measured)",
+   "crawl": "human_only"
+  },
+  {
+   "domain": "tomshardware.com",
+   "match": "subdomains",
+   "kind": "measurement",
+   "credit": "Tom's Hardware (measured)",
+   "crawl": "human_only"
+  },
+  {
+   "domain": "techpowerup.com",
+   "match": "subdomains",
+   "kind": "measurement",
+   "credit": "TechPowerUp reviews (measured)",
+   "crawl": "human_only"
+  },
+  {
+   "domain": "storagereview.com",
+   "match": "subdomains",
+   "kind": "measurement",
+   "credit": "StorageReview (measured)",
+   "crawl": "human_only",
+   "to_clear": "read terms"
+  },
+  {
+   "domain": "tftcentral.co.uk",
+   "match": "subdomains",
+   "kind": "measurement",
+   "credit": "TFTCentral (measured)",
+   "crawl": "human_only",
+   "to_clear": "read terms"
+  },
+  {
+   "domain": "pcmonitors.info",
+   "match": "subdomains",
+   "kind": "measurement",
+   "credit": "PCMonitors.info (measured)",
+   "crawl": "human_only",
+   "to_clear": "read terms"
+  },
+  {
+   "domain": "github.com",
+   "match": "path_prefix",
+   "kind": "crowd",
+   "credit": "Contributor evidence (GitHub issue)",
+   "path": "/shrestha-pranav/specsheet/issues",
+   "crawl": "human_only",
+   "to_clear": "Owner approves the contributor-terms wording (Q1); then a policy bump sets licence_grant: true"
   },
   {
    "domain": "www.dell.com",
