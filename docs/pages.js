@@ -3,7 +3,7 @@
 (() => {
   'use strict';
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const mail = (site, role) => { if (!site.email_enabled) return `<a href="https://github.com/${esc(site.repo)}/issues/new">a GitHub issue</a>`; const a = `${site.contacts[role]}@${site.domain}`; return `<a href="mailto:${esc(a)}">${esc(a)}</a>`; };
+  const mail = (site, role) => { if (!site.email_enabled) return role === 'hello' ? `<a href="https://github.com/${esc(site.repo)}/discussions">GitHub Discussions</a>` : `<a href="https://github.com/${esc(site.repo)}/issues/new">a GitHub issue</a>`; const a = `${site.contacts[role]}@${site.domain}`; return `<a href="mailto:${esc(a)}">${esc(a)}</a>`; };
   const draft = site => `<p class="callout draft-banner"><strong>${esc(site.legal_status)}.</strong> This page is a plain-language draft and has not been approved yet. Do not rely on it as final terms.</p>`;
   const head = (site, title, lead) => `<div class="page-head"><h1>${esc(title)}</h1><p class="intro">${lead}</p></div>${draft(site)}`;
   const date = 'Last updated 2026-11-24.';
@@ -43,7 +43,7 @@
 <h2>Your browser</h2>
 <p>Your theme choice and the like are kept in your own browser storage and never sent to us.</p>
 <h2>GitHub and email</h2>
-<p>Corrections and product requests on GitHub are public and governed by GitHub’s own privacy terms; include product information only. If you email ${mail(site, 'corrections')}, ${mail(site, 'legal')} or ${mail(site, 'hello')}, we keep the message only as long as needed to answer it.</p>
+<p>Corrections, product requests and Discussions posts on GitHub are public and governed by GitHub’s own privacy terms; include product information only. If you email ${mail(site, 'corrections')}, ${mail(site, 'legal')} or ${mail(site, 'hello')}, we keep the message only as long as needed to answer it.</p>
 <h2>Contact</h2>
 <p>${mail(site, 'hello')}</p>
 </div>`;

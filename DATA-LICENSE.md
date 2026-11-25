@@ -24,8 +24,12 @@ We offer the specsheet database under the Open Database License 1.0
    decisions (which listings are the same product, our ids, crosswalks and tombstones), review decisions, and the
    notes and derived fields we wrote.
 2. **Values from sources with recorded permission evidence.** These are the sources marked `licence_grant: true`
-   in `data/source-policy.yaml`. Today that is one source: U.S. EPA ENERGY STAR data (data.energystar.gov), which EPA
-   publishes under its data licence. The policy file records the evidence and the conditions of use.
+   in `data/source-policy.yaml`. Today there are two. One is U.S. EPA ENERGY STAR data (data.energystar.gov), which EPA
+   publishes under its data licence. The other is first-hand contributor evidence: an accepted correction backed by a
+   photo of the product's own label (E1) or the contributor's own measurement (E4), whose contributor ticked the
+   contributor terms (ODbL 1.0 for the database, DbCL 1.0 for the contents; the photos stay the contributor's and are
+   only linked). Corrections that cite a maker or measurement page take that page's disposition instead. The policy
+   file records the evidence and the conditions of use.
 
 **What is not covered.** A value whose only sources are marked `licence_grant: false` is shown as a fact with a
 link to its source, and we grant no licence over it. That covers maker spec pages, Lenovo PSREF, the VESA

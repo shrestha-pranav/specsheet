@@ -1,7 +1,7 @@
 {
  "generated_from": "data/source-policy.yaml",
- "policy_version": "2026-11-25.3",
- "policy_sha256": "e986a41df4ead13e329faab0642de797043a560f6f5b84c5ccc331cbdc431417",
+ "policy_version": "2026-11-25.6",
+ "policy_sha256": "b68d981043cbfb0314bf1446496b91dd02a08f3eae8d04ff86261ab8fa186c26",
  "license_scope": "compilation + values whose sources[] include licence_grant:true; other values are facts with links, not licensed by us",
  "granted": [
   {
@@ -16,6 +16,21 @@
     "Values are manufacturer-certified data published by EPA; check dataset metadata for 'otherwise specified' notices per dataset"
    ],
    "paid": true
+  },
+  {
+   "domain": "github.com",
+   "match": "path_prefix",
+   "kind": "crowd",
+   "credit": "Contributor evidence (GitHub issue)",
+   "path": "/shrestha-pranav/specsheet/issues",
+   "crawl": "human_only",
+   "attribution": "Source: Contributor evidence (GitHub issue)",
+   "conditions": [
+    "Only E1/E4 claims with terms_ack cite this source",
+    "No handle, name or email is stored; photos stay on GitHub (hash only)",
+    "Grant is ODbL only: relicense false, crowd values are excluded from any alternative licence until counsel clears a relicensing clause (Q1)"
+   ],
+   "paid": false
   }
  ],
  "facts_only": [
@@ -101,10 +116,12 @@
    "match": "exact",
    "kind": "maker",
    "credit": "Samsung official specification pages",
+   "crawl": "human_only",
    "categories": [
     "ssds",
     "tvs"
-   ]
+   ],
+   "to_clear": "Samsung permission. Existing stored values stay published as facts + link pending owner decision; no new agent fetches."
   },
   {
    "domain": "www.cyberpowersystems.com",
@@ -526,15 +543,6 @@
    "to_clear": "read terms"
   },
   {
-   "domain": "github.com",
-   "match": "path_prefix",
-   "kind": "crowd",
-   "credit": "Contributor evidence (GitHub issue)",
-   "path": "/shrestha-pranav/specsheet/issues",
-   "crawl": "human_only",
-   "to_clear": "Owner approves the contributor-terms wording (Q1); then a policy bump sets licence_grant: true"
-  },
-  {
    "domain": "www.dell.com",
    "match": "exact",
    "kind": "maker",
@@ -585,9 +593,11 @@
    "match": "exact",
    "kind": "maker",
    "credit": "Apple official tech-specs pages",
+   "crawl": "human_only",
    "categories": [
     "laptops"
-   ]
+   ],
+   "to_clear": "Apple permission. Existing stored values stay published as facts + link pending owner decision; no new agent fetches."
   },
   {
    "domain": "www.baseus.com",
@@ -660,6 +670,113 @@
    "credit": "Samsung SSD datasheets",
    "categories": [
     "ssds"
+   ]
+  },
+  {
+   "domain": "www.downloads.netgear.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "NETGEAR datasheets",
+   "categories": [
+    "routers"
+   ]
+  },
+  {
+   "domain": "downloads1.netgear.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "NETGEAR documents",
+   "categories": [
+    "routers"
+   ]
+  },
+  {
+   "domain": "dl.ui.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Ubiquiti datasheets",
+   "categories": [
+    "routers"
+   ]
+  },
+  {
+   "domain": "www.ui.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Ubiquiti datasheets",
+   "categories": [
+    "routers"
+   ]
+  },
+  {
+   "domain": "static.gl-inet.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "GL.iNet datasheets and user guides",
+   "categories": [
+    "routers"
+   ]
+  },
+  {
+   "domain": "download.microsoft.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Microsoft Surface documents",
+   "categories": [
+    "laptops"
+   ]
+  },
+  {
+   "domain": "i.dell.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Dell documents",
+   "categories": [
+    "laptops",
+    "monitors"
+   ]
+  },
+  {
+   "domain": "www.delltechnologies.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Dell Technologies documents",
+   "categories": [
+    "laptops",
+    "monitors"
+   ]
+  },
+  {
+   "domain": "images.samsung.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Samsung spec sheets",
+   "crawl": "human_only",
+   "categories": [
+    "ssds",
+    "tvs"
+   ],
+   "to_clear": "Samsung permission, or a coordinator ruling that maker spec sheets are outside the harvest clause (www.samsung.com is crawl agent under the same terms)"
+  },
+  {
+   "domain": "www.apple.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Apple documents",
+   "crawl": "human_only",
+   "categories": [
+    "laptops"
+   ],
+   "to_clear": "Apple permission; support.apple.com is crawl agent under the same terms (coordinator review)"
+  },
+  {
+   "domain": "apple.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Apple documents",
+   "crawl": "human_only",
+   "categories": [
+    "laptops"
    ]
   },
   {

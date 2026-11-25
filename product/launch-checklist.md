@@ -8,6 +8,7 @@ step 16 ("no paid route returns data") replaced by the route matrix (D3.5). Acce
 Directory submissions and announce moved after acceptance.
 
 ## Owner, now (Cloudflare only; nothing payment-related)
+_Cloudflare items (1-4, 6, 7): owner HOLD 2026-11-25._
 1. [owner] Create a Cloudflare account (free plan). Enable 2FA.
 2. [owner] Check availability + a USPTO search, then buy **`knownspec.com`** at Cloudflare Registrar (fallback
    `plainspec.com`). Needed at L1 for contact email only; the site stays on GH Pages.
@@ -15,6 +16,7 @@ Directory submissions and announce moved after acceptance.
 4. [owner] Workers: note the `workers.dev` subdomain. Create Web Analytics for the GH Pages site (cookieless JS
    snippet). Set usage notifications at 50%/80% for Workers and Durable Objects. No Stripe/Coinbase accounts.
 5. [owner] On GitHub: enable Discussions, private vulnerability reporting, secret scanning push protection.
+   **DONE 2026-11-25:** all three ENABLED (by coordinator on owner approval).
 6. [owner] Create a read-only Account Analytics API token → `pass specsheet/cf-analytics-read` (for kpi.sql).
 7. [owner, can wait until after L1] R2: enable, create private buckets `specsheet-raw` (versioning on, noncurrent
    versions expire after 30 days, **no bucket lock**) and `specsheet-data` (archive, **no bucket lock**). Tokens
@@ -29,6 +31,7 @@ Directory submissions and announce moved after acceptance.
 10. [agent] Licence text: `DATA-LICENSE.md` (R3 draft done), Terms/Sources/Privacy wording per D1.2 and D4
     (A4, from licensing-gate brief §6 and measurement-plan §1).
 11. [owner] Review and approve terms/privacy/sources/about drafts and `DATA-LICENSE.md`.
+    **APPROVED by owner 2026-11-25.**
 12. [agent] Release promotion: manifest checksums + policy version, verify, gh-pages publish, query pack for the
     same release, rollback procedure; R2 archive upload dry-run until step 7 (brief `pm-2026-11-24-release-r2`).
 13. [agent] API Worker per the D3.5 route matrix: `PAYMENTS`/`PREVIEW` vars, bounds, shared REST/MCP quota with

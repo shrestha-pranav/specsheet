@@ -101,13 +101,13 @@ class Policies(unittest.TestCase):
         live = {f"{registry.parser_info(s)['parser']}+{B.TRANSFORM}" for s, m in registry.SOURCES.items()
                 if m["category"] in ("power-stations", "robot-vacuums")}
         old = {p for r in self.pol["rel/bundle-contents@1"]["rules"] for p in r["parsers"]}
-        new = {p for r in self.pol["rel/bundle-contents@3"]["rules"] for p in r["parsers"]}   # r7 (A2 coverage r2): @2 -> @3, station parsers bumped
+        new = {p for r in self.pol["rel/bundle-contents@6"]["rules"] for p in r["parsers"]}   # r7 (A2 coverage r2): @2 -> @3, station parsers bumped; A2-mon r5: @5 (stations @4)
         self.assertFalse(old & live, "@1 rules match no link the bundles@2 transform emits")
         self.assertNotIn("rel/bundle-contents@1", [p["id"] for p in self.dec.relation_policies], "@1 is retired (verbatim, still locked)")
         self.assertEqual(self.pol["rel/bundle-contents@1"]["retired"]["superseded_by"], "rel/bundle-contents@2")
         self.assertTrue(new <= live)
-        self.assertEqual(self.pol["rel/bundle-contents@3"]["audit"]["parsers"][B.TRANSFORM], B.fingerprint(), "audited transform == code")
-        self.assertEqual({t for r in self.pol["rel/bundle-contents@3"]["rules"] for t in r["types"]}, {"contains"})
+        self.assertEqual(self.pol["rel/bundle-contents@6"]["audit"]["parsers"][B.TRANSFORM], B.fingerprint(), "audited transform == code")
+        self.assertEqual({t for r in self.pol["rel/bundle-contents@6"]["rules"] for t in r["types"]}, {"contains"})
 
     def test_tv_allowlists_separate_and_pinned(self):
         cov = self.pol["claim/tvs-es-certification-coverage@1"]["match"]

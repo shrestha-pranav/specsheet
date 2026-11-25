@@ -1,0 +1,6 @@
+# Brief: /v1/presets REST + checklist. Owner: A3-api. Read team/reports/2026-11-25-a3-api-unknowns.md, product/launch-checklist.md, product/decisions.md D3.5.
+1. Coordinator ruling: amend D3.5 — /v1/presets (REST) mirrors the MCP list_presets tool (same payload, unpriced, 1 budget unit). Add route, route-matrix rows (all 5 modes), tests, README route table. Note the amendment in product/decisions.md D3.5 (dated line).
+2. product/launch-checklist.md: mark item 11 (terms/privacy/sources/about + DATA-LICENSE) APPROVED by owner 2026-11-25; item 5 GitHub: Discussions, private vulnerability reporting, secret scanning push protection ENABLED 2026-11-25 (by coordinator on owner approval). Cloudflare items: owner HOLD 2026-11-25. product/open-questions.md Q1: contributor wording approved without relicensing clause (relicensing still with counsel).
+3. Discussions now on: check docs/ links that pointed to Discussions or fell back to issues; switch to Discussions where the D-docs intended (general questions/requests), keep corrections on the issue form.
+Files: api-worker/**, product/launch-checklist.md, product/open-questions.md, product/decisions.md (D3.5 line only), docs/ link text only. No deploy/login. Do not run release.sh.
+Report: team/reports/2026-11-25-a3-r5-api.md (<=30 lines).

@@ -8,6 +8,8 @@ Q1. **Legal review scope** (revenue on hold). Bundle: the R3 licence boundaries 
     **Added 2026-11-25 (D9.2):** the corrections form's contributor checkbox (ODbL 1.0 + DbCL 1.0, photos stay the
     contributor's) and whether to add a relicensing clause. Default: ship the checkbox without the relicensing clause,
     with crowd values tagged `relicense: false`.
+    **Resolved in part 2026-11-25:** owner approved the contributor wording without a relicensing clause. Relicensing itself
+    stays with counsel.
 Q2. **Lenovo PSREF.** 109k of 207k published values (53%) come only from PSREF. They stay free as linked facts but
     are outside our licence grant and outside paid. Ask Lenovo for written permission? Without it, paid laptops are empty.
 Q3. **Domain.** Confirm `knownspec.com` (fallback `plainspec.com`). L1 needs it for contact email only.

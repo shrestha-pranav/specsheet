@@ -11,8 +11,10 @@ claims and returns the rows it did not map (fingerprints.unmapped). Review-3 rul
   and Ah are distinct keys; Wh is never computed from Ah x V; two different Wh figures in one cell are unresolved;
 - every basis stays on the claim: cycle life carries retention_pct (none printed -> unresolved), recharge time charge_to_pct (none printed ->
   unresolved) and charger_w, UPS switchover backup_mode, solar voltage window voltage_basis, AC input ac_charge_mode.
+r5 (A2-mon 2026-11-25): chemistry() reads 'LiFePO\u2084' (subscript 4); ups_prose() = the coordinator's UPS-prose ruling (see its docstring),
+  the one exception to 'no UPS from prose'.
 """
-import re, sys
+import html, re, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _powerbank as P  # noqa: E402
@@ -67,7 +69,7 @@ def dims(s):
 
 def chemistry(s):
     t = (s or "").lower()
-    if re.search(r"lifepo4|\blfp\b|lithium iron phosphate", t):
+    if re.search(r"lifepo[4\u2084]|\blfp\b|lithium iron phosphate", t):      # 'LiFePO\u2084' (subscript four, BLUETTI rows) is the same word
         return "lfp"
     if re.search(r"\bnmc\b|ternary|nickel manganese", t):
         return "nmc"
@@ -142,7 +144,7 @@ def emit_rows(pr, adapter, snap, model, rows, block):
             continue
         inp = bool(re.search(r"\binput\b|charg", sec)) and not re.search(r"output", sec)
         # ---- capacity ---------------------------------------------------------------------------------------------------------
-        if re.search(r"(^|/ )((battery|pack|total|rated) )?capacity$", l) and not re.search(r"solar|expan|extra|charging time", l):
+        if re.search(r"(^|/ )((battery pack|battery|pack|total|rated) )?capacity$", l) and not re.search(r"solar|expan|extra|charging time", l):
             ws = whs(v)
             key = "cap.usable_wh" if re.search(r"usable|available", tail) else "cap.energy_wh"
             if len(ws) == 1:
@@ -415,3 +417,52 @@ def emit_rows(pr, adapter, snap, model, rows, block):
         E("in.solar_w", U("several solar inputs; their combined maximum is not printed" if len(solar_tot) > 1 and bad is None else bad.reason if bad is not None else "?"),
           " | ".join(s[1] for s in solar_tot)[:300], " + ".join(s[0] for s in solar_tot))
     return left
+
+
+# ---- coordinator ruling r5 (A1, 2026-11-25): ups.switchover_ms from maker prose ----------------------------------------------------------------
+# Allowed ONLY when (a) the page is single-SKU (the caller has resolved exactly one model and the page is not a package), (b) the sentence is in
+# the maker's own product description (spec/feature copy; text inside <table> = comparison tables is dropped, and a sentence naming another
+# model is skipped), (c) the sentence states a number + ms AND 'UPS' / 'switchover' / 'switch time'. '<' / '\u2264' / 'sub-' / 'under' /
+# 'within' / 'less than' -> the value is an upper bound: published as 'up to N' (normalize.py qualifier up_to). EPS-only sentences, 'auto-switch'
+# without UPS, 'power transition' and sentences with two different ms figures -> nothing.
+UPS_WORD = re.compile(r"\bUPS\b|switch-?over|switch(?:ing)? time", re.I)
+UPS_MS = re.compile(r"(?:(<|\u2264|&lt;|\bsub-?|\bunder\s+|\bwithin\s+|\bless than\s+|\bin under\s+)\s*)?(?<![\d.])(\d+(?:\.\d+)?)\s*-?\s*ms\b", re.I)
+MODEL_TOKEN = re.compile(r"\b(?:[A-Z]{1,4}\d{2,5}[A-Z]{0,3}|(?:Explorer|HomePower|Elite|Premium|Yeti|DELTA|RIVER)\s\d{2,5}[A-Za-z]*)\b")
+
+
+def ups_prose(body_html, own_names=()):
+    """-> (value, sentence) or (None, None). value = number (stated exactly) or 'up to N' (upper bound)."""
+    if not body_html:
+        return None, None
+    t = re.sub(r"(?is)<table.*?</table>|<script.*?</script>|<style.*?</style>", " ", body_html)
+    t = re.sub(r"(?i)<br\s*/?>|</(?:p|li|h\d|div|ul)>|<li[^>]*>", "\n", t)
+    t = html.unescape(re.sub(r"<[^>]+>", " ", t)).replace("\xa0", " ")
+    own = {re.sub(r"[^a-z0-9]", "", n.lower()) for n in own_names if n}
+    hits = {}
+    for sent in (x for blk in t.split("\n") for x in re.split(r"(?<=[.!?])\s+(?=[A-Z])|\s*\u2022\s*", re.sub(r"\s+", " ", blk))):
+        sent = sent.strip()
+        if not sent or not UPS_WORD.search(sent) or re.search(r"\bEPS\b", sent) and not re.search(r"\bUPS\b", sent):
+            continue
+        ms = UPS_MS.findall(sent)
+        if len({x[1] for x in ms}) != 1:
+            continue
+        others = {re.sub(r"[^a-z0-9]", "", m.lower()) for m in MODEL_TOKEN.findall(sent)} - own
+        if others and not any(o in n or n in o for o in others for n in own):
+            continue                                    # the sentence names another model: comparison copy, not this SKU's statement
+        bound, n = ms[0]
+        v = P.fnum(n)
+        hits.setdefault(f"up to {n}" if bound else v, sent[:300])
+    if len(hits) != 1:
+        return None, None
+    (v, sent), = hits.items()
+    return v, sent
+
+
+def emit_ups_prose(pr, adapter, snap, model, body_html, own_names=()):
+    """Caller contract: one resolved model, not a package page. Only when no labelled row already wrote ups.switchover_ms."""
+    if any(c["key"] == "ups.switchover_ms" for c in pr.claims):
+        return
+    v, sent = ups_prose(body_html, (model,) + tuple(own_names))
+    if v is not None:
+        P.emit(pr, adapter, snap, "ups.switchover_ms", v, sent, "product description (UPS prose ruling r5)", model, {"backup_mode": "ups"},
+               quote=sent)

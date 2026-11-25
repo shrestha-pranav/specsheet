@@ -336,7 +336,7 @@
     const mark = document.querySelector('[data-wordmark]');
     if (mark) { const [strong, light] = wordmarkParts(SITE.brand); mark.innerHTML = `${escapeHtml(strong)}<span>${escapeHtml(light)}</span><i aria-hidden="true"></i>`; mark.setAttribute?.('aria-label', `${SITE.brand} home`); }
     const line = document.querySelector('[data-brand-line]'); if (line) line.textContent = `${SITE.brand} · ${SITE.tagline}`;
-    document.querySelectorAll?.('[data-email]').forEach(a => { if (!SITE.email_enabled) { a.href = issuesUrl(); a.textContent = 'GitHub issues'; return; } const address = siteEmail(a.dataset.email); a.href = `mailto:${address}`; a.textContent = address; });
+    document.querySelectorAll?.('[data-email]').forEach(a => { if (!SITE.email_enabled) { if (a.dataset.email === 'hello') { a.href = `https://github.com/${SITE.repo}/discussions`; a.textContent = 'GitHub Discussions'; } else { a.href = issuesUrl(); a.textContent = 'GitHub issues'; } return; } const address = siteEmail(a.dataset.email); a.href = `mailto:${address}`; a.textContent = address; });
     document.querySelectorAll?.('[data-repo]').forEach(a => { a.href = `https://github.com/${SITE.repo}`; });
     document.querySelectorAll?.('[data-repo-issue]').forEach(a => { a.href = `${issueBase()}?title=Correction%3A%20`; });
   };

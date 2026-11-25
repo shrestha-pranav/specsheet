@@ -17,6 +17,8 @@ v2 (2026-11-24, preset fill): usb.usbc_inputs from the Connectivity section (one
 v3 (2026-11-25, a2 r5): flk.pwm 'none' also from the page's own 'TUV Certificate' row when its value names TÜV Flicker-free (SW242Q:
   'TUV Certificate: Flicker-free'), only when no 'Flicker-free Technology' row wrote it. Same declaration meaning as the Yes row; Eye Comfort
   star levels, Low Blue Light and silence never map.
+v4 (2026-11-25, A2-mon r5): usb.kvm from the page's own 'KVM Switch' spec row: 'Yes' -> True, 'No' -> False; any other value, prose
+  ('KVM' in feature copy / nav) and silence write nothing.
 """
 import gzip, html, re, sys, time
 from pathlib import Path
@@ -25,7 +27,7 @@ import _contract as C
 import _run
 import _monports as MP
 
-ID, VERSION, SOURCE = "benq_monitors", 3, "benq-us-monitors"
+ID, VERSION, SOURCE = "benq_monitors", 4, "benq-us-monitors"
 CATEGORIES = {"monitors"}
 ADAPTER = f"{ID}@{VERSION}"
 SITEMAP = "https://www.benq.com/en-us/sitemap.xml"
@@ -123,6 +125,9 @@ def parse_html(snap, h):
         add("flk.pwm", "none", "TUV Certificate", quote=f"TUV Certificate: {tuv}")
     if tuv and tuv.strip().lower() not in ("no", "-", "n/a"):
         add("flk.cert", ["TUV " + x.strip() for x in re.split(r"[,/]", tuv) if x.strip()], "TUV Certificate", quote=f"TUV Certificate: {tuv}")
+    kvm = get("KVM Switch")
+    if kvm is not None and re.fullmatch(r"(?i)\s*(yes|no)\s*", kvm):
+        add("usb.kvm", kvm.strip().lower() == "yes", "KVM Switch", quote=f"KVM Switch: {kvm}")
     pt = get("Panel Type")
     if pt:
         m = re.fullmatch(r"\s*(IPS|VA|TN|QD-OLED|WOLED)\s*", pt, re.I)

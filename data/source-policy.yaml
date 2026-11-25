@@ -19,8 +19,11 @@
 # Invariants enforced by the gate: licence_grant yes => free yes; paid yes => licence_grant yes.
 # Changing any disposition = bump policy_version (date.N), add a changelog line. Builds stamp the version into
 # manifest.json; a release refuses to promote with a policy version older than the one in git.
-policy_version: "2026-11-25.3"
+policy_version: "2026-11-25.6"
 changelog:
+  - {version: "2026-11-25.6", by: coordinator, note: "ToS consistency ruling: www.samsung.com and support.apple.com -> crawl human_only (same site terms as images.samsung.com / www.apple.com bar automated collection). Stops agent fetches; already-stored values unchanged pending owner decision."}
+  - {version: "2026-11-25.5", by: A2-hosts, note: "Document hosts from doc parsers r3 (robots + terms read 2026-11-25, refs per entry). crawl agent, robots allow us, terms have no automated-access clause: www.downloads.netgear.com + downloads1.netgear.com (NETGEAR; the crawler clause binds subscription Services only), dl.ui.com + www.ui.com (Ubiquiti), static.gl-inet.com (GL.iNet), download.microsoft.com (Microsoft; the scraping clause binds AI services only), i.dell.com + www.delltechnologies.com (Dell). All kind maker, maker default disposition (free yes, paid no, no licence grant). crawl human_only (maker facts may be cited by a person, our agents do not fetch): images.samsung.com (Samsung terms: may not 'collect or harvest any information or data from our Sites'), www.apple.com + apple.com (Apple site terms forbid any 'robot, spider' to access or copy the Site). Excluded (free false, crawl none): principledtechnologies.com (vendor-commissioned competitive marketing, not a maker or independent measurement; robots disallow ClaudeBot/anthropic-ai/Claude-Web, * ai-train=no, use=reference). Open: www.samsung.com and support.apple.com stay crawl agent pending coordinator review (same terms as above)."}
+  - {version: "2026-11-25.4", by: A2-hosts, note: "Owner approved the D9.2 contributor-terms checkbox wording 2026-11-25 (ODbL 1.0 + DbCL 1.0, photos stay the contributor's) WITHOUT the relicensing clause. github.com path /shrestha-pranav/specsheet/issues (crowd, E1/E4 with terms_ack): licence_grant false -> true; relicense stays false. terms_version draft-2026-11-25 -> 2026-11-25."}
   - {version: "2026-11-25.3", by: A2-ssd, note: "SSD DRAM sources from maker publications. Added semiconductor.samsung.com (Samsung consumer-storage documents page, robots Allow: /) and download.semiconductor.samsung.com (its datasheet PDF host; serves no robots.txt, 404), kind maker, crawl agent, maker default disposition (free yes, paid no, no licence grant). New source samsung-ssd-datasheets (crawler/adapters/samsung_datasheets.py)."}
   - {version: "2026-11-25.2", by: A3/A4 corrections flow, note: "D9.2 corrections. New match mode path_prefix (key path; matches the domain and its subdomains, longest prefix wins over the host entry) and kind crowd. Added github.com path /shrestha-pranav/specsheet/issues as crowd (E1/E4 contributor evidence: free yes, paid no; licence_grant NO until the owner approves the draft contributor-terms wording, Q1). Added techpowerup.com path /ssd-specs (excluded: free false, crawl none) so the SSD database is rejected while TechPowerUp reviews stay human_only."}
   - {version: "2026-11-25.1", by: A3/A2 independent sources, note: "D9 dispositions (team/briefs/pm-2026-11-25-independent-sources-a2.md section 1). New key crawl (agent|human_only|none) and kind measurement (gate: scripts/source_policy.py validate + Policy.crawl). Added psrefstuff.lenovo.com, download.lenovo.com (maker, crawl agent), www.certipedia.com (certification, crawl agent, cert pages only). notebookcheck.net and chargerlab.com REPLACED (were retail_or_review, free false): now kind measurement, free true; notebookcheck crawl agent, chargerlab crawl human_only. Added measurement crawl human_only: tomshardware.com, techpowerup.com (whole domain: the gate matches hosts, not paths, so /ssd-specs/ links are rejected by the corrections flow), storagereview.com, tftcentral.co.uk, pcmonitors.info. Excluded (free false, crawl none): rtings.com, ssdwiki.com, hardware-corner.net, displayspecifications.com, monitornerds.com."}
@@ -92,7 +95,7 @@ sources:
   # Maker product pages: terms of use not audited. Shown free as facts + link; no grant, not paid.
   - {domain: www.lg.com, match: exact, kind: maker, credit: "LG official specification pages", categories: [monitors, tvs], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: www.asus.com, match: exact, kind: maker, credit: "ASUS official specification pages", categories: [laptops, monitors, routers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
-  - {domain: www.samsung.com, match: exact, kind: maker, credit: "Samsung official specification pages", categories: [ssds, tvs], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: www.samsung.com, match: exact, kind: maker, credit: "Samsung official specification pages", categories: [ssds, tvs], free: true, paid: false, licence_grant: false, crawl: human_only, evidence: {level: fetched, checked: 2026-11-25, refs: ["https://www.samsung.com/us/common/legal/ (may not 'Collect or harvest any information or data from our Sites or systems')"]}, to_clear: "Samsung permission. Existing stored values stay published as facts + link pending owner decision; no new agent fetches."}
   - {domain: www.cyberpowersystems.com, match: exact, kind: maker, credit: "CyberPower official specification pages", categories: [power-strips], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: assets.tripplite.com, match: exact, kind: maker, credit: "Tripp Lite (Eaton) official specification pages", categories: [power-strips], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: www.tp-link.com, match: exact, kind: maker, credit: "TP-Link official specification pages", categories: [routers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
@@ -155,13 +158,14 @@ sources:
      evidence: {level: fetched, checked: 2026-11-25, refs: ["robots.txt: ClaudeBot/GPTBot group disallows /ssd-specs/; * header reserves AI use (product/decisions.md D9)"]},
      conditions: ["Structured SSD database: excluded for agents and people alike (D9); TechPowerUp reviews keep the techpowerup.com entry above"]}
   # Contributor evidence (D9.2, 2026-11-25.2): the issue itself is the source of an E1 label photo / E4 own measurement. E2/E3 corrections cite a
-  # maker / measurement page and take THAT domain's disposition. licence_grant moves to true (with these refs) once the owner approves the
-  # checkbox wording in .github/ISSUE_TEMPLATE/field-correction.yml (terms_version draft-2026-11-25); the relicensing clause is held for counsel.
+  # maker / measurement page and take THAT domain's disposition. 2026-11-25.4: the owner approved the checkbox wording (terms_version 2026-11-25)
+  # WITHOUT the relicensing clause, so E1/E4 values with terms_ack carry our ODbL grant; relicense stays false (alternative licence held for counsel).
   - {domain: github.com, match: path_prefix, path: /shrestha-pranav/specsheet/issues, kind: crowd, credit: "Contributor evidence (GitHub issue)",
-     free: true, paid: false, licence_grant: false, crawl: human_only,
-     evidence: {level: fetched, checked: 2026-11-25, refs: [".github/ISSUE_TEMPLATE/field-correction.yml (contributor terms checkbox, DRAFT wording from product/decisions.md D9.2)"]},
-     conditions: ["Only E1/E4 claims with terms_ack cite this source", "No handle, name or email is stored; photos stay on GitHub (hash only)"],
-     to_clear: "Owner approves the contributor-terms wording (Q1); then a policy bump sets licence_grant: true"}
+     free: true, paid: false, licence_grant: true, crawl: human_only,
+     evidence: {level: fetched, checked: 2026-11-25, refs: [".github/ISSUE_TEMPLATE/field-correction.yml (contributor terms checkbox: ODbL 1.0 + DbCL 1.0, photos stay the contributor's; terms_version 2026-11-25)",
+       "product/decisions.md D9.2 (owner approved the checkbox wording 2026-11-25, without the relicensing clause)"]},
+     conditions: ["Only E1/E4 claims with terms_ack cite this source", "No handle, name or email is stored; photos stay on GitHub (hash only)",
+                  "Grant is ODbL only: relicense false, crowd values are excluded from any alternative licence until counsel clears a relicensing clause (Q1)"]}
   # Excluded (D9): nobody cites them, agents never fetch them.
   - {domain: rtings.com, match: subdomains, kind: measurement, free: false, paid: false, licence_grant: false, crawl: none,
      evidence: {level: search, checked: 2026-11-25, refs: ["paywalled since 2026 because of AI reuse [s]; terms URL 404 (product/decisions.md D9)"]}}
@@ -191,7 +195,7 @@ sources:
   - {domain: www.microsoft.com, match: exact, kind: maker, credit: "Microsoft official product pages", categories: [laptops], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: learn.microsoft.com, match: exact, kind: maker, credit: "Microsoft official spec documentation", categories: [laptops], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: www.razer.com, match: exact, kind: maker, credit: "Razer official product pages", categories: [laptops], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
-  - {domain: support.apple.com, match: exact, kind: maker, credit: "Apple official tech-specs pages", categories: [laptops], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: support.apple.com, match: exact, kind: maker, credit: "Apple official tech-specs pages", categories: [laptops], free: true, paid: false, licence_grant: false, crawl: human_only, evidence: {level: fetched, checked: 2026-11-25, refs: ["https://www.apple.com/legal/internet-services/terms/site.html (no robot/spider/automatic device to access or copy the Site)"]}, to_clear: "Apple permission. Existing stored values stay published as facts + link pending owner decision; no new agent fetches."}
   - {domain: www.baseus.com, match: exact, kind: maker, credit: "Baseus official product pages", categories: [chargers, power-banks], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: furmanpower.com, match: exact, kind: maker, credit: "Furman official product pages", categories: [power-strips], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: austere.com, match: exact, kind: maker, credit: "Austere official product pages", categories: [power-strips], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
@@ -203,6 +207,42 @@ sources:
      evidence: {level: fetched, checked: 2026-11-25, refs: ["https://semiconductor.samsung.com/robots.txt (User-agent: * Allow: /)", "https://semiconductor.samsung.com/consumer-storage/support/documents/"]}}
   - {domain: download.semiconductor.samsung.com, match: exact, kind: maker, credit: "Samsung SSD datasheets", categories: [ssds], free: true, paid: false, licence_grant: false, crawl: agent,
      evidence: {level: fetched, checked: 2026-11-25, refs: ["https://download.semiconductor.samsung.com/resources/data-sheet/Samsung-NVMe-SSD-980-PRO-Data-Sheet_Rev.2.1_230509_10129505081019.pdf"]}}
+  # Document hosts of doc parsers r3 (2026-11-25.5, A2-hosts). Robots fetched with our UA 2026-11-25; terms read the same day.
+  - {domain: www.downloads.netgear.com, match: exact, kind: maker, credit: "NETGEAR datasheets", categories: [routers], free: true, paid: false, licence_grant: false, crawl: agent,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["https://www.downloads.netgear.com/robots.txt (403 S3 AccessDenied = no robots file, RFC 9309 4xx: unrestricted)",
+       "https://www.netgear.com/about/terms-and-conditions/ (s.12 no crawlers binds the subscription Services, s.5.1; no clause on the website or downloads)"]}}
+  - {domain: downloads1.netgear.com, match: exact, kind: maker, credit: "NETGEAR documents", categories: [routers], free: true, paid: false, licence_grant: false, crawl: agent,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["robots.txt 403 S3 AccessDenied (no robots file)", "terms: see www.downloads.netgear.com"]}}
+  - {domain: dl.ui.com, match: exact, kind: maker, credit: "Ubiquiti datasheets", categories: [routers], free: true, paid: false, licence_grant: false, crawl: agent,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["https://dl.ui.com/robots.txt (redirects to techspecs.ui.com HTML: no robots file)",
+       "https://www.ui.com/legal/termsofservice/ (no copying/republishing of Content; no automated-access clause)"]}}
+  - {domain: www.ui.com, match: exact, kind: maker, credit: "Ubiquiti datasheets", categories: [routers], free: true, paid: false, licence_grant: false, crawl: agent,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["https://www.ui.com/robots.txt (User-Agent * and ClaudeBot: Allow /)", "https://www.ui.com/legal/termsofservice/"]}}
+  - {domain: static.gl-inet.com, match: exact, kind: maker, credit: "GL.iNet datasheets and user guides", categories: [routers], free: true, paid: false, licence_grant: false, crawl: agent,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["https://static.gl-inet.com/robots.txt (404: unrestricted)",
+       "https://www.gl-inet.com/policies/terms-of-service (no copying of Content for commercial purpose; no automated-access clause)"]}}
+  - {domain: download.microsoft.com, match: exact, kind: maker, credit: "Microsoft Surface documents", categories: [laptops], free: true, paid: false, licence_grant: false, crawl: agent,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["https://download.microsoft.com/robots.txt (redirects to an HTML page: no robots file)",
+       "https://www.microsoft.com/en-us/legal/terms-of-use (the web-scraping clause sits under AI services; documents may not be re-posted)"]}}
+  - {domain: i.dell.com, match: exact, kind: maker, credit: "Dell documents", categories: [laptops, monitors], free: true, paid: false, licence_grant: false, crawl: agent,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["https://i.dell.com/robots.txt (* disallows /wss /stormroot /mirror /serviceshome only)",
+       "https://www.dell.com/en-us/legal/lp/site-terms-of-use-copyright (no copying/mirroring of Materials; no automated-access clause)"]}}
+  - {domain: www.delltechnologies.com, match: exact, kind: maker, credit: "Dell Technologies documents", categories: [laptops, monitors], free: true, paid: false, licence_grant: false, crawl: agent,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["https://www.delltechnologies.com/robots.txt (* allows /asset/)", "terms: see i.dell.com"]}}
+  - {domain: images.samsung.com, match: exact, kind: maker, credit: "Samsung spec sheets", categories: [ssds, tvs], free: true, paid: false, licence_grant: false, crawl: human_only,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["https://images.samsung.com/robots.txt (names Googlebot only: * unrestricted)",
+       "https://www.samsung.com/us/common/legal/ (Permitted Uses: may not 'Collect or harvest any information or data from our Sites or systems')"]},
+     to_clear: "Samsung permission, or a coordinator ruling that maker spec sheets are outside the harvest clause (www.samsung.com is crawl agent under the same terms)"}
+  - {domain: www.apple.com, match: exact, kind: maker, credit: "Apple documents", categories: [laptops], free: true, paid: false, licence_grant: false, crawl: human_only,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["https://www.apple.com/robots.txt (* allows /environment/)",
+       "https://www.apple.com/legal/internet-services/terms/site.html (no 'robot', 'spider' or other automatic device to access or copy the Site)"]},
+     to_clear: "Apple permission; support.apple.com is crawl agent under the same terms (coordinator review)"}
+  - {domain: apple.com, match: exact, kind: maker, credit: "Apple documents", categories: [laptops], free: true, paid: false, licence_grant: false, crawl: human_only,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["redirects to www.apple.com", "terms: see www.apple.com"]}}
+  - {domain: principledtechnologies.com, match: subdomains, kind: retail_or_review, free: false, paid: false, licence_grant: false, crawl: none,
+     evidence: {level: fetched, checked: 2026-11-25, refs: ["https://www.principledtechnologies.com/robots.txt (ClaudeBot, anthropic-ai, Claude-Web Disallow /; * Content-Signal ai-train=no, use=reference)",
+       "https://www.principledtechnologies.com/ ('fact-based marketing and competitive analysis'; reports named for vendor clients)"]},
+     conditions: ["Vendor-commissioned competitive reports linked from dell.com: neither the maker's own publication nor independent measurement (D9)"]}
   # Document hosts (document pipeline, 2026-11-24): shared CDNs that serve many makers' PDFs. No disposition of their own: a document gets the
   # disposition of the page that linked it (inherit: linking_page). Flags below = fallback for a document with no linking page (withheld).
   - {domain: cdn.shopify.com, match: exact, kind: document_host, inherit: linking_page, credit: "Shopify file CDN (documents hosted for many makers)", free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null}}

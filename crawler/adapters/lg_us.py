@@ -17,6 +17,12 @@ v3 (2026-11-25, a2 r5): flk.pwm 'none' (official maker declaration, literal quot
            flicker-free certification explicitly: a legal footnote 'Certificate Number: Flicker[- ]Free Display (OLED) - A196009' or feature copy
            'UL[- ]verified "Flicker-free Display"'. Image alt text, 'Reader Mode', 'reduce(s) flicker' and badge lists never map; a page with a
            'Flicker Safe' spec term is left to the label map (claim/monitor-flicker-label-map@1). See lg_flicker_free().
+v4 (2026-11-25, A2-mon r5): (1) flk.pwm 'none' also from a feature badge list: the alt text of a CMS image asset whose own SKU metaproperty
+           is exactly this page's model, when one alt line is exactly 'Flicker-Free' (the UL Verified badge set 'Flicker-Free / Discomfort Glare
+           Free / Low Blue Light Platinum'); assets tagged with another or no SKU never count. Only when v3's footnote/copy found nothing.
+           (2) usb.kvm from the maker's own spec row 'KVM: Yes' (True) / 'KVM: No' (False); never from prose, nav or absence.
+           (3) res.refresh_native only from a 'Refresh Rate' row that is one plain 'NHz' and a page with no 'Dual Mode Refresh Rate' row;
+           'O/C', 'up to', 'Max', several figures, H/V-frequency cells -> nothing.
 """
 import gzip, json, re, sys
 from pathlib import Path
@@ -26,7 +32,7 @@ from _contract import Ref, Discovery, ParseResult, claim  # noqa
 import _run
 import _monports as MP
 
-ID, VERSION, SOURCE = "lg_us", 3, "lg-us"
+ID, VERSION, SOURCE = "lg_us", 4, "lg-us"
 CATEGORIES = {"monitors"}
 SITEMAP = "https://www.lg.com/us/sitemap.xml"
 ADAPTER = f"{ID}@{VERSION}"
@@ -133,6 +139,10 @@ def parse_html(snap, html):
             pr.claims[-1]["locator"]["derivation"] = MP.DERIVATION
     if (v := g("Refresh Rate")) and re.search(r"\d\s*Hz", v):
         add("res.refresh_max", num(v), "Hz", "Refresh Rate")
+    if (v := g("Refresh Rate")) and (m := re.fullmatch(r"\s*(\d{2,4})\s*hz\s*", v, re.I)) and not any(re.search(r"dual mode", t, re.I) for t in T):
+        add("res.refresh_native", int(m[1]), "Hz", "Refresh Rate")          # v4: one plain rate only
+    if (v := g("KVM")) is not None and re.fullmatch(r"\s*(yes|no)\s*", v, re.I):
+        add("usb.kvm", v.strip().lower() == "yes", None, "KVM")               # v4: the maker's own spec row
     if (v := g("Response Time (GTG)")) and num(v) is not None:
         add("motion.gtg_marketed", num(v), "ms", "Response Time (GTG)")
     b = g("Brightness (Typical, Minimum)") or g("Brightness (Typical)") or g("Brightness")
@@ -191,7 +201,7 @@ def parse_html(snap, html):
     if n is not None:
         pr.claims.append(claim(model, "usb.usbc_inputs", n, None, rawio, "s1", ADAPTER, "next_data", obs, {"term": "Input/Output"}, rawio,
                                conditions={"basis": "complete_enumeration"} if zero else None))
-    if not any(re.match(r"Flicker Safe", t, re.I) for t in T) and (ff := lg_flicker_free(nd)):
+    if not any(re.match(r"Flicker Safe", t, re.I) for t in T) and (ff := lg_flicker_free(nd) or lg_flicker_badge(nd, model)):
         pr.claims.append(claim(model, "flk.pwm", "none", None, ff[1], "s1", ADAPTER, "next_data", obs, {"term": ff[0]}, ff[1]))
     pr.fingerprints = {"raw": snap.snapshot, "model": model, "status": p.get("modelStatus"), "terms": len(T),
                        "unmapped": {k: v for k, v in T.items() if k not in used}}
@@ -231,6 +241,33 @@ def lg_flicker_free(nd):
         for t in _texts(tab.get("feature_tab") or []):
             if FF_COPY.search(_plain(t)):
                 return "overview feature", _plain(t)[:300]
+    return None
+
+
+def _assets(o):
+    if isinstance(o, dict):
+        if isinstance(o.get("textMetaproperties"), list) and isinstance(o.get("metaproperties"), dict):
+            yield o
+        for v in o.values():
+            yield from _assets(v)
+    elif isinstance(o, list):
+        for v in o:
+            yield from _assets(v)
+
+
+def lg_flicker_badge(nd, model):
+    """v4: (locator term, quote) when a CMS image asset tagged with exactly this model's SKU carries alt text with a line 'Flicker-Free'."""
+    cms = ((nd or {}).get("props") or {}).get("pageProps", {}).get("cmsProductData") or {}
+    for a in _assets(cms):
+        skus = {o.get("name", "").strip().upper() for n in (a["metaproperties"].get("nodes") or []) if n.get("name") == "SKU" for o in n.get("options") or []}
+        if skus != {model.upper()}:
+            continue
+        for tm in a["textMetaproperties"]:
+            if tm.get("name") != "AltText":
+                continue
+            lines = [x.strip() for x in re.split(r"[\r\n]+", str(tm.get("value") or "")) if x.strip()]
+            if any(re.fullmatch(r"(?i)flicker[- ]free", x) for x in lines):
+                return "feature badge alt text (asset SKU " + model + ")", "Badge alt text: " + " / ".join(lines)[:250]
     return None
 
 

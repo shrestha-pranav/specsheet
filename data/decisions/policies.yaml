@@ -76,21 +76,21 @@ claim_policies:
     keys:
       asus-us: [cpu.base_clock, cpu.boost_clock, cpu.cache, cpu.cores, cpu.cores_threads, cpu.model, cpu.threads]
       lenovo-psref: [cpu.base_clock, cpu.boost_clock, cpu.cache, cpu.cores, cpu.cores_threads, cpu.model, cpu.threads]
-- id: claim/mfr-monitor-structured@8
+- id: claim/mfr-monitor-structured@9
   since: '2026-11-25'
-  supersedes: claim/mfr-monitor-structured@7
-  rationale: 'Same meaning as @7 for every key it already accepted (lg_us@3, asus_monitors@3 unchanged), re-issued for lenovo_monitors@5 -> @6 (A2-keys add-on). WIDENING: res.refresh_native added to the lenovo-psref-monitors allowlist. lenovo_monitors@6 reads the PSREF Refresh Rate cell (first line): a single ''NHz'' -> N; ''NHz (Overclock to MHz)'' / ''NHz | MHz (Overlock)'' -> N (the maker separates native from OC, M > N). VRR ranges, per-input cells (''75Hz (HDMI only)'', ''DP: ...''), dual-mode, ''Typical''/''Max'' wording -> nothing; never a copy of an OC rate. ASUS prints only ''Refresh Rate (Max)'' (up-to wording), so no ASUS refresh_native. Every other claim byte-identical.'
+  supersedes: claim/mfr-monitor-structured@8
+  rationale: 'Same meaning as @8 for every key it already accepted (lenovo_monitors@6 unchanged), re-issued for lg_us@3 -> @4 and asus_monitors@3 -> @4 (A2-mon r5). WIDENING: usb.kvm and res.refresh_native added to the lg-us allowlist, res.refresh_native to the asus-us-monitors allowlist. lg_us@4: usb.kvm from the maker''s own spec row ''KVM: Yes'' (True) / ''KVM: No'' (False), never prose or absence; res.refresh_native only from a ''Refresh Rate'' row that is one plain ''NHz'' on a page with no ''Dual Mode Refresh Rate'' row (''O/C'', ''up to'', several figures, H/V frequency -> nothing); flk.pwm none (already allowed) also from a feature-badge alt text line exactly ''Flicker-Free'' on a CMS image asset whose SKU metaproperty is exactly the page''s model (the UL Verified badge set ''Flicker-Free / Discomfort Glare Free / Low Blue Light Platinum''), only when the v3 footnote/copy rule found nothing. asus_monitors@4: res.refresh_native only where the single-model page''s own copy says ''native N Hz'' explicitly (one distinct N, N <= Refresh Rate (Max)); ''Refresh Rate (Max)'' alone never maps. Every other claim byte-identical.'
   audit:
-    by: A2-keys
+    by: A2-mon r5
     at: '2026-11-25'
-    evidence: 'team/reports/2026-11-25-a2-zero-keys.md; in-memory claim diff lenovo_monitors@4 vs @6 over all 195 stored bundles: +125 res.refresh_native (60 x40, 100 x19, 240 x17, 165 x12, 75 x12, 144 x9, 280 x5, ...), +56 usb.usbc_alt_dp, +19 usb.kvm, 0 removed, 0 changed, identifiers/aliases identical. tests/test_zero_keys_ports.py'
+    evidence: 'team/reports/2026-11-25-a2-r5-monitors-stations.md; in-memory claim diff over every stored snapshot: lg_us@3 vs @4 (504 pages) +401 res.refresh_native, +16 usb.kvm (all True), +2 flk.pwm none (34GX900A-B, 45GX900A-B), 0 removed, 0 changed; asus_monitors@3 vs @4 (346 pages) +4 res.refresh_native (MB16AHG 144, PG27AQDP 480, VG27AQML1A 240, VG328QA1A 165), 0 removed; identifiers/aliases identical. tests/test_a2_mon_r5.py'
     parsers:
       lenovo_monitors@6: 'sha256:6648c4532a12e82e71a6'
-      lg_us@3: 'sha256:493341796a4c717d96f2'
-      asus_monitors@3: 'sha256:714348d5025264926341'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+      lg_us@4: 'sha256:f85d547907ba2f4cd231'
+      asus_monitors@4: 'sha256:a03b47b4af0f4a10c940'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25c}
   match:
-    extractors: [lenovo_monitors@6, lg_us@3, asus_monitors@3]
+    extractors: [lenovo_monitors@6, lg_us@4, asus_monitors@4]
     source_ids: [lenovo-psref-monitors, lg-us, asus-us-monitors]
     kinds: [official, derived]
     tiers: [manufacturer]
@@ -102,10 +102,10 @@ claim_policies:
         res.ppi, res.refresh_max, res.refresh_native, res.vrr_types, res.width_px, sup.warranty_years, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
       lg-us: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, flk.pwm, gen.size_class, gen.viewable_diag, hdr.contrast_static, hdr.sdr_typ,
         motion.gtg_marketed, panel.surface, panel.technology, pwr.external_adapter, pwr.max, pwr.typical, res.aspect, res.height_px, res.native, res.refresh_max,
-        res.vrr_types, res.width_px, sup.warranty_years, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count]
+        res.refresh_native, res.vrr_types, res.width_px, sup.warranty_years, usb.kvm, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count]
       asus-us-monitors: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.size_class, gen.viewable_diag, hdr.contrast_static,
         hdr.marketed_label, hdr.peak_marketed, hdr.sdr_typ, motion.gtg_marketed, panel.surface, panel.technology, pwr.typical, res.aspect, res.height_px, res.native,
-        res.refresh_max, res.vrr_types, res.width_px, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
+        res.refresh_max, res.refresh_native, res.vrr_types, res.width_px, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
 - id: claim/derive-tuv-eye-comfort-5star@3
   since: '2026-11-25'
   supersedes: claim/derive-tuv-eye-comfort-5star@2
@@ -642,28 +642,28 @@ claim_policies:
       - phys.dimensions
       - phys.weight
     require_normalized: true
-- id: claim/mfr-power-stations-structured@4
-  since: '2026-11-24'
-  supersedes: claim/mfr-power-stations-structured@3
-  rationale: 'Same meaning, extractors (same versions), sources, keys and rules as @3. Re-issued only because the four shopify_powerstations extractors import shopify_powerbanks, which changed for UGREEN power banks (A2 preset fill 2026-11-24), so their parser fingerprint moved; no station code changed.'
+- id: claim/mfr-power-stations-structured@6
+  since: '2026-11-25'
+  supersedes: claim/mfr-power-stations-structured@5
+  rationale: 'Everything in @5 (LiFePO₄ chemistry, coordinator UPS-prose ruling r5), re-issued for shopify_powerstations@4 -> @5 and ankersolix_stations@4 -> @5 (A2-mon r5b; @5 was locked by the round''s first import). ADDED: the shared _powerstation capacity row also matches a ''Battery Pack Capacity'' label (Goal Zero Yeti 300/500/700/PRO 4000: ''296.96 Wh (25.6 V, 11.6 Ah)''), with the same rules as ''Battery Capacity'' (one Wh figure -> cap.energy_wh; the printed V and Ah -> cap.pack_voltage_v / cap.pack_ah; Wh never computed). Same sources, kinds and key allowlists as @4/@5.'
   audit:
-    by: A2 preset fill
-    at: '2026-11-24'
-    evidence: 'claim diff base vs new parsers over every stored snapshot of ecoflow/bluetti/jackery/goalzero-us-stations: 1378 claims, byte-identical (0 changes). ankersolix_stations unchanged (pin kept).'
+    by: A2-mon r5
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a2-r5-monitors-stations.md; in-memory claim diff of the round-start parsers vs @5 parsers over every stored snapshot: bluetti (40) +1 bat.chemistry lfp (PR100V2) +9 ups.switchover_ms; goalzero (22) +4 bat.chemistry lfp, +4 cap.energy_wh/cap.pack_ah/cap.pack_voltage_v (36900, 37000, 37100, 37500); jackery (44) +2 ups.switchover_ms up to 20; ankersolix (33) +1 ups.switchover_ms 10; ecoflow (18) 0; 0 removed, identifiers/aliases identical. tests/test_a2_mon_r5.py'
     parsers:
-      ankersolix_stations@3: 'sha256:94260f9f8155895c1b47'
-      bluetti_stations@3: 'sha256:eb67456307649422d053'
-      ecoflow_stations@3: 'sha256:eb67456307649422d053'
-      goalzero_stations@3: 'sha256:eb67456307649422d053'
-      jackery_stations@3: 'sha256:eb67456307649422d053'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+      ankersolix_stations@5: 'sha256:09f29f3d47de0a158711'
+      bluetti_stations@5: 'sha256:87e1811fd9d680181bb0'
+      ecoflow_stations@5: 'sha256:87e1811fd9d680181bb0'
+      goalzero_stations@5: 'sha256:87e1811fd9d680181bb0'
+      jackery_stations@5: 'sha256:87e1811fd9d680181bb0'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25c}
   match:
     extractors:
-    - ankersolix_stations@3
-    - bluetti_stations@3
-    - ecoflow_stations@3
-    - goalzero_stations@3
-    - jackery_stations@3
+    - ankersolix_stations@5
+    - bluetti_stations@5
+    - ecoflow_stations@5
+    - goalzero_stations@5
+    - jackery_stations@5
     source_ids:
     - ecoflow-us-stations
     - bluetti-us-stations
@@ -1123,26 +1123,26 @@ claim_policies:
       glinet-us-routers: [gen.device_type, hw.cpu_cores, hw.cpu_ghz, hw.flash_mb, hw.ram_mb, hw.soc_model, hw.soc_vendor, phys.dimensions, phys.weight,
         port.lan_count, port.lan_max_mbps, port.multigig_count, port.usb_count, port.usb_standard, port.wan_lan_configurable, port.wan_speed_mbps,
         wifi.band_count, wifi.generation, wifi.has_6ghz, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_6_mbps]
-- id: claim/mfr-monitor-benq@3
+- id: claim/mfr-monitor-benq@4
   since: '2026-11-25'
-  supersedes: claim/mfr-monitor-benq@2
-  rationale: 'Every @2 rule and the key allowlist unchanged (flk.pwm already allowed), re-issued for benq_monitors@2 -> @3 (A2 r5). CHANGE: flk.pwm none is also written from the page''s own ''TUV Certificate'' row when one of its comma/slash-separated values is exactly ''Flicker-free'' (TÜV Flicker Free named explicitly), only when no ''Flicker-free Technology: Yes'' row wrote it; same declaration meaning and quote form as the Yes row. Eye Comfort star levels, Low Blue Light, other TÜV marks and silence never map.'
+  supersedes: claim/mfr-monitor-benq@3
+  rationale: 'Every @3 rule unchanged, re-issued for benq_monitors@3 -> @4 (A2-mon r5). WIDENING: usb.kvm added. benq_monitors@4 writes usb.kvm from the page''s own ''KVM Switch'' spec row only: ''Yes'' -> True, ''No'' -> False; any other value, feature copy, navigation text and silence write nothing.'
   audit:
-    by: A2 r5
+    by: A2-mon r5
     at: '2026-11-25'
-    evidence: 'team/reports/2026-11-25-a2-r5.md; in-memory claim diff benq_monitors@2 vs @3 over all 136 stored snapshots: +1 flk.pwm none (SW242Q ''TUV Certificate: Flicker-free''), 0 removed, 0 changed; fixtures tests/test_a2_r5.py'
+    evidence: 'team/reports/2026-11-25-a2-r5-monitors-stations.md; in-memory claim diff benq_monitors@3 vs @4 over all 136 stored snapshots: +39 usb.kvm True (''Professional > KVM Switch: Yes''), 0 removed, 0 changed; tests/test_a2_mon_r5.py'
     parsers:
-      benq_monitors@3: 'sha256:da006dfad1727e2fac29'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+      benq_monitors@4: 'sha256:d86aa63564a295b57800'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25c}
   match:
-    extractors: [benq_monitors@3]
+    extractors: [benq_monitors@4]
     source_ids: [benq-us-monitors]
     kinds: [official, derived]
     tiers: [manufacturer]
     statuses: [known]
     require_normalized: true
     keys:
-      benq-us-monitors: [ergo.vesa, flk.cert, flk.pwm, gen.size_class, panel.technology, pwr.max, res.height_px, res.refresh_max, res.width_px, usb.usbc_inputs, usb.usbc_pd_w]
+      benq-us-monitors: [ergo.vesa, flk.cert, flk.pwm, gen.size_class, panel.technology, pwr.max, res.height_px, res.refresh_max, res.width_px, usb.kvm, usb.usbc_inputs, usb.usbc_pd_w]
 - id: claim/mfr-ssd-sandisk-datasheet@2
   since: '2026-11-25'
   supersedes: claim/mfr-ssd-sandisk-datasheet@1
@@ -1412,36 +1412,36 @@ claim_policies:
     keys: [hdmi.count, hdmi.earc, hdmi.has_4k120, hdmi.ports_4k120, refresh.native_hz, panel.backlight, panel.lcd_type, vrr.supported,
       wifi.generation, wifi.band_count, wifi.has_6ghz, port.lan_count, port.wan_speed_mbps, mem.soldered, mem.slots, mem.max, pwr.max_pd_in]
 relation_policies:
-- id: rel/bundle-contents@4
-  since: '2026-11-24'
-  supersedes: rel/bundle-contents@3
-  rationale: 'Same rules, parsers (same versions) and transform (bundles@2) as @3. Re-issued only because bluetti/ecoflow/jackery_stations@3 (shopify_powerstations) import shopify_powerbanks, which changed for UGREEN power banks (A2 preset fill 2026-11-24): fingerprint moved, no station or bundle code changed.'
+- id: rel/bundle-contents@6
+  since: '2026-11-25'
+  supersedes: rel/bundle-contents@5
+  rationale: 'Same rules and transform (bundles@2) as @4/@5. Re-pin only for the station parser bumps ankersolix_stations@4 -> @5 and bluetti/ecoflow/jackery_stations @4 -> @5 (A2-mon r5b, claim/mfr-power-stations-structured@6); no bundle code changed.'
   audit:
-    by: A2 preset fill
-    at: '2026-11-24'
-    evidence: 'claim diff base vs new parsers over every stored snapshot of the station sources: byte-identical; bundle transform untouched.'
+    by: A2-mon r5
+    at: '2026-11-25'
+    evidence: 'identifiers, aliases and package/bundle structure byte-identical round-start vs @5 parsers over every stored station snapshot; bundles@2 untouched.'
     parsers:
-      ankersolix_stations@3: 'sha256:94260f9f8155895c1b47'
-      bluetti_stations@3: 'sha256:eb67456307649422d053'
-      ecoflow_stations@3: 'sha256:eb67456307649422d053'
-      jackery_stations@3: 'sha256:eb67456307649422d053'
+      ankersolix_stations@5: 'sha256:09f29f3d47de0a158711'
+      bluetti_stations@5: 'sha256:87e1811fd9d680181bb0'
+      ecoflow_stations@5: 'sha256:87e1811fd9d680181bb0'
+      jackery_stations@5: 'sha256:87e1811fd9d680181bb0'
       dreame_robovac@2: 'sha256:82418fe203d439831b23'
       narwal_robovac@2: 'sha256:2f212aa7076aff13a250'
       bundles@2: 'sha256:673c815897604268136d'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25c}
   rules:
   - method: bundle:ankersolix-us-stations
     types: [contains]
-    parsers: [ankersolix_stations@3+bundles@2]
+    parsers: [ankersolix_stations@5+bundles@2]
   - method: bundle:bluetti-us-stations
     types: [contains]
-    parsers: [bluetti_stations@3+bundles@2]
+    parsers: [bluetti_stations@5+bundles@2]
   - method: bundle:ecoflow-us-stations
     types: [contains]
-    parsers: [ecoflow_stations@3+bundles@2]
+    parsers: [ecoflow_stations@5+bundles@2]
   - method: bundle:jackery-us-stations
     types: [contains]
-    parsers: [jackery_stations@3+bundles@2]
+    parsers: [jackery_stations@5+bundles@2]
   - method: bundle:dreame-us-robovac
     types: [contains]
     parsers: [dreame_robovac@2+bundles@2]
@@ -1594,6 +1594,478 @@ relation_policies:
     types: [configuration_of]
     parsers: [crawlpy-strips@1]
 retired_policies:
+- id: rel/bundle-contents@5
+  since: '2026-11-25'
+  supersedes: rel/bundle-contents@4
+  rationale: 'Same rules and transform (bundles@2) as @4. Re-issued only for the station parser bumps ankersolix_stations@3 -> @4 and bluetti/ecoflow/jackery_stations @3 -> @4 (A2-mon r5: LiFePO₄ chemistry and the UPS-prose ruling, claim/mfr-power-stations-structured@5); no bundle code changed.'
+  audit:
+    by: A2-mon r5
+    at: '2026-11-25'
+    evidence: 'identifiers, aliases and package/bundle structure byte-identical old vs new parsers over every stored station snapshot (only claims changed, see claim/mfr-power-stations-structured@5); bundles@2 untouched.'
+    parsers:
+      ankersolix_stations@4: 'sha256:9826af6e032319db834a'
+      bluetti_stations@4: 'sha256:c8233f9bbd84fb2f3d6e'
+      ecoflow_stations@4: 'sha256:c8233f9bbd84fb2f3d6e'
+      jackery_stations@4: 'sha256:c8233f9bbd84fb2f3d6e'
+      dreame_robovac@2: 'sha256:82418fe203d439831b23'
+      narwal_robovac@2: 'sha256:2f212aa7076aff13a250'
+      bundles@2: 'sha256:673c815897604268136d'
+  approval: {state: pending}
+  rules:
+  - method: bundle:ankersolix-us-stations
+    types: [contains]
+    parsers: [ankersolix_stations@4+bundles@2]
+  - method: bundle:bluetti-us-stations
+    types: [contains]
+    parsers: [bluetti_stations@4+bundles@2]
+  - method: bundle:ecoflow-us-stations
+    types: [contains]
+    parsers: [ecoflow_stations@4+bundles@2]
+  - method: bundle:jackery-us-stations
+    types: [contains]
+    parsers: [jackery_stations@4+bundles@2]
+  - method: bundle:dreame-us-robovac
+    types: [contains]
+    parsers: [dreame_robovac@2+bundles@2]
+  - method: bundle:narwal-us-robovac
+    types: [contains]
+    parsers: [narwal_robovac@2+bundles@2]
+  retired: {at: '2026-11-25', superseded_by: rel/bundle-contents@6, reason: 'same-round parser re-pin (station adapters @5); @5 meaning frozen as locked'}
+- id: claim/mfr-power-stations-structured@5
+  since: '2026-11-25'
+  supersedes: claim/mfr-power-stations-structured@4
+  rationale: 'Same sources, kinds and key allowlists as @4, re-issued for shopify_powerstations @3 -> @4 (bluetti/ecoflow/goalzero/jackery_stations) and ankersolix_stations@3 -> @4 (A2-mon r5). CHANGES: (1) _powerstation.chemistry() reads ''LiFePO₄'' (subscript four) in a labelled battery-type row as lfp (was nothing). (2) ups.switchover_ms may come from the maker''s product-description prose under the coordinator ruling (A1, round r5): only when no labelled row wrote it, the page resolved exactly one model and is not a package, text inside <table> (comparison tables) is dropped, the sentence names no other model, and it states one N ms figure together with ''UPS'' / ''switchover'' / ''switch time''. ''<'', ''≤'', ''sub-'', ''under'', ''within'', ''less than'' -> published as ''up to N'' (normalize qualifier up_to; the schema has no ''max'' qualifier). EPS-only sentences, ''auto-switch'' without UPS and ''power transition'' write nothing; condition backup_mode ups, quote = the sentence. Every other claim byte-identical.'
+  audit:
+    by: A2-mon r5
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a2-r5-monitors-stations.md; in-memory claim diff old vs new parsers over every stored snapshot: bluetti (40 pages) +1 bat.chemistry lfp (PR100V2) +9 ups.switchover_ms (EL10, EL30V2 x6 colour pages, EL100V2); goalzero (22) +4 bat.chemistry lfp (36900, 37000, 37100, 37500); jackery (44) +2 ups.switchover_ms up to 20 (Explorer 2000 v2); ankersolix (33) +1 ups.switchover_ms 10 (A1765); ecoflow (18) 0 changes; 0 removed, identifiers/aliases identical. tests/test_a2_mon_r5.py'
+    parsers:
+      ankersolix_stations@4: 'sha256:9826af6e032319db834a'
+      bluetti_stations@4: 'sha256:c8233f9bbd84fb2f3d6e'
+      ecoflow_stations@4: 'sha256:c8233f9bbd84fb2f3d6e'
+      goalzero_stations@4: 'sha256:c8233f9bbd84fb2f3d6e'
+      jackery_stations@4: 'sha256:c8233f9bbd84fb2f3d6e'
+  approval: {state: pending}
+  match:
+    extractors:
+    - ankersolix_stations@4
+    - bluetti_stations@4
+    - ecoflow_stations@4
+    - goalzero_stations@4
+    - jackery_stations@4
+    source_ids:
+    - ecoflow-us-stations
+    - bluetti-us-stations
+    - jackery-us-stations
+    - goalzero-us-stations
+    - ankersolix-us-stations
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    keys:
+      ecoflow-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - conn.wireless
+      - exp.expandable
+      - exp.max_batteries
+      - exp.max_wh
+      - gen.warranty_years
+      - in.ac_w
+      - in.car_w
+      - in.solar_port_w
+      - in.solar_ports
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_boost_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      bluetti-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - cert.marks
+      - cert.ul2743
+      - conn.wireless
+      - exp.expandable
+      - gen.warranty_years
+      - in.ac_w
+      - in.max_w
+      - in.passthrough
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_boost_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ac_waveform
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - out.wireless_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      jackery-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - gen.warranty_years
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      goalzero-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - cert.marks
+      - exp.expandable
+      - gen.warranty_years
+      - in.ac_w
+      - in.recharge_ac_h
+      - in.recharge_solar_h
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ac_waveform
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      ankersolix-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - conn.wireless
+      - exp.expandable
+      - exp.max_batteries
+      - exp.max_wh
+      - gen.warranty_years
+      - in.ac_w
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+  retired: {at: '2026-11-25', superseded_by: claim/mfr-power-stations-structured@6, reason: 'same-round re-issue: capacity label widened after @5 was locked (shopify_powerstations/ankersolix_stations @4 -> @5); @5 meaning frozen as locked'}
+- id: rel/bundle-contents@4
+  since: '2026-11-24'
+  supersedes: rel/bundle-contents@3
+  rationale: 'Same rules, parsers (same versions) and transform (bundles@2) as @3. Re-issued only because bluetti/ecoflow/jackery_stations@3 (shopify_powerstations) import shopify_powerbanks, which changed for UGREEN power banks (A2 preset fill 2026-11-24): fingerprint moved, no station or bundle code changed.'
+  audit:
+    by: A2 preset fill
+    at: '2026-11-24'
+    evidence: 'claim diff base vs new parsers over every stored snapshot of the station sources: byte-identical; bundle transform untouched.'
+    parsers:
+      ankersolix_stations@3: 'sha256:94260f9f8155895c1b47'
+      bluetti_stations@3: 'sha256:eb67456307649422d053'
+      ecoflow_stations@3: 'sha256:eb67456307649422d053'
+      jackery_stations@3: 'sha256:eb67456307649422d053'
+      dreame_robovac@2: 'sha256:82418fe203d439831b23'
+      narwal_robovac@2: 'sha256:2f212aa7076aff13a250'
+      bundles@2: 'sha256:673c815897604268136d'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  rules:
+  - method: bundle:ankersolix-us-stations
+    types: [contains]
+    parsers: [ankersolix_stations@3+bundles@2]
+  - method: bundle:bluetti-us-stations
+    types: [contains]
+    parsers: [bluetti_stations@3+bundles@2]
+  - method: bundle:ecoflow-us-stations
+    types: [contains]
+    parsers: [ecoflow_stations@3+bundles@2]
+  - method: bundle:jackery-us-stations
+    types: [contains]
+    parsers: [jackery_stations@3+bundles@2]
+  - method: bundle:dreame-us-robovac
+    types: [contains]
+    parsers: [dreame_robovac@2+bundles@2]
+  - method: bundle:narwal-us-robovac
+    types: [contains]
+    parsers: [narwal_robovac@2+bundles@2]
+  retired: {at: '2026-11-25', superseded_by: rel/bundle-contents@5, reason: 'parser re-pin for station adapters @4; @4 meaning frozen as locked'}
+- id: claim/mfr-power-stations-structured@4
+  since: '2026-11-24'
+  supersedes: claim/mfr-power-stations-structured@3
+  rationale: 'Same meaning, extractors (same versions), sources, keys and rules as @3. Re-issued only because the four shopify_powerstations extractors import shopify_powerbanks, which changed for UGREEN power banks (A2 preset fill 2026-11-24), so their parser fingerprint moved; no station code changed.'
+  audit:
+    by: A2 preset fill
+    at: '2026-11-24'
+    evidence: 'claim diff base vs new parsers over every stored snapshot of ecoflow/bluetti/jackery/goalzero-us-stations: 1378 claims, byte-identical (0 changes). ankersolix_stations unchanged (pin kept).'
+    parsers:
+      ankersolix_stations@3: 'sha256:94260f9f8155895c1b47'
+      bluetti_stations@3: 'sha256:eb67456307649422d053'
+      ecoflow_stations@3: 'sha256:eb67456307649422d053'
+      goalzero_stations@3: 'sha256:eb67456307649422d053'
+      jackery_stations@3: 'sha256:eb67456307649422d053'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors:
+    - ankersolix_stations@3
+    - bluetti_stations@3
+    - ecoflow_stations@3
+    - goalzero_stations@3
+    - jackery_stations@3
+    source_ids:
+    - ecoflow-us-stations
+    - bluetti-us-stations
+    - jackery-us-stations
+    - goalzero-us-stations
+    - ankersolix-us-stations
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    keys:
+      ecoflow-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - conn.wireless
+      - exp.expandable
+      - exp.max_batteries
+      - exp.max_wh
+      - gen.warranty_years
+      - in.ac_w
+      - in.car_w
+      - in.solar_port_w
+      - in.solar_ports
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_boost_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      bluetti-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - cert.marks
+      - cert.ul2743
+      - conn.wireless
+      - exp.expandable
+      - gen.warranty_years
+      - in.ac_w
+      - in.max_w
+      - in.passthrough
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_boost_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ac_waveform
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - out.wireless_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      jackery-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - gen.warranty_years
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      goalzero-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - cert.marks
+      - exp.expandable
+      - gen.warranty_years
+      - in.ac_w
+      - in.recharge_ac_h
+      - in.recharge_solar_h
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ac_waveform
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      ankersolix-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - conn.wireless
+      - exp.expandable
+      - exp.max_batteries
+      - exp.max_wh
+      - gen.warranty_years
+      - in.ac_w
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+  retired: {at: '2026-11-25', superseded_by: claim/mfr-power-stations-structured@5, reason: 'parser bump shopify_powerstations@3 -> @4 and ankersolix_stations@3 -> @4 (LiFePO₄ chemistry, UPS-prose ruling r5); @4 meaning frozen as locked'}
+- id: claim/mfr-monitor-benq@3
+  since: '2026-11-25'
+  supersedes: claim/mfr-monitor-benq@2
+  rationale: 'Every @2 rule and the key allowlist unchanged (flk.pwm already allowed), re-issued for benq_monitors@2 -> @3 (A2 r5). CHANGE: flk.pwm none is also written from the page''s own ''TUV Certificate'' row when one of its comma/slash-separated values is exactly ''Flicker-free'' (TÜV Flicker Free named explicitly), only when no ''Flicker-free Technology: Yes'' row wrote it; same declaration meaning and quote form as the Yes row. Eye Comfort star levels, Low Blue Light, other TÜV marks and silence never map.'
+  audit:
+    by: A2 r5
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a2-r5.md; in-memory claim diff benq_monitors@2 vs @3 over all 136 stored snapshots: +1 flk.pwm none (SW242Q ''TUV Certificate: Flicker-free''), 0 removed, 0 changed; fixtures tests/test_a2_r5.py'
+    parsers:
+      benq_monitors@3: 'sha256:da006dfad1727e2fac29'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+  match:
+    extractors: [benq_monitors@3]
+    source_ids: [benq-us-monitors]
+    kinds: [official, derived]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      benq-us-monitors: [ergo.vesa, flk.cert, flk.pwm, gen.size_class, panel.technology, pwr.max, res.height_px, res.refresh_max, res.width_px, usb.usbc_inputs, usb.usbc_pd_w]
+  retired: {at: '2026-11-25', superseded_by: claim/mfr-monitor-benq@4, reason: 'parser bump benq_monitors@3 -> @4 (usb.kvm from the KVM Switch row); @3 meaning frozen as locked'}
+- id: claim/mfr-monitor-structured@8
+  since: '2026-11-25'
+  supersedes: claim/mfr-monitor-structured@7
+  rationale: 'Same meaning as @7 for every key it already accepted (lg_us@3, asus_monitors@3 unchanged), re-issued for lenovo_monitors@5 -> @6 (A2-keys add-on). WIDENING: res.refresh_native added to the lenovo-psref-monitors allowlist. lenovo_monitors@6 reads the PSREF Refresh Rate cell (first line): a single ''NHz'' -> N; ''NHz (Overclock to MHz)'' / ''NHz | MHz (Overlock)'' -> N (the maker separates native from OC, M > N). VRR ranges, per-input cells (''75Hz (HDMI only)'', ''DP: ...''), dual-mode, ''Typical''/''Max'' wording -> nothing; never a copy of an OC rate. ASUS prints only ''Refresh Rate (Max)'' (up-to wording), so no ASUS refresh_native. Every other claim byte-identical.'
+  audit:
+    by: A2-keys
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a2-zero-keys.md; in-memory claim diff lenovo_monitors@4 vs @6 over all 195 stored bundles: +125 res.refresh_native (60 x40, 100 x19, 240 x17, 165 x12, 75 x12, 144 x9, 280 x5, ...), +56 usb.usbc_alt_dp, +19 usb.kvm, 0 removed, 0 changed, identifiers/aliases identical. tests/test_zero_keys_ports.py'
+    parsers:
+      lenovo_monitors@6: 'sha256:6648c4532a12e82e71a6'
+      lg_us@3: 'sha256:493341796a4c717d96f2'
+      asus_monitors@3: 'sha256:714348d5025264926341'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+  match:
+    extractors: [lenovo_monitors@6, lg_us@3, asus_monitors@3]
+    source_ids: [lenovo-psref-monitors, lg-us, asus-us-monitors]
+    kinds: [official, derived]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    require_normalized: true
+    keys:
+      lenovo-psref-monitors: [color.dci_p3, color.srgb, ergo.vesa, ergo.weight, ergo.weight_panel, gen.color, gen.curvature, gen.size_class, hdr.contrast_static,
+        hdr.marketed_label, hdr.sdr_typ, panel.bit_depth, panel.surface, panel.technology, pwr.max, pwr.typical, res.aspect, res.height_px, res.native,
+        res.ppi, res.refresh_max, res.refresh_native, res.vrr_types, res.width_px, sup.warranty_years, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
+      lg-us: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, flk.pwm, gen.size_class, gen.viewable_diag, hdr.contrast_static, hdr.sdr_typ,
+        motion.gtg_marketed, panel.surface, panel.technology, pwr.external_adapter, pwr.max, pwr.typical, res.aspect, res.height_px, res.native, res.refresh_max,
+        res.vrr_types, res.width_px, sup.warranty_years, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count]
+      asus-us-monitors: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.size_class, gen.viewable_diag, hdr.contrast_static,
+        hdr.marketed_label, hdr.peak_marketed, hdr.sdr_typ, motion.gtg_marketed, panel.surface, panel.technology, pwr.typical, res.aspect, res.height_px, res.native,
+        res.refresh_max, res.vrr_types, res.width_px, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
+  retired: {at: '2026-11-25', superseded_by: claim/mfr-monitor-structured@9, reason: 'parser bump lg_us@3 -> @4 and asus_monitors@3 -> @4 (usb.kvm, res.refresh_native, LG badge flk.pwm); @8 meaning frozen as locked'}
 - id: claim/mfr-ssd-sandisk-datasheet@1
   since: '2026-11-24'
   rationale: 'New source sandisk-us-ssd-datasheets (crawler/adapters/sandisk_datasheets.py): the SanDisk / WD datasheet PDFs the sandisk.com

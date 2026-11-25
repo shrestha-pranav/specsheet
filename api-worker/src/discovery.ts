@@ -39,6 +39,8 @@ export function openapi(env: Env, origin: string, s: Surface) {
         { name: "category", in: "query", schema: { type: "string", enum: s.categories } },
         { name: "limit", in: "query", schema: { type: "integer", default: BOUNDS.changesLimitDefault, maximum: BOUNDS.changesLimitMax } },
       ], responses: { ...ok({ type: "object" }), ...errs } } };
+    paths["/v1/presets"] = { get: { summary: "Curated killer queries as /v1/query filter strings, with fill gate and counts (same payload as MCP list_presets; unpriced, one budget unit)",
+      parameters: [{ name: "category", in: "query", schema: { type: "string", enum: s.categories } }], responses: { ...ok({ type: "object" }), ...errs } } };
     if (s.match) paths["/v1/match"] = { get: { summary: "Resolve a retail listing title to a product id (precision first: no answer beats a wrong one)", ...price("match"),
       parameters: [{ name: "title", in: "query", required: true, schema: { type: "string", maxLength: BOUNDS.title } }, { name: "category", in: "query", schema: { type: "string", enum: s.categories } }],
       responses: { ...ok({ type: "object" }), ...errs } } };
@@ -87,6 +89,7 @@ ${s.match ? `- GET ${origin}/v1/match?title=<retail listing title> : resolve a l
 ## Notes
 - Values with status unknown or conflicted are never returned as facts; an absent spec means not established.
 - Explicit unknown: /v1/query reports \`maybe\` counts (unknown / conflicted / disagree) for every query; include=maybe lists those rows with per-filter \`filter_status\`; every result lists \`unknown_core\` keys.
+- GET ${origin}/v1/presets[?category=] : the same curated queries as MCP list_presets (free, one budget unit)
 - MCP list_categories_keys (keys, types, units, facet, fill) and list_presets (curated queries as query_specs filter strings) are metadata tools.
 `;
 }

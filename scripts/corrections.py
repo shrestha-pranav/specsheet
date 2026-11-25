@@ -73,7 +73,7 @@ FORM = {"payload": "Catalogue field", "claimed_value": "Proposed value", "eviden
         "extra_urls": "More evidence (second sample)", "single_design_url": "Maker statement that the line has one design",
         "applies_to": "Applies to (configurations)", "attachments": "Photos", "measurement_mode": "Measurement method",
         "conditions": "Conditions", "terms": "Contributor terms", "coi": "Conflict of interest"}
-TERMS_VERSION = "draft-2026-11-25"     # bump with the checkbox wording in the issue form; the grant evidence is that text, versioned
+TERMS_VERSION = "2026-11-25"           # owner-approved 2026-11-25 (no relicensing clause); bump with the checkbox wording in the issue form
 IMG = re.compile(r"https://(?:github\.com/user-attachments/assets/[0-9a-f-]+|(?:private-)?user-images\.githubusercontent\.com/[^\s)\"'>]+)")
 MENTION = re.compile(r"(?<![\w.])@[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})")
 EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")

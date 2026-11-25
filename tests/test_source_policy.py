@@ -283,7 +283,8 @@ class Fixture(unittest.TestCase):
         import site_meta
         doc = site_meta.sources()
         self.assertEqual(doc["generated_from"], "data/source-policy.yaml")
-        self.assertEqual({s["domain"] for s in doc["granted"]}, {"data.energystar.gov"})
+        self.assertEqual({(s["domain"], s.get("path")) for s in doc["granted"]},
+                         {("data.energystar.gov", None), ("github.com", "/shrestha-pranav/specsheet/issues")}, "EPA + approved E1/E4 contributor evidence")
         self.assertIn("psref.lenovo.com", {s["domain"] for s in doc["facts_only"]})
         self.assertNotIn("public_domain", json.dumps(doc))
         self.assertFalse({s["domain"] for s in doc["facts_only"]} & {"amazon.com"}, "free:false domains are not listed")

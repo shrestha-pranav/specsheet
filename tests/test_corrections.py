@@ -243,7 +243,7 @@ class Flow(unittest.TestCase):
         intro = form["body"][0]["attributes"]["value"]
         self.assertIn("Text alone is not evidence. Photos stay on GitHub; we publish the value and a link to this issue.", intro)
         terms = next(b for b in form["body"] if b.get("id") == "terms")
-        self.assertIn("DRAFT", terms["attributes"]["description"])
+        self.assertNotIn("DRAFT", terms["attributes"]["description"], "owner approved the wording 2026-11-25")
         self.assertTrue(terms["attributes"]["options"][0]["label"].startswith("I license this contribution under ODbL 1.0 (database) and DbCL 1.0 (contents)."))
         self.assertEqual([o.split(":")[0] for o in next(b for b in form["body"] if b.get("id") == "evidence_type")["attributes"]["options"]], ["E1", "E2", "E3", "E4"])
 
@@ -380,7 +380,8 @@ class Flow(unittest.TestCase):
         self.assertFalse(pol.disposition("https://www.techpowerup.com/ssd-specs/a")["free"])
         self.assertTrue(pol.disposition("https://www.techpowerup.com/review/a")["free"])
         self.assertFalse(pol.disposition("https://www.rtings.com/a")["free"])
-        self.assertFalse(pol.disposition(f"https://github.com/{REPO}/issues/5")["licence_grant"], "no grant until the owner approves the draft terms")
+        self.assertTrue(pol.disposition(f"https://github.com/{REPO}/issues/5")["licence_grant"], "owner approved the contributor terms 2026-11-25")
+        self.assertEqual(CR.TERMS_VERSION, "2026-11-25")
         real = CODE / "data" / "corrections"
         if real.exists():
             for p in real.glob("*.yaml"):

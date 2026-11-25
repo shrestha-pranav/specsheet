@@ -20,7 +20,7 @@ import _powerbank as P
 import _powerstation as PS
 import _run
 
-ID, VERSION, SOURCE = "ankersolix_stations", 3, "ankersolix-us-stations"     # r7: shared _powerbank changed (energy_basis pairs, case-insensitive Wh); v2: r6 shared _powerbank changed; station rules unchanged
+ID, VERSION, SOURCE = "ankersolix_stations", 5, "ankersolix-us-stations"     # v5 (A2-mon r5b): shared _powerstation capacity label widened, no Anker change; v4 (A2-mon r5): LiFePO\u2084 chemistry; ups.switchover_ms from description prose (coordinator ruling r5); r7: shared _powerbank changed (energy_basis pairs, case-insensitive Wh); v2: r6 shared _powerbank changed; station rules unchanged
 CATEGORIES = {"power-stations"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.ankersolix.com"
@@ -99,9 +99,11 @@ def parse_page(snap, page):
             rows.setdefault(P.clean(x["label"]), PS.txt(str(x["value"])))
     pr.fingerprints["labels"] = list(rows)
     if not rows:
+        PS.emit_ups_prose(pr, ADAPTER, snap, model, prod.get("descriptionHtml") or prod.get("description"), (title,))   # v4: UPS-prose ruling r5
         pr.absences.append({"key": "*", "reason": "no spec table (metafields.specs) on this page; figures only in images/prose", "source": "s1"})
         return pr
     pr.fingerprints["unmapped"] = {k: v[:80] for k, v in PS.emit_rows(pr, ADAPTER, snap, model, rows, "specs").items()}
+    PS.emit_ups_prose(pr, ADAPTER, snap, model, prod.get("descriptionHtml") or prod.get("description"), (title,))   # v4: UPS-prose ruling r5
     pr.claims = list({c["id"]: c for c in reversed(pr.claims)}.values())[::-1]
     return pr
 

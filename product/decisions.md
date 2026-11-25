@@ -161,6 +161,7 @@ payment attempt, and any payment header is ignored.
 
 **D3.5 Route matrix (canonical; the executable copy is `api-worker/test/route-matrix.json`, and README and tests
 are generated from or checked against it).**
+_Amended 2026-11-25 (coordinator ruling): `GET /v1/presets` (REST, optional `?category=`) mirrors the MCP `list_presets` tool: same payload, unpriced, 1 unit of the daily budget. It was 404 before. Matrix rows `presets*` cover all 5 modes._
 Columns: off = `PAYMENTS=off`; on = `PAYMENTS=on` with valid config; on-bad = `PAYMENTS=on` with missing or invalid
 config. "Q" = counts against the shared client budget. Everything returns JSON with `release`.
 | Route | off | on | on-bad | Listed in discovery (off) | Q |
@@ -182,7 +183,7 @@ config. "Q" = counts against the shared client budget. Everything returns JSON w
 | Over budget | 429 + `Retry-After` (seconds) | 429 (minute) / 402 (day allowance spent) | 429 | | |
 | Breaker open or `PREVIEW=off` | data routes 503 `preview_capacity` / `preview_paused` + `Retry-After`; `/`, `/health`, discovery 200 | same | same | | |
 - Removed in R3: the `/v1/*` 302 catch-all to GH Pages (it invites random-path traffic; static data is fetched from
-  Pages directly), and `GET /v1/presets` (the UI reads `docs/presets.json` from Pages).
+  Pages directly), and `GET /v1/presets` (the UI reads `docs/presets.json` from Pages; restored for agents 2026-11-25, see amendment above).
 - Off-mode proof: a test runs every matrix row with a mock facilitator that records calls, and asserts **zero
   facilitator calls and no 402**. Requests that carry a payment header are served free and the header is ignored.
 
@@ -396,6 +397,7 @@ Spec: `team/briefs/pm-2026-11-25-corrections-flow.md`. Summary:
 - Options considered: a site-hosted form with our own accounts (rejected: accounts, PII, spam surface); Discussions
   (rejected: unstructured); email only (kept as a fallback, but it does not scale). Reversible: yes. Owner: approve the
   checkbox wording (Q1, can ship without the relicensing clause).
+  _Owner approved 2026-11-25 without the relicensing clause; crowd E1/E4 licence_grant on (source policy 2026-11-25.4)._
 
 ### D10 (2026-11-25, PM round 5): measured vs claimed values: display and presets
 - **Kinds stay as in the schema**, with two `measurement.mode` values added (A3): `inspection` (teardown, PCB photo) and

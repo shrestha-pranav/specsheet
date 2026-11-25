@@ -18,7 +18,7 @@
 - laptops: Laptops (2419 products)
 - monitors: Monitors (4234 products)
 - power-banks: Power banks (168 products)
-- power-stations: Portable power stations (71 products)
+- power-stations: Portable power stations (75 products)
 - power-strips: Power strips & surge protectors (538 products)
 - robot-vacuums: Robot vacuums & mops (144 products)
 - routers: Wi-Fi routers & mesh (334 products)

@@ -17,6 +17,9 @@ v2 (2026-11-24, preset fill): gen.size_class derived from 'Panel Size (inch)' (k
            lines naming DP Alt Mode / Thunderbolt; 0 only as a complete enumeration (condition basis=complete_enumeration).
 v3 (2026-11-25, A2-keys): usb.usbc_alt_dp from the one USB-C video-input I/O line that names DP (_monusb.alt_dp, raw = that line);
            usb.kvm from 'KVM Switch : Yes/No' or a '(For KVM Switch)' port row (_monusb.kvm_asus). Everything else byte-identical to v2.
+v4 (2026-11-25, A2-mon r5): res.refresh_native only where the maker's own copy on this single-model page says 'native N Hz' explicitly
+           ('Overclock to 260Hz (native 240Hz)', 'Native 144Hz refresh rate'); one distinct N on the page, N <= the stated Refresh Rate
+           (Max). 'Refresh Rate (Max)' alone is up-to wording and never becomes native; multi-model pages write nothing.
 """
 import gzip, html, json, re, sys, time
 from pathlib import Path
@@ -27,7 +30,7 @@ import _run
 import _monports as MP
 import _monusb as MU
 
-ID, VERSION, SOURCE = "asus_monitors", 3, "asus-us-monitors"
+ID, VERSION, SOURCE = "asus_monitors", 4, "asus-us-monitors"
 CATEGORIES = {"monitors"}
 API = ("https://odinapi.asus.com/recent-data/apiv2/SeriesFilterResult?SystemCode=asus&WebsiteCode=us&ProductLevel1Code=displays-desktops"
        "&ProductLevel2Code=monitors&PageSize=300&PageIndex={}&CategoryName=&SeparateType=1&LocalFlag=0")
@@ -36,6 +39,7 @@ DELAY = 1.0
 LB = 0.45359237
 T_ENUM = {"ips": "IPS", "fast ips": "Fast IPS", "ips black": "IPS Black", "fast ips black": "Fast IPS Black", "nano ips": "Nano IPS", "va": "VA",
           "fast va": "Fast VA", "tn": "TN", "wled": None, "qd-oled": "QD-OLED", "woled": "WOLED"}
+NATIVE = re.compile(r"(?i)\bnative\s+(\d{2,3})\s?Hz\b")
 TXT = lambda s: re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", s))).strip()
 
 
@@ -212,6 +216,13 @@ def parse_html(snap, t):
             add("motion.gtg_marketed", float(m[1]), "ms", "Response Time")
         if (v := g("Refresh Rate (Max)")) and num(v):
             add("res.refresh_max", num(v), "Hz", "Refresh Rate (Max)")
+            nat = {}
+            for m in NATIVE.finditer(t):
+                nat.setdefault(int(m[1]), TXT(t[max(0, m.start() - 90): m.end() + 30].replace("\\u003C", "<").replace("\\u003E", ">").replace("\\n", " ")).split('"')[-1].strip())
+            if len(codes) == 1 and len(nat) == 1 and next(iter(nat)) <= num(v):
+                (n, q), = nat.items()
+                pr.claims.append(claim(code, "res.refresh_native", n, "Hz", q, "s1", ADAPTER, "spec_html", obs,
+                                       {"label": "maker copy 'native N Hz'", "model_code": code}, q))      # v4
         hd = g("HDR (High Dynamic Range) Support") or g("HDR Support") or ""
         if (m := re.search(r"DisplayHDR\s*(True Black\s*)?(\d{3,4})", hd, re.I)):
             add("hdr.vesa_tier", f"DisplayHDR {'True Black ' if m[1] else ''}{m[2]}", None, "HDR (High Dynamic Range) Support" if g("HDR (High Dynamic Range) Support") else "HDR Support")

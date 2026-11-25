@@ -3,8 +3,8 @@ description: Fill or dispute one value, with evidence. A person reviews every co
 title: "Specification correction: "
 labels: [field-correction]
 # Corrections flow (product/decisions.md D9.2). scripts/corrections.py reads the `### <label>` headings of the rendered issue: keep the
-# labels below in step with FORM in that script. The contributor-terms wording is a DRAFT (terms_version draft-2026-11-25) pending owner
-# approval (open question Q1); change it only together with TERMS_VERSION in scripts/corrections.py.
+# labels below in step with FORM in that script. The contributor-terms wording was approved by the owner on 2026-11-25 (terms_version
+# 2026-11-25, without the relicensing clause, which stays with counsel, Q1); change it only together with TERMS_VERSION in scripts/corrections.py.
 body:
   - type: markdown
     attributes:
@@ -98,7 +98,7 @@ body:
     id: terms
     attributes:
       label: Contributor terms
-      description: "DRAFT wording, pending owner review (product/decisions.md D9.2)."
+      description: "Required. Your first-hand photos and measurements are licensed to the database on these terms (product/decisions.md D9.2)."
       options:
         - label: "I license this contribution under ODbL 1.0 (database) and DbCL 1.0 (contents). It is my own observation or a fact from the source I cite, and my photos stay mine: I only link them."
           required: true

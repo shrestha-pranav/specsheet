@@ -113,3 +113,9 @@
 {"at": "2026-11-25T19:28:36Z", "id": "rel/source-stated-hierarchy@10", "sha256": "sha256:0565416dcd1564a7be374843b7e90116ed45b8f8e44ae2518be64c3d919861d6"}
 {"at": "2026-11-25T19:29:01Z", "id": "claim/mfr-ssd-sandisk-datasheet@2", "sha256": "sha256:4adab53aa1282ba4f944f5bb7ab1e815435cb623a501a0fccffd14b4df6aa5a9"}
 {"at": "2026-11-25T19:35:32Z", "id": "claim/hub-document-power-pdo@2", "sha256": "sha256:d2b55fb54419add06a7fd669a76e15f7ed344893c8af6c8c5ab50d21e4250b53"}
+{"at": "2026-11-25T23:01:09Z", "id": "claim/mfr-monitor-structured@9", "sha256": "sha256:98d5f52b7bde8a779fb83d0d5777b56ac3d91b1419dc4b164155234ea9fd5376"}
+{"at": "2026-11-25T23:01:09Z", "id": "claim/mfr-power-stations-structured@5", "sha256": "sha256:3c86fd741589481b738446ff1e819637c7920e6d36ef4e226dee978ad751d5ea"}
+{"at": "2026-11-25T23:01:09Z", "id": "claim/mfr-monitor-benq@4", "sha256": "sha256:36b100f7e348431b2e72d5c6e52b15faa57998af2cc788ef3f2a062a50320b80"}
+{"at": "2026-11-25T23:01:09Z", "id": "rel/bundle-contents@5", "sha256": "sha256:257f691eaa7d8d35c8d4dd40d4e39dcb2b2b1b07d74f2a721c83a206d16c957f"}
+{"at": "2026-11-25T23:08:11Z", "id": "claim/mfr-power-stations-structured@6", "sha256": "sha256:606f4d6fadc718e5007719afab768b223e9071f0760ffab96c8841aaf079fec5"}
+{"at": "2026-11-25T23:08:11Z", "id": "rel/bundle-contents@6", "sha256": "sha256:7a4b63d78f03edb1e5baf9c9e1c478158324c9047722b8472c9b7cb8e5b04ede"}

@@ -37,3 +37,15 @@ Role: retailer data = aliases, MPN candidates, prices, availability; never prima
   robots file was read (P27h-30 guide); it carried only "Low Blue Light ... TÜV Rheinland Low Blue Light" and the CRT boilerplate, so even
   that gave nothing. Not fetched again. The allowed /pccbbs/options/ path holds only legacy (IBM-era) guides. support.lenovo.com is not in
   data/source-policy.yaml, so its guide pages were not read.
+
+## Dell US monitors, A2-mon r5 scout (2026-11-25; crawler UA, 1 req/s, 8 GETs)
+- **Crawlable; adapter not built this round (time).** robots.txt (`*`) allows `/en-us/shop/monitors/apd/...` (only `*/apd/*/quickview$`,
+  `*/api/`, `/*/cart/*`, `*/pdr/` and refinement-combo listing URLs are disallowed); no AI-agent block. www.dell.com is in
+  data/source-policy.yaml (maker, categories laptops + monitors); terms per the i.dell.com entry (no automated-access clause).
+- Discovery: the listing page `/en-us/shop/computer-monitors/ar/all-monitors` is server-rendered and links `/en-us/shop/monitors/apd/<slug>/<model>/-`
+  (first page: 11 unique monitors; pagination not probed). The mpn-sitemap pages list third-party SNP items, the product sitemap has no monitors.
+- **Change since r2/r3:** the /apd/ page (SE2726H, 1.6 MB) now server-renders the full Tech Specs block: `div.spec__child__heading` groups with
+  `div.spec__item > div.spec__item__title` label + value text ('Operating Power Consumption 17 W', 'HDMI Version 1.4', 'Total Number of HDMI
+  Ports 2'), plus a hero key-spec strip ('Resolution / Refresh Rate: 1920 x 1080 at 144Hz') and schema.org PropertyValue feature copy.
+- Flicker: SE2726H prints no flicker row (only 'TÜV-certified eye comfort' / '3-star eye comfort' copy), so flk.pwm will come only from an explicit
+  row where one exists. Next round: dell_monitors adapter (model = the URL's model code, e.g. se2726h), keys flk.pwm/usb.*/res.*, new pending policy.

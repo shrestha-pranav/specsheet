@@ -5,7 +5,7 @@ import { validateChanges, validateMatch, validateQuery } from "./bounds.ts";
 import { HttpError, bulkBody, changeHistory, getManifest, type PackManifest } from "./data.ts";
 import { llmsTxt, openapi, type Surface } from "./discovery.ts";
 import { cachedServe, point, execChanges, execMatch, execQuery, fail, guard, matcherFor, newRq, paused, send, JSON_CT, type C, type Rq, type Served } from "./gate.ts";
-import { handleMcp, internalToken } from "./mcp.ts";
+import { handleMcp, internalToken, presetsFor } from "./mcp.ts";
 import { handleBeacon, preflight } from "./beacons.ts";
 import { trafficClass, uaFamily } from "./metrics.ts";
 import { getPaymentMiddleware } from "./x402.ts";
@@ -145,6 +145,21 @@ app.get("/v1/changes", (c) => dataRoute(c as C, {
 app.get("/v1/match", (c) => dataRoute(c as C, {
   route: "/v1/match", price: "match", available: (man) => !!man.match?.catalogue, cache: true,
   validate: (man, sp) => validateMatch(man, sp), serve: (c, man, p) => execMatch(c.env, man, p),
+}));
+app.get("/v1/presets", (c) => dataRoute(c as C, {
+  route: "/v1/presets", price: null, available: () => true, cache: true,
+  validate: (man, sp) => {
+    const extra = [...sp.keys()].find((k) => k !== "category");
+    if (extra) throw new HttpError(400, "bad_input", `unknown parameter '${extra.slice(0, 40)}'`);
+    const cat = sp.get("category") ?? undefined;
+    if (cat !== undefined && !man.categories.some((x) => x.id === cat)) throw new HttpError(400, "bad_input", `unknown category (categories: ${man.categories.map((x) => x.id).join(", ")})`);
+    return { params: { category: cat }, canonical: cat ? `category=${cat}` : "", filterKeys: [] };
+  },
+  // same payload as MCP list_presets: metadata only, unpriced, one unit of the daily budget
+  serve: async (c, man, p) => {
+    const body = { release: man.release, ...(await presetsFor(c.env, man, (p as { category?: string }).category)) };
+    return { status: 200, text: JSON.stringify(body), results: body.presets.length, outcome: body.presets.length ? "ok_results" : "ok_empty" } as Served;
+  },
 }));
 app.get("/v1/bulk/:file", (c) => {
   const file = c.req.param("file");

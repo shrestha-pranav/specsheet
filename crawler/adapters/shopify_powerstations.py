@@ -32,7 +32,7 @@ import _powerstation as PS
 import _run
 import shopify_powerbanks as S
 
-VERSION = 3       # v3: r7 shared _powerbank changed; station rules unchanged; v2: r6 shared _powerbank changed (repeated port row = one port); station rules unchanged
+VERSION = 5       # v5 (A2-mon r5b): _powerstation capacity row also matches "Battery Pack Capacity" (Goal Zero); v4 (A2-mon r5): _powerstation chemistry reads LiFePO\u2084; ups.switchover_ms from product-description prose under the coordinator ruling (single model, not a package, UPS/switchover + N ms, <-bounds = up to); v3: r7 shared _powerbank changed; station rules unchanged; v2: r6 shared _powerbank changed (repeated port row = one port); station rules unchanged
 CATEGORIES = {"power-stations"}
 DELAY = 1.0
 PKG_TITLE = re.compile(r"\+|&|solar generator|\bkit\b|bundle|combo|refurb|open box|extra battery|expansion|add-on|deposit|\binverter\b|"
@@ -276,6 +276,7 @@ def parse_station(ad, snap, page, prod):
         if v.get("barcode") and re.fullmatch(r"\d{12,14}", str(v["barcode"])):
             pr.identifiers.append(L.ident("gtin", str(v["barcode"]), "package", "GS1", role="alias"))
     if why and not blocks:
+        PS.emit_ups_prose(pr, ad.adapter, snap, model, prod.get("body_html"), (title,))     # v4: UPS-prose ruling r5 (one model, not a package)
         pr.absences.append({"key": "*", "reason": why, "source": "s1"})
         return pr
     multi = [b for b, rows in blocks if len({m for v in rows.values() for m in re.findall(r"\(([A-Z]{2,4}\d{2,4}[A-Z]{0,2})\)", v)}) > 1]
@@ -286,6 +287,7 @@ def parse_station(ad, snap, page, prod):
     unmapped = {}
     for name, rows in blocks:
         unmapped.update(PS.emit_rows(pr, ad.adapter, snap, model, rows, name))
+    PS.emit_ups_prose(pr, ad.adapter, snap, model, prod.get("body_html"), (title,))         # v4: UPS-prose ruling r5, only if no row wrote it
     pr.claims = list({c["id"]: c for c in reversed(pr.claims)}.values())[::-1]     # identical claims from several variant blocks: one
     pr.fingerprints["unmapped"] = {k: v[:80] for k, v in unmapped.items()}
     return pr

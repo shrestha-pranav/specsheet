@@ -46,7 +46,9 @@ Cells give the status and error code. `+RA` means Retry-After is present. Quota:
 | event-not-allowlisted | `POST /v1/event` | 400 `bad_input` | 400 | 400 | 400 | 400 | separate | n/a |
 | event-too-large | `POST /v1/event` | 413 |  |  |  |  | no | n/a |
 | other-path | `GET /no/such/path` | 404 `not_found` | 404 `not_found` | 404 `not_found` | 404 `not_found` | 404 `not_found` | no | n/a |
-| presets-removed | `GET /v1/presets` | 404 `not_found` |  |  |  |  | no | no |
+| presets | `GET /v1/presets` | 200 | 200 | 503 `payments_not_configured` | 503 `preview_paused` +RA | 503 `preview_capacity` +RA | yes | yes |
+| presets-category | `GET /v1/presets?category=laptops` | 200 | 200 | 503 | 503 | 503 | yes | n/a |
+| presets-bad-category | `GET /v1/presets?category=nope` | 400 `bad_input` | 400 | 503 | 503 | 503 | yes | n/a |
 | v1-static-not-redirected | `GET /v1/laptops/facets.json` | 404 `not_found` |  |  |  |  | no | no |
 | invalid-unknown-param | `GET /v1/query?category&cachebust` | 400 `bad_input` | 400 `bad_input` | 503 | 503 | 503 | yes | n/a |
 | invalid-no-category | `GET /v1/query` | 400 `bad_input` | 400 |  |  |  | yes | n/a |

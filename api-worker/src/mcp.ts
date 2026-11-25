@@ -141,7 +141,7 @@ async function runMeta(c: C, name: string, params: any): Promise<ToolRes> {
   return out(200, await presetsFor(env, man, cat), cat ?? "", 0);
 }
 
-async function presetsFor(env: Env, man: PackManifest, cat?: string) {
+export async function presetsFor(env: Env, man: PackManifest, cat?: string) {
   const doc = man.presets ? await cachedJson<{ presets: any[] }>(env, man.presets) : null;
   const ps = (doc?.presets ?? []).filter((p) => !cat || p.category === cat);
   const maps = new Map<string, Map<string, FieldMeta>>();
