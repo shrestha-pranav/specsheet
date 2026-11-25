@@ -97,7 +97,7 @@ ISSUES = [
 ]
 # review-7 P1: PII injected literally and encoded across every field and URL component. #7 is otherwise valid (and accepted), #8 carries
 # PII in the identity fields themselves (entity, key, value, applies_to) and must never apply.
-TOKEN = "tok9SECRET8abcdefghijklmnop"
+TOKEN = "tok9SECRET8abcdefghijklmnop"  # gitleaks:allow  synthetic PII-sanitiser fixture, not a credential
 PII_FORMS = [LOGIN, EMAIL, "zz.fixture%40mail.example", "zz.fixture%2540mail.example", "zz.fixture&#64;mail.example", "zz.fixture (at) mail (dot) example",
              "zz.fixture@mail", TOKEN]
 _b7 = body("widgetco-w-100", "gen.kind", "alpha", "E2", url=f"https://example.invalid/W-100?email=zz.fixture%40mail.example&token={TOKEN}&model=W-100#{LOGIN}",
