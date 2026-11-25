@@ -1,7 +1,7 @@
 {
  "generated_from": "data/source-policy.yaml",
- "policy_version": "2026-11-24.7",
- "policy_sha256": "5b66b24febb5684d4179f9a1722be9c0e9373d22c625fc734e89e79e9e676cb4",
+ "policy_version": "2026-11-24.8",
+ "policy_sha256": "b212afbcd36ad98ef447838996d5b299127e8c80cf33b1562a9cad374c27a60f",
  "license_scope": "compilation + values whose sources[] include licence_grant:true; other values are facts with links, not licensed by us",
  "granted": [
   {
@@ -544,16 +544,6 @@
    "kind": "maker",
    "credit": "Nekteck official product pages",
    "categories": [
-    "chargers"
-   ]
-  },
-  {
-   "domain": "images.salsify.com",
-   "match": "exact",
-   "kind": "maker",
-   "credit": "Maker document CDN (spec sheets/manuals linked as documents)",
-   "categories": [
-    "power-strips",
     "chargers"
    ]
   },

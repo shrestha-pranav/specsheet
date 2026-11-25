@@ -976,29 +976,29 @@ claim_policies:
     require_normalized: true
     keys:
       energystar-airpurifiers: [eff.energy_star]
-- id: claim/mfr-chargers-structured@2
+- id: claim/mfr-chargers-structured@4
   since: '2026-11-24'
-  supersedes: claim/mfr-chargers-structured@1
-  rationale: 'Same rules, sources and keys as @1, re-issued for the r7 bump of all eleven extractors (@1 -> @2: shared _powerbank changed) plus two affirmative-only pd.pps rules in _charger.py: a USB-C output row that names PPS without a range (HyperJuice ''USB-C1: 100W Max - PD 3.0 and PPS'') and a per-port ''USB-C1 Protocols'' row naming PPS (UGREEN 500W). USB-A rows never count. WIDENING: pd.pps added to the hyper-us-chargers allowlist.'
+  supersedes: claim/mfr-chargers-structured@2
+  rationale: 'Same rules, sources and keys as @2, re-issued for the r9 bump of all eleven extractors (@2 -> @3; this is id @4 because a malformed draft @3 was locked by a failed dry run and is retired verbatim): _charger.py now normalises port-name spelling variants to one form (Anker A2669 printed both ''USB-C 1 / C 2'' and ''USB-C1/C2'' and the page parser emitted both rows; now ''USB-C1/C2'', and a repeated identical row is dropped). Port names are spelled without a space before the digit and around ''/''; no key, source or accepted value class is widened.'
   audit:
-    by: A2 coverage r2
+    by: A2 cleanup
     at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD): +3 hyper pd.pps, +1 ugreen pd.pps, 0 other changes'
+    evidence: 'team/reports/2026-11-24-cleanup.md; claim diff old vs new parsers over every stored charger snapshot (219): only out.ports names change (8 pages), A2669 loses its duplicate row, no value changes elsewhere.'
     parsers:
-      anker_chargers@2: 'sha256:8bb7107d875d52865b9f'
-      belkin_chargers@2: 'sha256:f596fcb8e433a7d2f486'
-      ugreen_chargers@2: 'sha256:b5c002c27d49233d7281'
-      iniu_chargers@2: 'sha256:b5c002c27d49233d7281'
-      cuktech_chargers@2: 'sha256:b5c002c27d49233d7281'
-      satechi_chargers@2: 'sha256:b5c002c27d49233d7281'
-      mophie_chargers@2: 'sha256:b5c002c27d49233d7281'
-      aukey_chargers@2: 'sha256:b5c002c27d49233d7281'
-      hyper_chargers@2: 'sha256:b5c002c27d49233d7281'
-      nativeunion_chargers@2: 'sha256:b5c002c27d49233d7281'
-      choetech_chargers@2: 'sha256:b5c002c27d49233d7281'
+      anker_chargers@3: 'sha256:244bbacdc1e10f9cc231'
+      belkin_chargers@3: 'sha256:8e4e8ec4d0e13be8e6d6'
+      ugreen_chargers@3: 'sha256:2dd189fb9808f70d95bc'
+      iniu_chargers@3: 'sha256:2dd189fb9808f70d95bc'
+      cuktech_chargers@3: 'sha256:2dd189fb9808f70d95bc'
+      satechi_chargers@3: 'sha256:2dd189fb9808f70d95bc'
+      mophie_chargers@3: 'sha256:2dd189fb9808f70d95bc'
+      aukey_chargers@3: 'sha256:2dd189fb9808f70d95bc'
+      hyper_chargers@3: 'sha256:2dd189fb9808f70d95bc'
+      nativeunion_chargers@3: 'sha256:2dd189fb9808f70d95bc'
+      choetech_chargers@3: 'sha256:2dd189fb9808f70d95bc'
   approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [anker_chargers@2, belkin_chargers@2, ugreen_chargers@2, iniu_chargers@2, cuktech_chargers@2, satechi_chargers@2, mophie_chargers@2, aukey_chargers@2, hyper_chargers@2, nativeunion_chargers@2, choetech_chargers@2]
+    extractors: [anker_chargers@3, belkin_chargers@3, ugreen_chargers@3, iniu_chargers@3, cuktech_chargers@3, satechi_chargers@3, mophie_chargers@3, aukey_chargers@3, hyper_chargers@3, nativeunion_chargers@3, choetech_chargers@3]
     source_ids: [anker-us-chargers, belkin-us-chargers, ugreen-us-chargers, iniu-us-chargers, cuktech-us-chargers, satechi-us-chargers, mophie-us-chargers, aukey-us-chargers, hyper-us-chargers, nativeunion-us-chargers, choetech-us-chargers]
     kinds: [official]
     tiers: [manufacturer]
@@ -1169,28 +1169,16 @@ claim_policies:
     statuses: [known]
     require_normalized: true
     keys: [hw.dram_type]
-- id: claim/document-power-pdo@1
+- id: claim/document-power-pdo@3
   since: '2026-11-24'
-  rationale: 'New pseudo-source documents (crawler/documents.py + scripts/docattach.py, transform docattach@1): the PDF manuals / QSGs /
-    datasheets a charger or power-bank maker page links, read from their TEXT LAYER (pdftotext -layout / -bbox-layout column blocks). OCR claims
-    (extractor docparse-ocr@1) are NOT covered: they stay candidates (preview) with conditions {ocr: true, ocr_conf}. Identity guard: a document
-    attaches only to an entity observed on the linking page AND only when the document text names one of that entity''s own mfr_model / mfr_sku
-    exactly; a multi-model document attaches only claims read from a block naming the model; everything else is a document_proposal event.
-    Keys: pd.pps (True only: a printed PPS range in an output row, or an explicit "Supports PPS" / protocol list naming PPS), pd.pps_max_voltage /
-    pd.pps_max_current_a (highest printed PPS range of single-port or sectionless output rows; chargers), pd.max_fixed_voltage (highest
-    printed fixed PDO of output rows), pd.epr (True only, fixed PDO >= 28 V; chargers), out.ports (only rows the document names explicitly in a
-    single-port or sectionless output table, mapped onto the linking page''s own port rows by exact port token cover; combination / "N ports in
-    use" rows never set a port; a PDO line naming no port sets device-level keys only). Conditions {document_kind} are provenance only
-    (scripts/resolve.py PROVENANCE): page and document agreeing = one value, disagreeing = conflicted (visible), page rows are completed
-    from compatible document rows only where the page left the field empty (resolve.py item merge, note "merged: ...").'
+  supersedes: claim/document-power-pdo@1
+  rationale: 'Same rules, extractor and keys as @1, re-issued because docattach@1''s fingerprint covers _charger.py, which now normalises port-name variants (r9, see claim/mfr-chargers-structured@4). docattach and docparse code are unchanged; only the pinned fingerprint moves.'
   audit:
-    by: A3 document pipeline
+    by: A2 cleanup
     at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-document-pipeline.md; tests/test_documents.py (A2667 manual: PPS 3.3-16V 3.25A on USB-C 1 and USB-C 2 from
-      the "Use One Port" section only, multi-model, OCR, non-English duplicate, model-mismatch fixtures); every attached text-layer claim of the
-      43 parsed charger / power-bank documents read against its quote.'
+    evidence: 'team/reports/2026-11-24-cleanup.md; tests/test_documents.py pass unchanged; docattach.py and _docparse.py untouched.'
     parsers:
-      docattach@1: 'sha256:352d0ecd4f0d81f6c750'
+      docattach@1: 'sha256:57253c9adb4fce1df608'
   approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
     extractors: [docparse@1]
@@ -4358,3 +4346,280 @@ retired_policies:
         port.lan_count, port.lan_max_mbps, port.multigig_count, port.usb_count, port.usb_standard, port.wan_lan_configurable, port.wan_speed_mbps,
         wifi.band_count, wifi.generation, wifi.has_6ghz, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_6_mbps]
   retired: {at: '2026-11-24', superseded_by: claim/mfr-routers-direct@4, reason: 'never applied: locked with the audited fingerprints of a draft that put the wired-gateway helper in _router.py (which drifted TP-Link/NETGEAR/ASUS); helper moved to _nowifi.py, same meaning re-issued as @4'}
+- id: claim/mfr-chargers-structured@2
+  since: '2026-11-24'
+  supersedes: claim/mfr-chargers-structured@1
+  rationale: 'Same rules, sources and keys as @1, re-issued for the r7 bump of all eleven extractors (@1 -> @2: shared _powerbank changed) plus two affirmative-only pd.pps rules in _charger.py: a USB-C output row that names PPS without a range (HyperJuice ''USB-C1: 100W Max - PD 3.0 and PPS'') and a per-port ''USB-C1 Protocols'' row naming PPS (UGREEN 500W). USB-A rows never count. WIDENING: pd.pps added to the hyper-us-chargers allowlist.'
+  audit:
+    by: A2 coverage r2
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-coverage-r2.md; claim diff old vs new parsers over every stored snapshot (git worktree of HEAD): +3 hyper pd.pps, +1 ugreen pd.pps, 0 other changes'
+    parsers:
+      anker_chargers@2: 'sha256:8bb7107d875d52865b9f'
+      belkin_chargers@2: 'sha256:f596fcb8e433a7d2f486'
+      ugreen_chargers@2: 'sha256:b5c002c27d49233d7281'
+      iniu_chargers@2: 'sha256:b5c002c27d49233d7281'
+      cuktech_chargers@2: 'sha256:b5c002c27d49233d7281'
+      satechi_chargers@2: 'sha256:b5c002c27d49233d7281'
+      mophie_chargers@2: 'sha256:b5c002c27d49233d7281'
+      aukey_chargers@2: 'sha256:b5c002c27d49233d7281'
+      hyper_chargers@2: 'sha256:b5c002c27d49233d7281'
+      nativeunion_chargers@2: 'sha256:b5c002c27d49233d7281'
+      choetech_chargers@2: 'sha256:b5c002c27d49233d7281'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [anker_chargers@2, belkin_chargers@2, ugreen_chargers@2, iniu_chargers@2, cuktech_chargers@2, satechi_chargers@2, mophie_chargers@2, aukey_chargers@2, hyper_chargers@2, nativeunion_chargers@2, choetech_chargers@2]
+    source_ids: [anker-us-chargers, belkin-us-chargers, ugreen-us-chargers, iniu-us-chargers, cuktech-us-chargers, satechi-us-chargers, mophie-us-chargers, aukey-us-chargers, hyper-us-chargers, nativeunion-us-chargers, choetech-us-chargers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      anker-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.all_ports_w, out.max_single_port_w, out.max_total_w, out.port_count, out.ports, out.simultaneous, out.usb_a_count, out.usb_c_count, pd.epr, pd.max_fixed_voltage, pd.pps, pd.pps_max_current_a, pd.pps_max_voltage, phys.dimensions, phys.foldable_plug, phys.weight]
+      belkin-us-chargers: [out.port_count, out.rated_w, out.usb_a_count, out.usb_c_count, phys.dimensions]
+      ugreen-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.max_total_w, out.port_count, out.ports, out.rated_w, out.usb_a_count, out.usb_c_count, pd.epr, pd.max_fixed_voltage, pd.pps, pd.pps_max_current_a, pd.pps_max_voltage, phys.dimensions, phys.weight]
+      iniu-us-chargers: [gen.color, out.max_single_port_w, out.ports, pd.max_fixed_voltage]
+      cuktech-us-chargers: [in.rating, in.type, in.voltage_range, out.max_single_port_w, out.port_count, out.ports, out.usb_a_count, out.usb_c_count, pd.max_fixed_voltage, phys.dimensions, phys.weight]
+      satechi-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.ports, phys.foldable_plug, phys.weight]
+      mophie-us-chargers: [out.rated_w]
+      aukey-us-chargers: [gen.color, out.max_single_port_w, out.ports]
+      hyper-us-chargers: [gen.color, out.max_single_port_w, out.ports, out.rated_w, pd.pps]
+      nativeunion-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.ports, pd.max_fixed_voltage, phys.weight]
+      choetech-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.max_total_w, out.ports, pd.max_fixed_voltage, phys.dimensions, phys.weight]
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-chargers-structured@4, reason: 'cleanup r9: _charger port-name normalisation re-pins the extractors / docattach fingerprint; meaning frozen as locked'}
+- id: claim/document-power-pdo@1
+  since: '2026-11-24'
+  rationale: 'New pseudo-source documents (crawler/documents.py + scripts/docattach.py, transform docattach@1): the PDF manuals / QSGs /
+    datasheets a charger or power-bank maker page links, read from their TEXT LAYER (pdftotext -layout / -bbox-layout column blocks). OCR claims
+    (extractor docparse-ocr@1) are NOT covered: they stay candidates (preview) with conditions {ocr: true, ocr_conf}. Identity guard: a document
+    attaches only to an entity observed on the linking page AND only when the document text names one of that entity''s own mfr_model / mfr_sku
+    exactly; a multi-model document attaches only claims read from a block naming the model; everything else is a document_proposal event.
+    Keys: pd.pps (True only: a printed PPS range in an output row, or an explicit "Supports PPS" / protocol list naming PPS), pd.pps_max_voltage /
+    pd.pps_max_current_a (highest printed PPS range of single-port or sectionless output rows; chargers), pd.max_fixed_voltage (highest
+    printed fixed PDO of output rows), pd.epr (True only, fixed PDO >= 28 V; chargers), out.ports (only rows the document names explicitly in a
+    single-port or sectionless output table, mapped onto the linking page''s own port rows by exact port token cover; combination / "N ports in
+    use" rows never set a port; a PDO line naming no port sets device-level keys only). Conditions {document_kind} are provenance only
+    (scripts/resolve.py PROVENANCE): page and document agreeing = one value, disagreeing = conflicted (visible), page rows are completed
+    from compatible document rows only where the page left the field empty (resolve.py item merge, note "merged: ...").'
+  audit:
+    by: A3 document pipeline
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-document-pipeline.md; tests/test_documents.py (A2667 manual: PPS 3.3-16V 3.25A on USB-C 1 and USB-C 2 from
+      the "Use One Port" section only, multi-model, OCR, non-English duplicate, model-mismatch fixtures); every attached text-layer claim of the
+      43 parsed charger / power-bank documents read against its quote.'
+    parsers:
+      docattach@1: 'sha256:352d0ecd4f0d81f6c750'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [docparse@1]
+    source_ids: [documents]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys: [pd.pps, pd.pps_max_voltage, pd.pps_max_current_a, pd.max_fixed_voltage, pd.epr, out.ports]
+  retired: {at: '2026-11-24', superseded_by: claim/document-power-pdo@3, reason: 'cleanup r9: _charger port-name normalisation re-pins the extractors / docattach fingerprint; meaning frozen as locked'}
+- id: claim/mfr-chargers-structured@3
+  since: '2026-11-24'
+  supersedes: claim/mfr-chargers-structured@1
+  rationale: 'Same rules, sources and keys as @2, re-issued for the r9 bump of all eleven extractors (@2 -> @3): _charger.py now normalises port-name spelling variants to one form (Anker A2669 printed both ''USB-C 1 / C 2'' and ''USB-C1/C2'' and the page parser emitted both rows; now ''USB-C1/C2'', and a repeated identical row is dropped). Port names are spelled without a space before the digit and around ''/''; no key, source or accepted value class is widened.'
+  audit:
+    by: A2 cleanup
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-cleanup.md; claim diff old vs new parsers over every stored charger snapshot (219): only out.ports names change (8 pages), A2669 loses its duplicate row, no value changes elsewhere.'
+    parsers:
+      anker_chargers@3: sha256:244bbacdc1e10f9cc231
+      belkin_chargers@3: sha256:8e4e8ec4d0e13be8e6d6
+      ugreen_chargers@3: sha256:2dd189fb9808f70d95bc
+      iniu_chargers@3: sha256:2dd189fb9808f70d95bc
+      cuktech_chargers@3: sha256:2dd189fb9808f70d95bc
+      satechi_chargers@3: sha256:2dd189fb9808f70d95bc
+      mophie_chargers@3: sha256:2dd189fb9808f70d95bc
+      aukey_chargers@3: sha256:2dd189fb9808f70d95bc
+      hyper_chargers@3: sha256:2dd189fb9808f70d95bc
+      nativeunion_chargers@3: sha256:2dd189fb9808f70d95bc
+      choetech_chargers@3: sha256:2dd189fb9808f70d95bc
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: draft, never active
+  match:
+    extractors:
+    - anker_chargers@3
+    - belkin_chargers@3
+    - ugreen_chargers@3
+    - iniu_chargers@3
+    - cuktech_chargers@3
+    - satechi_chargers@3
+    - mophie_chargers@3
+    - aukey_chargers@3
+    - hyper_chargers@3
+    - nativeunion_chargers@3
+    - choetech_chargers@3
+    source_ids:
+    - anker-us-chargers
+    - belkin-us-chargers
+    - ugreen-us-chargers
+    - iniu-us-chargers
+    - cuktech-us-chargers
+    - satechi-us-chargers
+    - mophie-us-chargers
+    - aukey-us-chargers
+    - hyper-us-chargers
+    - nativeunion-us-chargers
+    - choetech-us-chargers
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    require_normalized: true
+    keys:
+      anker-us-chargers:
+      - gen.color
+      - in.rating
+      - in.type
+      - in.voltage_range
+      - out.all_ports_w
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.port_count
+      - out.ports
+      - out.simultaneous
+      - out.usb_a_count
+      - out.usb_c_count
+      - pd.epr
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.pps_max_current_a
+      - pd.pps_max_voltage
+      - phys.dimensions
+      - phys.foldable_plug
+      - phys.weight
+      belkin-us-chargers:
+      - out.port_count
+      - out.rated_w
+      - out.usb_a_count
+      - out.usb_c_count
+      - phys.dimensions
+      ugreen-us-chargers:
+      - gen.color
+      - in.rating
+      - in.type
+      - in.voltage_range
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.port_count
+      - out.ports
+      - out.rated_w
+      - out.usb_a_count
+      - out.usb_c_count
+      - pd.epr
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.pps_max_current_a
+      - pd.pps_max_voltage
+      - phys.dimensions
+      - phys.weight
+      iniu-us-chargers:
+      - gen.color
+      - out.max_single_port_w
+      - out.ports
+      - pd.max_fixed_voltage
+      cuktech-us-chargers:
+      - in.rating
+      - in.type
+      - in.voltage_range
+      - out.max_single_port_w
+      - out.port_count
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - pd.max_fixed_voltage
+      - phys.dimensions
+      - phys.weight
+      satechi-us-chargers:
+      - gen.color
+      - in.rating
+      - in.type
+      - in.voltage_range
+      - out.max_single_port_w
+      - out.ports
+      - phys.foldable_plug
+      - phys.weight
+      mophie-us-chargers:
+      - out.rated_w
+      aukey-us-chargers:
+      - gen.color
+      - out.max_single_port_w
+      - out.ports
+      hyper-us-chargers:
+      - gen.color
+      - out.max_single_port_w
+      - out.ports
+      - out.rated_w
+      - pd.pps
+      nativeunion-us-chargers:
+      - gen.color
+      - in.rating
+      - in.type
+      - in.voltage_range
+      - out.max_single_port_w
+      - out.ports
+      - pd.max_fixed_voltage
+      - phys.weight
+      choetech-us-chargers:
+      - gen.color
+      - in.rating
+      - in.type
+      - in.voltage_range
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - pd.max_fixed_voltage
+      - phys.dimensions
+      - phys.weight
+  retired:
+    at: '2026-11-24'
+    superseded_by: claim/mfr-chargers-structured@4
+    reason: draft locked by a failed dry run (malformed YAML, never active in any release); content frozen as locked, reissued as @4
+- id: claim/document-power-pdo@2
+  since: '2026-11-24'
+  supersedes: claim/document-power-pdo@1
+  rationale: Same rules, extractor and keys as @1, re-issued because docattach@1's fingerprint covers _charger.py, which now normalises port-name variants (r9, see claim/mfr-chargers-structured@3). docattach and docparse code are unchanged; only the pinned fingerprint moves.
+  audit:
+    by: A2 cleanup
+    at: '2026-11-24'
+    evidence: team/reports/2026-11-24-cleanup.md; tests/test_documents.py pass unchanged; docattach.py and _docparse.py untouched.
+    parsers:
+      docattach@1: sha256:57253c9adb4fce1df608
+  approval:
+    state: pending
+    by: null
+    at: null
+    note: draft, never active
+  match:
+    extractors:
+    - docparse@1
+    source_ids:
+    - documents
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    require_normalized: true
+    keys:
+    - pd.pps
+    - pd.pps_max_voltage
+    - pd.pps_max_current_a
+    - pd.max_fixed_voltage
+    - pd.epr
+    - out.ports
+  retired:
+    at: '2026-11-24'
+    superseded_by: claim/document-power-pdo@3
+    reason: draft locked by a failed dry run (malformed YAML, never active in any release); content frozen as locked, reissued as @3

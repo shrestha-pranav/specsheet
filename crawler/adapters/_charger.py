@@ -200,6 +200,11 @@ def _count_ports(text):
     return (c, a) if hit else (None, None)
 
 
+def port_name(name):
+    """Spelling variants of one port name -> one form: 'USB-C 1 / C 2' and 'USB-C1/C2' -> 'USB-C1/C2' (space before a digit and around '/' dropped)."""
+    return re.sub(r"\s*/\s*", "/", re.sub(r"(?<=[A-Za-z])\s+(?=\d)", "", name or ""))
+
+
 class _Out:
     """Collects one page's output evidence: individual port rows, printed combinations, labelled totals, 'N ports in use' rows."""
     def __init__(self):
@@ -207,7 +212,9 @@ class _Out:
         self.last = None
 
     def port(self, name, text):
-        name = re.sub(r"(?i)\s*(?:output|port)$", "", clean(name)).strip() or "Output"
+        name = port_name(re.sub(r"(?i)\s*(?:output|port)$", "", clean(name)).strip()) or "Output"
+        if name in self.ports and text in self.ports[name].split(" / "):      # a variant spelling repeating the same row (A2669 'USB-C 1 / C 2' + 'USB-C1/C2')
+            self.last = name; return
         self.ports[name] = (self.ports.get(name, "") + " / " + text).strip(" /")
         self.last = name
 

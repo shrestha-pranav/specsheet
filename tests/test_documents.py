@@ -128,7 +128,7 @@ class OcrDocument(unittest.TestCase):
         self.assertEqual(DA.claims_for("chargers", parsed(lo), "manual", "u", pports(PAGE_PORTS))[0], [])
 
     def test_ocr_is_not_auto_accepted(self):
-        pol = next(p for p in yaml.safe_load((CODE / "data/decisions/policies.yaml").read_text())["claim_policies"] if p["id"] == "claim/document-power-pdo@1")
+        pol = next(p for p in yaml.safe_load((CODE / "data/decisions/policies.yaml").read_text())["claim_policies"] if p["id"] == "claim/document-power-pdo@3")
         self.assertEqual(pol["match"]["extractors"], [DA.EXTRACTOR])
         self.assertEqual(pol["approval"]["state"] in ("pending", "approved"), True)
         self.assertEqual(pol["audit"]["parsers"][DA.TRANSFORM], DA.fingerprint())     # pinned: a parser edit needs a new policy id

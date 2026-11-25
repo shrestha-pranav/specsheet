@@ -136,7 +136,7 @@ class Published(unittest.TestCase):
 
     def test_policy_pending_and_allowlisted(self):
         d = yaml.safe_load((ROOT / "data" / "decisions" / "policies.yaml").read_text())
-        p = next(x for x in d["claim_policies"] if x["id"] == "claim/mfr-chargers-structured@2")   # r7 (A2 coverage r2): @1 retired, same rules
+        p = next(x for x in d["claim_policies"] if x["id"] == "claim/mfr-chargers-structured@4")   # r9 (cleanup): @2 retired, same rules
         self.assertIsInstance(p["match"]["keys"], dict)
         for src, keys in p["match"]["keys"].items():
             self.assertFalse({"gen.gan", "gen.form_factor", "gen.product_line", "pd.protocols", "id.msrp_us"} & set(keys), src)

@@ -18,7 +18,7 @@ import _contract as C
 import _charger as G
 import _run
 
-ID, VERSION, SOURCE = "anker_chargers", 2, "anker-us-chargers"     # r7: shared _powerbank changed (energy_basis pairs, case-insensitive Wh)
+ID, VERSION, SOURCE = "anker_chargers", 3, "anker-us-chargers"     # r9: _charger port-name variants normalised (USB-C 1 / C 2 == USB-C1/C2)
 CATEGORIES = {"chargers"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.anker.com"

@@ -83,3 +83,7 @@
 {"at": "2026-11-24T20:45:54Z", "id": "claim/mfr-routers-direct@4", "sha256": "sha256:8443209965cf6e8ee4288fd05629d98144c1cdeed60ac3d4141b7eacd22e614a"}
 {"at": "2026-11-25T00:50:05Z", "id": "claim/document-power-pdo@1", "sha256": "sha256:7242c90b59bfb49e5930eb54c2ae93855563316b045f32336e30929f48ddeef6"}
 {"at": "2026-11-25T03:41:54Z", "id": "claim/document-spec-r2@1", "sha256": "sha256:1862781b5f374d9d8323b605dd17f885e985832f74891b2c13b4e97f49886cb0"}
+{"at": "2026-11-25T03:59:57Z", "id": "claim/mfr-chargers-structured@3", "sha256": "sha256:4edbfd0550419409d09b425bfd13a65683b6fc6f15a49ff639c9353af12300a6"}
+{"at": "2026-11-25T03:59:57Z", "id": "claim/document-power-pdo@2", "sha256": "sha256:2197e0b9460b68c8745def2c0213e961538089b0505d946c3b11c4f2b1c49f54"}
+{"at": "2026-11-25T04:03:12Z", "id": "claim/mfr-chargers-structured@4", "sha256": "sha256:98e31d7205d28a94b9a4775ee2ebd1839a2918dd2d84532ce762302d616f49f4"}
+{"at": "2026-11-25T04:03:12Z", "id": "claim/document-power-pdo@3", "sha256": "sha256:5db5a8a1f7b024b730ec878d4a49e765dd2ba7433730a336e406dd2ae95cd16c"}

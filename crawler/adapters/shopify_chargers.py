@@ -20,7 +20,7 @@ import _contract as C
 import _charger as G
 import _run
 
-VERSION = 2       # v2: r7 shared _powerbank (energy_basis pairs, case-insensitive Wh); charger rules unchanged
+VERSION = 3       # v3: _charger port-name variants normalised (USB-C 1 / C 2 == USB-C1/C2); v2: r7 shared _powerbank
 CATEGORIES = {"chargers"}
 DELAY = 1.0
 CHG = re.compile(r"charger|charging station|charging hub|power adapter|wall adapter|power delivery adapter|\bGaN\b.*\d+\s*W", re.I)

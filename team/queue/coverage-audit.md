@@ -30,13 +30,13 @@ Item fields (`out.ports.pps`) = at least one port row states the field. Regenera
 | air-purifiers | 36 | 2 | 34 | 0 | 0 | 0 | 0 | 263 (895) |
 | chargers | 40 | 11 | 3 | 0 | 26 | 10 | 16 | 79 (436) |
 | laptops | 30 | 1 | 29 | 0 | 0 | 0 | 0 | 70 (681) |
-| monitors | 20 | 4 | 0 | 16 | 0 | 14 | 0 | 1341 (51891) |
+| monitors | 20 | 4 | 0 | 0 | 16 | 14 | 0 | 1341 (51891) |
 | power-banks | 43 | 25 | 0 | 0 | 18 | 7 | 36 | 30 (141) |
 | power-stations | 64 | 1 | 63 | 0 | 0 | 0 | 0 | 246 (601) |
 | power-strips | 980 | 391 | 411 | 178 | 0 | 0 | 0 | 3 (5) |
 | robot-vacuums | 53 | 0 | 53 | 0 | 0 | 0 | 0 | 213 (1774) |
 | routers | 135 | 1 | 134 | 0 | 0 | 0 | 0 | 16 (640) |
-| ssds | 177 | 40 | 3 | 134 | 0 | 124 | 14 | 0 (0) |
+| ssds | 177 | 40 | 3 | 0 | 134 | 124 | 14 | 0 (0) |
 | tvs | 343 | 14 | 329 | 0 | 0 | 0 | 0 | 1515 (70368) |
 
 Image-only spec candidates (gallery images named spec/param/label, never OCR'd), by crawl.py v0 store: anker 1617, spigen 12, ecoflow 9, belkin 2

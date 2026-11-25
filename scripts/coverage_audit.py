@@ -22,6 +22,7 @@ CODE = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(CODE / "scripts"), str(CODE / "crawler"), str(CODE / "crawler" / "adapters")]
 import catmeta  # noqa: E402
 import docattach as DA  # noqa: E402
+import docspec_attach as DS  # noqa: E402  (docspec@1 / docspec-attach@1: ssds, monitors)
 
 ROOT = catmeta.ROOT
 SPEC_IMG = re.compile(r"spec|param|label|rating|dimension|size[-_]chart|_td\d|detail[-_]?page", re.I)
@@ -98,7 +99,7 @@ def evidence(db, attach_stats=None):
                 c["documents_not_fetched" if not snaps.get(x["norm_url"]) else "documents_fetch_failed"] += 1
                 continue
             has_text = (d / "text" / f"{ok[-1]['snapshot'].split(':', 1)[1]}.json").exists()
-            if cat in DA.CATEGORIES and has_text:
+            if (cat in DA.CATEGORIES or cat in DS.KEYS) and has_text:
                 c["documents_parsed"] += 1
             else:
                 c["documents_fetched_not_parsed"] += 1
