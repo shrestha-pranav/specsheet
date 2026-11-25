@@ -26,9 +26,10 @@ export function openapi(env: Env, origin: string, s: Surface) {
     paths["/v1/query"] = { get: { summary: "Filtered spec query with per-value provenance", ...price("query"),
       parameters: [
         { name: "category", in: "query", required: true, schema: { type: "string", enum: s.categories } },
-        { name: "filters", in: "query", schema: { type: "string", maxLength: BOUNDS.filtersChars }, description: `Comma list of key<op>value (ops >= <= > < != = ~), at most ${BOUNDS.filterClauses} clauses, keys from the category schema, values <= ${BOUNDS.filterValue} chars. Example: cpu.cores>=8,brand=ASUS. Unknown values never match.` },
+        { name: "filters", in: "query", schema: { type: "string", maxLength: BOUNDS.filtersChars }, description: `Comma list of key<op>value (ops >= <= > < != = ~), at most ${BOUNDS.filterClauses} clauses, keys from the category schema, values <= ${BOUNDS.filterValue} chars. Example: cpu.cores>=8,brand=ASUS. Unknown values never match, but rows that might match (unknown, conflicted, disagreeing sources) are counted in \`maybe\` and listed with include=maybe.` },
         { name: "q", in: "query", schema: { type: "string", maxLength: BOUNDS.q }, description: "Substring match on brand/name/variant/identifiers" },
         { name: "fields", in: "query", schema: { type: "string" }, description: `Comma list of at most ${BOUNDS.fields} spec keys to return` },
+        { name: "include", in: "query", schema: { type: "string", enum: ["matches", "maybe"], default: "matches" }, description: "maybe = also list rows that might match, after the matches (each result carries status and filter_status)" },
         { name: "limit", in: "query", schema: { type: "integer", default: BOUNDS.limitDefault, minimum: 1, maximum: BOUNDS.limitMax } },
         { name: "offset", in: "query", schema: { type: "integer", default: 0, minimum: 0, maximum: BOUNDS.offsetMax }, description: "Deeper reads: use the static files" },
       ], responses: { ...ok({ $ref: "#/components/schemas/QueryResult" }), ...errs } } };
@@ -52,13 +53,17 @@ export function openapi(env: Env, origin: string, s: Surface) {
     info: { title: "specsheet API", version: "0.2.0", description: `${paid ? "Paid mode (provisional prices, x402)." : NOTE} ${NAT} ${bulkHint(s.site)}` },
     servers: [{ url: origin }], "x-release": s.release, paths,
     components: { schemas: { QueryResult: { type: "object", properties: {
-      release: { type: "string" }, category: { type: "string" }, total: { type: "integer" }, offset: { type: "integer" }, count: { type: "integer" },
+      release: { type: "string" }, category: { type: "string" }, include: { type: "string" }, total: { type: "integer", description: "rows matching every filter" },
+      maybe: { type: "object", description: "{total, unknown, conflicted, disagree}: rows that might match (always reported)" }, offset: { type: "integer" }, count: { type: "integer" },
       results: { type: "array", items: { type: "object", properties: { id: { type: "string" }, brand: { type: "string" }, name: { type: "string" },
+        status: { type: "string", enum: ["match", "maybe"] },
+        filter_status: { type: "object", description: "spec filter key -> match | unknown | conflicted | disagree" },
+        unknown_core: { type: "object", description: "core spec key -> status (unknown, not_published, conflicted, not_applicable) for core keys with no published value" },
         specs: { type: "object", description: "key -> {value, unit, kind, sources: [source id]}" }, sources: { type: "array", description: "{id, url, label, tier, retrieved_at, ...} for the ids used in specs", items: { type: "object" } } } } } } } } },
   };
 }
 
-export const tools = (s: Surface) => (s.mode === "on-bad" ? [] : s.match ? ["query_specs", "match_product"] : ["query_specs"]);
+export const tools = (s: Surface) => (s.mode === "on-bad" ? [] : ["query_specs", ...(s.match ? ["match_product"] : []), "list_categories_keys", "list_presets"]);
 
 export function llmsTxt(origin: string, s: Surface) {
   if (s.mode === "on-bad") return `# specsheet API\n> Release ${s.release}. Paid routes are unavailable (payments not configured). ${bulkHint(s.site)}\n- [Health](${origin}/health), [OpenAPI](${origin}/openapi.json), ${origin}/llms.txt\n`;
@@ -81,5 +86,7 @@ ${s.match ? `- GET ${origin}/v1/match?title=<retail listing title> : resolve a l
 
 ## Notes
 - Values with status unknown or conflicted are never returned as facts; an absent spec means not established.
+- Explicit unknown: /v1/query reports \`maybe\` counts (unknown / conflicted / disagree) for every query; include=maybe lists those rows with per-filter \`filter_status\`; every result lists \`unknown_core\` keys.
+- MCP list_categories_keys (keys, types, units, facet, fill) and list_presets (curated queries as query_specs filter strings) are metadata tools.
 `;
 }

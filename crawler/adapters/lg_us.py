@@ -13,6 +13,10 @@ Traps    : 'Screen Size' is the viewable diagonal (21.45") -> gen.viewable_diag;
 v2 (2026-11-24, preset fill): gen.size_class from 'Screen Size Class (diagonal)' ('22" Class (21.5" diagonal)' -> 22, stated); where only a
            diagonal is printed (that row without 'Class', or 'Screen Size') the class is derived (kind derived, round half up,
            _monports.DERIVATION). usb.usbc_inputs from the Input/Output group, see lg_usbc_inputs().
+v3 (2026-11-25, a2 r5): flk.pwm 'none' (official maker declaration, literal quoted) from this page's OWN CMS copy when it names the UL
+           flicker-free certification explicitly: a legal footnote 'Certificate Number: Flicker[- ]Free Display (OLED) - A196009' or feature copy
+           'UL[- ]verified "Flicker-free Display"'. Image alt text, 'Reader Mode', 'reduce(s) flicker' and badge lists never map; a page with a
+           'Flicker Safe' spec term is left to the label map (claim/monitor-flicker-label-map@1). See lg_flicker_free().
 """
 import gzip, json, re, sys
 from pathlib import Path
@@ -22,7 +26,7 @@ from _contract import Ref, Discovery, ParseResult, claim  # noqa
 import _run
 import _monports as MP
 
-ID, VERSION, SOURCE = "lg_us", 2, "lg-us"
+ID, VERSION, SOURCE = "lg_us", 3, "lg-us"
 CATEGORIES = {"monitors"}
 SITEMAP = "https://www.lg.com/us/sitemap.xml"
 ADAPTER = f"{ID}@{VERSION}"
@@ -187,9 +191,47 @@ def parse_html(snap, html):
     if n is not None:
         pr.claims.append(claim(model, "usb.usbc_inputs", n, None, rawio, "s1", ADAPTER, "next_data", obs, {"term": "Input/Output"}, rawio,
                                conditions={"basis": "complete_enumeration"} if zero else None))
+    if not any(re.match(r"Flicker Safe", t, re.I) for t in T) and (ff := lg_flicker_free(nd)):
+        pr.claims.append(claim(model, "flk.pwm", "none", None, ff[1], "s1", ADAPTER, "next_data", obs, {"term": ff[0]}, ff[1]))
     pr.fingerprints = {"raw": snap.snapshot, "model": model, "status": p.get("modelStatus"), "terms": len(T),
                        "unmapped": {k: v for k, v in T.items() if k not in used}}
     return pr
+
+
+FF_FOOT = re.compile(r"Certificate Number:\s*Flicker[- ]Free Display(?:\s*\(OLED\))?\s*-\s*[A-Z]\d{5,}", re.I)     # a numbered certificate
+FF_COPY = re.compile(r"UL[- ]verified\s*[\u201c\"']?\s*Flicker[- ]free Display\b", re.I)
+
+
+def _plain(s):
+    return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", str(s or "")).replace("&nbsp;", " ")).strip()
+
+
+def _texts(o):
+    if isinstance(o, dict):
+        for k, v in o.items():
+            if k == "text" and isinstance(v, str):
+                yield v
+            else:
+                yield from _texts(v)
+    elif isinstance(o, list):
+        for v in o:
+            yield from _texts(v)
+
+
+def lg_flicker_free(nd):
+    """v3: (locator term, quote) when this page's own CMS copy names the UL flicker-free certification, else None. Footnotes are split on their
+    numbers so the quote is the one footnote; feature copy only from rich-text 'text' leaves (never image alt/meta values)."""
+    cms = ((nd or {}).get("props") or {}).get("pageProps", {}).get("cmsProductData") or {}
+    for fn in cms.get("legal_footnote") or []:
+        raw = re.sub(r"<[^>]+>", " ", str(fn.get("legal_text_copy") or "")).replace("&nbsp;", " ")
+        for part in map(_plain, re.split(r"\s{2,}(?=\d{1,2}\s)", raw)):
+            if FF_FOOT.search(part):
+                return "legal footnote", part[:300]
+    for tab in cms.get("overview_feature_tab") or []:
+        for t in _texts(tab.get("feature_tab") or []):
+            if FF_COPY.search(_plain(t)):
+                return "overview feature", _plain(t)[:300]
+    return None
 
 
 NOT = re.compile(r"^\s*(no|none|-|n/a)\s*$", re.I)

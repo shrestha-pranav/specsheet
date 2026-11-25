@@ -1,0 +1,6 @@
+# Reviewers allowed to decide corrections (c_corr_* ledger lines; scripts/review_corrections.py, scripts/decisions.py).
+# Documented exception to the corrections flow's "no personal data" rule (Codex review-7 P1): these are the PUBLIC GitHub handles of
+# the repo owner/maintainers, who decide in public under their own name. Contributors are never listed or recorded anywhere.
+# Adding a maintainer is an owner decision (product/decisions.md); agents never add themselves.
+maintainers:
+  - shrestha-pranav

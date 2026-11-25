@@ -1,7 +1,7 @@
 {
  "generated_from": "data/source-policy.yaml",
- "policy_version": "2026-11-25.2",
- "policy_sha256": "1fdb0b7542bbc892b63bb5fd4974fa2fb3091af68ad8aa41391d90b63d1f52e4",
+ "policy_version": "2026-11-25.3",
+ "policy_sha256": "e986a41df4ead13e329faab0642de797043a560f6f5b84c5ccc331cbdc431417",
  "license_scope": "compilation + values whose sources[] include licence_grant:true; other values are facts with links, not licensed by us",
  "granted": [
   {
@@ -640,6 +640,24 @@
    "match": "exact",
    "kind": "maker",
    "credit": "SanDisk official datasheets",
+   "categories": [
+    "ssds"
+   ]
+  },
+  {
+   "domain": "semiconductor.samsung.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Samsung Semiconductor consumer-storage documents",
+   "categories": [
+    "ssds"
+   ]
+  },
+  {
+   "domain": "download.semiconductor.samsung.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Samsung SSD datasheets",
    "categories": [
     "ssds"
    ]

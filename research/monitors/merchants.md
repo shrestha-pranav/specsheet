@@ -24,3 +24,16 @@ Role: retailer data = aliases, MPN candidates, prices, availability; never prima
   200 with the spec table server-rendered as JSON (`organizedSpecs` headline/text rows). **No flicker statement in it**: the only related row
   is "Eye Caring: Yes" (11 of 11 pages sampled, gaming/home/office), which does not say flicker-free or name a TUV flicker certificate, so
   nothing is read and no adapter was built. Lenovo `flk.pwm` stays PSREF-only (certification cell naming TUV Rheinland Flicker Free).
+
+## A2 coverage r4 (2026-11-25; crawler UA, 1 req/s)
+- **Notebookcheck (notebookcheck.net, measurement, crawl agent): discovery BLOCKED, 0 seeds.** robots.txt (`*`) disallows only /nbcbattery/
+  and /cdn-cgi/, but the sitemap (`/?type=102`) and every query-string listing (`index.php?...tagArray[]=92` = the Monitor tag; the page's
+  own XHR goes to dev1.notebook-check.com, an unregistered host, not used) answer a Cloudflare challenge (403). Not retried. Plain `.html`
+  pages answer 200 (Contact, Reviews.55.0.html: ~100 newest reviews, 1 monitor = KTC H27D9, not carried). Site search is Google CSE
+  (search engine, not used). Three web searches for the in-scope Lenovo/LG/BenQ gap models found launch news only, no review naming an
+  exact carried model. notebookcheck_reviews@2 stays unregistered with SEEDS empty.
+- **Lenovo user guides (download.lenovo.com): BLOCKED by robots.txt.** robots is an allow-list ending `Disallow: /`; monitor guides live under
+  /consumer/monitor/ (found by web search, e.g. p27h_30_user_guide_en.pdf), which no Allow line covers. One GET was made before the full
+  robots file was read (P27h-30 guide); it carried only "Low Blue Light ... TÜV Rheinland Low Blue Light" and the CRT boilerplate, so even
+  that gave nothing. Not fetched again. The allowed /pccbbs/options/ path holds only legacy (IBM-era) guides. support.lenovo.com is not in
+  data/source-policy.yaml, so its guide pages were not read.

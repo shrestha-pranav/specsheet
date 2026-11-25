@@ -52,14 +52,29 @@ def _parse_filters(filters, fields):
     return out
 
 
+def _same(a, b):
+    return json.dumps(a, sort_keys=True) == json.dumps(b, sort_keys=True)
+
+
 def _verdict(row, field, suffix, value):
-    """'match' | 'unknown' | 'no' | 'disagree' for one active filter, same rules as matchFacet (unknown is never no). D10: when the
-    headline and a disagreeing alternative of another kind (index x[key].alt) fall on different sides of the filter, the row is
-    'disagree' (might match, "sources disagree"): never matched, never ruled out."""
+    """'match' | 'unknown' | 'no' | 'disagree' for one active filter, same rules as matchFacet (unknown is never no). D10 (product/decisions.md):
+    a filtered key with a disagreeing alternative of another kind (index x[key].alt) is never matched silently:
+      - headline matches and any alternative has a different value (either side of the filter) -> 'disagree';
+      - headline fails and an alternative would match -> 'disagree' (never ruled out); all values fail -> 'no';
+      - no headline but alternatives (or index status s[key] == 'conflicted') -> explicit 'disagree', not a generic 'unknown'
+        (review-7: a conflict without a headline value kept its conflict state). All alternatives failing -> 'no'."""
+    key = field["key"]
     v = _verdict1(row, field, suffix, value)
-    alts = ((row.get("x") or {}).get(field["key"]) or {}).get("alt") or []
-    if v in ("match", "no") and alts:
-        if any(_verdict1({"v": {field["key"]: a["v"]}}, field, suffix, value) != v for a in alts):
+    alts = ((row.get("x") or {}).get(key) or {}).get("alt") or []
+    if v == "unknown":
+        if alts:
+            return "no" if all(_verdict1({"v": {key: a["v"]}}, field, suffix, value) == "no" for a in alts) else "disagree"
+        return "disagree" if (row.get("s") or {}).get(key) == "conflicted" else "unknown"
+    if alts:
+        av = [_verdict1({"v": {key: a["v"]}}, field, suffix, value) for a in alts]
+        if v == "match" and (any(x != "match" for x in av) or any(not _same(a["v"], row["v"][key]) for a in alts)):
+            return "disagree"
+        if v == "no" and any(x == "match" for x in av):
             return "disagree"
     return v
 
@@ -137,6 +152,7 @@ def measure(preset, category, schema, rows, default_min, default_min_brands=2, d
         pops[key] = pop
         known = sum(1 for r in pop if _known(r, key))
         by_kind = Counter(_prov(r, key) for r in pop if _known(r, key))       # D10: fill counts every kind, broken down on the card
+        assert sum(by_kind.values()) == known, "one headline kind per known row: alternatives never add to fill"
         per_key.append({"key": key, "label": fields[key]["label"], "known": known, "total": len(pop), "fill": round(known / len(pop), 4) if pop else 0.0,
                         "by_kind": dict(sorted(by_kind.items()))})
     weakest = min(per_key, key=lambda k: k["fill"]) if per_key else None
@@ -179,17 +195,15 @@ def measure(preset, category, schema, rows, default_min, default_min_brands=2, d
                     if b and n >= 10 and have_k[b] == 0:
                         seen.setdefault(b, {"brand": b, "rows": n, "label": fields[key]["label"]})
             gate["uncovered_brands"] = sorted(seen.values(), key=lambda b: -b["rows"])[:5]
-    matches = maybe = disagree = 0
+    # Disjoint buckets (review-7): every in-scope row is exactly one of match | unknown | disagree | no (a row with both an unknown and a
+    # disagreeing filter is 'disagree'). `maybe` = unknown + disagree is kept for the app's card; consumers never add maybe and disagree.
+    buckets = Counter()
     for r in pool:
         v = [_verdict(r, f, s, val) for f, s, val in active]
-        if "no" in v:
-            continue
-        if "unknown" in v or "disagree" in v:
-            maybe += 1
-            disagree += "disagree" in v
-        else:
-            matches += 1
-    return gate, {"matches": matches, "maybe": maybe, "disagree": disagree, "total": len(pool), "out_of_scope": category_total - len(pool)}
+        buckets["no" if "no" in v else "disagree" if "disagree" in v else "unknown" if "unknown" in v else "match"] += 1
+    assert sum(buckets.values()) == len(pool)
+    return gate, {"matches": buckets["match"], "maybe": buckets["unknown"] + buckets["disagree"], "unknown": buckets["unknown"], "disagree": buckets["disagree"],
+                  "ruled_out": buckets["no"], "total": len(pool), "out_of_scope": category_total - len(pool)}
 
 
 def build(api, categories, source=None):

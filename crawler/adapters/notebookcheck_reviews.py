@@ -11,8 +11,11 @@ parse    : pure. Identity = the seed's model, which must appear verbatim in the 
            'Screen flickering / PWM' box:
              'Screen flickering / PWM not detected'                 -> flk.pwm none
              'Screen flickering / PWM detected <N> Hz ... <= B % brightness setting' -> flk.pwm_freq N (condition brightness_pct B when stated)
-           kind measured, measurement.mode optical. flk.pwm low-freq / high-freq is NOT written from a detection: the profile has no
-           frequency threshold yet (A1 to rule; proposal in the A2 report). One box per page; two disagreeing boxes = nothing.
+           kind measured, measurement.mode optical. One box per page; two disagreeing boxes = nothing.
+v2 (coverage r4, brief coord-2026-11-25-coverage-r4-a2 #2): a detected Hz value is an affirmative flk.pwm 'present' (PWM measured, frequency
+           class not ruled) next to flk.pwm_freq. flk.pwm none comes ONLY from the explicit 'not detected' box, never from a Hz threshold, and
+           low-freq / high-freq are still never written (no A1 threshold). Identity unchanged: the review <title> must name the exact seed
+           model (panel revisions differ; a family-level title does not bind).
 """
 import gzip, html, re, sys, time
 from pathlib import Path
@@ -21,7 +24,7 @@ import _contract as C
 import _lt as L
 import _run
 
-ID, VERSION, SOURCE = "notebookcheck_reviews", 1, "notebookcheck-reviews"
+ID, VERSION, SOURCE = "notebookcheck_reviews", 2, "notebookcheck-reviews"
 CATEGORIES = {"monitors"}
 ADAPTER = f"{ID}@{VERSION}"
 DELAY = 1.0
@@ -66,8 +69,9 @@ def parse_page(snap, h):
         m = det[0]
         b = BRIGHT.search(m[2])
         f = freqs.pop()
-        measured(pr, snap, model, "flk.pwm_freq", int(f) if f == int(f) else f, (m[0])[:300],
-                 {"brightness_pct": int(b[1])} if b else None)
+        cond = {"brightness_pct": int(b[1])} if b else None
+        measured(pr, snap, model, "flk.pwm", "present", (m[0])[:300], cond)
+        measured(pr, snap, model, "flk.pwm_freq", int(f) if f == int(f) else f, (m[0])[:300], cond)
     pr.fingerprints = {"raw": snap.snapshot, "title": title, "not_detected": len(nd), "detected": [m[1] for m in det][:3]}
     return pr
 

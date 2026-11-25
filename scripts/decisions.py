@@ -10,6 +10,9 @@ data/decisions/ledger.jsonl   append-only human decisions, later lines win for t
 LLM agents may PROPOSE ledger lines in a report; only a human handle may appear in `by` for approve/merge/accept.
 accept_claim/reject_claim may carry an optional "evidence": "<issue url>" (corrections flow, D9.2). Corrections (extractor correction@1,
 claim ids c_corr_*) are decided ONLY by a ledger line: no policy may name correction@*, and an agent-looking `by` on a c_corr_ line fails.
+A c_corr_ line's `by` must be listed in data/decisions/maintainers.yaml (else the import fails), and an accept_claim must carry the
+`digest` of the claim content it approved (corrections.claim_digest): a missing or stale digest leaves the claim a candidate (withheld,
+shown as pending) until a fresh decision. Review-7 P0: an edited issue never reuses an old approval.
 
 Governance (review 2 risk 1):
   - a policy's MEANING is frozen per id: data/decisions/policy-lock.jsonl records sha256(canonical policy minus `approval`) the first time
@@ -20,7 +23,7 @@ Governance (review 2 risk 1):
   - `audit: {by, at, evidence, parsers: {extractor: parser_fingerprint}}` records what was audited; `approval: {state: pending|approved,
     by, at}` records who approved it. Parser drift (current fingerprint != audited one) is reported, and is fatal under --strict-parsers.
 """
-import fnmatch, hashlib, json, re, time
+import fnmatch, hashlib, json, re, sys, time
 from pathlib import Path
 
 import yaml
@@ -58,6 +61,9 @@ class Decisions:
         self._validate()
         self.claims, self.relations, self.merges, self.splits = {}, {}, [], []
         self.lines = 0
+        self._corr_digests = None
+        self.withheld = []          # c_corr_ accepts whose digest no longer matches the claim file
+        corr_by = None
         lp = self.dir / "ledger.jsonl"
         if lp.exists():
             for n, ln in enumerate(lp.read_text().splitlines(), 1):
@@ -71,6 +77,12 @@ class Decisions:
                 if a in ("accept_claim", "reject_claim"):
                     if str(d.get("claim", "")).startswith("c_corr_") and AGENT_BY.search(str(d["by"])):
                         raise SystemExit(f"ledger.jsonl:{n}: a correction is decided by a person; {d['by']!r} looks like an agent (D9.2)")
+                    if str(d.get("claim", "")).startswith("c_corr_"):
+                        if corr_by is None:
+                            import corrections as CR           # lazy: keeps this module import-free for everything but corrections
+                            corr_by = CR.maintainers(self.dir.parent)
+                        if str(d["by"]) not in corr_by:
+                            raise SystemExit(f"ledger.jsonl:{n}: {d['by']!r} is not in data/decisions/maintainers.yaml; only a listed maintainer decides a correction")
                     self.claims[d["claim"]] = d
                 elif a in ("approve_relation", "reject_relation"):
                     self.relations[(d["from"], d["type"], d["to"])] = d
@@ -147,6 +159,17 @@ class Decisions:
     def claim_state(self, cid, ctx):
         """ctx: source_id, extractor (name@ver), key, spec_type, kind, tier, status, normalized (bool). -> (state, decision id)."""
         d = self.claims.get(cid)
+        if d and d["action"] == "accept_claim" and str(cid).startswith("c_corr_"):
+            if self._corr_digests is None:
+                import corrections as CR
+                self._corr_digests = CR.current_digests(self.dir.parent)
+            cur = self._corr_digests.get(cid)
+            if not d.get("digest") or d["digest"] != cur:
+                if cid not in self.withheld:
+                    self.withheld.append(cid)
+                    print(f"decisions: {cid} withheld: the claim changed since {d['id']} approved it (digest {'missing' if not d.get('digest') else 'stale'}); "
+                          "a fresh decision is needed", file=sys.stderr)
+                return "candidate", None
         if d:
             return ("accepted" if d["action"] == "accept_claim" else "rejected"), d["id"]
         for p in self.claim_policies:

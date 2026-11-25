@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Lenovo PSREF adapter v3 (v3: platform-labelled Max Memory cells, see max_memory) (contract: ARCHITECTURE 15.5). Official, structured, per-MTM specs.
+"""Lenovo PSREF adapter v4 (v4: Standard Ports cell -> per-port port.usbc_list + port.tb_usb4/video_out/charge_port, see _lports;
+v3: platform-labelled Max Memory cells, see max_memory) (contract: ARCHITECTURE 15.5). Official, structured, per-MTM specs.
 
 PSREF is a SPA over a JSON API. The API wants a short-lived anonymous JWT that the site issues to every
 browser (POST /api/home/auth/issue, Origin+Referer set); no login/CAPTCHA; robots.txt is 404.
@@ -14,6 +15,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _contract as C
+import _lports
 import _run
 
 BASE = "https://psref.lenovo.com"
@@ -56,12 +58,26 @@ def max_memory(v, row):
     return hit[0] if want and len(hit) == 1 else v
 
 
+PORT_KEYS = {"usbc_list": "port.usbc_list", "tb_usb4": "port.tb_usb4", "video_out": "port.video_out", "charge_port": "port.charge_port"}
+
+
+def port_claims(mtm, v, ex, obs):
+    """Standard Ports cell of ONE MTM row -> claims (v4). A fully understood cell (crawler/adapters/_lports.py) yields the structured per-port
+    port.usbc_list plus the stated port.tb_usb4 / port.video_out / port.charge_port, each located at the segment(s) that state it; any other
+    cell keeps the v3 literal port.usbc_list claim (raw = the cell, value unchanged) and nothing else."""
+    p = _lports.ports(v)
+    if "usbc_list" not in p:
+        return [C.claim(mtm, "port.usbc_list", v, None, v, "s1", ex, "adapter", obs, locator={"mtm": mtm, "column": "Standard Ports"})]
+    return [C.claim(mtm, key, p[f], None, v, "s1", ex, "adapter", obs, locator={"mtm": mtm, "column": "Standard Ports", "segments": p["segments"][f]})
+            for f, key in PORT_KEYS.items() if f in p]
+
+
 def mtm_region(m):
     return m[-2:] if len(m) == 10 else None
 
 
 class LenovoPsref:
-    id, version, source_id, categories = "lenovo_psref", 3, "lenovo-psref", {"laptops"}
+    id, version, source_id, categories = "lenovo_psref", 4, "lenovo-psref", {"laptops"}
 
     def __init__(self):
         self.store = C.BlobStore(self.source_id)
@@ -165,7 +181,9 @@ class LenovoPsref:
                                        "package_level": "configuration", "role": "alias", "sources": ["s1"]})
             for col, key in COLMAP.items():
                 v = (m.get(col) or "").strip()
-                if v:
+                if v and col == "Standard Ports":
+                    pr.claims += port_claims(mtm, v, f"{self.id}@{self.version}", obs)
+                elif v:
                     c = C.claim(mtm, key, max_memory(v, m) if col == "Max Memory" else v, None, v, "s1", f"{self.id}@{self.version}", "adapter", obs, locator={"mtm": mtm, "column": col})
                     pr.claims.append(c)
         for mt in sorted(x for x in mts if x):

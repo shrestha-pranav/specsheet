@@ -156,7 +156,7 @@ class Fixture(unittest.TestCase):
         self.assertNotIn("gen.color", self.bulk(self.paid).get("widgetco-w-100", {}).get("specs", {}).get("gen.color", {}).get("value") or {})
         text = tree_text(self.api, self.api2, self.pack, self.paid)
         self.assertNotIn("shop.example", text, "a free:false domain appears nowhere in any tier's output")
-        text = tree_text(*[p for d in (self.api, self.api2, self.pack, self.paid) for p in Path(d).rglob("*") if p.is_file() and p.name != "schema.json"])
+        text = tree_text(*[p for d in (self.api, self.api2, self.pack, self.paid) for p in Path(d).rglob("*") if p.is_file() and p.name != "schema.json" and p.parent.name != "schema"])  # schema/<cat>.json carries the profile enum vocabulary, not values
         self.assertNotIn("teal", text, "its value appears nowhere (index, facets, lookup, products.json, pack, bulk, diffs)")
 
     def test_f2_mixed_sources_same_value_cites_allowed_only(self):
@@ -433,8 +433,8 @@ class TestTuvRule(unittest.TestCase):
     def test_policy_accepts_only_derived(self):
         sys.path.insert(0, str(CODE / "scripts"))
         import decisions as D
-        pol = next(p for p in D.Decisions(CODE / "data").claim_policies if p["id"] == "claim/derive-tuv-eye-comfort-5star@1")
-        ctx = {"source_id": "lenovo-psref-monitors", "extractor": "lenovo_monitors@4", "key": "flk.pwm", "kind": "derived", "tier": "manufacturer",
+        pol = next(p for p in D.Decisions(CODE / "data").claim_policies if p["id"] == "claim/derive-tuv-eye-comfort-5star@3")
+        ctx = {"source_id": "lenovo-psref-monitors", "extractor": "lenovo_monitors@6", "key": "flk.pwm", "kind": "derived", "tier": "manufacturer",
                "status": "known", "normalized": True}
         self.assertTrue(D.Decisions._match(pol, ctx))
         self.assertFalse(D.Decisions._match(pol, dict(ctx, kind="official")))

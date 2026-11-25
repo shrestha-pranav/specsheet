@@ -1,12 +1,13 @@
 // Query pack access (api-worker/pack, built by scripts/build_r2.py --tier free) through the ASSETS binding, plus /v1/query and
 // /v1/changes. Assets are only reachable through this module (run_worker_first: true), so nothing is served ungated or unmetered.
 import type { Env } from "./config.ts";
-import { matches, type Filter, type Row } from "./filters.ts";
+import { TOP, type Filter, type Row } from "./filters.ts";
+import { rowStatus, verdict, type FieldMeta, type Verdict, type VRow } from "./verdict.ts";
 
-export interface CatMeta { id: string; count: number; keys?: string[]; bulk: string; bulk_bytes: number; sha256?: Record<string, string> }
+export interface CatMeta { id: string; count: number; keys?: string[]; schema?: string; core?: string[]; bulk: string; bulk_bytes: number; sha256?: Record<string, string> }
 export interface PackManifest {
   release: string; tier: string; built_at: string | null; policy_version?: string; policy_sha256?: string; shard_hex?: number;
-  categories: CatMeta[]; match?: { catalogue: string; sha256: string } | null; [k: string]: unknown;
+  categories: CatMeta[]; match?: { catalogue: string; sha256: string } | null; presets?: string | null; [k: string]: unknown;
 }
 
 export class HttpError extends Error {
@@ -80,37 +81,73 @@ function getShard(env: Env, cat: string, xx: string) {
   return p;
 }
 
-export interface QueryParams { category: string; filters: Filter[]; q?: string; fields?: string[]; limit: number; offset: number }
+export interface QueryParams { category: string; filters: Filter[]; q?: string; fields?: string[]; limit: number; offset: number; include?: "maybe" }
 interface Spec { value: unknown; unit?: string | null; sources?: string[]; kind?: string | null; status?: string }
+export interface CatSchema { category: string; rows: number; fields: FieldMeta[] }
 
+const fieldMaps = new Lru<Promise<Map<string, FieldMeta>>>(16);
+export function categorySchema(env: Env, meta: CatMeta | undefined): Promise<CatSchema | null> {
+  return meta?.schema ? cachedJson<CatSchema>(env, meta.schema) : Promise.resolve(null);
+}
+async function fieldMap(env: Env, meta: CatMeta | undefined): Promise<Map<string, FieldMeta>> {
+  if (!meta) return new Map();
+  let p = fieldMaps.get(meta.id);
+  if (!p) { p = categorySchema(env, meta).then((s) => new Map((s?.fields ?? []).map((f) => [f.key, f]))); fieldMaps.set(meta.id, p); }
+  return p;
+}
+
+/** Matches first, then (include=maybe) rows that might match: unknown / conflicted / disagreeing values never rule a row out. The
+ *  response always reports the maybe counts, whatever `include` is, plus each result's per-filter status and its unknown core keys. */
 export async function runQuery(env: Env, p: QueryParams) {
   const man = await getManifest(env);
-  const rows = await getIndex(env, p.category);
+  const meta = man.categories.find((c) => c.id === p.category);
+  const [rows, fmap] = await Promise.all([getIndex(env, p.category), fieldMap(env, meta)]);
   const q = p.q?.toLowerCase();
-  const hits: Row[] = [];
+  const fieldsOf = p.filters.map((f) => fmap.get(f.key));
+  const hit: Row[] = [], maybe: Row[] = [];
+  const vmap = new Map<Row, Verdict[]>();
+  const counts = { unknown: 0, conflicted: 0, disagree: 0 };
   for (const r of rows) {
-    if (!matches(r, p.filters)) continue;
     if (q && !`${r.brand} ${r.name} ${r.variant_label ?? ""} ${(r.ids ?? []).join(" ")}`.toLowerCase().includes(q)) continue;
-    hits.push(r);
+    const vs: Verdict[] = [];
+    let out = false;
+    for (let i = 0; i < p.filters.length; i++) { const v = verdict(r as unknown as VRow, p.filters[i], fieldsOf[i]); if (v === "no") { out = true; break; } vs.push(v); }
+    if (out) continue;
+    const st = rowStatus(vs);
+    if (st === "match") hit.push(r);
+    else { maybe.push(r); counts[st as keyof typeof counts]++; }
+    vmap.set(r, vs);
   }
-  const page = hits.slice(p.offset, p.offset + p.limit);
+  const all = p.include === "maybe" ? hit.concat(maybe) : hit;
+  const page = all.slice(p.offset, p.offset + p.limit);
   const width = man.shard_hex ?? 2;
   const xs = await Promise.all(page.map((r) => shardOf(r.id, width)));
   const recs = await Promise.all(page.map((r, i) => getShard(env, p.category, xs[i]).then((s) => s[r.id])));
   const fields = p.fields?.length ? new Set(p.fields) : null;
+  const core = meta?.core ?? [];
   const results = page.map((r, i) => {
     const rec = recs[i] ?? {};
+    const recSpecs = (rec.specs ?? {}) as Record<string, Spec>;
     const specs: Record<string, unknown> = {};
     const used = new Set<string>();
-    for (const [k, sp] of Object.entries((rec.specs ?? {}) as Record<string, Spec>)) {
+    for (const [k, sp] of Object.entries(recSpecs)) {
       if (sp.status !== "known" || (fields && !fields.has(k))) continue;
       specs[k] = { value: sp.value, unit: sp.unit ?? null, kind: sp.kind ?? null, sources: sp.sources ?? [] };
       for (const s of sp.sources ?? []) used.add(s);
     }
+    // explicit unknown: core keys with no published value, with their status (no value is revealed)
+    const unknown_core: Record<string, string> = {};
+    for (const k of core) { const st = recSpecs[k]?.status; if (st !== "known") unknown_core[k] = st ?? "unknown"; }
+    const vs = vmap.get(r) ?? [];
+    const filter_status: Record<string, Verdict> = {};
+    p.filters.forEach((f, j) => { if (!TOP.has(f.key)) filter_status[f.key] = filter_status[f.key] && filter_status[f.key] !== "match" ? filter_status[f.key] : vs[j]; });
     const sources = ((rec.sources ?? []) as { id: string }[]).filter((s) => !fields || used.has(s.id));
-    return { id: r.id, kind: r.kind, brand: r.brand, name: r.name, variant_label: r.variant_label ?? null, ids: r.ids ?? [], lifecycle: r.lifecycle ?? null, specs, sources };
+    return { id: r.id, kind: r.kind, brand: r.brand, name: r.name, variant_label: r.variant_label ?? null, ids: r.ids ?? [], lifecycle: r.lifecycle ?? null,
+      status: rowStatus(vs) === "match" ? "match" : "maybe", maybe_reason: rowStatus(vs) === "match" ? null : rowStatus(vs), filter_status, unknown_core, specs, sources };
   });
-  return { category: p.category, total: hits.length, offset: p.offset, count: results.length, results };
+  return { category: p.category, include: p.include ?? "matches", total: hit.length,
+    maybe: { total: maybe.length, ...counts, note: "rows that might match, disjoint buckets (a row counts once: disagree > conflicted > unknown): a filter key has no published value (unknown), conflicting sources with no headline value (conflicted), or sources disagreeing across the filter (disagree). Add include=maybe to list them after the matches." },
+    offset: p.offset, count: results.length, results };
 }
 
 export interface ChangeEntry { release: string; created_at: string | null; baseline: boolean; counts: Record<string, unknown> }

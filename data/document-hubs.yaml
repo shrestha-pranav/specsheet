@@ -1,0 +1,11 @@
+# Document hub pages (coordinator ruling 2026-11-25, A3 OCR+mophie addendum). kind: hub = a maker page that lists documents for many products.
+# A hub is NEVER an entity source: it creates no entity, no observation and no claim of its own. A hub -> document edge binds a document to an
+# entity only through the document's own text (scripts/hubattach.py: text-layer quote of an own SKU / model, review-6 row scope); the edge is
+# recorded with linked_from = the hub URL, link_role = hub, identity_basis = document_quote. Fetched by crawler/dochubs.py (crawl.Net: robots,
+# honest UA, 1 req/s), snapshot in raw/_documents/hubs/.
+hubs:
+  - url: https://www.mophie.com/pages/user-manuals
+    kind: hub
+    brand: mophie
+    categories: [chargers, power-banks]
+    note: "footer 'Product guides' link on every mophie product page; the product pages link no PDF themselves"

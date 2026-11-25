@@ -1,0 +1,248 @@
+{
+ "_doc": "Hand-written verdict fixtures (docs index row shape: v, s, x[key].alt). verdict-parity.test.ts runs scripts/presets.py _verdict and src/verdict.ts on every row x filter and requires equal verdicts (TS conflicted == py unknown). `expect` pins the TS verdicts.",
+ "fields": [
+  {
+   "key": "mem.max",
+   "type": "number",
+   "facet": {
+    "kind": "range"
+   }
+  },
+  {
+   "key": "mem.soldered",
+   "type": "enum",
+   "facet": {
+    "kind": "enum"
+   }
+  },
+  {
+   "key": "pd.pps",
+   "type": "bool",
+   "facet": {
+    "kind": "enum"
+   }
+  },
+  {
+   "key": "gen.size_class",
+   "type": "number",
+   "facet": {
+    "kind": "enum"
+   }
+  },
+  {
+   "key": "cpu.model",
+   "type": "text",
+   "facet": {
+    "kind": "text"
+   }
+  },
+  {
+   "key": "in.voltage",
+   "type": "range",
+   "facet": {
+    "kind": "range"
+   }
+  }
+ ],
+ "filters": [
+  [
+   "f_mem.max_min",
+   "32"
+  ],
+  [
+   "f_mem.max_max",
+   "16"
+  ],
+  [
+   "f_mem.soldered_value",
+   "socketed"
+  ],
+  [
+   "f_pd.pps_value",
+   "yes"
+  ],
+  [
+   "f_pd.pps_value",
+   "no"
+  ],
+  [
+   "f_gen.size_class_min",
+   "27"
+  ],
+  [
+   "f_cpu.model_value",
+   "ultra 7"
+  ],
+  [
+   "f_in.voltage_min",
+   "100"
+  ],
+  [
+   "f_in.voltage_max",
+   "240"
+  ]
+ ],
+ "rows": [
+  {
+   "id": "known-all",
+   "v": {
+    "mem.max": 32,
+    "mem.soldered": "socketed",
+    "pd.pps": true,
+    "gen.size_class": 27,
+    "cpu.model": "Intel Core Ultra 7 258V",
+    "in.voltage": {
+     "min": 100,
+     "max": 240
+    }
+   },
+   "s": {},
+   "expect": [
+    "match",
+    "no",
+    "match",
+    "match",
+    "no",
+    "match",
+    "match",
+    "match",
+    "match"
+   ]
+  },
+  {
+   "id": "unknown-all",
+   "v": {},
+   "s": {},
+   "expect": [
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown"
+   ]
+  },
+  {
+   "id": "conflicted",
+   "v": {
+    "mem.soldered": "soldered"
+   },
+   "s": {
+    "mem.max": "conflicted",
+    "pd.pps": "conflicted"
+   },
+   "expect": [
+    "conflicted",
+    "conflicted",
+    "no",
+    "conflicted",
+    "conflicted",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown"
+   ]
+  },
+  {
+   "id": "disagree",
+   "v": {
+    "mem.max": 16,
+    "pd.pps": false,
+    "gen.size_class": 32,
+    "cpu.model": "AMD Ryzen 7",
+    "in.voltage": {
+     "min": 110,
+     "max": 120
+    }
+   },
+   "s": {},
+   "x": {
+    "mem.max": {
+     "alt": [
+      {
+       "v": 64,
+       "k": "measured"
+      }
+     ]
+    },
+    "pd.pps": {
+     "alt": [
+      {
+       "v": false,
+       "k": "reported"
+      }
+     ]
+    }
+   },
+   "expect": [
+    "disagree",
+    "disagree",
+    "unknown",
+    "no",
+    "match",
+    "no",
+    "no",
+    "match",
+    "match"
+   ]
+  },
+  {
+   "id": "non-numeric",
+   "v": {
+    "mem.max": "32GB",
+    "mem.soldered": "Socketed"
+   },
+   "s": {},
+   "expect": [
+    "no",
+    "no",
+    "no",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown"
+   ]
+  },
+  {
+   "id": "alt-only",
+   "v": {
+    "pd.pps": true
+   },
+   "s": {},
+   "x": {
+    "mem.max": {
+     "alt": [
+      {
+       "v": 8,
+       "k": "reported"
+      }
+     ]
+    },
+    "pd.pps": {
+     "alt": [
+      {
+       "v": false,
+       "k": "measured"
+      }
+     ]
+    }
+   },
+   "expect": [
+    "no",
+    "disagree",
+    "unknown",
+    "disagree",
+    "disagree",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown"
+   ]
+  }
+ ]
+}

@@ -43,6 +43,9 @@ import tvcert as TC  # noqa: E402
 import xwalk as XW  # noqa: E402
 import docattach as DA  # noqa: E402
 import docspec_attach as DS  # noqa: E402
+import docspec_r3 as DS3  # noqa: E402
+import imgattach as IA  # noqa: E402
+import hubattach as HA  # noqa: E402
 import corrections as CR  # noqa: E402
 import registry  # noqa: E402
 import identity as I  # noqa: E402
@@ -348,6 +351,24 @@ def do_apple(world, meta, sid, rec, pr, extra, stats):
     stats["claims_adapter"] += attach_claims(pr, rec, sid, lambda loc: e, e)
 
 
+_CAPTOK = re.compile(r"(\d+(?:\.\d+)?)\s*(TB|GB)\b", re.I)
+
+
+def own_alias(pr, sku):
+    """a2 r5: a configuration is named from its OWN marketing alias, never the model's first one (team-tm8fgq512g0c129 was '... 4TB').
+    Aliases carry no sku, so bind by the configuration's own gen.capacity claim: the first marketing_name stating exactly one GB/TB
+    capacity equal to it (+-3%). No capacity claim, or no alias stating it -> None (the caller keeps the model's name, as before)."""
+    cap = next((c.get("value") for c in pr["claims"] if c.get("key") == "gen.capacity" and (c.get("locator") or {}).get("sku") == sku
+                and isinstance(c.get("value"), (int, float)) and c["value"] > 0), None)
+    if cap is None:
+        return None
+    for a in pr["aliases"]:
+        toks = {float(v) * (1000 if u.upper() == "TB" else 1) for v, u in _CAPTOK.findall(a["text"])} if a["kind"] == "marketing_name" else ()
+        if len(toks) == 1 and abs(next(iter(toks)) - cap) / cap <= 0.03:
+            return a["text"]
+    return None
+
+
 def do_generic(world, meta, sid, rec, pr, extra, stats):
     """dell-us, microsoft-surface, framework-us, samsung-us, razer-us: model-level key identifier (carries `series`) -> model under a
     family; configuration-level mfr_sku (carries `parent`) -> configuration. Claims resolve by locator.sku / locator.model_code."""
@@ -381,7 +402,7 @@ def do_generic(world, meta, sid, rec, pr, extra, stats):
                 last = None
                 continue
             par = models.get(i.get("parent")) or (next(iter(models.values())) if len(models) == 1 else None)
-            e.idhint = e.idhint or f"{brand}-{slug(i['value'])}"; e.name = e.name or (par.name if par else title); e.lifecycle = "current"
+            e.idhint = e.idhint or f"{brand}-{slug(i['value'])}"; e.name = e.name or own_alias(pr, i["value"]) or (par.name if par else title); e.lifecycle = "current"
             link(e, "configuration_of", par, f"adapter:{sid}"); e.family = e.family or (par.family if par else None)
             add_ident(e, i, role="key", level="configuration"); add_src(e, pr, rec)
             configs[i["value"]] = last = e
@@ -893,7 +914,7 @@ def main():
     locked_new, policy_lock_digest = dec.check_lock(write=not (bool(a.source) or a.no_mint))
     parsers = {sid: registry.parser_info(sid) for sid, m in registry.SOURCES.items()}
     current_fp = {v["parser"]: v["fingerprint"] for v in parsers.values() if v["parser"]}
-    current_fp.update({B.TRANSFORM: B.fingerprint(), TC.TRANSFORM: TC.fingerprint(), XW.TRANSFORM: XW.fingerprint(), DA.TRANSFORM: DA.fingerprint(), DS.TRANSFORM: DS.fingerprint()})     # r7: shared transforms are pinned like parsers
+    current_fp.update({B.TRANSFORM: B.fingerprint(), TC.TRANSFORM: TC.fingerprint(), XW.TRANSFORM: XW.fingerprint(), DA.TRANSFORM: DA.fingerprint(), DS.TRANSFORM: DS.fingerprint(), DS3.TRANSFORM: DS3.fingerprint(), IA.TRANSFORM: IA.fingerprint(), HA.TRANSFORM: HA.fingerprint()})     # r7: shared transforms are pinned like parsers
     current_fp[PSPLIT] = "sha256:" + hashlib.sha256(Path(_lcell.__file__).read_bytes()).hexdigest()[:20]       # psref-split cell parser, pinned like a parser
     drift = dec.parser_drift(current_fp)
     for pid, ex, old, new in drift:
@@ -956,6 +977,9 @@ def main():
         XW.apply(w, cat_stats[cat], {"link": link, "parser": PARSER, "decisions": data / "decisions"})     # r8: crosswalks + same_hardware_as
     doc_stats = DA.apply(worlds, events, {})        # document pipeline: linked manuals/datasheets -> claims on the linking page's entity (scripts/docattach.py)
     DS.apply(worlds, events, doc_stats)            # r2: SSD datasheet rows (scripts/docspec_attach.py, separate transform: docattach@1 stays pinned)
+    DS3.apply(worlds, events, doc_stats)           # r3: TV / router / laptop spec-sheet rows (scripts/docspec_r3.py; docspec-attach@2 stays pinned)
+    IA.apply(worlds, events, doc_stats)            # maker spec images (OCR) -> claims on the linking page's entity (scripts/imgattach.py)
+    HA.apply(worlds, events, doc_stats)            # kind: hub pages (data/document-hubs.yaml) -> bound only by the document's own text (scripts/hubattach.py)
     ignored_rows = []
     rules = {c: load_label_rules(c) for c in worlds}
     for sid, st in stats.items():

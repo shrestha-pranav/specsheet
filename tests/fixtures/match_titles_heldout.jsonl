@@ -12,7 +12,7 @@
 {"title": "Anker Prime Power Bank 26K 300W", "expect": "anker-a110a", "note": ""}
 {"title": "INIU Portable Charger 20000mAh P51L-P1 USB C", "expect": "iniu-p51l-p1", "note": ""}
 {"title": "Samsung T7 Shield 2TB (MU-PE2T0S/AM) $119.99", "expect": "samsung-mu-pe2t0s-am", "note": ""}
-{"title": "WD Black SN7100 2TB NVMe SSD", "expect": null, "note": "no SKU, names unreliable"}
+{"title": "WD Black SN7100 2TB NVMe SSD", "expect": "western-digital-wds200t4x0e", "note": "no SKU; unique capacity alias since 2026-11-25 per-capacity naming fix (was null while config names were wrong)"}
 {"title": "LG 65\" UT7550 4K TV 65UT7550AUA", "expect": "lg-65ut7550aua", "note": ""}
 {"title": "Samsung 65\" Class S90F OLED QN65S90FAFXZA", "expect": "samsung-qn65s90fafxza", "note": ""}
 {"title": "TCL 65\" QM7 QLED Google TV", "expect": null, "note": "no model number"}

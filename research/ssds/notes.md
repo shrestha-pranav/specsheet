@@ -70,3 +70,17 @@ label date code, NAND part). Official sources rarely carry these; reviewers/tear
 - No DRAM row (silence, unknown): WD_BLACK SN850X, SN850P, SN770M, SN7100, SN7100X, WD Blue SN5000 / SN5100, WD Green SN3000, PC SN5000S /
   SN5100S / SN8000S, SN7100S, SSD Plus NVMe. The Optimus GX PRO 850X datasheet says DRAM Yes, but it is a separate line page: nothing transfers
   to the WD_BLACK SN850X configurations by name similarity.
+
+## SSD DRAM from maker publications (A2-ssd, 2026-11-25; brief coord-2026-11-25-ssd-dram-sources)
+- New source `samsung-ssd-datasheets` (`crawler/adapters/samsung_datasheets.py`, pending claim/mfr-ssd-samsung-datasheet@1): the 27 internal-SSD
+  datasheets linked from semiconductor.samsung.com/consumer-storage/support/documents/. hw.dram_type only, only when every cell of the (DRAM) Cache
+  Memory row gives one value; binds to printed model codes equal to samsung-us-ssd configurations. 28 claims, 27 agree with the page, 1 new
+  (980 PRO 1TB MZ-V8P1T0B/AM). 980 PRO with Heatsink / 970 / 860 / 850 / 950 / 960 sheets name no configuration we carry.
+- WD/SanDisk: every maker document the line pages link was read (35 datasheets + SN700 / SN350 / PC SN810 product briefs, the client-NVMe brochure,
+  the Internal SSD Colors Portfolio brochure). Only SN7100 is called "DRAM-less" (already filled). SN850X, SN850P, SN770M, SN700, SN5000/5100,
+  SN3000, SN350, PC SN810/5000S/5100S/8000S: no DRAM statement anywhere on sandisk.com documents. Silence, not DRAM-less.
+- Lead, NOT used: SanDisk support KB a_id 51469 (support-eu.sandisk.com) says a firmware update fixes "an issue with the HMB" on certain 2TB
+  models (third parties list WD Blue SN5000 2TB). That says HMB is used, not that the drive is DRAM-less: inference, so not taken.
+- Kingston: the NV3 product page / press release say "DRAM-less ... Host Memory Buffer", but www.kingston.com HTML returns 403 (Cloudflare) to
+  the crawler (press article 74018 checked once). Datasheets (reachable) print no DRAM row. Route: human-cited E2 maker URL via corrections.
+- TEAMGROUP M200 / PD40 / Thunderbolt 3: the DRAM Cache column prints "N/A" = no statement.

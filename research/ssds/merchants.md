@@ -18,3 +18,8 @@ Role: retailer data = aliases, MPN candidates, prices, availability; never prima
 - **Kingston product pages + /siteindex.xml: BLOCKED** (Cloudflare challenge 403). **Kingston datasheet PDFs (/datasheets/<stem>_us.pdf): reachable**
   (robots allows, 200 PDF). Used by crawler/adapters/kingston_ssd.py with a seed list from web search (no index is reachable). 404 stems: SKC600,
   SKC2500, SFYRD, SKC3000, NV3, SFYRDK, SNV3D. SNV2S / SNVS / SA2000 use an older two-column layout the parser does not read (0 rows, recorded).
+
+## Maker-document access, A2-ssd (2026-11-25; crawler UA, 1 req/s)
+- **semiconductor.samsung.com**: robots `Allow: /`; documents page 200 (static links). **download.semiconductor.samsung.com**: no robots.txt (404),
+  PDFs 200. Both added to data/source-policy.yaml 2026-11-25.3 (maker, crawl agent). Used by samsung_datasheets.py.
+- **www.kingston.com/en/company/press/article/***: 403 (Cloudflare), same as product pages. Blocked, recorded, not retried.

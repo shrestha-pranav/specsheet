@@ -5,7 +5,8 @@
 import type { Hono } from "hono";
 import { BOUNDS, limits, previewOn, type Env, type PriceKey } from "./config.ts";
 import { validateMatch, validateQuery } from "./bounds.ts";
-import { HttpError, getManifest } from "./data.ts";
+import { HttpError, cachedJson, categorySchema, getManifest, type PackManifest } from "./data.ts";
+import { presetFilter, type FieldMeta } from "./verdict.ts";
 import { tools as toolNames } from "./discovery.ts";
 import { cachedServe, execMatch, execQuery, guard, paused, point, send, type C, type Served } from "./gate.ts";
 import { normClientName, trafficClass, type Point } from "./metrics.ts";
@@ -14,16 +15,24 @@ import type { Bucket } from "./quota.ts";
 let TOKEN = "";
 export const internalToken = () => TOKEN;
 
-const TOOL_DEFS: Record<string, { description: string; inputSchema: object; route: string; price: PriceKey }> = {
+// price null = metadata tool (pack schema / presets): counts against the daily budget like any tool call, never priced or x402-gated.
+const TOOL_DEFS: Record<string, { description: string; inputSchema: object; route: string; price: PriceKey | null }> = {
   query_specs: { route: "/v1/query", price: "query",
-    description: "Filtered spec query over one category with per-value provenance (free preview; quotas may change).",
+    description: "Filtered spec query over one category with per-value provenance and explicit unknowns: each result has status (match|maybe), filter_status per filter key and unknown_core keys (free preview; quotas may change).",
     inputSchema: { type: "object", additionalProperties: false, required: ["category"], properties: {
-      category: { type: "string" }, filters: { type: "string", description: "key<op>value comma list, e.g. cpu.cores>=8,brand=ASUS (ops >= <= > < != = ~)" },
+      category: { type: "string" }, filters: { type: "string", description: "key<op>value comma list, e.g. cpu.cores>=8,brand=ASUS (ops >= <= > < != = ~). Keys: list_categories_keys" },
+      include: { type: "string", enum: ["matches", "maybe"], description: "maybe = also list rows that might match (unknown / conflicted / disagreeing values), after the matches. maybe counts are always reported" },
       q: { type: "string", maxLength: BOUNDS.q }, fields: { type: "string", description: "comma list of spec keys" },
       limit: { type: "integer", minimum: 1, maximum: BOUNDS.limitMax }, offset: { type: "integer", minimum: 0, maximum: BOUNDS.offsetMax } } } },
   match_product: { route: "/v1/match", price: "match",
     description: "Resolve a retail listing title to a product id. Precision first: returns no candidates rather than a wrong one.",
     inputSchema: { type: "object", additionalProperties: false, required: ["title"], properties: { title: { type: "string", maxLength: BOUNDS.title }, category: { type: "string" } } } },
+  list_categories_keys: { route: "/mcp/list_categories_keys", price: null,
+    description: "Without category: the categories with record and key counts. With category: every spec key with label, group, type, unit, enum, tier (core = needed to buy correctly), facet and fill (share of records with a published value).",
+    inputSchema: { type: "object", additionalProperties: false, properties: { category: { type: "string" } } } },
+  list_presets: { route: "/mcp/list_presets", price: null,
+    description: "Curated killer queries (site presets) as query_specs filter strings, with their fill gate and match/maybe counts.",
+    inputSchema: { type: "object", additionalProperties: false, properties: { category: { type: "string" } } } },
 };
 
 const rpc = (id: unknown, result: unknown) => ({ jsonrpc: "2.0", id, result });
@@ -51,7 +60,7 @@ export async function handleMcp(c: C, app: Hono<any>) {
   if (calls.length && rq.mode !== "on-bad") {
     if (!previewOn(env)) return paused(c);
     const per: Record<string, number> = {};
-    for (const m of calls) { const t = TOOL_DEFS[m.params?.name]; if (t) per[t.price] = (per[t.price] ?? 0) + 1; }
+    for (const m of calls) { const t = TOOL_DEFS[m.params?.name]; if (t?.price) per[t.price] = (per[t.price] ?? 0) + 1; }
     const buckets: Bucket[] = [{ kind: "day", n: calls.length, limit: rq.mode === "on" ? Number.MAX_SAFE_INTEGER : lim.daily, data: true },
       ...Object.entries(per).map(([k, n]) => ({ kind: `r:${k}`, n, limit: rq.mode === "on" ? lim.allowance[k] ?? 0 : Number.MAX_SAFE_INTEGER }))];
     const g = await guard(c, buckets, rq.mode === "on");
@@ -87,10 +96,10 @@ export async function handleMcp(c: C, app: Hono<any>) {
         const def = offered.includes(name) ? TOOL_DEFS[name] : undefined;
         if (rq.mode === "on-bad") { out.push(rpcErr(id, -32000, "payments_not_configured")); mpoint(`/mcp:${name}`, 503, { outcome: "error" }); break; }
         if (!def) { out.push(rpcErr(id, -32602, `unknown tool ${String(name).slice(0, 40)}`)); mpoint("/mcp:unknown", 400, { outcome: "bad_input" }); break; }
-        const r = await runTool(c, app, def, name, params, allowOk[def.price] === true);
+        const r = def.price ? await runTool(c, app, def, name, params, allowOk[def.price] === true) : await runMeta(c, name, params);
         out.push({ jsonrpc: "2.0", id, ...(r.msg as object) });
         mpoint(`/mcp:${name}`, r.status, { outcome: r.outcome, category: r.category, results: r.results, bytes: r.bytes, detail: r.detail,
-          traffic: trafficClass(c.req.raw, rq.uaFamily, rq.cid, r.canonical), mode: wouldPay(rq.mode, def.price, lim.allowance[def.price] ?? 0) });
+          traffic: trafficClass(c.req.raw, rq.uaFamily, rq.cid, r.canonical), mode: def.price ? wouldPay(rq.mode, def.price, lim.allowance[def.price] ?? 0) : rq.mode });
         break;
       }
       default: out.push(rpcErr(id, -32601, `method not found: ${String(method).slice(0, 40)}`)); mpoint("/mcp:other", 400, { outcome: "bad_input" });
@@ -104,6 +113,49 @@ export async function handleMcp(c: C, app: Hono<any>) {
 
 // off: would-be-paid marker only once the D3.3 allowance would be spent is unknown per call here, so mark routes with no allowance.
 const wouldPay = (mode: string, price: string, free: number) => (mode === "on-bad" ? "on" : mode) + (free === 0 ? `:${price}` : "");
+
+type ToolRes = { status: number; msg: unknown; outcome: any; category: string; results: number; bytes: number; detail: string; canonical: string };
+
+/** list_categories_keys / list_presets: pack metadata only (schema/<cat>.json, meta/presets.json). No licensed values. */
+async function runMeta(c: C, name: string, params: any): Promise<ToolRes> {
+  const env = c.env, man = await getManifest(env);
+  const args = params?.arguments ?? {};
+  const out = (status: number, body: unknown, category = "", results = 0, outcome: any = "ok_results"): ToolRes => {
+    const text = JSON.stringify({ release: man.release, ...(body as object) });
+    return { status, msg: { result: { isError: status >= 400, structuredContent: JSON.parse(text), content: [{ type: "text", text }] } }, outcome, category, results,
+      bytes: text.length, detail: "", canonical: `/mcp/${name}?category=${category}` };
+  };
+  const bad = (d: string) => ({ ...out(400, {}), msg: { result: errResult("bad_input", d) }, outcome: "bad_input" as const });
+  if (typeof args !== "object" || Array.isArray(args)) return bad("arguments must be an object");
+  const extra = Object.keys(args).filter((k) => k !== "category");
+  if (extra.length) return bad(`unknown argument '${extra[0].slice(0, 40)}'`);
+  const cat = args.category;
+  if (cat !== undefined && (typeof cat !== "string" || !man.categories.some((x) => x.id === cat))) return bad(`unknown category (categories: ${man.categories.map((x) => x.id).join(", ")})`);
+  if (name === "list_categories_keys") {
+    if (!cat) return out(200, { categories: man.categories.map((x) => ({ id: x.id, count: x.count, keys: x.keys?.length ?? 0, core: x.core ?? [] })) }, "", man.categories.length);
+    const sch = await categorySchema(env, man.categories.find((x) => x.id === cat));
+    if (!sch) return out(200, { category: cat, fields: [], note: "no schema in this pack: use the keys list", keys: man.categories.find((x) => x.id === cat)?.keys ?? [] }, cat, 0, "ok_empty");
+    const fields = sch.fields.map(({ facet_kind, ...f }) => ({ ...f, facet_kind }));
+    return out(200, { category: cat, rows: sch.rows, fill_basis: "share of this category's records with a published value", fields }, cat, fields.length);
+  }
+  return out(200, await presetsFor(env, man, cat), cat ?? "", 0);
+}
+
+async function presetsFor(env: Env, man: PackManifest, cat?: string) {
+  const doc = man.presets ? await cachedJson<{ presets: any[] }>(env, man.presets) : null;
+  const ps = (doc?.presets ?? []).filter((p) => !cat || p.category === cat);
+  const maps = new Map<string, Map<string, FieldMeta>>();
+  const presets = [];
+  for (const p of ps) {
+    if (!maps.has(p.category)) maps.set(p.category, new Map(((await categorySchema(env, man.categories.find((x) => x.id === p.category)))?.fields ?? []).map((f) => [f.key, f])));
+    const fm = maps.get(p.category)!;
+    const fs = Object.entries((p.filters ?? {}) as Record<string, unknown>).map(([k, v]) => presetFilter(k, String(v), fm));
+    if (fs.some((f) => f === null)) continue; // a preset key the pack does not carry: not offered rather than half a query
+    presets.push({ id: p.id, category: p.category, title: p.title, filters: fs.join(","), require: p.require ?? [], columns: p.columns ?? [],
+      gate: p.gate, count: p.count, query_specs: { category: p.category, filters: fs.join(","), include: "maybe" } });
+  }
+  return { presets, note: "count = the site's in-scope counts (matches / maybe); query_specs over the whole category can differ where the preset scope excludes discontinued or non-maker-sourced rows." };
+}
 
 async function runTool(c: C, app: Hono<any>, def: (typeof TOOL_DEFS)[string], name: string, params: any, within: boolean) {
   const env = c.env, rq = c.get("rq");

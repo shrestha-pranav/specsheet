@@ -23,6 +23,8 @@ Cells give the status and error code. `+RA` means Retry-After is present. Quota:
 | llms | `GET /llms.txt` | 200 | 200 | 200 | 200 | 200 | no | yes |
 | robots | `GET /robots.txt` | 200 | 200 | 200 | 200 | 200 | no | n/a |
 | query | `GET /v1/query?category&filters&limit` | 200 | 200 | 503 `payments_not_configured` | 503 `preview_paused` +RA | 503 `preview_capacity` +RA | yes | yes |
+| query-maybe | `GET /v1/query?category&filters&include&limit` | 200 |  |  |  |  | yes | n/a |
+| query-bad-include | `GET /v1/query?category&include` | 400 `bad_input` |  |  |  |  | yes | n/a |
 | query-payment-header | `GET /v1/query?category&limit` | 200 |  |  |  |  | yes | n/a |
 | query-beyond-allowance | `GET /v1/query?category&limit [exhaust_allowance]` | 200 | 402 |  |  |  | yes | n/a |
 | changes | `GET /v1/changes?since` | 200 | 402 | 503 `payments_not_configured` | 503 `preview_paused` +RA | 503 `preview_capacity` +RA | yes | yes |
@@ -32,6 +34,8 @@ Cells give the status and error code. `+RA` means Retry-After is present. Quota:
 | mcp-query | `POST /mcp (query_specs)` | 200 | 200 | 200 `payments_not_configured` | 503 `preview_paused` +RA | 503 `preview_capacity` +RA | yes | yes |
 | mcp-query-payment-meta | `POST /mcp` | 200 |  |  |  |  | yes | n/a |
 | mcp-match | `POST /mcp (match_product)` | 200 | 200 | 200 `payments_not_configured` | 503 `preview_paused` +RA | 503 `preview_capacity` +RA | yes | yes |
+| mcp-list-keys | `POST /mcp (list_categories_keys)` | 200 | 200 | 200 `payments_not_configured` | 503 `preview_paused` +RA | 503 `preview_capacity` +RA | yes | yes |
+| mcp-list-presets | `POST /mcp (list_presets)` | 200 | 200 | 200 `payments_not_configured` | 503 `preview_paused` +RA | 503 `preview_capacity` +RA | yes | yes |
 | mcp-initialize | `POST /mcp` | 200 | 200 | 200 | 200 | 200 | no | n/a |
 | mcp-tools-list | `POST /mcp` | 200 | 200 | 200 | 200 | 200 | no | n/a |
 | mcp-get | `GET /mcp` | 405 | 405 | 405 | 405 | 405 | no | n/a |
@@ -60,6 +64,13 @@ Cells give the status and error code. `+RA` means Retry-After is present. Quota:
 
 Query: `GET /v1/query?category=laptops&filters=cpu.cores>=8,mem.size>=16&fields=cpu.model,mem.size&limit=10`. The ops are `>= <= > < != = ~`, and
 only known values match. Each result has `specs[key] = {value, unit, kind, sources: [source id]}` plus a `sources` list for those ids.
+Explicit unknown (coordinator ruling 2026-11-25): every response carries `maybe: {total, unknown, conflicted, disagree}` (disjoint
+buckets, rows that might match). `include=maybe` lists those rows after the matches. Each result has `status` (match|maybe),
+`maybe_reason`, `filter_status[key]` (match|unknown|conflicted|disagree) and `unknown_core` (core keys with no published value -> status).
+No value is revealed for any of them, so this is the same on every tier. Semantics = `scripts/presets.py _verdict`
+(`src/verdict.ts`; `test/verdict-parity.test.ts` checks every row x filter of every built preset plus `test/fixtures/verdict-rows.json`).
+MCP metadata tools (no price, one call each on the daily budget): `list_categories_keys` (pack `schema/<cat>.json`: key, type, unit,
+tier, facet, fill) and `list_presets` (pack `meta/presets.json`, app filters translated to query_specs filter strings).
 Match (`/v1/match?title=`, MCP `match_product`) is a TS port of `scripts/match.py`. `test/match-parity.test.ts` checks that it returns the
 same ids, basis and confidence on every fixture title. It is live because parity passes. If the pack has no `match/catalogue.json`, it
 returns 404 `not_available` and disappears from discovery.

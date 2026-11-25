@@ -227,6 +227,15 @@ def discover():
             else:
                 L["found_on"].setdefault((f"v0:{slug}", key), {"source_id": None, "ref": key, "page_url": purl, "category": None, "via": f"v0:{slug}/{key}"})
                 unbound[slug] += 1
+    hl = ROOT / "raw" / SID / "hub-links.json"          # kind: hub pages (crawler/dochubs.py, data/document-hubs.yaml): edges bound by text only
+    for x in (json.loads(hl.read_text())["links"] if hl.exists() else []):
+        L = links[norm_url(x["url"])]
+        L.setdefault("url", x["url"])
+        if x.get("text"):
+            L["texts"].add(x["text"])
+        for cat in x["categories"]:
+            L["found_on"].setdefault((f"hub:{x['hub']}", cat), {"source_id": None, "ref": x["hub"], "page_url": x["hub"], "category": cat, "via": "hub",
+                                                                 "link_role": "hub", "brand": x["brand"], "hub_snapshot": x["hub_snapshot"]})
     ded = dedicated_urls()
     docs = []
     for nu, L in links.items():
@@ -262,7 +271,7 @@ def decide(docs):
             d["decision"] = SKIP_KINDS[d["kind"]]
         elif d["lang"] not in ("en", "und") and any(x["lang"] in ("en", "und") and x is not d for x in by_stem[d["stem"]]):
             d["decision"] = "skip:non_english_duplicate"
-        elif not any(x["source_id"] for x in d["found_on"]):
+        elif not any(x["source_id"] or x.get("link_role") == "hub" for x in d["found_on"]):     # a hub edge binds by document text (hubattach)
             d["decision"] = "skip:page_not_registered"
         else:
             d["decision"] = "fetch"
@@ -305,7 +314,7 @@ def is_pdf(body, ctype):
     return body[:5] == b"%PDF-" or "pdf" in (ctype or "").lower() and body[:5] == b"%PDF-"
 
 
-def fetch(limit=None, max_bytes=60_000_000, dry=False, workers=6, categories=None):
+def fetch(limit=None, max_bytes=60_000_000, dry=False, workers=6, categories=None, hub_only=False):
     """One pass. Adoption first (no network), then the remaining documents in priority order, one worker per host (so the per-host
     delay of crawl.Net is the only rate limit that matters: ~1 req/s/host), at most `workers` hosts at a time."""
     import threading
@@ -319,6 +328,8 @@ def fetch(limit=None, max_bytes=60_000_000, dry=False, workers=6, categories=Non
     queue = defaultdict(list)
     for d in disc["docs"]:
         if d["decision"] != "fetch":
+            continue
+        if hub_only and not any(x.get("link_role") == "hub" for x in d["found_on"]):
             continue
         if categories and not set(d["categories"]) & set(categories):
             stats["deferred_by_category"] += 1
@@ -589,12 +600,13 @@ def main():
     ap.add_argument("cmd", choices=["discover", "fetch", "extract", "ocr-tokens", "stats"])
     ap.add_argument("--limit", type=int)
     ap.add_argument("--dry", action="store_true")
+    ap.add_argument("--hub-only", action="store_true", help="fetch: only documents linked from a kind: hub page (data/document-hubs.yaml)")
     ap.add_argument("--categories", help="comma list: fetch only documents linked from these categories (rest deferred)")
     a = ap.parse_args()
     if a.cmd == "discover":
         print(json.dumps({k: v for k, v in discover().items() if k != "docs"}, indent=1))
     elif a.cmd == "fetch":
-        print(json.dumps(fetch(a.limit, dry=a.dry, categories=a.categories.split(",") if a.categories else None), indent=1))
+        print(json.dumps(fetch(a.limit, dry=a.dry, categories=a.categories.split(",") if a.categories else None, hub_only=a.hub_only), indent=1))
     elif a.cmd == "extract":
         print(json.dumps(extract(categories=a.categories.split(",") if a.categories else None), indent=1))
     elif a.cmd == "ocr-tokens":

@@ -21,7 +21,7 @@ const context = vm.createContext({
   matchMedia:()=>({matches:false,addEventListener(){}}),
   fetch:async url => {requests.push(url); try { const body = await json(url.split('?')[0]); return {ok:true,json:async()=>body}; } catch (error) { if (error.code === 'ENOENT') return {ok:false,status:404}; throw error; }}
 });
-const names = ['facetControl','methodsDiffer','methodsFlag','categories','indexFor','detailFor','displayValue','initialState','categoryStateQuery','productUrl','validatedReturnQuery','returnWithIds','matchFacet','missingIssueUrl','correctionIssueUrl','renderTable','renderProduct','renderCompare','previewOverlay','revisionsMarkup','searchRows','extractIdentifiers','differingFields','cellValue','compareUrl','configTable','evidenceMarkup','valueWithContext','renderPage','reportMiss','loadPresets','presetCard','presetGallery','facetPass','facetActive','pdoVerdict','pdoSection','sizeGridRows','sizeGridMarkup','sendEvent','noteUnknown','pct','inPresetScope','provenance','pendingCorrection','kindBreakdown','fillRequestUrl'];
+const names = ['facetControl','methodsDiffer','methodsFlag','categories','indexFor','detailFor','displayValue','initialState','categoryStateQuery','productUrl','validatedReturnQuery','returnWithIds','matchFacet','missingIssueUrl','correctionIssueUrl','renderTable','renderProduct','renderCompare','previewOverlay','revisionsMarkup','searchRows','extractIdentifiers','differingFields','cellValue','compareUrl','configTable','evidenceMarkup','valueWithContext','renderPage','reportMiss','loadPresets','presetCard','presetGallery','facetPass','facetActive','pdoVerdict','pdoSection','sizeGridRows','sizeGridMarkup','sendEvent','noteUnknown','pct','inPresetScope','provenance','pendingCorrection','kindBreakdown','fillRequestUrl','disagreeRow'];
 const source = await readFile(resolve(root, 'docs/app.js'), 'utf8');
 assert(source.includes('  renderRoute();\n})();'), 'Application bootstrap changed; update harness');
 vm.runInContext(source.replace('  renderRoute();\n})();', `  globalThis.test = {${names.join(',')}};\n})();`), context);
@@ -325,7 +325,7 @@ function d8Gate(preset, all, facets, scope, minFill = preset.min_fill ?? 0.8, mi
 // ---- killer-query presets (A4, 2026-11-24): data-driven gallery, build-time fill gate, unknown-might-match, PDO pill, size grid, beacons off
 {
   const data = await ui.loadPresets();
-  assert(data.presets.length >= 6 && data.presets.length <= 9, 'presets: 6-9 cards from presets.json');
+  assert(data.presets.length >= 6 && data.presets.length <= 14, 'presets: 6-14 cards from presets.json');
   const src = await json('presets.json');
   assert.deepEqual(data.presets.map(p => p.id), src.presets.map(p => p.id), 'built presets.json carries every source preset (no hard-coded list in app.js)');
   assert(!/ram-upgradable|no-pwm-usbc-monitor/.test(source), 'preset ids are data, never hard-coded in app.js');
@@ -347,6 +347,9 @@ function d8Gate(preset, all, facets, scope, minFill = preset.min_fill ?? 0.8, mi
     const strict = d.pool.filter(r => ui.facetPass(r, facets, filters, false)).length, lenient = d.pool.filter(r => ui.facetPass(r, facets, filters, true)).length;
     assert.equal(strict, preset.count.matches, `${preset.id}: matches agree with build`);
     assert.equal(lenient - strict, preset.count.maybe, `${preset.id}: unknown-might-match agrees with build`);
+    // r2: the app's "sources disagree" tag covers exactly presets.py's disagree bucket (conflicted status included), the rest read "Unknown value".
+    const maybeRows = d.pool.filter(r => !ui.facetPass(r, facets, filters, false) && ui.facetPass(r, facets, filters, true));
+    assert.equal(maybeRows.filter(r => ui.disagreeRow(r, facets, filters)).length, preset.count.disagree, `${preset.id}: sources-disagree rows agree with build`);
     assert.equal(preset.count.out_of_scope, all.length - d.pool.length, `${preset.id}: out_of_scope agrees`);
     const card = ui.presetCard(preset);
     if (preset.gate.passes) assert.match(card, new RegExp(`href="#/category/${preset.category}\\?preset=${preset.id}"`), `${preset.id}: passing card opens the preset`);
@@ -357,6 +360,12 @@ function d8Gate(preset, all, facets, scope, minFill = preset.min_fill ?? 0.8, mi
       if (preset.gate.missing_brands.length) assert(card.includes(preset.gate.missing_brands[0].brand), `${preset.id}: names a brand we lack`);
     }
     assert(gateKeys.length > 0);
+  }
+  // Showcase row = passing presets only; failing ones sit in the help-us-fill row. The gate decides, never a hard-coded id.
+  {
+    const html = ui.presetGallery(data);
+    const row = name => (html.split(`data-preset-row="${name}"`)[1] || '').split('data-preset-row=')[0];
+    for (const p of data.presets) assert(row(p.gate.passes ? 'showcase' : 'help').includes(`data-preset="${p.id}"`) && !row(p.gate.passes ? 'help' : 'showcase').includes(`data-preset="${p.id}"`), `${p.id}: in the ${p.gate.passes ? 'showcase' : 'help-us-fill'} row`);
   }
   // A 0%-fill key always fails. Data-independent since A2 preset fill (2026-11-24) filled usb.usbc_inputs (was the live 0% example).
   for (const p of data.presets.filter(p => p.gate.keys.some(k => k.known === 0 && k.total > 0))) assert(!p.gate.passes, `${p.id}: a 0%-fill key fails the gate`);
@@ -443,6 +452,18 @@ function d8Gate(preset, all, facets, scope, minFill = preset.min_fill ?? 0.8, mi
   assert.equal(ui.facetPass(split, [bool], {f_b_value:'no'}, true), true, 'sources disagree: might match');
   assert.equal(ui.facetPass(split, [bool], {f_b_value:'yes'}, true), true, 'sources disagree the other way: might match, never ruled out');
   assert.equal(ui.facetPass(same, [bool], {f_b_value:'no'}, false), true, 'an agreeing alternative changes nothing');
+  // r2, mirrors presets.py _verdict: same-side different value, conflicted status with no value, no headline but alternatives
+  const num = {key:'n', type:'number', facet:{kind:'range'}}, f27 = {f_n_min:'27'};
+  const sameSide = {specs:{n:{status:'known', value:27, alt:[{v:32, k:'measured'}]}}};
+  assert.equal(ui.facetPass(sameSide, [num], f27, false), false, 'same side, different value: never matched silently');
+  assert.equal(ui.disagreeRow(sameSide, [num], f27), true);
+  const conflicted = {specs:{n:{status:'conflicted', value:null}}};
+  assert.equal(ui.facetPass(conflicted, [num], f27, true), true, 'conflicted: might match');
+  assert.equal(ui.disagreeRow(conflicted, [num], f27), true, 'conflicted reads "sources disagree", not "Unknown value"');
+  const noHead = (alt) => ({x:{n:{alt}}, specs:{n:{status:'conflicted', value:null}}});
+  assert.equal(ui.disagreeRow(noHead([{v:30}, {v:20}]), [num], f27), true, 'no headline, one alternative matches: disagree');
+  assert.equal(ui.facetPass(noHead([{v:20}, {v:24}]), [num], f27, true), false, 'no headline, every alternative fails: ruled out');
+  assert.equal(ui.disagreeRow({specs:{n:{status:'unknown', value:null}}}, [num], f27), false, 'plain unknown stays "Unknown value"');
   // preset card: per-kind fill breakdown and brands covered only by non-maker values
   const preset = {id:'p', category:'monitors', category_name:'Monitors', title:'T', count:{matches:3, maybe:2, disagree:1, total:5, out_of_scope:0},
     gate:{passes:true, fill:0.9, min_fill:0.8, key:'flk.pwm', label:'PWM', known:9, total:10, keys:[{key:'flk.pwm', label:'PWM', known:9, total:10, by_kind:{official:6, derived:2, measured:1}}],

@@ -84,7 +84,12 @@ class NotebookcheckBox(unittest.TestCase):
 
     def test_detected(self):
         self.assertEqual(self.parse("Screen flickering / PWM detected 960 Hz Amplitude: 30 % &le; 70 % brightness setting"),
-                         [("flk.pwm_freq", 960, {"brightness_pct": 70}, "measured", "optical")])
+                         [("flk.pwm", "present", {"brightness_pct": 70}, "measured", "optical"),
+                          ("flk.pwm_freq", 960, {"brightness_pct": 70}, "measured", "optical")])
+
+    def test_hz_never_means_free(self):     # coverage r4: a high Hz value is still PWM, never flk.pwm none
+        got = self.parse("Screen flickering / PWM detected 29760 Hz")
+        self.assertEqual([g[:2] for g in got], [("flk.pwm", "present"), ("flk.pwm_freq", 29760)])
 
     def test_not_detected(self):
         self.assertEqual(self.parse("Screen flickering / PWM not detected"), [("flk.pwm", "none", None, "measured", "optical")])

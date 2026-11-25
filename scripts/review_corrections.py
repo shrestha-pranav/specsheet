@@ -8,7 +8,10 @@
 A PERSON runs this at a terminal: it refuses to run without a TTY and refuses agent-looking handles, and it writes only what the reviewer
 typed (handle, decision, reason, transcription). There is no LLM decision. Each claim c_corr_<ref>_<n> gets its own line
   {"id": "d_corr_<ref>_<n>", "at": ISO, "by": "<handle>", "action": "accept_claim|reject_claim", "claim": "c_corr_<ref>_<n>",
-   "reason": "...", "evidence": "<issue url>"}
+   "reason": "...", "evidence": "<issue url>", "digest": "sha256:<claim content>"}
+`by` must be listed in data/decisions/maintainers.yaml (public maintainer handles: the one documented exception to "no personal data";
+contributors are never named). `reason` is scrubbed of handles/emails. An accept records corrections.claim_digest() of the claim file as
+reviewed, so a later edit of the issue (value, evidence, target order) is withheld until decided again (Codex review-7 P0).
 A photo's transcription (<= 125 chars: the model number and the fact as printed) is written back into the claim file before an accept.
 After deciding: rebuild (import.py), then close each issue with a link to the release (team/queue/corrections.md lists the drafts).
 """
@@ -34,14 +37,37 @@ def valid_handle(h):
     return bool(re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,38}", h)) and not D.AGENT_BY.search(h)
 
 
+def claim_doc(cid, data_dir=None):
+    """-> (doc, target entity) of the claim file defining cid, or (None, None)."""
+    for _, d in CR.load(data_dir):
+        for c, eid in CR.claim_ids(d):
+            if c == cid:
+                return d, eid
+    return None, None
+
+
 def decision_line(cid, action, by, reason, evidence, at=None, data_dir=None):
-    """-> the ledger dict for one claim (id d_corr_<ref>_<n>, suffixed _2, _3 ... for later decisions on the same claim)."""
+    """-> the ledger dict for one claim (id d_corr_<ref>_<n>, suffixed _2, _3 ... for later decisions on the same claim). An accept carries
+    the digest of the claim file as it is now (the content the reviewer saw)."""
     if action not in ("accept_claim", "reject_claim"):
         raise ValueError(action)
     if not valid_handle(by):
         raise SystemExit(f"{by!r} is not a reviewer handle (a person decides corrections; agents never write ledger lines)")
-    if not str(reason or "").strip():
+    if by.strip() not in CR.maintainers(data_dir):
+        raise SystemExit(f"{by!r} is not listed in data/decisions/maintainers.yaml (only a named maintainer decides a correction)")
+    reason = CR.scrub(reason, 300)
+    if not reason.strip():
         raise SystemExit("a decision needs a reason")
+    if evidence and not re.fullmatch(r"https://github\.com/[\w.-]+/[\w.-]+/(?:issues/\d+|blob/main/data/corrections/a?\d+\.yaml)", str(evidence)):
+        evidence = None                 # only the issue / proposal pointer, never a free URL
+    digest = None
+    if action == "accept_claim":
+        doc, eid = claim_doc(cid, data_dir)
+        if doc is None:
+            raise SystemExit(f"{cid}: no claim file defines it; nothing to accept")
+        if CR.has_pii(json.dumps(doc, default=str, ensure_ascii=False)):
+            raise SystemExit(f"{cid}: the claim file carries an email or handle; re-sync (sanitize) before deciding")
+        digest = CR.claim_digest(doc, cid, eid)
     base = "d_" + cid[2:]
     used = set()
     lp = ledger_path(data_dir)
@@ -51,9 +77,11 @@ def decision_line(cid, action, by, reason, evidence, at=None, data_dir=None):
     while did in used:
         k += 1; did = f"{base}_{k}"
     line = {"id": did, "at": at or dt.datetime.now(dt.timezone.utc).strftime("%FT%TZ"), "by": by.strip(), "action": action, "claim": cid,
-            "reason": str(reason).strip()[:300]}
+            "reason": reason.strip()[:300]}
     if evidence:
         line["evidence"] = evidence
+    if digest:
+        line["digest"] = digest
     return line
 
 
@@ -121,7 +149,9 @@ def review(refs, by, data_dir=None):
     pol = SP.load()
     cl = CR.Catalogue(data_dir)
     res = CR.check_all(data_dir, pol)
-    decided = CR.ledger_claims(data_dir)
+    cur = CR.current_digests(data_dir)
+    decided = {c: d for c, d in CR.ledger_claims(data_dir).items()       # a stale accept (claim edited since) is undecided again
+               if not (d["action"] == "accept_claim" and d.get("digest") != cur.get(c))}
     todo = [(p, d, b) for p, d, b in res if (not refs or CR.ref_of(d) in refs) and any(cid not in decided for cid, _ in CR.claim_ids(d))]
     print(f"{len(todo)} correction(s) with undecided claims. Reviewer: {by}. Keys: a = accept, r = reject, s = skip, q = quit.")
     written = 0

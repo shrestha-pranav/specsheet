@@ -19,6 +19,11 @@ v3 (2026-11-24): NAND type/vendor, controller (vendor) and HMB from explicit pag
            only where the spec table is silent for that SKU.
 v4 (coverage r3): version bump for _ssdprose.py: a bare 'DRAM-less' sentence about the drive (no HMB in it) = hw.dram_type `dramless`
            (HMB unstated, hw.hmb_support left unknown). Nothing else changed.
+v6 (2026-11-25, A2-keys): therm.heatsink / therm.heatsink_height from the SKU's own title (heatsink_facts): a title saying 'without
+           Heatsink' -> therm.heatsink none (the maker's explicit statement); a title saying 'with Heatsink' -> therm.heatsink_height = H of
+           that SKU's 'Dimensions (L x W x H)' row (inches x 25.4 -> mm, the drive with its sink; < 5 mm = the bare drive's row
+           printed on a heatsink SKU (Optimus GX PRO 8100, 0.09"): nothing). The sink style (low-profile vs full) is not stated, so a
+           'with Heatsink' SKU gets no therm.heatsink enum value (A1 open question). Silence, the page title or another SKU never count.
 """
 import gzip, re, sys, time
 from pathlib import Path
@@ -29,7 +34,7 @@ import _lt as L
 import _ssdprose as SP
 import _run
 
-ID, VERSION, SOURCE = "sandisk_ssd", 5, "sandisk-us-ssd"
+ID, VERSION, SOURCE = "sandisk_ssd", 6, "sandisk-us-ssd"
 CATEGORIES = {"ssds"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.sandisk.com"
@@ -39,6 +44,25 @@ DROP = re.compile(r"ultrastar|-dc-|/test-|/ix-|data-recovery|-case|sn861|sn655",
 LOC = re.compile(r"<loc>(https://www\.sandisk\.com/products/ssd/(internal-ssd|external-ssd)/([a-z0-9-]+))\?sku=([^<]+)</loc>")
 PAIR = re.compile(r'font-bold inheritPara[^>]*>\s*(.*?)\s*</div>\s*<div class="inheritPara text-grey-4">\s*(.*?)\s*</div>', re.S)
 SKU_DIV = re.compile(r'<div class="(?:active|hidden)" data-sku="([^"]+)">')
+
+
+HS_WITHOUT = re.compile(r"\bwithout heat ?sink\b", re.I)
+HS_WITH = re.compile(r"(?<!out )\bwith heat ?sink\b", re.I)
+DIM_LWH = re.compile(r'^\s*([\d.]+)\s*(mm|"|in)?\s*[x×]\s*([\d.]+)\s*(mm|"|in)?\s*[x×]\s*([\d.]+)\s*(mm|"|in)\s*$', re.I)
+MIN_SINK_MM = 5.0       # a bare M.2 2280 is <= ~3.6 mm (double-sided): a 'with Heatsink' SKU printing less is the bare drive's row (maker error)
+
+
+def heatsink_facts(title, dims_label, dims):
+    """SKU title + its Dimensions row -> [(key, value, raw, label)] (v6). Only the SKU's own title decides; L x W x H order only from a row
+    labelled '(L x W x H)'."""
+    out = []
+    if HS_WITHOUT.search(title or "") and not HS_WITH.search(title):
+        out.append(("therm.heatsink", "none", title, "SKU title"))
+    elif HS_WITH.search(title or "") and dims_label == "Dimensions (L x W x H)" and (m := DIM_LWH.match(dims or "")):
+        h = float(m[5]) * (1 if m[6].lower() == "mm" else 25.4)
+        if h >= MIN_SINK_MM:
+            out.append(("therm.heatsink_height", round(h, 2), dims, dims_label))
+    return out
 
 
 class SandiskSsd:
@@ -180,6 +204,9 @@ def parse_html(snap, h):
         for k, (v, q) in prose["claims"].items():          # v3: explicit page-prose statements, only where the spec table is silent
             if k not in have:
                 add(k, v, q, "page prose")
+        dl = next((x for x in ("Dimensions (L x W x H)", "Dimensions") if x in P), None)
+        for k, v, raw, lab in heatsink_facts(S.clean(titles.get(sku) or ""), dl, P.get(dl) if dl else None):
+            add(k, v, raw, lab)
         for lab in ("Dimensions (L x W x H)", "Dimensions", "Model Number"):
             get(lab)
         unmapped[sku] = {k: v for k, v in P.items() if k not in used}

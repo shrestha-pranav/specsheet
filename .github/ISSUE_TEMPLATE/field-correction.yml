@@ -10,8 +10,9 @@ body:
     attributes:
       value: |
         **Text alone is not evidence. Photos stay on GitHub; we publish the value and a link to this issue.**
-        GitHub issues are public: include product information only, never personal details. We store no name, handle or email;
-        photos are recorded only as a fingerprint (hash). Opening this form does not submit anything.
+        GitHub issues are public: include product information only, never personal details. We store no contributor name, handle
+        or email; photos are recorded only as a fingerprint (hash). The only identity we record is the public GitHub handle of the
+        maintainer who reviews the correction, on its review line. Opening this form does not submit anything.
   - type: textarea
     id: payload
     attributes:

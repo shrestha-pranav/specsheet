@@ -50,7 +50,13 @@ which **overrides** the sections below where they conflict. Owner of the idea: R
     SaaS, so paid service must move hosts.
 13. **Crowd v1 = correction reports + maintainer review** (`submitted → needs_evidence →
     accepted/rejected → superseded`); acceptance creates a claim, never edits a resolved value.
-    No reputation weighting yet.
+    No reputation weighting yet. Hardening (review-7, 2026-11-25; mechanics in `scripts/corrections.py` docstring):
+    an accept binds to a content digest of the claim (an edited issue is withheld until decided again); deciders
+    must be listed in `data/decisions/maintainers.yaml` (public maintainer handles: the one documented exception to
+    "no personal data"); every string and evidence URL is sanitized (decoded PII, tokenised query params) before
+    `data/corrections/` is written; every fetch and redirect hop is policy-checked, with one narrow **intake
+    exception**: hashing images a contributor attached to a field-correction issue (GitHub attachment hosts/CDN,
+    bytes hashed in memory) although github.com issue pages are `crawl: human_only`.
 14. **Cut from v1**: Dell/HP + broad laptops, LLM merge adjudication, reputation voting, paid
     unblocking, regulatory-wide discovery, user-triggered deep extraction, price filters/history,
     billing. **Not cut**: OCR, per-field evidence, package separation, unresolved identity states,

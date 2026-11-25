@@ -55,5 +55,31 @@ class D8(unittest.TestCase):
             gate({"filters": PRE["filters"], "scope": {"by": ["hidden"]}}, FULL)
 
 
+class PresetDefsR2(unittest.TestCase):
+    """docs/presets.json r2 (team/briefs/coord-2026-11-25-a4-presets-r2.md): definitions only; the gate decides showcase vs help-us-fill."""
+    SRC = __import__("json").loads((P.DOCS / "presets.json").read_text())
+
+    def test_new_presets_and_stable_ids(self):
+        ids = [p["id"] for p in self.SRC["presets"]]
+        for pid in ("monitor-1440p-144", "robovac-under-89mm", "station-lfp-1kwh", "surge-ul1449-2000j", "power-bank-samsung-45w", "tv-4-hdmi-4k120"):
+            self.assertIn(pid, ids)
+        self.assertFalse(any("passes" in p or "showcase" in p or "gate" in p for p in self.SRC["presets"]), "no forced gate in the source file")
+
+    def test_tv_title_matches_gate(self):
+        tv = next(p for p in self.SRC["presets"] if p["id"] == "tv-4-hdmi-4k120")
+        self.assertEqual(tv["filters"].get("f_hdmi.has_4k120_value"), "yes")
+        self.assertNotIn("f_hdmi.ports_4k120_min", tv["filters"], "the >= 4 port gate waits for 80% fill (next_gate)")
+        self.assertIn("at least one", tv["title"])
+        self.assertEqual(tv["next_gate"]["filters"], {"f_hdmi.ports_4k120_min": "4"})
+
+    def test_filters_parse_against_published_schemas(self):
+        api = P.DOCS / "api" / "v1"
+        if not (api / "categories.json").exists():
+            self.skipTest("no published index")
+        cats = __import__("json").loads((api / "categories.json").read_text())
+        built = P.build(api, cats, self.SRC)
+        self.assertEqual([p["id"] for p in built["presets"]], [p["id"] for p in self.SRC["presets"]])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -13,6 +13,8 @@ parse    : pure over `pdftotext -layout`. Each 'Specifications [form factor]' bl
            form factor in the two headers (or to the only block); its capacity = the block's listed capacity within 10% of the number in the part
            number ('1T0' -> 1024GB on a 1024GB-list datasheet). Per-capacity rows ('512GB – 7,000/3,900MB/s', '2TB - 4TB – ...' ranges) are applied
            per configuration; a row that does not name the capacity writes nothing for it.
+v4 (coverage r4): title = first line that is not a URL/domain fragment (doc_title), and a capacity-free model-level marketing_name comes
+           first (v3's first alias '<title> 250GB' named every configuration, e.g. SNV2S/4000G); claims unchanged.
 v2 (coverage r3): legacy_blocks() reads the older two-column layout (upper-case SPECIFICATIONS, label lines or '>>Label value', PART NUMBERS in
            the right column) into the same rows; v1 output for the six current-layout datasheets is unchanged.
 Traps    : 'NAND 3D' says nothing about bits per cell (no hw.nand_type); 'Gen 4x4 NVMe controller' names no controller (no hw.controller); a missing
@@ -28,7 +30,7 @@ import _ssd as S
 import _lt as L
 import _run
 
-ID, VERSION, SOURCE = "kingston_ssd", 3, "kingston-us-ssd"
+ID, VERSION, SOURCE = "kingston_ssd", 4, "kingston-us-ssd"
 CATEGORIES = {"ssds"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.kingston.com/datasheets/"
@@ -163,10 +165,23 @@ def pn_gb(pn):
     return int(m[1]) * 1000 if m else None
 
 
+URLISH = re.compile(r"(?i)(?:https?://|www\.)|\b[a-z0-9-]+\.(?:com|net|org|io)(?:/\S*)?\b")
+
+
+def doc_title(txt, key):
+    """v4 (coverage r4): the first non-empty line that is not a URL/domain fragment. The NV2/NV1 datasheets open with a right-aligned
+    'kingston.com/ssd' (NV1 letter-spaced: 'k i n g s t o n . c o m /s s d'), which v3 took as the product name."""
+    for l in txt.splitlines():
+        s = l.strip()
+        if s and not URLISH.search(s) and not URLISH.search(re.sub(r"\s+", "", s)):
+            return s
+    return key
+
+
 def parse_text(snap, txt):
     pr = C.ParseResult()
     pr.sources = [L.source(snap, "Kingston datasheet " + snap.ref.key)]
-    title = next((l.strip() for l in txt.splitlines() if l.strip()), snap.ref.key)
+    title = doc_title(txt, snap.ref.key)
     specs, parts = blocks(txt)
     if not specs or not parts:
         specs, parts = legacy_blocks(txt)          # v2: older two-column layout (NV2 / NV1 / A2000)
@@ -174,6 +189,7 @@ def parse_text(snap, txt):
         pr.absences.append({"key": "*", "reason": "no Specifications / Part Numbers block", "source": "s1"})
         return pr
     unmatched = []
+    pr.aliases.append({"text": title, "kind": "marketing_name"})   # v4: model-level name first; import names every configuration after it
     for pb in parts:
         sb = next((s for s in specs if s["ff"] and s["ff"] == pb["ff"]), None) or (specs[0] if len(specs) == 1 else None)
         if sb is None:

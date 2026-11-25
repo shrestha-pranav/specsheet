@@ -14,6 +14,9 @@ v2 (2026-11-24, preset fill): usb.usbc_inputs from the Connectivity section (one
   naming DP Alt Mode / Thunderbolt and not downstream/out/data-only; 0 only as a complete enumeration (condition basis=complete_enumeration).
   gen.size_class: a whole-inch 'Screen Size' stays the stated class; a fractional one (23.8") is the panel diagonal, so the class is derived
   (kind derived, round half up, _monports.DERIVATION) instead of publishing 23.8 as a class.
+v3 (2026-11-25, a2 r5): flk.pwm 'none' also from the page's own 'TUV Certificate' row when its value names TÜV Flicker-free (SW242Q:
+  'TUV Certificate: Flicker-free'), only when no 'Flicker-free Technology' row wrote it. Same declaration meaning as the Yes row; Eye Comfort
+  star levels, Low Blue Light and silence never map.
 """
 import gzip, html, re, sys, time
 from pathlib import Path
@@ -22,7 +25,7 @@ import _contract as C
 import _run
 import _monports as MP
 
-ID, VERSION, SOURCE = "benq_monitors", 2, "benq-us-monitors"
+ID, VERSION, SOURCE = "benq_monitors", 3, "benq-us-monitors"
 CATEGORIES = {"monitors"}
 ADAPTER = f"{ID}@{VERSION}"
 SITEMAP = "https://www.benq.com/en-us/sitemap.xml"
@@ -116,6 +119,8 @@ def parse_html(snap, h):
             add("flk.pwm", "none", lab, quote=f"{lab}: {v}")
             break
     tuv = get("TUV Certificate")
+    if tuv and not any(c["key"] == "flk.pwm" for c in pr.claims) and any(re.fullmatch(r"(?i)flicker[- ]?free", x.strip()) for x in re.split(r"[,/]", tuv)):
+        add("flk.pwm", "none", "TUV Certificate", quote=f"TUV Certificate: {tuv}")
     if tuv and tuv.strip().lower() not in ("no", "-", "n/a"):
         add("flk.cert", ["TUV " + x.strip() for x in re.split(r"[,/]", tuv) if x.strip()], "TUV Certificate", quote=f"TUV Certificate: {tuv}")
     pt = get("Panel Type")

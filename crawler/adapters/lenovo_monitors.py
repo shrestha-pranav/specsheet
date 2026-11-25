@@ -18,6 +18,11 @@ v4 (2026-11-25, independent sources #1): derived rule derive/tuv-eye-comfort-5st
   rule and the certifier's star table (Certipedia 0217009904: 1-4 stars "Flicker reduced", 5 stars "Flicker free"). 3-star, 4-star,
   unstarred, '2.0' and other 5-star TÜV marks (Native Gaming Performance, Perceptual Color Volume) never map. The label is NOT marked used,
   so research/monitors/label-mapping.yaml still reads it for the maker's own 'Flicker Free' statement (official claim, unchanged).
+v5 (2026-11-25, A2-keys): usb.usbc_alt_dp from the one USB-C video-input port line that names DisplayPort (_monusb.alt_dp, raw = that
+  line); usb.kvm true from a Special Features 'KVM Switch' item (_monusb.kvm_lenovo). Everything else byte-identical to v4.
+v6 (2026-11-25, A2-keys add-on): res.refresh_native from the Refresh Rate cell (refresh_native): a single 'NHz' cell, or the base rate of
+  'NHz (Overclock to MHz)' / 'NHz | MHz (Overlock)' (the maker separates native from OC). Ranges (VRR windows), per-input cells
+  ('75Hz (HDMI only)', 'DP: ...'), dual-mode, 'Typical'/'Max' wording and any other form -> nothing; never a copy of an OC rate.
 """
 import gzip, html, json, re, sys
 from pathlib import Path
@@ -26,8 +31,9 @@ import _contract as C
 import _run
 import lenovo_psref as LP
 import _monports as MP
+import _monusb as MU
 
-ID, VERSION, SOURCE = "lenovo_monitors", 4, "lenovo-psref-monitors"
+ID, VERSION, SOURCE = "lenovo_monitors", 6, "lenovo-psref-monitors"
 TUV5 = re.compile(r"T[ÜU]V Rheinland\W{0,3}\s*Eye Comfort Certification\s*\(5-star\)", re.I)
 TUV_RULE = "tuv-eye-comfort-5star@1"
 TUV_REF = "https://www.certipedia.com/quality_marks/0217009904?locale=en"
@@ -84,6 +90,20 @@ def after(vals, label):
     for i, v in enumerate(vals):
         if v.lower().startswith(label.lower()) and i + 1 < len(vals):
             return vals[i + 1]
+
+
+RN_SINGLE = re.compile(r"^\s*(\d{2,3})\s*Hz\s*$", re.I)
+RN_OC = re.compile(r"^\s*(\d{2,3})\s*Hz\s*(?:\(\s*Over(?:c)?lock(?:ing)?\s+to\s+(\d{2,3})\s*Hz\s*\)|\|\s*(\d{2,3})\s*Hz\s*\(\s*Over(?:c)?lock\s*\))\s*$", re.I)
+
+
+def refresh_native(cell):
+    """Refresh Rate cell (first line; later lines are the OC disclaimer) -> native Hz or None (v6)."""
+    first = (cell or "").split("\n")[0].strip()
+    if (m := RN_SINGLE.match(first)):
+        return int(m[1])
+    if (m := RN_OC.match(first)) and int(m[2] or m[3]) > int(m[1]):
+        return int(m[1])
+    return None
 
 
 class LenovoMonitors(LP.LenovoPsref):
@@ -161,6 +181,8 @@ class LenovoMonitors(LP.LenovoPsref):
             add("res.ppi", num(txt("Dot / Pixel Per Inch")), "ppi", "Dot / Pixel Per Inch")
         if "Refresh Rate" in F and re.search(r"\d\s*Hz", txt("Refresh Rate"), re.I):
             add("res.refresh_max", num(txt("Refresh Rate")), "Hz", "Refresh Rate")
+            if len(F["Refresh Rate"]) == 1 and (rn := refresh_native(F["Refresh Rate"][0])):
+                add("res.refresh_native", rn, "Hz", "Refresh Rate")
         if "Brightness" in F and num(txt("Brightness")):
             add("hdr.sdr_typ", num(txt("Brightness")), "nit", "Brightness")
         if "Contrast Ratio" in F and (m := re.search(r"(?<![\d:])(\d[\d,]*):1", txt("Contrast Ratio"))):
@@ -223,6 +245,12 @@ class LenovoMonitors(LP.LenovoPsref):
                 apt = " | ".join(allports)
                 pr.claims.append(C.claim(key, "usb.usbc_inputs", n, None, apt, "s1", ADAPTER, "psref_json", obs, {"label": "Ports", "basis": basis}, apt,
                                          conditions={"basis": "complete_enumeration"} if zero else None))
+            v, line = MU.alt_dp([html.unescape(x) for x in allports])
+            if v:
+                pr.claims.append(C.claim(key, "usb.usbc_alt_dp", v, None, line, "s1", ADAPTER, "psref_json", obs, {"label": "Ports", "basis": basis}, line))
+        kv_, kraw = MU.kvm_lenovo([x for lab in sorted(F) if re.search(r"feature", lab, re.I) for x in F[lab]])
+        if kv_:
+            pr.claims.append(C.claim(key, "usb.kvm", True, None, kraw, "s1", ADAPTER, "psref_json", obs, {"label": "Special Features", "basis": basis}, kraw))
         sf = txt("Special Features")
         if (m := re.search(r"DisplayHDR\s*(True Black\s*)?(\d{3,4})", sf, re.I)):
             tier = f"DisplayHDR {'True Black ' if m[1] else ''}{m[2]}"

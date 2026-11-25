@@ -32,7 +32,7 @@ function category(man: PackManifest, v: string | undefined, required: boolean) {
   return c;
 }
 
-export const QUERY_PARAMS = ["category", "filters", "q", "fields", "limit", "offset"] as const;
+export const QUERY_PARAMS = ["category", "filters", "q", "fields", "limit", "offset", "include"] as const;
 export const CHANGES_PARAMS = ["since", "category", "limit"] as const;
 export const MATCH_PARAMS = ["title", "category"] as const;
 
@@ -64,11 +64,13 @@ export function validateQuery(man: PackManifest, sp: URLSearchParams) {
   }
   const limit = intParam(p.limit, "limit", BOUNDS.limitDefault, 1, BOUNDS.limitMax);
   const offset = intParam(p.offset, "offset", 0, 0, BOUNDS.offsetMax);
+  if (p.include !== undefined && p.include !== "maybe" && p.include !== "matches") throw bad("include must be 'maybe' or 'matches'");
+  const include = p.include === "maybe" ? ("maybe" as const) : undefined;
   const q = p.q?.trim() || undefined;
   const fstr = filters.map((f) => `${f.key}${f.op}${f.value}`).sort().join(",");
-  const canonical = new URLSearchParams([["category", cat.id], ["fields", fields?.join(",") ?? ""], ["filters", fstr], ["limit", String(limit)],
+  const canonical = new URLSearchParams([["category", cat.id], ["fields", fields?.join(",") ?? ""], ["filters", fstr], ["include", include ?? ""], ["limit", String(limit)],
     ["offset", String(offset)], ["q", q?.toLowerCase() ?? ""]]).toString();
-  return { params: { category: cat.id, filters, q, fields, limit, offset }, canonical, filterKeys: [...new Set(filters.map((f) => f.key))].sort() };
+  return { params: { category: cat.id, filters, q, fields, limit, offset, include }, canonical, filterKeys: [...new Set(filters.map((f) => f.key))].sort() };
 }
 
 export function validateChanges(man: PackManifest, sp: URLSearchParams, retained: string[], now = Date.now()) {

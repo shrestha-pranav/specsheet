@@ -15,6 +15,8 @@ Traps    : 'Response Time 1ms MPRT' is NOT GtG (left unmapped unless the literal
 v2 (2026-11-24, preset fill): gen.size_class derived from 'Panel Size (inch)' (kind derived, round half up, _monports.DERIVATION; ASUS
            prints no size class). usb.usbc_inputs counted from the bare I/O port list (the maker's full input list): USB-C/Thunderbolt
            lines naming DP Alt Mode / Thunderbolt; 0 only as a complete enumeration (condition basis=complete_enumeration).
+v3 (2026-11-25, A2-keys): usb.usbc_alt_dp from the one USB-C video-input I/O line that names DP (_monusb.alt_dp, raw = that line);
+           usb.kvm from 'KVM Switch : Yes/No' or a '(For KVM Switch)' port row (_monusb.kvm_asus). Everything else byte-identical to v2.
 """
 import gzip, html, json, re, sys, time
 from pathlib import Path
@@ -23,8 +25,9 @@ import _contract as C
 from _contract import Ref, Discovery, ParseResult, claim  # noqa
 import _run
 import _monports as MP
+import _monusb as MU
 
-ID, VERSION, SOURCE = "asus_monitors", 2, "asus-us-monitors"
+ID, VERSION, SOURCE = "asus_monitors", 3, "asus-us-monitors"
 CATEGORIES = {"monitors"}
 API = ("https://odinapi.asus.com/recent-data/apiv2/SeriesFilterResult?SystemCode=asus&WebsiteCode=us&ProductLevel1Code=displays-desktops"
        "&ProductLevel2Code=monitors&PageSize=300&PageIndex={}&CategoryName=&SeparateType=1&LocalFlag=0")
@@ -247,12 +250,18 @@ def parse_html(snap, t):
             if n is not None:
                 pr.claims.append(claim(code, "usb.usbc_inputs", n, None, f"I/O Ports: {pt}", "s1", ADAPTER, "spec_html", obs, {"label": "I/O Ports", "model_code": code},
                                        pt, conditions={"basis": "complete_enumeration"} if zero else None))
+            v, line = MU.alt_dp(bare)
+            if v:
+                pr.claims.append(claim(code, "usb.usbc_alt_dp", v, None, f"I/O Ports: {line}", "s1", ADAPTER, "spec_html", obs, {"label": "I/O Ports", "model_code": code}, line))
             pdl = next((f"{k}: {v}" for k, v in F.items() if re.search(r"Power Delivery|\bPD\b", k) and re.search(r"\d\s*W", v)), None)
             if pdl and (m := re.search(r"(\d{2,3})\s*W", pdl)):
                 pr.claims.append(claim(code, "usb.usbc_pd_w", float(m[1]), "W", pdl, "s1", ADAPTER, "spec_html", obs, {"label": pdl.split(":")[0], "model_code": code}, pdl))
                 used.add(pdl.split(":")[0])
             elif (m := re.search(r"USB[^|]*?(?:PD|Power Delivery)[^|\d]{0,12}(\d{2,3})\s*W", pt, re.I)):
                 pr.claims.append(claim(code, "usb.usbc_pd_w", float(m[1]), "W", pt, "s1", ADAPTER, "spec_html", obs, {"label": "I/O Ports", "model_code": code}, pt))
+        kv_, kraw = MU.kvm_asus(F)
+        if kv_ is not None:
+            pr.claims.append(claim(code, "usb.kvm", kv_, None, kraw, "s1", ADAPTER, "spec_html", obs, {"label": kraw.split(":")[0], "model_code": code}, kraw))
         unmapped[code] = {k: v for k, v in F.items() if k not in used}
     pr.fingerprints = {"raw": snap.snapshot, "rog": rog, "models": codes, "columns": ncols, "sections": list(secs), "unmapped": unmapped}
     return pr

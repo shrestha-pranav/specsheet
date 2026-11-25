@@ -431,7 +431,14 @@
     const c = preset.count;
     return `<article class="preset-card" data-preset="${escapeHtml(preset.id)}"><h3><a href="${href}?preset=${encoded(preset.id)}">${escapeHtml(preset.title)}</a></h3><p class="preset-fill"><strong>${c.matches} ${c.matches === 1 ? 'match' : 'matches'}</strong>${c.maybe ? `, ${c.maybe} more ${c.disagree ? `might match (${c.maybe - c.disagree} unknown, ${c.disagree} sources disagree)` : 'unknown, might match'}` : ''}</p><p class="muted">${gate.known} of ${gate.total} known for “${escapeHtml(gate.label)}” (${pct(gate.fill)})${gate.uncovered_brands?.length ? `. No value yet for ${escapeHtml(gate.uncovered_brands.map(item => item.brand).join(', '))}` : ''}.</p>${kindBreakdown(preset)}${scopeLines(preset)}</article>`;
   };
-  const presetGallery = data => data.presets?.length ? `<section class="preset-gallery" aria-labelledby="preset-heading"><h2 id="preset-heading">Questions we can answer</h2><p class="muted">A question is answered only when at least ${pct(data.default_min_fill ?? 0.8)} of the products have the field it depends on. Otherwise we ask for help filling it instead of showing a mostly-unknown table.</p><div class="preset-grid">${data.presets.map(presetCard).join('')}</div></section>` : '';
+  // The showcase row holds only presets that pass their build-time gate; the rest sit in a separate "help us fill" row. Nothing here forces a
+  // preset either way: gate.passes (scripts/presets.py, D8) decides, so a preset moves rows when the data moves.
+  const presetGallery = data => {
+    const shown = (data.presets || []).filter(preset => preset.gate?.passes), help = (data.presets || []).filter(preset => !preset.gate?.passes);
+    if (!shown.length && !help.length) return '';
+    return `<section class="preset-gallery" aria-labelledby="preset-heading"><h2 id="preset-heading">Questions we can answer</h2><p class="muted">A question is answered only when at least ${pct(data.default_min_fill ?? 0.8)} of the products have the field it depends on. Otherwise we ask for help filling it instead of showing a mostly-unknown table.</p>${shown.length ? `<div class="preset-grid" data-preset-row="showcase">${shown.map(presetCard).join('')}</div>` : '<p class="muted">None yet.</p>'}`
+      + (help.length ? `<h3 id="preset-help-heading" class="preset-help-heading">Help us fill these</h3><p class="muted">Not enough of the products have the deciding field yet. Each card says which field and which brands are missing.</p><div class="preset-grid" data-preset-row="help" aria-labelledby="preset-help-heading">${help.map(presetCard).join('')}</div>` : '') + '</section>';
+  };
   // Samsung-45-W style verdict from the per-port PDO table. Unknown is never no: a port that does not list PPS is unknown unless the product states no PPS.
   const parsePps = text => String(text || '').split(';').map(part => { const m = part.match(/([\d.]+)\s*-\s*([\d.]+)\s*V\s*([\d.]+)\s*A/i); return m ? {lo:Number(m[1]), hi:Number(m[2]), amps:Number(m[3])} : null; }).filter(Boolean);
   const pdoPortVerdict = (port, cfg, productPps) => {
@@ -620,8 +627,22 @@
   };
   // D10: a known value with a disagreeing alternative of another kind (index x[k].alt) that falls on the other side of the filter is neither a
   // match nor ruled out: it is "might match, sources disagree". Mirrors scripts/presets.py _verdict.
-  const altSpecs = spec => (isKnown(spec) && Array.isArray(spec.alt) ? spec.alt : []).map(alt => ({status:'known', value:alt.v}));
-  const disagrees = (row, field, filters) => { if (!facetActive(field, filters)) return false; const spec = specObject(row, field.key); const head = matchValue(spec, field, filters); return altSpecs(spec).some(alt => matchValue(alt, field, filters) !== head); };
+  // Same rules as _verdict: (a) headline matches and any alternative has a different value, even on the same side -> disagree; (b) headline fails and
+  // an alternative matches -> disagree; (c) no headline but alternatives -> disagree, unless every alternative fails (then ruled out, see altsRuleOut);
+  // (d) no headline and index status conflicted -> disagree, not a generic "unknown value". Alternatives come from the index row (x[key].alt) so a
+  // conflicted status entry, which carries no value, keeps them.
+  const altSpecs = (row, field) => { const alt = row.x?.[field.key]?.alt ?? specObject(row, field.key).alt; return (Array.isArray(alt) ? alt : []).map(item => ({status:'known', value:item.v})); };
+  const sameValue = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const disagrees = (row, field, filters) => {
+    if (!facetActive(field, filters)) return false;
+    const spec = specObject(row, field.key), alts = altSpecs(row, field);
+    if (!isKnown(spec)) return alts.length ? alts.some(alt => matchValue(alt, field, filters)) : spec.status === 'conflicted';
+    if (!alts.length) return false;
+    const head = matchValue(spec, field, filters);
+    return head ? alts.some(alt => !matchValue(alt, field, filters) || !sameValue(alt.value, spec.value)) : alts.some(alt => matchValue(alt, field, filters));
+  };
+  // No headline value and every alternative fails the filter: a known fact rules the row out (presets.py returns 'no'), so it is not "might match".
+  const altsRuleOut = (row, field, filters) => { const alts = altSpecs(row, field); return !isKnown(specObject(row, field.key)) && alts.length > 0 && alts.every(alt => !matchValue(alt, field, filters)); };
   const matchFacet = (row, field, filters) => matchValue(specObject(row, field.key), field, filters) && !disagrees(row, field, filters);
   const matchValue = (spec, field, filters) => {
     if (['number','integer','range'].includes(field.type) && field.facet?.kind !== 'enum') {
@@ -643,7 +664,7 @@
   };
   // A filter is "active" when it has a value; a row whose field is unknown is neither a match nor a mismatch for it (unknown is never no).
   const facetActive = (field, filters) => Object.keys(filters).some(key => key.startsWith(`f_${field.key}_`) && filters[key] && !['unknown','__unknown'].includes(filters[key]));
-  const unknownBlocks = (row, field, filters) => facetActive(field, filters) && !isKnown(specObject(row, field.key));
+  const unknownBlocks = (row, field, filters) => facetActive(field, filters) && !isKnown(specObject(row, field.key)) && !altsRuleOut(row, field, filters);
   const facetPass = (row, fields, filters, lenient) => fields.every(field => matchFacet(row, field, filters) || (lenient && (unknownBlocks(row, field, filters) || disagrees(row, field, filters))));
   const disagreeRow = (row, fields, filters) => fields.some(field => disagrees(row, field, filters));
   const coverage = row => { const parts = Object.values(row.completeness || {}); const total = parts.reduce((n, p) => n + p[1], 0); return total ? parts.reduce((n, p) => n + p[0], 0) / total : 0; };

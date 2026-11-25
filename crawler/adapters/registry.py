@@ -41,6 +41,7 @@ SOURCES = {
     "teamgroup-us-ssd": {"brand": "team", "brand_name": "TEAMGROUP", "category": "ssds", "module": "teamgroup_ssd", "importer": "generic"},
     "kingston-us-ssd": {"brand": "kingston", "brand_name": "Kingston", "category": "ssds", "module": "kingston_ssd", "importer": "generic"},
     "sandisk-us-ssd-datasheets": {"brand": "western digital", "brand_name": "WD / SanDisk", "category": "ssds", "module": "sandisk_datasheets", "importer": "generic"},
+    "samsung-ssd-datasheets": {"brand": "samsung", "brand_name": "Samsung", "category": "ssds", "module": "samsung_datasheets", "importer": "generic"},
     "tplink-us-routers": {"brand": "tp_link", "brand_name": "TP-Link", "category": "routers", "module": "tplink_routers", "importer": "model"},
     "netgear-us-routers": {"brand": "netgear", "brand_name": "NETGEAR", "category": "routers", "module": "netgear_routers", "importer": "model"},
     "asus-us-routers": {"brand": "asus", "brand_name": "ASUS", "category": "routers", "module": "asus_routers", "importer": "model"},

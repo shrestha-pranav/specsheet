@@ -8,7 +8,9 @@ api-worker/r2-data) from the static API in docs/api/v1. Same layout for both tie
 Output tree (object keys == paths under --out; upload with api-worker/scripts/seed-local-r2.mjs locally,
 or `wrangler r2 bulk put` / rclone to the real bucket, see api-worker/README.md):
   meta/manifest.json            release id + per-category counts/sizes (what the Worker trusts)
-  index/<cat>.json              array of rows {id,kind,brand,name,variant_label,ids,lifecycle,v:{key:value}} (known values only)
+  index/<cat>.json              array of rows {id,kind,brand,name,variant_label,ids,lifecycle,v:{key:value},s?:{key:conflicted|not_applicable},a?:{key:[alt values]}} (known values only in v)
+  schema/<cat>.json             fields {key,label,group,type,unit,enum,tier,facet,facet_kind,fill} for MCP list_categories_keys
+  meta/presets.json             built docs presets (definitions, gate, counts) for MCP list_presets
   records/<cat>/<xx>.json       {id: record} shards, xx = sha1(id)[:2]  (provenance lookup for /v1/query)
   bulk/<cat>.jsonl.gz           one trusted record per line (/v1/bulk/<cat>.jsonl.gz)
   changes/<release>.json        per-category diff vs the previous snapshot; changes/index.json lists all releases
@@ -102,6 +104,13 @@ def build_category(cat, docs, pol, tier, out, shard_hex=2):
             "lifecycle": b.get("lifecycle") or (rec.get("lifecycle") or {}).get("state"),
             "v": known_values(rec),
         })
+        st = {k: sp["status"] for k, sp in rec["specs"].items() if sp.get("status") in ROW_STATUSES}
+        if st:
+            rows[-1]["s"] = st  # Worker per-filter status (conflicted / not_applicable); absent key = unknown
+        alts = {k: [a["v"] for a in x["alt"]] for k, x in (b.get("x") or {}).items() if (x or {}).get("alt")}
+        if alts:
+            rows[-1]["a"] = alts  # D10 disagreeing alternatives: the Worker reports "disagree" when they fall on the other side of a filter
+    schema_meta = write_schema(cat, docs, rows, out)
     jdump(rows, os.path.join(out, "index", cat["id"] + ".json"))
     shards = {}
     for i in sorted(ids):
@@ -121,8 +130,48 @@ def build_category(cat, docs, pol, tier, out, shard_hex=2):
     crowd = {r["id"]: c for r in rows if (c := crowd_keys(prods[r["id"]]))}
     return rows, (withheld, crowd), cov, {"id": cat["id"], "count": len(rows), "legacy": bool(cat.get("legacy")),
                                  "keys": sorted({k for r in rows for k in r["v"]}),  # Worker filter/fields bound (D3.6)
+                                 **schema_meta,
                                  "bulk": f"bulk/{cat['id']}.jsonl.gz", "bulk_bytes": os.path.getsize(bulk), "sha256": {
                                      "index": sha256_file(os.path.join(out, "index", cat["id"] + ".json")), "bulk": sha256_file(bulk)}}
+
+
+ROW_STATUSES = ("conflicted", "not_applicable")
+
+
+def write_schema(cat, docs, rows, out):
+    """schema/<cat>.json for the Worker's list_categories_keys tool and per-filter status: key, label, group, type, unit, tier, facet,
+    fill (known / rows in this pack). Returns the manifest fields (schema path, core keys). Fixture trees without a schema: nothing."""
+    rel_in = cat.get("schema") or f"{cat['id']}/schema.json"   # manifest.json categories carry no schema path; categories.json does
+    if not os.path.exists(os.path.join(docs, rel_in)):
+        return {}
+    sch = jload(os.path.join(docs, rel_in))
+    n = len(rows) or 1
+    fields = []
+    for f in sch.get("fields") or []:
+        k = f["key"]
+        facet = f.get("facet")
+        fields.append({"key": k, "label": f.get("label"), "group": f.get("group"), "type": f.get("type"), "unit": f.get("unit"),
+                       "enum": f.get("enum"), "tier": f.get("tier"), "facet": bool(facet),
+                       "facet_kind": facet.get("kind") if isinstance(facet, dict) else None,
+                       "fill": round(sum(1 for r in rows if k in r["v"]) / n, 4)})
+    rel = f"schema/{cat['id']}.json"
+    jdump({"category": cat["id"], "rows": len(rows), "fields": fields}, os.path.join(out, rel))
+    return {"schema": rel, "core": sorted(f["key"] for f in fields if f["tier"] == "core")}
+
+
+def write_presets(docs, cats, out):
+    """meta/presets.json: the built docs presets (scripts/presets.py output) for the MCP list_presets tool, restricted to pack categories.
+    Definitions + gate + counts only; the Worker translates the app filters into its own filter grammar."""
+    src = os.path.join(docs, "presets.json")
+    if not os.path.exists(src):
+        return None
+    ids = {c["id"] for c in cats}
+    keep = ("id", "category", "title", "filters", "require", "columns", "scope", "min_fill", "count")
+    ps = [dict({k: p[k] for k in keep if k in p}, gate={k: p["gate"].get(k) for k in ("passes", "fill", "key", "label", "min_brands")})
+          for p in jload(src).get("presets") or [] if p.get("category") in ids]
+    rel = "meta/presets.json"
+    jdump({"presets": ps}, os.path.join(out, rel))
+    return rel
 
 
 def match_catalogue(docs, ids, out):
@@ -258,9 +307,10 @@ def main():
     site = os.path.join(ROOT, "docs", "site.json")
     if os.path.exists(site):
         brand = jload(site).get("brand", brand)
+    presets_rel = write_presets(a.docs, metas, a.out)
     match_sha = None if a.no_match else match_catalogue(a.docs, {i for s_ in snap.values() for i in s_}, a.out)
     jdump(dict({"release": release, "tier": a.tier, "built_at": created, "dataset_build": man.get("build"), "categories": metas,
-                "shard_hex": a.shard_hex, "match": {"catalogue": "match/catalogue.json", "sha256": match_sha} if match_sha else None,
+                "shard_hex": a.shard_hex, "match": {"catalogue": "match/catalogue.json", "sha256": match_sha} if match_sha else None, "presets": presets_rel,
                 "coverage": source_policy.coverage_table(covs),
                 "note": f"{a.tier}-tier query pack: trusted records only, gated by data/source-policy.yaml"}, **pol.manifest_block(brand)),
           os.path.join(a.out, "meta", "manifest.json"))

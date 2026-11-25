@@ -21,7 +21,8 @@ def score(path):
             continue
         x = json.loads(ln)
         r = M.match(x["title"])
-        got = r[0]["id"] if r else None
+        # consumer contract (bf-deals, API): a candidate carrying evidence.conflict is never a match
+        got = r[0]["id"] if r and not (r[0].get("evidence") or {}).get("conflict") else None
         if x["expect"] and got == x["expect"]:
             tp += 1
         elif got:

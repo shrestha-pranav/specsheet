@@ -10,7 +10,7 @@ Also: sync dry-run writes nothing, per-account limit and burst pause, form label
 correction@1 and an agent `by`, path_prefix source policy, presets' kind breakdown + sources-disagree, /v1/changes crowd marks.
   python3 -I tests/test_corrections.py
 """
-import hashlib, io, json, os, shutil, subprocess, sys, tempfile, unittest
+import email.message, hashlib, io, json, os, shutil, subprocess, sys, tempfile, unittest, urllib.request, urllib.response
 from pathlib import Path
 
 import yaml
@@ -27,6 +27,7 @@ import source_policy as SP  # noqa: E402
 import build_r2 as B2  # noqa: E402
 
 REPO = "shrestha-pranav/specsheet"
+REVIEWER = "shrestha-pranav"        # data/decisions/maintainers.yaml (fixture copy)
 PROFILE = """
 profile_format: specsheet.category-profile/1
 category: widgets
@@ -94,6 +95,19 @@ ISSUES = [
     issue(5, body("widgetco-w-100", "gen.kind", "beta", "E3", url="https://www.rtings.com/widget/w-100", mode="optical: photodiode")),
     issue(6, body("widgetco-w-200", "gen.flag", "no", "E1", photos=1, coi=True)),
 ]
+# review-7 P1: PII injected literally and encoded across every field and URL component. #7 is otherwise valid (and accepted), #8 carries
+# PII in the identity fields themselves (entity, key, value, applies_to) and must never apply.
+TOKEN = "tok9SECRET8abcdefghijklmnop"
+PII_FORMS = [LOGIN, EMAIL, "zz.fixture%40mail.example", "zz.fixture%2540mail.example", "zz.fixture&#64;mail.example", "zz.fixture (at) mail (dot) example",
+             "zz.fixture@mail", TOKEN]
+_b7 = body("widgetco-w-100", "gen.kind", "alpha", "E2", url=f"https://example.invalid/W-100?email=zz.fixture%40mail.example&token={TOKEN}&model=W-100#{LOGIN}",
+           extra=f"https://example.invalid/%40{LOGIN}/profile https://{LOGIN}:pw@example.invalid/x",
+           conditions=f"seen by zz.fixture%40mail.example, zz.fixture&#64;mail.example and zz.fixture (at) mail (dot) example; cc %40{LOGIN}")
+_b7 = _b7.replace('"shown_value": "Unknown"', f'"shown_value": "ask @{LOGIN}"').replace('"build": "b1"', f'"build": "{EMAIL}"')
+_b7 = _b7.replace("### Maker statement that the line has one design\n\n_No response_",
+                  f"### Maker statement that the line has one design\n\nhttps://example.invalid/one-design?utm_source=x&mail=zz.fixture%2540mail.example")
+_b8 = body(EMAIL, f"@{LOGIN}", f"beta zz.fixture%40mail.example", "E2", url="https://example.invalid/W-200", applies=f"widgetco-w-200 {EMAIL}")
+ISSUES += [issue(7, _b7), issue(8, _b8)]
 fake_hash = lambda url: "sha256:" + hashlib.sha256(url.encode()).hexdigest()
 
 
@@ -134,6 +148,7 @@ class Flow(unittest.TestCase):
         (t / "data" / "decisions").mkdir(parents=True)
         (t / "data" / "decisions" / "policies.yaml").write_text(POLICIES)
         (t / "data" / "decisions" / "ledger.jsonl").write_text("")
+        (t / "data" / "decisions" / "maintainers.yaml").write_text(f"maintainers: [{REVIEWER}]\n")
         (t / "data" / "source-policy.yaml").write_text(yaml.safe_dump(SOURCE_POLICY, sort_keys=False))
         (t / "sources.extra.json").write_text(json.dumps({"widgetco-us": {"brand": "widgetco", "brand_name": "WidgetCo", "category": "widgets", "module": "none",
                                                                           "importer": "model", "parser": "widgetco@1"}}))
@@ -157,18 +172,26 @@ class Flow(unittest.TestCase):
         cls.checks = {p.name: bad for p, _, bad in CR.check_all(cls.data, cls.pol)}
         cls.pre = {e: detail(t, e) for e in ("widgetco-w-100", "widgetco-w-200")}
         cls.pre_prev = detail(t, "widgetco-w-200", preview=True)
-        lines = [RC.decision_line(cid, "accept_claim", "owner-handle", r, f"https://github.com/{REPO}/issues/{n}", at="2026-11-25T12:30:00Z", data_dir=cls.data)
-                 for cid, n, r in (("c_corr_1_1", 1, "E1 label photo, model visible"), ("c_corr_2_1", 2, "E3 ChargerLAB review"), ("c_corr_3_1", 3, "E2 maker datasheet"))]
+        lines = [RC.decision_line(cid, "accept_claim", REVIEWER, r, f"https://github.com/{REPO}/issues/{n}", at="2026-11-25T12:30:00Z", data_dir=cls.data)
+                 for cid, n, r in (("c_corr_1_1", 1, "E1 label photo, model visible"), ("c_corr_2_1", 2, "E3 ChargerLAB review"), ("c_corr_3_1", 3, "E2 maker datasheet"),
+                                   ("c_corr_7_1", 7, f"E2 maker page; thanks @{LOGIN} ({EMAIL})"))]
         RC.append(lines, cls.data)
         cls.imp1 = run_build(t)
         cls.b1 = {e: detail(t, e) for e in ("widgetco-w-100", "widgetco-w-200")}
         cls.b1_prev = detail(t, "widgetco-w-200", preview=True)
         cls.rows1 = {r["id"]: r for r in json.loads((t / "api" / "widgets" / "index.json").read_text())}
         cls.trusted_text = "".join(p.read_text() for p in (t / "api" / "widgets").rglob("*.json"))
-        RC.append([RC.decision_line("c_corr_1_1", "reject_claim", "owner-handle", "photo shows a different revision", "https://github.com/x/y/issues/1",
+        RC.append([RC.decision_line("c_corr_1_1", "reject_claim", REVIEWER, "photo shows a different revision", "https://github.com/x/y/issues/1",
                                     at="2026-11-25T13:00:00Z", data_dir=cls.data)], cls.data)
         run_build(t)
         cls.b2 = detail(t, "widgetco-w-100")
+        # review-7 P0: issue #3 is edited after its accept (alpha -> beta): sync rewrites the file, the old approval no longer binds
+        ed = [dict(it, body=it["body"].replace("### Proposed value\n\nalpha", "### Proposed value\n\nbeta")) if it["number"] == 3 else it for it in ISSUES]
+        assert ed != ISSUES
+        CR.sync(REPO, cls.data, issues=ed, hasher=fake_hash, now="2026-11-25T14:00:00Z", out=io.StringIO(), pol=cls.pol)
+        cls.imp3 = run_build(t)
+        cls.b3, cls.b3_prev = detail(t, "widgetco-w-200"), detail(t, "widgetco-w-200", preview=True)
+        cls.api_text = "".join(p.read_text(errors="ignore") for p in (t / "api").rglob("*") if p.is_file())
 
     @classmethod
     def tearDownClass(cls):
@@ -177,7 +200,7 @@ class Flow(unittest.TestCase):
     # ---- sync
     def test_dry_run_writes_nothing(self):
         self.assertFalse(self.dry_dir_exists)
-        self.assertEqual(len(self.dry_written), 6)
+        self.assertEqual(len(self.dry_written), 8)
         self.assertIn("[dry-run] would write", self.dry_out)
 
     def test_claim_file_shape(self):
@@ -265,7 +288,7 @@ class Flow(unittest.TestCase):
         self.assertEqual(self.b1_prev["corrections_pending"], [{"key": "gen.flag", "ref": "6"}, {"key": "gen.size", "ref": "4"}])
         self.assertNotIn("corrections_pending", self.trusted_text)
         self.assertNotIn("25", json.dumps(self.b1["widgetco-w-200"]["specs"]["gen.size"]))
-        self.assertEqual(self.imp1["claims_review"]["widgets"].get("accepted"), 4 + 3)
+        self.assertEqual(self.imp1["claims_review"]["widgets"].get("accepted"), 4 + 4)
 
     def test_e1_fills_unknown_official_crowd(self):
         self.assertNotIn("gen.flag", self.pre["widgetco-w-100"]["specs"])
@@ -298,7 +321,15 @@ class Flow(unittest.TestCase):
     # ---- governance
     def test_ledger_writer_and_governance(self):
         led = [json.loads(x) for x in (self.data / "decisions" / "ledger.jsonl").read_text().splitlines()]
-        self.assertEqual([x["id"] for x in led], ["d_corr_1_1", "d_corr_2_1", "d_corr_3_1", "d_corr_1_1_2"])
+        self.assertEqual([x["id"] for x in led], ["d_corr_1_1", "d_corr_2_1", "d_corr_3_1", "d_corr_7_1", "d_corr_1_1_2"])
+        self.assertTrue(all(x["digest"].startswith("sha256:") for x in led if x["action"] == "accept_claim"))
+        with self.assertRaises(SystemExit):
+            RC.decision_line("c_corr_1_1", "accept_claim", "someone-else", "x", None, data_dir=self.data)     # not in maintainers.yaml
+        t0 = Path(tempfile.mkdtemp(dir=TMP)) / "data"
+        (t0 / "decisions").mkdir(parents=True)
+        (t0 / "decisions" / "ledger.jsonl").write_text(json.dumps({"id": "d1", "by": "someone-else", "action": "reject_claim", "claim": "c_corr_1_1"}) + "\n")
+        with self.assertRaises(SystemExit):
+            D.Decisions(t0)
         self.assertEqual(led[0]["evidence"], f"https://github.com/{REPO}/issues/1")
         with self.assertRaises(SystemExit):
             RC.decision_line("c_corr_1_1", "accept_claim", "agent:a3", "x", None, data_dir=self.data)
@@ -324,11 +355,11 @@ class Flow(unittest.TestCase):
         orig, builtins.input = builtins.input, lambda prompt="": next(answers)
         try:
             with contextlib.redirect_stdout(io.StringIO()) as out:
-                RC.review({"4", "5"}, "owner-handle", d2)
+                RC.review({"4", "5"}, REVIEWER, d2)
         finally:
             builtins.input = orig
         led = [json.loads(x) for x in (d2 / "decisions" / "ledger.jsonl").read_text().splitlines()]
-        self.assertEqual([(x["claim"], x["action"], x["by"]) for x in led[-2:]], [("c_corr_4_1", "accept_claim", "owner-handle"), ("c_corr_5_1", "reject_claim", "owner-handle")])
+        self.assertEqual([(x["claim"], x["action"], x["by"]) for x in led[-2:]], [("c_corr_4_1", "accept_claim", REVIEWER), ("c_corr_5_1", "reject_claim", REVIEWER)])
         self.assertEqual(led[-2]["reason"], "E1 label photo, model visible")
         self.assertTrue(led[-1]["reason"].startswith("Domain not allowed"))
         self.assertEqual(yaml.safe_load((d2 / "corrections" / "4.yaml").read_text())["evidence"]["images"][0]["transcription"], "W-200 label: 25 in")
@@ -338,7 +369,7 @@ class Flow(unittest.TestCase):
         out = TMP / "queue.md"
         text = CR.queue(self.data, out, self.pol, api=TMP / "api", now="2026-11-25T12:00:00Z")
         self.assertIn("| c_corr_2_1 | widgetco-w-100 | gen.size |", text)
-        self.assertIn("accept by owner-handle", text); self.assertIn("pending", text)
+        self.assertIn("accept by " + REVIEWER + "", text); self.assertIn("pending", text)
         self.assertIn("gh issue close 2 --comment", text)
         self.assertIn("5.yaml: domain_not_allowed", text)
 
@@ -358,6 +389,116 @@ class Flow(unittest.TestCase):
                     self.assertNotIn(f, d, p)
 
 
+class Hardening:
+    """Codex review-7: content-bound approval, privacy before persistence, crawl policy on every redirect hop, measurement scope."""
+    def test_edit_after_accept_is_withheld(self):
+        self.assertEqual(self.b1["widgetco-w-200"]["specs"]["gen.kind"]["status"], "conflicted")
+        sp = self.b3["specs"]["gen.kind"]
+        self.assertEqual((sp["status"], sp["value"]), ("known", "beta"), "the edited correction is withheld: only the maker value is left")
+        self.assertNotIn("alternatives", sp)
+        self.assertIn({"key": "gen.kind", "ref": "3"}, self.b3_prev["corrections_pending"], "withheld = pending again")
+        self.assertEqual(self.imp3["claims_review"]["widgets"].get("accepted"), 4 + 2, "#1 rejected, #3 withheld; #2 and #7 still bound")
+
+    def test_digest_binds_content(self):
+        doc = yaml.safe_load((self.data / "corrections" / "2.yaml").read_text())
+        base = CR.claim_digest(doc, "c_corr_2_1", "widgetco-w-100")
+        for mut in (dict(doc, value="14 in"), dict(doc, applies_to=["b", "a"]), dict(doc, evidence=dict(doc["evidence"], url="https://www.chargerlab.com/other/")),
+                    dict(doc, conditions={"x": 1})):
+            self.assertNotEqual(CR.claim_digest(mut, "c_corr_2_1", "widgetco-w-100"), base)
+        self.assertNotEqual(CR.claim_digest(dict(doc, applies_to=["a", "b"]), "c_corr_2_1", "a"), CR.claim_digest(dict(doc, applies_to=["b", "a"]), "c_corr_2_1", "a"))
+        self.assertEqual(CR.claim_digest(dict(doc, synced_at="later", state="closed"), "c_corr_2_1", "widgetco-w-100"), base, "sync time / issue state do not void a decision")
+        d = D.Decisions(self.data)
+        ctx = {"source_id": "corrections", "extractor": "correction@1", "key": "gen.size", "kind": "measured", "tier": "measurement", "status": "known", "normalized": True}
+        self.assertEqual(d.claim_state("c_corr_2_1", ctx)[0], "accepted")
+        self.assertEqual(d.claim_state("c_corr_3_1", ctx), ("candidate", None))
+        d.claims["c_corr_2_1"] = {k: v for k, v in d.claims["c_corr_2_1"].items() if k != "digest"}
+        self.assertEqual(d.claim_state("c_corr_2_1", ctx), ("candidate", None), "an accept line without a digest never publishes")
+        real = CODE / "data" / "decisions" / "ledger.jsonl"
+        self.assertFalse([ln for ln in real.read_text().splitlines() if '"c_corr_' in ln], "no correction has been accepted in the real ledger yet")
+        self.assertIn("pending (changed since accept: withheld)", CR.queue(self.data, TMP / "q2.md", self.pol, api=TMP / "api", now="2026-11-25T15:00:00Z"))
+
+    def test_pii_never_persisted_or_published(self):
+        for root in (self.data, TMP / "api"):
+            for p in root.rglob("*"):
+                if p.is_file():
+                    txt = p.read_text(errors="ignore")
+                    for f in PII_FORMS:
+                        self.assertNotIn(f, txt, f"{p}: {f}")
+                    self.assertFalse(CR.has_pii(txt) and p.suffix == ".yaml", p)
+        d7 = yaml.safe_load((self.data / "corrections" / "7.yaml").read_text())
+        self.assertEqual(d7["evidence"]["url"], "https://example.invalid/W-100?model=W-100", "identifying query params and fragment dropped, the rest kept")
+        self.assertNotIn("extra_urls", d7["evidence"], "a URL whose path names a person, or with userinfo, is dropped")
+        self.assertEqual(d7["evidence"]["single_design_url"], "https://example.invalid/one-design")
+        self.assertIsNone(d7["release"]); self.assertEqual(d7["shown_value"], "ask [handle removed]")
+        d8 = yaml.safe_load((self.data / "corrections" / "8.yaml").read_text())
+        self.assertEqual((d8["entity"], d8["key"], d8.get("applies_to")), (None, None, ["widgetco-w-200"]))
+        led = [json.loads(x) for x in (self.data / "decisions" / "ledger.jsonl").read_text().splitlines()]
+        self.assertEqual(next(x for x in led if x["claim"] == "c_corr_7_1")["reason"], "E2 maker page; thanks [handle removed] ([email removed])")
+        self.assertEqual(self.b1["widgetco-w-100"]["specs"]["gen.kind"]["value"], "alpha", "#7 published after sanitizing")
+        for f in PII_FORMS:
+            self.assertNotIn(f, self.api_text)
+
+    def test_redirects_rechecked_zero_requests(self):
+        class FakeNet(urllib.request.BaseHandler):
+            handler_order = 100
+            def __init__(self, routes):
+                self.routes, self.seen = routes, []
+            def https_open(self, req):
+                self.seen.append(req.full_url)
+                code, loc, data = self.routes[req.full_url]
+                h = email.message.Message()
+                if loc:
+                    h["Location"] = loc
+                r = urllib.response.addinfourl(io.BytesIO(data), h, req.full_url, code)
+                r.msg = "OK" if code == 200 else "Found"
+                return r
+        att = "https://github.com/user-attachments/assets/00000000-0000-0000-0000-000000000001"
+        cdn = "https://objects.githubusercontent.com/x/1.png"
+        for dest in ("https://www.chargerlab.com/x.png", "https://www.rtings.com/x.png", "https://unlisted.invalid/x.png", f"https://github.com/{REPO}/issues/1",
+                     "http://objects.githubusercontent.com/x/1.png"):
+            net = FakeNet({att: (302, dest, b""), dest: (200, None, b"pwned")})
+            with self.assertRaises(CR.BlockedFetch):
+                CR.hash_image(att, pol=self.pol, handlers=(net,))
+            self.assertEqual(net.seen, [att], f"no request reaches {dest}")
+        net = FakeNet({att: (302, cdn, b""), cdn: (200, None, b"img")})
+        self.assertEqual(CR.hash_image(att, pol=self.pol, handlers=(net,)), "sha256:" + hashlib.sha256(b"img").hexdigest())
+        self.assertEqual(net.seen, [att, cdn])
+        for first in ("https://www.chargerlab.com/a.png", "https://www.rtings.com/a.png", "https://unlisted.invalid/a.png"):
+            net = FakeNet({first: (200, None, b"x")})
+            with self.assertRaises(CR.BlockedFetch):
+                CR.hash_image(first, pol=self.pol, handlers=(net,))
+            self.assertEqual(net.seen, [])
+        net = FakeNet({"https://www.notebookcheck.net/a.png": (302, "https://www.chargerlab.com/a.png", b"")})
+        with self.assertRaises(CR.BlockedFetch):
+            CR.hash_image("https://www.notebookcheck.net/a.png", pol=self.pol, handlers=(net,))
+        self.assertEqual(net.seen, ["https://www.notebookcheck.net/a.png"], "a crawl: agent source may not bounce us to a human_only one")
+
+    def test_measurement_scope(self):
+        class Cat:
+            cat = {"fam": "widgets", "c1": "widgets", "c2": "widgets"}
+            kind = {"fam": "family", "c1": "model", "c2": "model"}
+            members = staticmethod(lambda f: {"c1", "c2"})
+        base = {"issue": 9, "url": f"https://github.com/{REPO}/issues/9", "entity": "fam", "applies_to": ["c1", "c2"], "key": "gen.kind", "value": "alpha",
+                "kind": "measured", "measurement": {"mode": "inspection"}, "terms_ack": True, "coi": False, "submitted_by": "crowd",
+                "evidence": {"type": "E3", "url": "https://www.chargerlab.com/a/", "extra_urls": ["https://chargerlab.com/a/?page=2", "https://www.chargerlab.com/b/"], "images": []}}
+        base["source"] = {"url": base["evidence"]["url"], "tier": "measurement", "via": base["url"]}
+        codes = lambda d: {c for c, _ in CR.check(d, self.pol, Cat())}
+        self.assertIn("revision_guard", codes(base), "three URLs on one site are one sample")
+        img = {"sha256": "sha256:" + "a" * 64, "transcription": "W label"}
+        e4 = dict(base, evidence={"type": "E4", "images": [img, dict(img)]}, source={"url": base["url"], "tier": "crowd"})
+        self.assertIn("revision_guard", codes(e4), "the same photo twice is one sample")
+        self.assertNotIn("revision_guard", codes(dict(e4, evidence={"type": "E4", "images": [img, dict(img, sha256="sha256:" + "b" * 64)]})))
+        e4sd = dict(e4, evidence={"type": "E4", "images": [img], "single_design_url": "https://www.chargerlab.com/one-design/"})
+        self.assertIn("domain_not_allowed", codes(e4sd), "an E4 single-design statement must be a maker page")
+        self.assertNotIn("domain_not_allowed", codes(dict(e4sd, evidence=dict(e4sd["evidence"], single_design_url="https://example.invalid/one-design"))))
+
+
+
+for _n, _f in list(vars(Hardening).items()):      # run on Flow's one fixture build (setUpClass), not a second copy
+    if _n.startswith("test_"):
+        setattr(Flow, _n, _f)
+
+
 class Presets(unittest.TestCase):
     SCHEMA = {"fields": [{"key": "b", "label": "B", "type": "bool", "facet": True}]}
 
@@ -368,12 +509,26 @@ class Presets(unittest.TestCase):
                 {"id": "4", "brand": "B", "v": {"b": True}, "x": {"b": {"alt": [{"v": False, "k": "measured"}]}}, "t": ["manufacturer"]},
                 {"id": "5", "brand": "C", "v": {}, "t": ["manufacturer"]}]
         gate, count = PR.measure({"id": "p", "filters": {"f_b_value": "no"}}, {"id": "c"}, self.SCHEMA, rows, 0.5)
-        self.assertEqual(count, {"matches": 2, "maybe": 3, "disagree": 2, "total": 5, "out_of_scope": 0})
+        self.assertEqual(count, {"matches": 2, "maybe": 3, "unknown": 1, "disagree": 2, "ruled_out": 0, "total": 5, "out_of_scope": 0})
         self.assertEqual(gate["keys"][0]["by_kind"], {"measured": 1, "official": 3})
         self.assertEqual(gate["non_maker_brands"], [])
+        self.assertEqual(count["matches"] + count["unknown"] + count["disagree"] + count["ruled_out"], count["total"], "disjoint buckets")
+        self.assertEqual(sum(gate["keys"][0]["by_kind"].values()), gate["keys"][0]["known"])
         rows[3]["x"]["b"]["k"] = "measured"
         gate, _ = PR.measure({"id": "p", "filters": {"f_b_value": "no"}}, {"id": "c"}, self.SCHEMA, rows, 0.5)
         self.assertEqual(gate["non_maker_brands"], [{"brand": "B", "key": "b", "kinds": ["measured"]}])
+
+
+    def test_conflict_state_preserved(self):
+        num = {"fields": [{"key": "n", "label": "N", "type": "number", "facet": True}]}
+        rows = [{"id": "1", "brand": "A", "v": {"n": 10}, "x": {"n": {"alt": [{"v": 12, "k": "measured"}]}}},      # same side (>= 5): still disagree (D10)
+                {"id": "2", "brand": "A", "v": {}, "s": {"n": "conflicted"}},                                     # conflict, no headline: explicit
+                {"id": "3", "brand": "B", "v": {}, "x": {"n": {"alt": [{"v": 1, "k": "measured"}, {"v": 2, "k": "derived"}]}}},   # every value fails
+                {"id": "4", "brand": "B", "v": {}, "x": {"n": {"alt": [{"v": 1, "k": "measured"}, {"v": 9, "k": "derived"}]}}},
+                {"id": "5", "brand": "B", "v": {"n": 7}},
+                {"id": "6", "brand": "C", "v": {}}]
+        _, c = PR.measure({"id": "p", "filters": {"f_n_min": "5"}}, {"id": "c"}, num, rows, 0.1)
+        self.assertEqual(c, {"matches": 1, "maybe": 4, "unknown": 1, "disagree": 3, "ruled_out": 1, "total": 6, "out_of_scope": 0})
 
 
 class Changes(unittest.TestCase):

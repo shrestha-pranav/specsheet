@@ -1236,6 +1236,8 @@ specs:
   - 'TÜV Eye Comfort 1-4 stars = "Flicker reduced", not flicker free: only the 5-star level maps (derive/tuv-eye-comfort-5star@1,
     basis certification); 3-star, 4-star, unstarred and other 5-star TÜV marks (Native Gaming, Perceptual Color Volume) never map'
   - 'User guides carry CRT boilerplate ("flat panel displays do not flicker the way CRTs do"): not a product claim, never maps'
+  - 'present = PWM measured (Notebookcheck optical box names a Hz value) with no frequency class ruled; a Hz value never means none
+    (coverage r4, A2; A1 to confirm or replace with low-freq/high-freq once a threshold is ruled)'
   sources:
   - Manufacturer spec page (Flicker-free statement); TÜV Rheinland Eye Comfort 5-star (derived, Certipedia 0217009904 star table);
     Notebookcheck (measured, optical)
@@ -1244,6 +1246,7 @@ specs:
   - none
   - low-freq
   - high-freq
+  - present
   - unknown
   conditions:
   - basis
