@@ -622,6 +622,7 @@ specs:
   - DRAM-less variant can share a name with a DRAM model (SN770 vs SN850; Crucial P3 vs P3 Plus differ in number only)
   sources:
   - Manufacturer datasheet PDF (Samsung lists '1GB LPDDR4')
+  - SanDisk / WD datasheet PDF 'DRAM' / 'DRAM CACHE' row (SN8100, NAS 800, Optimus lines; source sandisk-us-ssd-datasheets); the sandisk.com page has none
   - Review teardown (TechPowerUp/Tom's Hardware/StorageReview PCB photos); not printed by maker
   example: dram
   enum:

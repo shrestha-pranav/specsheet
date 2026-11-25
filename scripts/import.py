@@ -41,6 +41,7 @@ import _lcell  # noqa: E402
 import bundles as B  # noqa: E402
 import tvcert as TC  # noqa: E402
 import xwalk as XW  # noqa: E402
+import docattach as DA  # noqa: E402
 import registry  # noqa: E402
 import identity as I  # noqa: E402
 import normalize as N  # noqa: E402
@@ -785,6 +786,7 @@ def schema(con):
                              valid INT, disputed INT DEFAULT 0);
     CREATE TABLE aliases(entity_id TEXT, text TEXT, kind TEXT);
     CREATE TABLE entity_sources(entity_id TEXT, sid TEXT, url TEXT, tier TEXT, label TEXT, snapshot TEXT, retrieved_at TEXT);
+    CREATE TABLE source_links(entity_id TEXT, sid TEXT, linked_from TEXT);
     CREATE TABLE claims(id TEXT, entity_id TEXT, key TEXT, mapped_key TEXT, status TEXT, kind TEXT, cond TEXT, mmode TEXT, value TEXT,
                         norm_ok INT, norm_value TEXT, display TEXT, unit TEXT, raw TEXT, source TEXT, source_id TEXT, ref TEXT, snapshot TEXT,
                         locator TEXT, observed_at TEXT, extractor TEXT, review TEXT, decision TEXT, supersedes TEXT, doc TEXT,
@@ -887,7 +889,7 @@ def main():
     locked_new, policy_lock_digest = dec.check_lock(write=not (bool(a.source) or a.no_mint))
     parsers = {sid: registry.parser_info(sid) for sid, m in registry.SOURCES.items()}
     current_fp = {v["parser"]: v["fingerprint"] for v in parsers.values() if v["parser"]}
-    current_fp.update({B.TRANSFORM: B.fingerprint(), TC.TRANSFORM: TC.fingerprint(), XW.TRANSFORM: XW.fingerprint()})     # r7: shared transforms are pinned like parsers
+    current_fp.update({B.TRANSFORM: B.fingerprint(), TC.TRANSFORM: TC.fingerprint(), XW.TRANSFORM: XW.fingerprint(), DA.TRANSFORM: DA.fingerprint()})     # r7: shared transforms are pinned like parsers
     current_fp[PSPLIT] = "sha256:" + hashlib.sha256(Path(_lcell.__file__).read_bytes()).hexdigest()[:20]       # psref-split cell parser, pinned like a parser
     drift = dec.parser_drift(current_fp)
     for pid, ex, old, new in drift:
@@ -948,6 +950,7 @@ def main():
         if "es_cert_scopes" in metas[cat]["features"]:      # r7: certification scopes + declared-alias audit + reviewed crosswalks (scripts/tvcert.py)
             TC.apply(w, cat_stats[cat], {"link": link, "parser": PARSER, "crosswalks": data / "decisions" / "tv-crosswalks.yaml"})
         XW.apply(w, cat_stats[cat], {"link": link, "parser": PARSER, "decisions": data / "decisions"})     # r8: crosswalks + same_hardware_as
+    doc_stats = DA.apply(worlds, events, {})        # document pipeline: linked manuals/datasheets -> claims on the linking page's entity (scripts/docattach.py)
     ignored_rows = []
     rules = {c: load_label_rules(c) for c in worlds}
     for sid, st in stats.items():
@@ -1088,6 +1091,8 @@ def main():
             for snap, s in sorted(e.srcs.items(), key=lambda kv: (kv[1]["url"], kv[0])):
                 sids[snap] = f"s{len(sids) + 1}"
                 con.execute("INSERT INTO entity_sources VALUES (?,?,?,?,?,?,?)", (e.id, sids[snap], s["url"], s["tier"], s["label"], snap, s["retrieved_at"]))
+                if s.get("linked_from"):       # document sources: the page the document was linked from (source policy document_host inheritance)
+                    con.execute("INSERT INTO source_links VALUES (?,?,?)", (e.id, sids[snap], s["linked_from"]))
             tier_of = {snap: s["tier"] for snap, s in e.srcs.items()}
             seen, rows = set(), []
             work = list(e.claims)
@@ -1255,7 +1260,7 @@ def main():
                                    "relations": dict(collections.Counter(f"{r[3]}:{r[4].split(':')[0]}" for r in rel_rows))},
                       "source_stats": {k: {a: b for a, b in v.items() if isinstance(b, int) and b and a in ("models", "packages", "skipped_wildcard_pattern", "skipped_other_category", "regional_packages_not_published", "no_model_identifier")} for k, v in stats.items() if metas[registry.SOURCES[k]["category"]]["features"] is not None and registry.SOURCES[k].get("importer") == "model"},
                       "stem_proposals": {c: dict(v) for c, v in cat_stats.items()},
-                      "invalid_claims": sum(invalid.values()), "unmapped_rows": len(um_rows), "ignored_label_rows": len(ignored_rows),
+                      "invalid_claims": sum(invalid.values()), "documents": dict(sorted(doc_stats.items())), "unmapped_rows": len(um_rows), "ignored_label_rows": len(ignored_rows),
                       "governance": {"policies_locked_now": locked_new, "parser_drift": len(drift), "pending_approval": sorted(k for k, v in dec.approvals().items() if v != "approved"),
                                      "registry": inputs["registry"], "raw_snapshots": inputs["raw_snapshots"], "parse_cache": dict(parse_cache),
                                      "html_entities_decoded": sum(v.get("html_entities_decoded", 0) for v in stats.values()),

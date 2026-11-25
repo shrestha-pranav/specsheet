@@ -194,7 +194,7 @@ def gate_view(pol, view_specs, ents, srcs, claims, ok_states, gone, tier="free")
     """Licensing gate (scripts/source_policy.py) on one resolved view, BEFORE rows/facets/lookup/details are derived from it. Sources are
     the owner's sids (the entity's, or the ancestor's for inherited specs); support = an accepted (scope) claim of that source for the key
     whose value equals the published one. Entities in `gone` (no own source allowed in the tier) publish nothing. -> withheld count."""
-    url = {eid: {s["sid"]: s["url"] for s in srcs[eid]} for eid in ents}
+    url = {eid: {s["sid"]: ({"url": s["url"], "linked_from": s["linked_from"]} if s.get("linked_from") else s["url"]) for s in srcs[eid]} for eid in ents}
     n = 0
     for eid in ents:
         sp = view_specs[eid]
@@ -205,7 +205,8 @@ def gate_view(pol, view_specs, ents, srcs, claims, ok_states, gone, tier="free")
 
         def support(k, sid, v, cids, own=own):
             canon = None if v is SP.ANY else json.dumps(v, sort_keys=True)
-            return any(c["id"] in cids and c["source"] == sid and c["review"] in ok_states and (canon is None or json.dumps(c["value"], sort_keys=True) == canon)
+            return any(c["id"] in cids and c["source"] == sid and c["review"] in ok_states and (canon is None or json.dumps(c["value"], sort_keys=True) == canon
+                                                                                                 or R.supports(c["value"], v))
                        for c in claims[own(k)].get(k, []))
         view_specs[eid], wk = pol.gate_specs(sp, tier, lambda k, sid, own=own: url.get(own(k), {}).get(sid), support)
         n += len(wk)
@@ -237,6 +238,12 @@ def publish(api: Path, build_stats: dict, gate_out: dict | None = None):
             aliases[r["entity_id"]].append(dict(r))
         for r in con.execute("SELECT s.* FROM entity_sources s JOIN entities e ON e.id=s.entity_id WHERE e.category=? ORDER BY s.entity_id, CAST(substr(s.sid,2) AS INT)", (cat,)):
             srcs[r["entity_id"]].append(dict(r))
+        links = {}
+        if con.execute("SELECT 1 FROM sqlite_master WHERE name='source_links'").fetchone():     # document sources -> linking page (document_host policy)
+            links = {(r["entity_id"], r["sid"]): r["linked_from"] for r in con.execute("SELECT * FROM source_links")}
+        for eid_, ss in srcs.items():
+            for x in ss:
+                x["linked_from"] = links.get((eid_, x["sid"]))
         for r in con.execute("SELECT r.* FROM relations r JOIN entities e ON e.id=r.entity_id WHERE e.category=?", (cat,)):
             rels[r["entity_id"]].append(dict(r))
         for r in con.execute("SELECT c.id, c.entity_id, c.mapped_key, c.status, c.kind, c.cond, c.mmode, c.norm_ok, c.norm_value, c.display, c.raw, c.source, "
@@ -253,7 +260,7 @@ def publish(api: Path, build_stats: dict, gate_out: dict | None = None):
 
         trusted, cyc = view(ents, claims, absn, specdefs, parent_of, {"accepted"}, p.get("identity"))
         preview, _ = view(ents, claims, absn, specdefs, parent_of, {"accepted", "candidate"}, p.get("identity"))
-        gone = {eid for eid in ents if not pol.identity_ok((s["url"] for s in srcs[eid]), "free")}
+        gone = {eid for eid in ents if not pol.identity_ok(({"url": s["url"], "linked_from": s.get("linked_from")} for s in srcs[eid]), "free")}
         gone_all += len(gone)
         withheld = gate_view(pol, trusted, ents, srcs, claims, {"accepted"}, gone)
         gate_view(pol, preview, ents, srcs, claims, {"accepted", "candidate"}, gone)
@@ -296,7 +303,8 @@ def publish(api: Path, build_stats: dict, gate_out: dict | None = None):
 
         def sources_for(eid, specs):
             """Own source table + one entry per ancestor source actually cited by an inherited spec (new local sid, ancestor's real URL)."""
-            out = [{"id": s["sid"], "url": s["url"], "label": s["label"] or s["url"], "tier": s["tier"], "retrieved_at": s["retrieved_at"]} for s in srcs[eid]]
+            out = [dict({"id": s["sid"], "url": s["url"], "label": s["label"] or s["url"], "tier": s["tier"], "retrieved_at": s["retrieved_at"]},
+                        **({"linked_from": s["linked_from"]} if s.get("linked_from") else {})) for s in srcs[eid]]
             n, remap = len(out), {}
             for k, r in specs.items():
                 own = r.get("inherited_from")
@@ -308,7 +316,8 @@ def publish(api: Path, build_stats: dict, gate_out: dict | None = None):
                     key = (own, sid)
                     if key not in remap and sid in table:
                         n += 1; remap[key] = f"s{n}"; s = table[sid]
-                        out.append({"id": remap[key], "url": s["url"], "label": s["label"] or s["url"], "tier": s["tier"], "retrieved_at": s["retrieved_at"], "via": own})
+                        out.append(dict({"id": remap[key], "url": s["url"], "label": s["label"] or s["url"], "tier": s["tier"], "retrieved_at": s["retrieved_at"], "via": own},
+                                        **({"linked_from": s["linked_from"]} if s.get("linked_from") else {})))
                     if key in remap:
                         new.append(remap[key])
                 specs[k] = dict(r, sources=new)
@@ -373,7 +382,8 @@ def publish(api: Path, build_stats: dict, gate_out: dict | None = None):
                 stats[r["status"]] += 1
             stats["inherited"] += sum(1 for r in specs.values() if r.get("inherited_from"))
             d.update({"contents": [], "options": [], "sources": sources_for(eid, specs), "media": [],
-                      "documents": pol.documents([{"url": x["url"], "kind": x["kind"], "label": x["label"] or x["kind"]} for x in docs[eid] if x["url"]], "free"),
+                      "documents": pol.documents([{"url": x["url"], "kind": x["kind"], "label": x["label"] or x["kind"]} for x in docs[eid] if x["url"]], "free",
+                                                 pol.page_url([{"url": x["url"], "linked_from": x.get("linked_from")} for x in srcs[eid]])),
                       "notes": ("Regional (non-US) packages sharing this configuration: %d. " % ex["regional_mtms"] if ex.get("regional_mtms") else "")
                                + "Values are manufacturer-published claims accepted by a recorded decision (data/decisions: ledger or versioned policy).",
                       "demo": False, "marketing_terms": [], "confidence": {"level": "unrated", "scope": "accepted"},

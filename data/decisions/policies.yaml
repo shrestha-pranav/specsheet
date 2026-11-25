@@ -794,33 +794,29 @@ claim_policies:
       - phys.weight
       - ups.supported
       - ups.switchover_ms
-- id: claim/tvs-structured@3
+- id: claim/tvs-structured@4
   since: '2026-11-24'
-  supersedes: claim/tvs-structured@2
-  rationale: 'Same sources, kinds, tiers, statuses, normalisation and per-source key lists as @2, re-issued for the shared row mapper change
-    (crawler/adapters/_tv.py; lg_tvs, tcl_tvs, vizio_tvs, samsung_tvs bumped to @2, energystar_tvs unchanged). Two changes: (1) coordinator ruling 2,
-    backlight value table: a row labelled exactly "Backlight Type" whose WHOLE value is Full Array LED / Active Full Array / Mini LED / Edge(-lit) LED /
-    Direct(-lit) LED writes panel.display_tech = lcd, only when no display-type row resolved the technology; "Full Array LED" / "Active Full Array" also
-    write panel.backlight = direct_led. Any other value (Vizio "DLED", "Local Dimming", extra words) writes nothing. (2) LG "Latest HDMI (4K @ 120Hz):
-    HDMI ports 3,4" is an explicit port list: hdmi.ports_4k120 = the number of distinct ports listed. LG "Nea (supports 4K 120Hz, eARC, ...)" without a
-    per-port count stays unresolved as before. WIDENING: panel.display_tech added to the vizio-us-tvs key list. The LG "Direct" table row is A2''s
-    reading of the ruling (LED backlight rows) and is flagged for A1 review.'
+  supersedes: claim/tvs-structured@3
+  rationale: 'Same sources, kinds, tiers, statuses, normalisation and every @3 key as before, re-issued for the shared row mapper change
+    (crawler/adapters/_tv.py; lg_tvs, samsung_tvs, tcl_tvs, vizio_tvs bumped to @3, energystar_tvs unchanged). One change, coordinator ruling 1
+    (2026-11-24 r2): new affirmative-only bool hdmi.has_4k120 (at least one HDMI input takes 4K at 120 Hz or more), true from an HDMI input cell
+    (HDMI Maximum Input Rate / HDMI 2.1 / HDMI / HDMI Input) printing a 4K figure >= 120 Hz, or from LG''s "Latest HDMI (4K @ 120Hz)" port list.
+    Never false, never a port count (hdmi.ports_4k120 rules unchanged: LG "4ea (supports 4K 120Hz, eARC ...)" stays unresolved there). WIDENING:
+    hdmi.has_4k120 added to the samsung-us-tvs, lg-us-tvs and tcl-us-tvs key lists (vizio prints no 4K rate).'
   audit:
-    by: A2 preset fill
+    by: A2 preset fill r2
     at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; claim diff old (frozen copy of crawler/ before the edit) vs new parsers over every stored
-      snapshot: lg-us-tvs +166 panel.display_tech lcd (Backlight Type Direct 165 / Edge 1) and +50 hdmi.ports_4k120 (Latest HDMI rows, mostly
-      discontinued models), vizio-us-tvs +92 panel.display_tech lcd and +86 panel.backlight direct_led, tcl-us-tvs +4 panel.display_tech lcd,
-      samsung-us-tvs 0; 0 removed, 0 changed. Fixtures tests/test_preset_fill_tvs.py.'
+    evidence: 'team/reports/2026-11-24-a2-preset-fill-r2.md; claim diff old (git worktree of HEAD) vs new parsers over every stored snapshot:
+      lg-us-tvs +215, samsung-us-tvs +126, tcl-us-tvs +21 hdmi.has_4k120 true; vizio 0; 0 removed, 0 changed. Fixtures tests/test_preset_fill_tvs.py (Has4k120).'
     parsers:
       energystar_tvs@1: sha256:35b90bbed61b2720ad7c
-      samsung_tvs@2: sha256:d15a3d05ad3c1c18a0fb
-      lg_tvs@2: sha256:9c1c25739c3ca2832cfb
-      tcl_tvs@2: sha256:52d486210210d51f16c7
-      vizio_tvs@2: sha256:d22cd6571719a485b285
+      samsung_tvs@3: sha256:6f231ff7eda5f29fa81a
+      lg_tvs@3: sha256:9019d077c4a1404c1258
+      tcl_tvs@3: sha256:30009730b6ab3f2072ef
+      vizio_tvs@3: sha256:2b2fae316a70122786e3
   approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [energystar_tvs@1, samsung_tvs@2, lg_tvs@2, tcl_tvs@2, vizio_tvs@2]
+    extractors: [energystar_tvs@1, samsung_tvs@3, lg_tvs@3, tcl_tvs@3, vizio_tvs@3]
     source_ids: [energystar-tvs, samsung-us-tvs, lg-us-tvs, tcl-us-tvs, vizio-us-tvs]
     kinds: [official]
     tiers: [manufacturer, regulatory]
@@ -832,21 +828,21 @@ claim_policies:
          pwr.on_mode_w, pwr.standby_w, res.height_px, res.native, res.width_px]
       samsung-us-tvs:
         [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.size_class,
-         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.max_input, hdmi.ports_4k120, hdr.dolby_vision, hdr.formats, hdr.hdr10plus, os.platform,
+         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.has_4k120, hdmi.max_input, hdmi.ports_4k120, hdr.dolby_vision, hdr.formats, hdr.hdr10plus, os.platform,
          panel.display_tech, panel.marketing_class, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand,
          phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, pwr.annual_kwh, pwr.max_w,
          pwr.on_mode_w, pwr.standby_w, refresh.marketing, refresh.native_hz, res.class, res.height_px, res.native, res.width_px, vrr.formats,
          vrr.supported]
       lg-us-tvs:
         [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.series, gen.size_class,
-         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.ports_4k120, hdr.dolby_vision, hdr.formats, hdr.hdr10plus, os.platform, os.version,
+         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.has_4k120, hdmi.ports_4k120, hdr.dolby_vision, hdr.formats, hdr.hdr10plus, os.platform, os.version,
          panel.backlight, panel.display_tech, panel.lcd_type, panel.marketing_class, phys.depth_no_stand, phys.depth_with_stand,
          phys.height_no_stand, phys.height_with_stand, phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand,
          phys.width_with_stand, pwr.annual_kwh, pwr.on_mode_w, pwr.standby_w, refresh.marketing, refresh.native_hz, res.class, res.height_px,
          res.native, res.width_px, sup.warranty, vrr.formats, vrr.supported]
       tcl-us-tvs:
         [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.size_class,
-         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.ports_4k120, hdr.dimming_zones, hdr.dolby_vision, hdr.formats, hdr.hdr10plus,
+         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.has_4k120, hdmi.ports_4k120, hdr.dimming_zones, hdr.dolby_vision, hdr.formats, hdr.hdr10plus,
          hdr.local_dimming, os.platform, panel.backlight, panel.bit_depth, panel.display_tech, panel.lcd_type, panel.marketing_class,
          panel.quantum_dot, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand, phys.vesa,
          phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, pwr.annual_kwh, pwr.on_mode_w, pwr.standby_w,
@@ -1090,24 +1086,34 @@ claim_policies:
     keys:
       kingston-us-ssd: [end.mtbf, end.tbw, end.warranty_years, gen.capacity, gen.device_class, gen.form_factor, hw.controller, hw.controller_vendor,
         hw.dram_type, hw.nand_type, if.pcie_gen, if.pcie_lanes, if.protocol, if.usb_standard, perf.seq_read, perf.seq_write, therm.temp_operating]
-- id: claim/mfr-routers-direct@2
+- id: claim/mfr-routers-direct@4
   since: '2026-11-24'
-  supersedes: claim/mfr-routers-direct@1
-  rationale: 'Same sources, kinds, tiers, statuses and per-source key lists as @1, re-issued for ubiquiti_routers@1 -> @2 and glinet_routers@1 -> @2. WIDENING (values, not keys): wifi.has_6ghz may now be False under coordinator ruling 1 (2026-11-24): Ubiquiti only when every per-band group of the technicalSpecification tree (MIMO, Max. Data Rate / Throughput, TX power, antenna gain: one row per radio) names the same radios, both 2.4 and 5 GHz and no 6 GHz; GL.iNet only when the Specifications table ''Wi-Fi Speed'' row lists one rate per band, the rates sum to the class number of the product title within 3 % (GL-BE3600: 688 + 2882), and the list names 2.4 + 5 GHz and no 6 GHz (no class number, e.g. GL-MT3600BE = nothing). The False claim carries condition basis=complete_enumeration and keeps the list as raw. All other claims byte-identical to @1.'
+  supersedes: claim/mfr-routers-direct@3
+  rationale: 'Same sources, kinds, tiers and every @2 key/value rule, re-issued for ubiquiti_routers@2 -> @3 and glinet_routers@2 -> @3 (shared
+    helper crawler/adapters/_nowifi.py; @3 of this policy was locked with pre-split fingerprints and retired unused). Coordinator ruling 2 (2026-11-24 r2), WIDENING (status not_applicable added; wifi.band_count added to the
+    glinet-us-routers list): a wired gateway whose maker spec enumerates its complete interface set and names no Wi-Fi radio gets wifi.generation,
+    wifi.band_count, wifi.has_6ghz, wifi.rate_24_mbps, wifi.rate_5_mbps and wifi.rate_6_mbps = not_applicable with condition
+    basis=complete_enumeration and the enumeration as raw. Ubiquiti: cloud-gateway page whose technicalSpecification has the shared Overview +
+    Hardware sections but NOT the integrated-wifi section every Wi-Fi gateway carries, a fully parsed Port Layout + Default WAN Ports, and no
+    Wi-Fi / 802.11 / wireless / antenna / N GHz text in any row (Processor excluded). GL.iNet: an Interface row that is a complete "N x ..." list,
+    no Protocol / Wi-Fi Speed row, and no Wi-Fi / band / antenna word in the table (CPU excluded) or title. Never from absence alone. Also
+    glinet: Protocol "IEEE 802.11b/g/n" = wifi.generation wifi4 (the highest standard listed, an enum value the profile already has).'
   audit:
-    by: A2 preset fill
+    by: A2 preset fill r2
     at: '2026-11-24'
-    evidence: 'claim diff (frozen pre-edit crawler/ vs new) over every stored snapshot: ubiquiti +26 has_6ghz=false (U7 Lite/LR/Mesh/IW/Outdoor/Industrial, UCG-Industrial, U6/UAP dual-band), glinet +5 has_6ghz=false (GL-BE3600, GL-BE6500, GL-AX1800, GL-MT3000, GL-X3000); 0 removed. Fixtures tests/test_preset_fill_routers.py.'
+    evidence: 'claim diff (git worktree of HEAD vs new) over every stored snapshot: ubiquiti +9 x 6 keys not_applicable (EF-Core, EFG, UCG-Fiber,
+      UCG-Max, UCG-Ultra, UDM-Beast, UDM-Pro, UDM-Pro-Max, UDM-SE); glinet +2 x 6 not_applicable (GL-MT2500, GL-MT5000), +5 wifi.generation wifi4
+      (GL-AR150, AR300M, MT300N-V2, X300B, XE300); 0 removed, 0 changed. Fixtures tests/test_preset_fill_routers.py (WiredGateways).'
     parsers:
-      ubiquiti_routers@2: 'sha256:a29e90e84a4437e64803'
-      glinet_routers@2: 'sha256:d440ceafec3f4b9058ce'
+      ubiquiti_routers@3: 'sha256:3d3d5623b58bb06835bd'
+      glinet_routers@3: 'sha256:f2ada2d2de011023401c'
   approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [ubiquiti_routers@2, glinet_routers@2]
+    extractors: [ubiquiti_routers@3, glinet_routers@3]
     source_ids: [ubiquiti-us-routers, glinet-us-routers]
     kinds: [official]
     tiers: [manufacturer]
-    statuses: [known]
+    statuses: [known, not_applicable]
     require_normalized: true
     keys:
       ubiquiti-us-routers: [gen.device_type, gen.product_line, hw.cpu_cores, hw.cpu_ghz, hw.flash_mb, hw.ram_mb, hw.soc_model, hw.soc_vendor, isp.ipv6,
@@ -1117,7 +1123,7 @@ claim_policies:
         wifi.streams_24, wifi.streams_5, wifi.streams_6, wifi.wpa3]
       glinet-us-routers: [gen.device_type, hw.cpu_cores, hw.cpu_ghz, hw.flash_mb, hw.ram_mb, hw.soc_model, hw.soc_vendor, phys.dimensions, phys.weight,
         port.lan_count, port.lan_max_mbps, port.multigig_count, port.usb_count, port.usb_standard, port.wan_lan_configurable, port.wan_speed_mbps,
-        wifi.generation, wifi.has_6ghz, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_6_mbps]
+        wifi.band_count, wifi.generation, wifi.has_6ghz, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_6_mbps]
 - id: claim/mfr-monitor-benq@2
   since: '2026-11-24'
   supersedes: claim/mfr-monitor-benq@1
@@ -1138,6 +1144,62 @@ claim_policies:
     require_normalized: true
     keys:
       benq-us-monitors: [ergo.vesa, flk.cert, flk.pwm, gen.size_class, panel.technology, pwr.max, res.height_px, res.refresh_max, res.width_px, usb.usbc_inputs, usb.usbc_pd_w]
+- id: claim/mfr-ssd-sandisk-datasheet@1
+  since: '2026-11-24'
+  rationale: 'New source sandisk-us-ssd-datasheets (crawler/adapters/sandisk_datasheets.py): the SanDisk / WD datasheet PDFs the sandisk.com
+    internal-SSD line pages link (documents.sandisk.com, in data/source-policy.yaml). Coordinator ruling 3 (2026-11-24 r2). ONE key: hw.dram_type,
+    from the PRODUCT SPECIFICATIONS table only, when its DRAM / DRAM CACHE row is one value spanning every capacity column and the MODEL NUMBERS
+    row ties each column to exactly one configuration of the linking line page: Yes = dram; Host Memory Buffer = dramless_hmb; No / DRAM-less /
+    None = _ssd.dram (ruling 5: dramless). A datasheet without the row (SN850X, SN770M, SN5000, SN5100, SN3000, SN7100) writes nothing. The
+    datasheet attaches by configuration mfr_sku only (no model identifier, no relation).'
+  audit:
+    by: A2 preset fill r2
+    at: '2026-11-24'
+    evidence: '35 datasheets fetched (1 req/s, honest UA, all 200); claims: dram 32 (WD_BLACK SN8100 8, NAS 800 4, Optimus GX PRO 8100 8, 850X 8,
+      850P 4), dramless_hmb 12 (Optimus 5100, GX 7100, 7100M, 7100X), dramless 12 (SATA 320, 520, NAS 600: "DRAM No");
+      unmatched model numbers write nothing. Fixtures tests/test_preset_fill_ssds.py (SandiskDatasheet).'
+    parsers:
+      sandisk_datasheets@1: 'sha256:c9b039d702aa7945c4e5'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [sandisk_datasheets@1]
+    source_ids: [sandisk-us-ssd-datasheets]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys: [hw.dram_type]
+- id: claim/document-power-pdo@1
+  since: '2026-11-24'
+  rationale: 'New pseudo-source documents (crawler/documents.py + scripts/docattach.py, transform docattach@1): the PDF manuals / QSGs /
+    datasheets a charger or power-bank maker page links, read from their TEXT LAYER (pdftotext -layout / -bbox-layout column blocks). OCR claims
+    (extractor docparse-ocr@1) are NOT covered: they stay candidates (preview) with conditions {ocr: true, ocr_conf}. Identity guard: a document
+    attaches only to an entity observed on the linking page AND only when the document text names one of that entity''s own mfr_model / mfr_sku
+    exactly; a multi-model document attaches only claims read from a block naming the model; everything else is a document_proposal event.
+    Keys: pd.pps (True only: a printed PPS range in an output row, or an explicit "Supports PPS" / protocol list naming PPS), pd.pps_max_voltage /
+    pd.pps_max_current_a (highest printed PPS range of single-port or sectionless output rows; chargers), pd.max_fixed_voltage (highest
+    printed fixed PDO of output rows), pd.epr (True only, fixed PDO >= 28 V; chargers), out.ports (only rows the document names explicitly in a
+    single-port or sectionless output table, mapped onto the linking page''s own port rows by exact port token cover; combination / "N ports in
+    use" rows never set a port; a PDO line naming no port sets device-level keys only). Conditions {document_kind} are provenance only
+    (scripts/resolve.py PROVENANCE): page and document agreeing = one value, disagreeing = conflicted (visible), page rows are completed
+    from compatible document rows only where the page left the field empty (resolve.py item merge, note "merged: ...").'
+  audit:
+    by: A3 document pipeline
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-document-pipeline.md; tests/test_documents.py (A2667 manual: PPS 3.3-16V 3.25A on USB-C 1 and USB-C 2 from
+      the "Use One Port" section only, multi-model, OCR, non-English duplicate, model-mismatch fixtures); every attached text-layer claim of the
+      43 parsed charger / power-bank documents read against its quote.'
+    parsers:
+      docattach@1: 'sha256:352d0ecd4f0d81f6c750'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [docparse@1]
+    source_ids: [documents]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys: [pd.pps, pd.pps_max_voltage, pd.pps_max_current_a, pd.max_fixed_voltage, pd.epr, out.ports]
 relation_policies:
 - id: rel/source-stated-hierarchy@5
   since: '2026-11-24'
@@ -4131,3 +4193,138 @@ retired_policies:
          phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, refresh.marketing, refresh.native_hz,
          res.class, res.height_px, res.native, res.width_px, sup.warranty, vrr.supported]
   retired: {at: '2026-11-24', superseded_by: claim/tvs-structured@3, reason: 'parser bumps lg_tvs/tcl_tvs/vizio_tvs/samsung_tvs@2 (_tv.py: ruling 2 backlight value table, LG Latest HDMI port list); @2 meaning frozen as locked'}
+- id: claim/tvs-structured@3
+  since: '2026-11-24'
+  supersedes: claim/tvs-structured@2
+  rationale: 'Same sources, kinds, tiers, statuses, normalisation and per-source key lists as @2, re-issued for the shared row mapper change
+    (crawler/adapters/_tv.py; lg_tvs, tcl_tvs, vizio_tvs, samsung_tvs bumped to @2, energystar_tvs unchanged). Two changes: (1) coordinator ruling 2,
+    backlight value table: a row labelled exactly "Backlight Type" whose WHOLE value is Full Array LED / Active Full Array / Mini LED / Edge(-lit) LED /
+    Direct(-lit) LED writes panel.display_tech = lcd, only when no display-type row resolved the technology; "Full Array LED" / "Active Full Array" also
+    write panel.backlight = direct_led. Any other value (Vizio "DLED", "Local Dimming", extra words) writes nothing. (2) LG "Latest HDMI (4K @ 120Hz):
+    HDMI ports 3,4" is an explicit port list: hdmi.ports_4k120 = the number of distinct ports listed. LG "Nea (supports 4K 120Hz, eARC, ...)" without a
+    per-port count stays unresolved as before. WIDENING: panel.display_tech added to the vizio-us-tvs key list. The LG "Direct" table row is A2''s
+    reading of the ruling (LED backlight rows) and is flagged for A1 review.'
+  audit:
+    by: A2 preset fill
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; claim diff old (frozen copy of crawler/ before the edit) vs new parsers over every stored
+      snapshot: lg-us-tvs +166 panel.display_tech lcd (Backlight Type Direct 165 / Edge 1) and +50 hdmi.ports_4k120 (Latest HDMI rows, mostly
+      discontinued models), vizio-us-tvs +92 panel.display_tech lcd and +86 panel.backlight direct_led, tcl-us-tvs +4 panel.display_tech lcd,
+      samsung-us-tvs 0; 0 removed, 0 changed. Fixtures tests/test_preset_fill_tvs.py.'
+    parsers:
+      energystar_tvs@1: sha256:35b90bbed61b2720ad7c
+      samsung_tvs@2: sha256:d15a3d05ad3c1c18a0fb
+      lg_tvs@2: sha256:9c1c25739c3ca2832cfb
+      tcl_tvs@2: sha256:52d486210210d51f16c7
+      vizio_tvs@2: sha256:d22cd6571719a485b285
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [energystar_tvs@1, samsung_tvs@2, lg_tvs@2, tcl_tvs@2, vizio_tvs@2]
+    source_ids: [energystar-tvs, samsung-us-tvs, lg-us-tvs, tcl-us-tvs, vizio-us-tvs]
+    kinds: [official]
+    tiers: [manufacturer, regulatory]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      energystar-tvs:
+        [gen.viewable_diag, panel.display_tech, panel.quantum_dot, pic.auto_brightness, pwr.annual_kwh, pwr.energy_star, pwr.on_mode_doe_w,
+         pwr.on_mode_w, pwr.standby_w, res.height_px, res.native, res.width_px]
+      samsung-us-tvs:
+        [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.size_class,
+         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.max_input, hdmi.ports_4k120, hdr.dolby_vision, hdr.formats, hdr.hdr10plus, os.platform,
+         panel.display_tech, panel.marketing_class, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand,
+         phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, pwr.annual_kwh, pwr.max_w,
+         pwr.on_mode_w, pwr.standby_w, refresh.marketing, refresh.native_hz, res.class, res.height_px, res.native, res.width_px, vrr.formats,
+         vrr.supported]
+      lg-us-tvs:
+        [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.series, gen.size_class,
+         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.ports_4k120, hdr.dolby_vision, hdr.formats, hdr.hdr10plus, os.platform, os.version,
+         panel.backlight, panel.display_tech, panel.lcd_type, panel.marketing_class, phys.depth_no_stand, phys.depth_with_stand,
+         phys.height_no_stand, phys.height_with_stand, phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand,
+         phys.width_with_stand, pwr.annual_kwh, pwr.on_mode_w, pwr.standby_w, refresh.marketing, refresh.native_hz, res.class, res.height_px,
+         res.native, res.width_px, sup.warranty, vrr.formats, vrr.supported]
+      tcl-us-tvs:
+        [audio.dolby_atmos, audio.output_w, conn.atsc3, conn.ethernet, conn.usb_count, conn.wifi, game.allm, game.hgig, gen.size_class,
+         gen.viewable_diag, hdmi.count, hdmi.earc, hdmi.ports_4k120, hdr.dimming_zones, hdr.dolby_vision, hdr.formats, hdr.hdr10plus,
+         hdr.local_dimming, os.platform, panel.backlight, panel.bit_depth, panel.display_tech, panel.lcd_type, panel.marketing_class,
+         panel.quantum_dot, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand, phys.vesa,
+         phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, pwr.annual_kwh, pwr.on_mode_w, pwr.standby_w,
+         refresh.dlg_hz, refresh.marketing, refresh.native_hz, res.class, res.height_px, res.native, res.width_px, sup.warranty, vrr.formats,
+         vrr.supported]
+      vizio-us-tvs:
+        [conn.ethernet, conn.usb_count, conn.wifi, gen.size_class, gen.viewable_diag, hdmi.count, hdr.dimming_zones, hdr.dolby_vision, hdr.formats,
+         hdr.hdr10plus, hdr.local_dimming, panel.backlight, panel.display_tech, phys.depth_no_stand, phys.depth_with_stand, phys.height_no_stand, phys.height_with_stand,
+         phys.vesa, phys.weight_no_stand, phys.weight_with_stand, phys.width_no_stand, phys.width_with_stand, refresh.marketing, refresh.native_hz,
+         res.class, res.height_px, res.native, res.width_px, sup.warranty, vrr.supported]
+  retired: {at: '2026-11-24', superseded_by: claim/tvs-structured@4, reason: 'parser bumps lg_tvs/samsung_tvs/tcl_tvs/vizio_tvs@3 (_tv.py: hdmi.has_4k120, coordinator ruling r2-1); @3 meaning frozen as locked'}
+- id: claim/mfr-routers-direct@2
+  since: '2026-11-24'
+  supersedes: claim/mfr-routers-direct@1
+  rationale: 'Same sources, kinds, tiers, statuses and per-source key lists as @1, re-issued for ubiquiti_routers@1 -> @2 and glinet_routers@1 -> @2. WIDENING (values, not keys): wifi.has_6ghz may now be False under coordinator ruling 1 (2026-11-24): Ubiquiti only when every per-band group of the technicalSpecification tree (MIMO, Max. Data Rate / Throughput, TX power, antenna gain: one row per radio) names the same radios, both 2.4 and 5 GHz and no 6 GHz; GL.iNet only when the Specifications table ''Wi-Fi Speed'' row lists one rate per band, the rates sum to the class number of the product title within 3 % (GL-BE3600: 688 + 2882), and the list names 2.4 + 5 GHz and no 6 GHz (no class number, e.g. GL-MT3600BE = nothing). The False claim carries condition basis=complete_enumeration and keeps the list as raw. All other claims byte-identical to @1.'
+  audit:
+    by: A2 preset fill
+    at: '2026-11-24'
+    evidence: 'claim diff (frozen pre-edit crawler/ vs new) over every stored snapshot: ubiquiti +26 has_6ghz=false (U7 Lite/LR/Mesh/IW/Outdoor/Industrial, UCG-Industrial, U6/UAP dual-band), glinet +5 has_6ghz=false (GL-BE3600, GL-BE6500, GL-AX1800, GL-MT3000, GL-X3000); 0 removed. Fixtures tests/test_preset_fill_routers.py.'
+    parsers:
+      ubiquiti_routers@2: 'sha256:a29e90e84a4437e64803'
+      glinet_routers@2: 'sha256:d440ceafec3f4b9058ce'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [ubiquiti_routers@2, glinet_routers@2]
+    source_ids: [ubiquiti-us-routers, glinet-us-routers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      ubiquiti-us-routers: [gen.device_type, gen.product_line, hw.cpu_cores, hw.cpu_ghz, hw.flash_mb, hw.ram_mb, hw.soc_model, hw.soc_vendor, isp.ipv6,
+        mesh.coverage_sqft, mesh.supported, phys.dimensions, phys.weight, port.lan_count, port.lan_max_mbps, port.multigig_count, port.poe,
+        port.wan_lan_configurable, port.wan_speed_mbps, port.wan_type, pwr.max_w, sw.vpn_client, sw.vpn_server, sw.wireguard, wifi.band_count,
+        wifi.generation, wifi.has_6ghz, wifi.max_width_5_mhz, wifi.max_width_6_mhz, wifi.mu_mimo, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_6_mbps,
+        wifi.streams_24, wifi.streams_5, wifi.streams_6, wifi.wpa3]
+      glinet-us-routers: [gen.device_type, hw.cpu_cores, hw.cpu_ghz, hw.flash_mb, hw.ram_mb, hw.soc_model, hw.soc_vendor, phys.dimensions, phys.weight,
+        port.lan_count, port.lan_max_mbps, port.multigig_count, port.usb_count, port.usb_standard, port.wan_lan_configurable, port.wan_speed_mbps,
+        wifi.generation, wifi.has_6ghz, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_6_mbps]
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-routers-direct@3, reason: 'parser bumps ubiquiti_routers@3 / glinet_routers@3 (Wi-Fi keys not_applicable on wired gateways, coordinator ruling r2-2); @2 meaning frozen as locked'}
+- id: claim/mfr-routers-direct@3
+  since: '2026-11-24'
+  supersedes: claim/mfr-routers-direct@2
+  rationale: 'Same sources, kinds, tiers and every @2 key/value rule, re-issued for ubiquiti_routers@2 -> @3 and glinet_routers@2 -> @3 (shared
+    helper _router.add_no_wifi). Coordinator ruling 2 (2026-11-24 r2), WIDENING (status not_applicable added; wifi.band_count added to the
+    glinet-us-routers list): a wired gateway whose maker spec enumerates its complete interface set and names no Wi-Fi radio gets wifi.generation,
+    wifi.band_count, wifi.has_6ghz, wifi.rate_24_mbps, wifi.rate_5_mbps and wifi.rate_6_mbps = not_applicable with condition
+    basis=complete_enumeration and the enumeration as raw. Ubiquiti: cloud-gateway page whose technicalSpecification has the shared Overview +
+    Hardware sections but NOT the integrated-wifi section every Wi-Fi gateway carries, a fully parsed Port Layout + Default WAN Ports, and no
+    Wi-Fi / 802.11 / wireless / antenna / N GHz text in any row (Processor excluded). GL.iNet: an Interface row that is a complete "N x ..." list,
+    no Protocol / Wi-Fi Speed row, and no Wi-Fi / band / antenna word in the table (CPU excluded) or title. Never from absence alone. Also
+    glinet: Protocol "IEEE 802.11b/g/n" = wifi.generation wifi4 (the highest standard listed, an enum value the profile already has).'
+  audit:
+    by: A2 preset fill r2
+    at: '2026-11-24'
+    evidence: 'claim diff (git worktree of HEAD vs new) over every stored snapshot: ubiquiti +9 x 6 keys not_applicable (EF-Core, EFG, UCG-Fiber,
+      UCG-Max, UCG-Ultra, UDM-Beast, UDM-Pro, UDM-Pro-Max, UDM-SE); glinet +2 x 6 not_applicable (GL-MT2500, GL-MT5000), +5 wifi.generation wifi4
+      (GL-AR150, AR300M, MT300N-V2, X300B, XE300); 0 removed, 0 changed. Fixtures tests/test_preset_fill_routers.py (WiredGateways).'
+    parsers:
+      ubiquiti_routers@3: 'sha256:2c3a4438a5fc76b7fe94'
+      glinet_routers@3: 'sha256:feb08d5ad05d246edd26'
+  approval:
+    state: pending
+    by: null
+    at: null
+  match:
+    extractors: [ubiquiti_routers@3, glinet_routers@3]
+    source_ids: [ubiquiti-us-routers, glinet-us-routers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    require_normalized: true
+    keys:
+      ubiquiti-us-routers: [gen.device_type, gen.product_line, hw.cpu_cores, hw.cpu_ghz, hw.flash_mb, hw.ram_mb, hw.soc_model, hw.soc_vendor, isp.ipv6,
+        mesh.coverage_sqft, mesh.supported, phys.dimensions, phys.weight, port.lan_count, port.lan_max_mbps, port.multigig_count, port.poe,
+        port.wan_lan_configurable, port.wan_speed_mbps, port.wan_type, pwr.max_w, sw.vpn_client, sw.vpn_server, sw.wireguard, wifi.band_count,
+        wifi.generation, wifi.has_6ghz, wifi.max_width_5_mhz, wifi.max_width_6_mhz, wifi.mu_mimo, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_6_mbps,
+        wifi.streams_24, wifi.streams_5, wifi.streams_6, wifi.wpa3]
+      glinet-us-routers: [gen.device_type, hw.cpu_cores, hw.cpu_ghz, hw.flash_mb, hw.ram_mb, hw.soc_model, hw.soc_vendor, phys.dimensions, phys.weight,
+        port.lan_count, port.lan_max_mbps, port.multigig_count, port.usb_count, port.usb_standard, port.wan_lan_configurable, port.wan_speed_mbps,
+        wifi.band_count, wifi.generation, wifi.has_6ghz, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_6_mbps]
+  retired: {at: '2026-11-24', superseded_by: claim/mfr-routers-direct@4, reason: 'never applied: locked with the audited fingerprints of a draft that put the wired-gateway helper in _router.py (which drifted TP-Link/NETGEAR/ASUS); helper moved to _nowifi.py, same meaning re-issued as @4'}

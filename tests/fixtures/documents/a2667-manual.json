@@ -1,0 +1,184 @@
+{
+ "extractor": "doctext@1",
+ "source": "https://cdn.shopify.com/s/files/1/0491/8460/4324/files/51005002916_A2667_US__Manual_90X62mm_V01_20210804.pdf?v=1661850535",
+ "note": "Excerpt of the column blocks (pdftotext -bbox-layout) of Anker's A2667 manual, the owner's bug report case (2026-11-24).",
+ "pages": [
+  {
+   "n": 1,
+   "method": "text_layer",
+   "blocks": [
+    {
+     "x": 661,
+     "y": 114,
+     "w": 20,
+     "h": 5,
+     "lines": [
+      "USB-C1/C2"
+     ]
+    },
+    {
+     "x": 679,
+     "y": 197,
+     "w": 13,
+     "h": 5,
+     "lines": [
+      "USB-C1"
+     ]
+    },
+    {
+     "x": 679,
+     "y": 206,
+     "w": 13,
+     "h": 5,
+     "lines": [
+      "USB-C2"
+     ]
+    },
+    {
+     "x": 679,
+     "y": 221,
+     "w": 12,
+     "h": 5,
+     "lines": [
+      "USB- A"
+     ]
+    },
+    {
+     "x": 1277,
+     "y": 230,
+     "w": 41,
+     "h": 5,
+     "lines": [
+      "Product Number: A2667"
+     ]
+    }
+   ],
+   "text": "USB-C1/C2\nUSB-C1\nUSB-C2\nUSB- A\nProduct Number: A2667"
+  },
+  {
+   "n": 2,
+   "method": "text_layer",
+   "blocks": [
+    {
+     "x": 184,
+     "y": 60,
+     "w": 154,
+     "h": 31,
+     "lines": [
+      "Hereby, Anker Innovations Limited declares that the product type",
+      "A2667 is in compliance with Directive 2014/35/EU & 2014/30/",
+      "EU & 2011/65/EU & 2009/125/EC & 2019/1782/EU. The full text of",
+      "the EU declaration of conformity is available at the following internet",
+      "address: https://www.anker.com"
+     ]
+    },
+    {
+     "x": 713,
+     "y": 56,
+     "w": 12,
+     "h": 17,
+     "lines": [
+      "Input",
+      "入力"
+     ]
+    },
+    {
+     "x": 713,
+     "y": 151,
+     "w": 16,
+     "h": 18,
+     "lines": [
+      "Output",
+      "出力"
+     ]
+    },
+    {
+     "x": 746,
+     "y": 130,
+     "w": 104,
+     "h": 44,
+     "lines": [
+      "Use Two Ports:",
+      "USB-C1 + USB-C2 :",
+      "USB-C1: 5.0V 3.0A / 9.0V 3.0A / 15.0V 3.0A",
+      "20.0V 2.25A (45.0W Max)",
+      "PPS: 3.3V-16.0V 3.0A Max (45.0W Max)",
+      "USB-C2: 5.0V 3.0A / 9.0V 2.22A (20.0W Max)"
+     ]
+    },
+    {
+     "x": 746,
+     "y": 172,
+     "w": 123,
+     "h": 44,
+     "lines": [
+      "USB-C1 + USB-A:",
+      "USB-C1: 5.0V 3.0A / 9.0V 3.0A / 15.0V 2.67A",
+      "20.0V 2.0A (40.0W Max)",
+      "PPS: 3.3V-16.0V 2.65A Max (40.0W Max)",
+      "USB-A: 4.5V 5.0A / 5.0V 4.0A / 5.0V 4.5A / 5.0V 3.0A",
+      "9.0V 2.0A / 12.0V 1.5A (22.5W Max)"
+     ]
+    },
+    {
+     "x": 746,
+     "y": 214,
+     "w": 62,
+     "h": 14,
+     "lines": [
+      "USB-C2 + USB-A: 24.0W Max"
+     ]
+    },
+    {
+     "x": 922,
+     "y": 63,
+     "w": 52,
+     "h": 14,
+     "lines": [
+      "Total Output : 65.0W Max"
+     ]
+    },
+    {
+     "x": 746,
+     "y": 82,
+     "w": 108,
+     "h": 50,
+     "lines": [
+      "Use One Port:",
+      "USB-C1 / USB-C2 :",
+      "5.0V 3.0A / 9.0V 3.0A / 15.0V 3.0A",
+      "20.0V 3.25A (65.0W Max)",
+      "PPS: 3.3V-16.0V 3.25A Max (52.0W Max)",
+      "USB-A: 4.5V 5.0A / 5.0V 4.0A / 5.0V 4.5A",
+      "5.0V 3.0A / 9.0V 2.0A / 12.0V 1.5A (22.5W Max)"
+     ]
+    },
+    {
+     "x": 889,
+     "y": 43,
+     "w": 16,
+     "h": 18,
+     "lines": [
+      "Output",
+      "出力"
+     ]
+    },
+    {
+     "x": 922,
+     "y": 21,
+     "w": 84,
+     "h": 44,
+     "lines": [
+      "Use Three Ports:",
+      "USB1 + USB2 + USB3:",
+      "USB-C1: 5.0V 3.0A / 9.0V 3.0A / 15.0V",
+      "20.0V 2.0A (40W Max)",
+      "PPS: 3.3V-16.0V 2.65A Max (40.0W Max)",
+      "USB-C2 + USB-A: 12.0W Max Per Port"
+     ]
+    }
+   ],
+   "text": "Hereby, Anker Innovations Limited declares that the product type A2667 is in compliance with Directive 2014/35/EU & 2014/30/ EU & 2011/65/EU & 2009/125/EC & 2019/1782/EU. The full text of the EU declaration of conformity is available at the following internet address: https://www.anker.com\nInput 入力\nOutput 出力\nUse Two Ports: USB-C1 + USB-C2 : USB-C1: 5.0V 3.0A / 9.0V 3.0A / 15.0V 3.0A 20.0V 2.25A (45.0W Max) PPS: 3.3V-16.0V 3.0A Max (45.0W Max) USB-C2: 5.0V 3.0A / 9.0V 2.22A (20.0W Max)\nUSB-C1 + USB-A: USB-C1: 5.0V 3.0A / 9.0V 3.0A / 15.0V 2.67A 20.0V 2.0A (40.0W Max) PPS: 3.3V-16.0V 2.65A Max (40.0W Max) USB-A: 4.5V 5.0A / 5.0V 4.0A / 5.0V 4.5A / 5.0V 3.0A 9.0V 2.0A / 12.0V 1.5A (22.5W Max)\nUSB-C2 + USB-A: 24.0W Max\nTotal Output : 65.0W Max\nUse One Port: USB-C1 / USB-C2 : 5.0V 3.0A / 9.0V 3.0A / 15.0V 3.0A 20.0V 3.25A (65.0W Max) PPS: 3.3V-16.0V 3.25A Max (52.0W Max) USB-A: 4.5V 5.0A / 5.0V 4.0A / 5.0V 4.5A 5.0V 3.0A / 9.0V 2.0A / 12.0V 1.5A (22.5W Max)\nOutput 出力\nUse Three Ports: USB1 + USB2 + USB3: USB-C1: 5.0V 3.0A / 9.0V 3.0A / 15.0V 20.0V 2.0A (40W Max) PPS: 3.3V-16.0V 2.65A Max (40.0W Max) USB-C2 + USB-A: 12.0W Max Per Port"
+  }
+ ]
+}

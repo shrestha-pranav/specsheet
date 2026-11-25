@@ -77,3 +77,8 @@
 {"at": "2026-11-24T20:03:40Z", "id": "claim/mfr-monitor-benq@2", "sha256": "sha256:4c150ff0c3bdd5a1bb136fb18d10af0a5f77ee8124b79d561991ec5280390e8a"}
 {"at": "2026-11-24T20:03:40Z", "id": "rel/source-stated-hierarchy@5", "sha256": "sha256:fdd64ed901b5c6590a6f3d9e9209045c8b8aef87a94239aa5517672db699b5a1"}
 {"at": "2026-11-24T20:03:40Z", "id": "rel/bundle-contents@4", "sha256": "sha256:44dd807e87d8334b80ddded9abff3722425f56c0b608142888c04a4edf6e6b70"}
+{"at": "2026-11-24T20:45:15Z", "id": "claim/tvs-structured@4", "sha256": "sha256:8f9b69f4a0339910afd5868dce9b289f2eeeeed2e41f20219599cfa03555d777"}
+{"at": "2026-11-24T20:45:15Z", "id": "claim/mfr-routers-direct@3", "sha256": "sha256:abd34661033e823d1926240d4964a90d840f23e92ea1d5fde4f0cbaf4c2b7027"}
+{"at": "2026-11-24T20:45:15Z", "id": "claim/mfr-ssd-sandisk-datasheet@1", "sha256": "sha256:641d8658472730bcc0d3afed650c230d8744c2c9c7a3088c8397acab62ebdb61"}
+{"at": "2026-11-24T20:45:54Z", "id": "claim/mfr-routers-direct@4", "sha256": "sha256:8443209965cf6e8ee4288fd05629d98144c1cdeed60ac3d4141b7eacd22e614a"}
+{"at": "2026-11-25T00:50:05Z", "id": "claim/document-power-pdo@1", "sha256": "sha256:7242c90b59bfb49e5930eb54c2ae93855563316b045f32336e30929f48ddeef6"}

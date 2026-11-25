@@ -7,6 +7,7 @@ sys.path.insert(0, str(ROOT / "crawler" / "adapters"))
 sys.path.insert(0, str(ROOT / "tests"))
 import _contract as C  # noqa: E402
 import _router as R  # noqa: E402
+import _nowifi as NW  # noqa: E402
 import netgear_routers as N  # noqa: E402
 import tplink_routers as T  # noqa: E402
 import ubiquiti_routers as U  # noqa: E402
@@ -141,6 +142,60 @@ class Glinet(unittest.TestCase):
         pr = G.parse_html(snap("glinet-us-routers", "gl-mt3600be", {"title": "Beryl 7 (GL-MT3600BE) Travel Router", "product_type": "Travel Router"}),
                           gl_page("688Mbps (2.4GHz), 2882Mbps (5GHz)"))
         self.assertIsNone(six(pr), "no class number to prove the list complete")
+
+
+# ---- r2, coordinator ruling 2: Wi-Fi keys not_applicable on wired gateways (complete enumeration, never absence alone)
+def na(pr):
+    return sorted(c["key"] for c in pr.claims if c["status"] == "not_applicable" and c.get("conditions") == NEG)
+
+
+def ui_sections(rows, slugs, name="UCG-Max"):
+    h = ui_page(rows, name)
+    pp = json.loads(h.split(">", 1)[1].rsplit("</script>", 1)[0])
+    feats = pp["props"]["pageProps"]["product"]["technicalSpecification"]["sections"][0]["features"]
+    pp["props"]["pageProps"]["product"]["technicalSpecification"]["sections"] = (
+        [{"section": {"label": sl, "slug": sl}, "features": feats if i == 0 else []} for i, sl in enumerate(slugs)])
+    return '<script id="__NEXT_DATA__" type="application/json">' + json.dumps(pp) + "</script>"
+
+
+GW = [(None, "Default WAN Ports", "(1) 2.5 GbE RJ45"), (None, "Max. WAN Port Count", "4"), ("Port Layout", "2.5 GbE RJ45", "5\n(2.5G/1G/100M/10M)"),
+      (None, "Processor", "Quad-core ARM Cortex-A53 at 1.5 GHz"), (None, "Management", "Ethernet\nBluetooth")]
+GW_HINT = {"device_type": "router", "category": "cloud-gateways"}
+
+
+class WiredGateways(unittest.TestCase):
+    def test_ubiquiti_gateway_without_wifi_section(self):
+        pr = U.parse_html(snap("ubiquiti-us-routers", "ucg-max", GW_HINT), ui_sections(GW, ["overview", "networking", "hardware"]))
+        self.assertEqual(na(pr), sorted(NW.WIFI_KEYS))
+        self.assertFalse([c for c in pr.claims if c["key"].startswith("wifi.") and c["status"] == "known"])
+
+    def test_ubiquiti_refused(self):
+        for rows, slugs, hint in ((GW, ["overview", "networking", "integrated-wifi", "hardware"], GW_HINT),    # the Wi-Fi section exists
+                                  (GW, ["overview", "networking"], GW_HINT),                                    # template incomplete
+                                  (GW, ["overview", "hardware"], {"device_type": "access_point", "category": "wifi"}),
+                                  ([r for r in GW if r[0] != "Port Layout"], ["overview", "hardware"], GW_HINT),  # no port enumeration
+                                  (GW + [(None, "Mesh", "Wireless uplink")], ["overview", "hardware"], GW_HINT)):
+            self.assertEqual(na(U.parse_html(snap("ubiquiti-us-routers", "x", hint), ui_sections(rows, slugs))), [], (slugs, hint))
+
+    def gl(self, rows, title="Brume 3 (GL-MT5000) High-Speed VPN Gateway"):
+        t = "".join(f'<tr><td class="td-left">{k}</td><td class="td-right">{v}</td></tr>' for k, v in rows)
+        return G.parse_html(snap("glinet-us-routers", "gl-mt5000", {"title": title, "product_type": "VPN Gateway"}),
+                            f'<h2 class="x">Specifications</h2><table class="table">{t}</table>')
+
+    def test_glinet_brume(self):
+        base = [("Interface", "1 x WAN Ethernet port<br>2 x LAN Ethernet ports<br>1 x USB 3.0 port<br>1 x Type-C power<br>port<br>1 x Reset button"),
+                ("CPU", "MediaTek, Quad-core @2.0GHz"), ("Ethernet Speed", "10/100/1000/2500Mbps")]
+        self.assertEqual(na(self.gl(base)), sorted(NW.WIFI_KEYS))
+        self.assertEqual(na(self.gl(base + [("WiFi Speed", "Brume-W only: 300Mbps (2.4GHz)")])), [])     # a Wi-Fi variant exists
+        self.assertEqual(na(self.gl(base + [("LEDs", "Power, WAN/WIFI, VPN")])), [])
+        self.assertEqual(na(self.gl(base, "Puli (GL-XE300) 4G LTE Wireless VPN Gateway")), [])
+        self.assertEqual(na(self.gl([("CPU", "MediaTek, Quad-core @2.0GHz"), ("Interface", "LAN and WAN ports")])), [])   # not an N x list
+
+    def test_glinet_wifi4(self):
+        pr = self.gl([("CPU", "QCA9531, @650MHz SoC"), ("Interface", "1 x WAN Ethernet port<br>1 x LAN Ethernet port"),
+                      ("Protocol", "IEEE 802.11b/g/n"), ("Wi-Fi Speed", "300Mbps (2.4GHz)")], "Mango (GL-MT300N-V2) Wireless Mini Router")
+        self.assertEqual({c["key"]: c.get("value") for c in pr.claims}.get("wifi.generation"), "wifi4")
+        self.assertEqual(na(pr), [])
 
 
 if __name__ == "__main__":

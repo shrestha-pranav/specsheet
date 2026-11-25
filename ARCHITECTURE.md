@@ -459,3 +459,12 @@ status, ...)` + per-category typed views for facets, `snapshots(sha256, source, 
 - Size budget: `docs/api/v1` <= ~80 MB of bytes (Pages limit headroom); v0 `<cat>/products.json` now carries column fields only. Measured 68 MB.
 - Size budget (2026-11-23, review 2 risk 5): `data/release-budget.json` - live API warn 100 MiB / fail 150 MiB (logical bytes), main packed warn 250 MiB / migration trigger 500 MiB; `scripts/release_manifest.py` measures logical/gzip bytes, file count, changed bytes vs the previous gh-pages snapshot and packed sizes per release.
 
+
+### 15.10 Document input pipeline (A3 document pipeline, 2026-11-24)
+- `crawler/documents.py` discover (offline, every source's snapshots + crawl.py v0 assets; each link tied to the page it was on) -> fetch (one pass,
+  adopt bytes already on disk, else polite GET; `raw/_documents/` append-only log + blobs, snapshot = content hash) -> extract (`pdftotext -layout`
+  + `-bbox-layout` column blocks; empty text layer -> tesseract with mean word confidence). `scripts/docattach.py` (transform docattach@1, pinned)
+  attaches claims at import: identity guard (linking page's entity + exact identifier in the document text; multi-model docs need a block naming
+  the model; else `document_proposal` event), explicit port attribution, provenance conditions {document_kind, ocr?} that `resolve.py` neither
+  groups nor bases on; list items are completed from compatible document rows (note `merged:`), disagreements stay conflicts. Document hosts
+  (`kind: document_host, inherit: linking_page` in data/source-policy.yaml) take the linking page's disposition. Gaps: `scripts/coverage_audit.py`.

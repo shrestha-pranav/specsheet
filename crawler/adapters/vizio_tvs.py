@@ -17,7 +17,7 @@ import _contract as C
 import _tv as T
 import _run
 
-ID, VERSION, SOURCE = "vizio_tvs", 2, "vizio-us-tvs"
+ID, VERSION, SOURCE = "vizio_tvs", 3, "vizio-us-tvs"
 CATEGORIES = {"tvs"}
 ADAPTER = f"{ID}@{VERSION}"
 DELAY = 1.0

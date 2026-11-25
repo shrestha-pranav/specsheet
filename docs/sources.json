@@ -1,7 +1,7 @@
 {
  "generated_from": "data/source-policy.yaml",
- "policy_version": "2026-11-24.5",
- "policy_sha256": "175d509227313251640f7fbc9d7fac99e62be5c291ef8f36252eef4e8cffeae3",
+ "policy_version": "2026-11-24.6",
+ "policy_sha256": "04fd1f688da5cedfcdb4da9dbd30835077764868d0d84a21cd37ae0979e31753",
  "license_scope": "compilation + values whose sources[] include licence_grant:true; other values are facts with links, not licensed by us",
  "granted": [
   {
@@ -555,6 +555,16 @@
    "credit": "SanDisk official datasheets",
    "categories": [
     "ssds"
+   ]
+  },
+  {
+   "domain": "s3.belkin.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Belkin document host",
+   "categories": [
+    "chargers",
+    "power-banks"
    ]
   }
  ]

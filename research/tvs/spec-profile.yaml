@@ -458,6 +458,21 @@ specs:
   why: The best signal any port takes
   sources: [Samsung 'HDMI Maximum Input Rate']
   example: 4K 144Hz (for HDMI 1/2/3/4)
+- key: hdmi.has_4k120
+  label: Has a 4K 120 Hz HDMI input
+  group: gaming
+  type: bool
+  unit: null
+  tier: core
+  level: model
+  facet: {kind: bool}
+  why: Whether a console/PC can get 4K at 120 Hz at all (at least one HDMI 2.1-class input), even where the maker never says how many ports
+  traps:
+  - 'Affirmative only (coordinator ruling 2026-11-24 r2): true from an HDMI input cell stating a 4K figure of 120 Hz or more, never false. A missing
+    rate (TCL "4 HDMI (1 eARC)") or a VRR / motion figure stays unknown'
+  - 'Never infers the port count: LG "4ea (supports 4K 120Hz, eARC, ...)" sets this key and leaves hdmi.ports_4k120 unresolved'
+  sources: [LG 'HDMI Input' / 'Latest HDMI (4K @ 120Hz)', Samsung 'HDMI Maximum Input Rate', TCL 'HDMI' / 'HDMI 2.1']
+  example: true
 - key: hdmi.earc
   label: HDMI eARC
   group: gaming

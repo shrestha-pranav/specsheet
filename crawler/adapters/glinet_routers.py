@@ -19,10 +19,11 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 import _contract as C
 import _router as R
+import _nowifi as NW
 import _lt as L
 import _run
 
-ID, VERSION, SOURCE = "glinet_routers", 2, "glinet-us-routers"
+ID, VERSION, SOURCE = "glinet_routers", 3, "glinet-us-routers"
 CATEGORIES = {"routers"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.gl-inet.com/en-us"
@@ -112,7 +113,7 @@ def parse_html(snap, h):
     proto = " ".join(rows.get("Protocol", []) or rows.get("Wi-Fi Protocol", []))
     std = re.search(r"802\.11\s*([a-z/]+)", proto)
     last = std[1].split("/")[-1] if std else None
-    gen = {"be": "wifi7", "ax": "wifi6", "ac": "wifi5"}.get(last)
+    gen = {"be": "wifi7", "ax": "wifi6", "ac": "wifi5", "n": "wifi4"}.get(last)      # v3: 'IEEE 802.11b/g/n' = Wi-Fi 4 (highest listed standard)
     sp = " ".join(rows.get("Wi-Fi Speed", []) or rows.get("WiFi Speed", []))
     found = {}
     for rate, band in re.findall(r"(\d[\d,]*)\s*Mbps\s*\(\s*(2\.4|5|6)\s*GHz\s*\)", sp, re.I):
@@ -193,6 +194,21 @@ def parse_html(snap, h):
     if usb_lines:
         n, st = R.usb(" | ".join(usb_lines))
         add("port.usb_count", n, usb_lines, "Interface"); add("port.usb_standard", st, usb_lines, "Interface")
+    # v3, coordinator ruling 2 (2026-11-24 r2): a VPN gateway whose Interface row enumerates every port/slot/button ('N x ...' lines) and whose
+    # whole spec table and title name no Wi-Fi radio (no Protocol / Wi-Fi Speed row, no Wi-Fi / wireless / antenna / band word; CPU clock
+    # excluded) is wired-only (Brume 2 GL-MT2500, Brume 3 GL-MT5000): the Wi-Fi keys are not_applicable. Brume GL-MV1000 ('Brume-W only:
+    # 300Mbps (2.4GHz)') is not.
+    items, cur = [], None
+    for l in itf:
+        if re.match(r"\s*\d+\s*[x×]\s", l, re.I):
+            cur = l; items.append(l)
+        elif items:
+            items[-1] += " " + l            # a wrapped line ('1 x Type-C power' / 'port')
+        else:
+            items = None; break
+    if (items and seen_lan and wan_sp and gen is None and not found and not proto and not sp
+            and not NW.WIFI_WORDS.search(title) and not any(NW.WIFI_WORDS.search(f"{k} {' '.join(v)}") for k, v in rows.items() if k != "CPU")):
+        NW.add_no_wifi(pr, ADAPTER, snap, "Interface: " + " | ".join(items), "model_code", model, "Interface (complete port list, no Wi-Fi row)")
     dw = " ".join(rows.get("Dimension / Weight", []))
     add("phys.dimensions", R.dims_mm(dw.replace("mm", " mm")), dw, "Dimension / Weight")
     if (w := re.search(r"(\d+(?:\.\d+)?)\s*g\b", dw)):

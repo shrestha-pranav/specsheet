@@ -14,8 +14,9 @@
 # Invariants enforced by the gate: licence_grant yes => free yes; paid yes => licence_grant yes.
 # Changing any disposition = bump policy_version (date.N), add a changelog line. Builds stamp the version into
 # manifest.json; a release refuses to promote with a policy version older than the one in git.
-policy_version: "2026-11-24.5"
+policy_version: "2026-11-24.6"
 changelog:
+  - {version: "2026-11-24.6", by: A3 document pipeline, note: "New kind document_host (inherit: linking_page): shared document CDNs carry the disposition of the maker page that linked the document (scripts/source_policy.py disposition(url, linked_from)); their own flags are the all-false fallback for a document with no linking page. Added cdn.shopify.com, cdn.shopifycdn.net and three per-customer CloudFront distributions seen hosting maker manuals (d2211byn0pk9fi, dix7fd4yse9rd, dz02g1kgtiysz). s3.belkin.com added as a Belkin maker host (maker default disposition)."}
   - {version: "2026-11-24.5", by: coordinator, note: "Added documents.sandisk.com (SanDisk datasheet host) with maker default disposition."}
   - {version: "2026-11-24.4", by: A2, note: "Added techspecs.ui.com (Ubiquiti, ubiquiti-us-routers), www.gl-inet.com (GL.iNet, glinet-us-routers) and www.benq.com (BenQ, benq-us-monitors), new maker sources of coverage r3. Same disposition as the other unaudited makers: free yes, paid no, no licence grant."}
   - {version: "2026-11-24.3", by: coordinator, note: "Added 12 maker domains cited by new adapters (dell, byjasco, microsoft x2, razer, support.apple, baseus, furmanpower, austere, plugable, nekteck) plus images.salsify.com (maker document CDN). Same disposition as other unaudited makers: free yes, paid no, no licence grant."}
@@ -141,3 +142,11 @@ sources:
   - {domain: www.nekteck.com, match: exact, kind: maker, credit: "Nekteck official product pages", categories: [chargers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: images.salsify.com, match: exact, kind: maker, credit: "Maker document CDN (spec sheets/manuals linked as documents)", categories: [power-strips, chargers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: documents.sandisk.com, match: exact, kind: maker, credit: "SanDisk official datasheets", categories: [ssds], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  # Document hosts (document pipeline, 2026-11-24): shared CDNs that serve many makers' PDFs. No disposition of their own: a document gets the
+  # disposition of the page that linked it (inherit: linking_page). Flags below = fallback for a document with no linking page (withheld).
+  - {domain: cdn.shopify.com, match: exact, kind: document_host, inherit: linking_page, credit: "Shopify file CDN (documents hosted for many makers)", free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: cdn.shopifycdn.net, match: exact, kind: document_host, inherit: linking_page, credit: "Shopify file CDN (documents hosted for many makers)", free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: d2211byn0pk9fi.cloudfront.net, match: exact, kind: document_host, inherit: linking_page, credit: "CloudFront distribution hosting maker documents", free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: dix7fd4yse9rd.cloudfront.net, match: exact, kind: document_host, inherit: linking_page, credit: "CloudFront distribution hosting maker documents", free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: dz02g1kgtiysz.cloudfront.net, match: exact, kind: document_host, inherit: linking_page, credit: "CloudFront distribution hosting maker documents", free: false, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: s3.belkin.com, match: exact, kind: maker, credit: "Belkin document host", categories: [chargers, power-banks], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}

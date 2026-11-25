@@ -73,5 +73,45 @@ class SandiskName(unittest.TestCase):
         self.assertEqual(proto(sd_page("PRO-G40", "x", [("Capacity", "1TB"), ("Interface", "Thunderbolt 3 USB 3.2 Gen 2")]), "external-ssd"), [])
 
 
+# ---- r2, coordinator ruling 3: SanDisk datasheet DRAM rows (sandisk_datasheets.py), affirmative statements only
+import sandisk_datasheets as DS  # noqa: E402
+
+DS_TXT = """                                  PRODUCT SPECIFICATIONS
+    CAPACITIES1:                    8TB                    4TB                    2TB
+    MODEL NUMBERS:          WDS800T1X0M-00CMT0     WDS400T1X0M-00CMT0     WDS200T1X0M-00CMT0
+    INTERFACE                                   PCIe GEN 5X4 NVMe 2.0
+    NAND                                        TLC 3D CBA NAND
+    DRAM                                              Yes
+"""
+CFG = [["WDS800T1X0M", "WDS800T1X0M-00CMT0"], ["WDS400T1X0M", "WDS400T1X0M-00CMT0"], ["WDS200T1X0M", "WDS200T1X0M-00CMT0"]]
+
+
+def ds(txt, configs=CFG):
+    snap = C.Snapshot("sha256:x", C.Ref("sandisk-us-ssd-datasheets", "wd-black-sn8100-ssd--ds", "https://example.invalid/ds.pdf",
+                                        {"line": "wd-black-sn8100-ssd", "configs": configs}), 200, "t", "https://documents.sandisk.com/x.pdf", {})
+    pr = DS.parse_text(snap, txt)
+    return {c["locator"]["sku"]: c["value"] for c in pr.claims if c["key"] == "hw.dram_type"}, pr
+
+
+class SandiskDatasheet(unittest.TestCase):
+    def test_spanning_row_applies_to_every_tied_configuration(self):
+        got, pr = ds(DS_TXT)
+        self.assertEqual(got, {"WDS800T1X0M": "dram", "WDS400T1X0M": "dram", "WDS200T1X0M": "dram"})
+        self.assertEqual({i["scheme"] for i in pr.identifiers}, {"mfr_sku"})          # configuration key only, no model, no parent
+        self.assertFalse(any("parent" in i for i in pr.identifiers))
+        self.assertEqual(pr.sources[0]["url"], "https://documents.sandisk.com/x.pdf")
+
+    def test_values(self):
+        self.assertEqual(set(ds(DS_TXT.replace("DRAM            ", "DRAM CACHE      ").replace("Yes", "Host Memory Buffer"))[0].values()), {"dramless_hmb"})
+        self.assertEqual(set(ds(DS_TXT.replace("Yes", "No"))[0].values()), {"dramless"})
+
+    def test_refused(self):
+        self.assertEqual(ds(DS_TXT.replace("    DRAM                                              Yes\n", ""))[0], {})   # no row = silence
+        per_cap = DS_TXT.replace("DRAM                                              Yes", "DRAM           Yes               Yes        No")
+        self.assertEqual(ds(per_cap)[0], {})                                                # per-capacity cells are not one spanning value
+        self.assertEqual(ds(DS_TXT, CFG[:1])[0], {"WDS800T1X0M": "dram"})                 # an untied model number writes nothing
+        self.assertEqual(ds(DS_TXT, [])[0], {})
+
+
 if __name__ == "__main__":
     unittest.main()

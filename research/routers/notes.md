@@ -37,5 +37,19 @@ Per-band rates, streams (explicit NxN only), 160/320 widths (320 only with a 6 G
   power, antenna gain) naming the same radios; GL.iNet 'Wi-Fi Speed' when the rates sum to the title's class number (GL-MT3600BE: no class, unknown).
 - **NETGEAR rates.** Per-band rate/streams from the 'WiFi Bands' row, else the page's own product-attribute record `c_wifiBands` (nearest
   `c_modelNumber` = page model). Orbi 37x/77x/97x pages print only the class (BE5000), so their per-band rates stay unknown.
-- Still unknown: Wi-Fi-less gateways (Ubiquiti UDM/UCG/EFG, GL.iNet Brume/Puli/Collie) sit in the router preset denominator with unknown
-  generation; no maker row says "no Wi-Fi", so nothing is written (needs a not_applicable ruling, not a parser).
+- (superseded by ruling 2 below) Wi-Fi-less gateways sat in the router preset denominator with unknown generation.
+
+## Coordinator ruling 2 (2026-11-24 r2): Wi-Fi keys `not_applicable` on wired gateways (A2 preset fill r2)
+- **Rule.** When the maker's structured spec enumerates the complete interface set and names no Wi-Fi radio, `wifi.generation`,
+  `wifi.band_count`, `wifi.has_6ghz` and `wifi.rate_{24,5,6}_mbps` are `not_applicable` with `basis: complete_enumeration`, the enumeration kept
+  as raw (`_nowifi.add_no_wifi`). Never from absence alone: each maker needs a structural reason the list is complete.
+- **Ubiquiti** (ubiquiti_routers@3): a cloud-gateway page whose technicalSpecification is the shared section template (Overview + Hardware
+  present) WITHOUT the `integrated-wifi` section that every Wi-Fi gateway carries (UDR7, UX7), a fully parsed Port Layout + Default WAN Ports,
+  and no Wi-Fi / 802.11 / wireless / antenna / "N GHz" text in any row (Processor excluded). 9 gateways: EF-Core, EFG, UCG-Fiber/Max/Ultra,
+  UDM-Beast/Pro/Pro-Max/SE. Note: their 'Management: Ethernet, Bluetooth' row is a management-interface list (UDR7 prints the same), not the proof.
+- **GL.iNet** (glinet_routers@3): the Specifications table 'Interface' row is a complete "N x ..." list (ports, slots, buttons), and neither the
+  table (CPU row excluded) nor the title names Wi-Fi, a band or an antenna, and there is no Protocol / Wi-Fi Speed row: Brume 2 (GL-MT2500), Brume 3
+  (GL-MT5000). Brume GL-MV1000 prints "Brume-W only: 300Mbps (2.4GHz)" and stays unknown. Also v3: 'IEEE 802.11b/g/n' = `wifi4` (affirmative,
+  the highest standard listed): GL-AR150, AR300M, MT300N-V2, X300B, XE300.
+- **Orbi class numbers**: not used. NETGEAR's pages print the class (BE5000) and already state Wi-Fi 7; a class number gives no per-band rate,
+  and no documented NETGEAR table maps it to one, so Orbi `wifi.rate_5_mbps` stays unknown.

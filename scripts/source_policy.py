@@ -30,7 +30,7 @@ TOP_KEYS = {"policy_version", "changelog", "defaults", "record_rules", "sources"
 DEFAULT_KEYS = {"unlisted", "fail_release_on_unlisted"}
 RULE_KEYS = {"drop_record_fields", "exclude_demo_records", "exclude_categories", "withheld_status"}
 SOURCE_KEYS = {"domain", "match", "kind", "credit", "free", "paid", "licence_grant", "evidence", "withhold_keys", "categories", "conditions",
-               "to_clear", "audit_ref"}
+               "to_clear", "audit_ref", "inherit"}
 EVIDENCE_KEYS = {"level", "refs", "checked", "note"}
 LEVELS = {"fetched", "search", "blocked", "none"}
 FLAGS = ("free", "paid", "licence_grant")
@@ -124,6 +124,13 @@ def validate(doc):
             bad.append(f"{tag}: evidence.level must be one of {sorted(LEVELS)}")
         if (s["paid"] or s["licence_grant"]) and (ev.get("level") != "fetched" or not ev.get("refs")):
             bad.append(f"{tag}: paid/licence_grant requires evidence.level fetched with refs")
+        if s.get("kind") == "document_host" or s.get("inherit") is not None:
+            if s.get("kind") != "document_host" or s.get("inherit") != "linking_page":
+                bad.append(f"{tag}: a document host needs kind: document_host AND inherit: linking_page")
+            if s["free"] or s["paid"] or s["licence_grant"]:
+                bad.append(f"{tag}: document_host flags are the fallback for a document with no linking page and must all be false")
+            if s.get("withhold_keys"):
+                bad.append(f"{tag}: document_host takes the linking page's withhold_keys, not its own")
         wk = s.get("withhold_keys")
         if wk is not None and not (isinstance(wk, list) and all(isinstance(x, str) for x in wk)):
             bad.append(f"{tag}: withhold_keys must be a list of spec keys")
@@ -159,11 +166,35 @@ class Policy:
                 return s
         return None
 
-    def disposition(self, url):
+    @staticmethod
+    def split_ref(ref):
+        """A source reference is a URL, or {url, linked_from} for a document found on a maker page (document_host inheritance)."""
+        if isinstance(ref, dict):
+            return ref.get("url"), ref.get("linked_from")
+        return ref, None
+
+    def disposition(self, url, linked_from=None):
+        """Per-host disposition. A host listed as `kind: document_host, inherit: linking_page` (shared CDNs: cdn.shopify.com serves many
+        makers) has no disposition of its own: the document gets the disposition of the page that linked it (its domain), so a maker's
+        manual on a shared CDN is exactly as publishable as that maker's page. Without a linking page it falls back to the host's own
+        (all-false) flags. A linking page on another document host is never followed (no inheritance chains)."""
+        url, lf = self.split_ref(url)
+        linked_from = linked_from or lf
         h = host_of(url)
+        s = self.entry(h) if h else None
+        if s is not None and s.get("kind") == "document_host" and linked_from:
+            ph = host_of(linked_from)
+            ps = self.entry(ph) if ph else None
+            if ps is None or ps.get("kind") != "document_host":
+                ck = (h, ph)
+                d = self._cache.get(ck)
+                if d is None:
+                    base = self.disposition(linked_from)
+                    d = dict(base, host=h, domain=s["domain"], listed=base["listed"], inherited_from=base["host"])
+                    self._cache[ck] = d
+                return d
         d = self._cache.get(h)
         if d is None:
-            s = self.entry(h) if h else None
             base = s if s is not None else self.unlisted_default
             d = {"free": base["free"], "paid": base["paid"], "licence_grant": base["licence_grant"],
                  "withhold_keys": list((s or {}).get("withhold_keys") or []), "domain": s["domain"] if s else None, "listed": s is not None,
@@ -171,13 +202,13 @@ class Policy:
             self._cache[h] = d
         return d
 
-    def allowed(self, url, tier, key=None):
-        d = self.disposition(url)
+    def allowed(self, url, tier, key=None, linked_from=None):
+        d = self.disposition(url, linked_from)
         return bool(d[tier]) and (key is None or key not in d["withhold_keys"])
 
     def note_unlisted(self, url, what, n=1):
         d = self.disposition(url)
-        if not d["listed"]:
+        if not d["listed"] and not d.get("inherited_from"):
             self.unlisted[d["host"] or "(no host)"][what] += n
 
     # ---- values
@@ -245,6 +276,8 @@ class Policy:
             if not ks:
                 return self._withheld(sp), True
             out["sources"] = ks
+            if str(sp.get("note") or "").startswith("merged:") and set(ks) != set(sp.get("sources") or []):
+                return self._withheld(sp), True     # a merged item list holds facts from every source: all of them must be allowed
         elif st == "conflicted":
             frames = Counter(_canon([a.get("kind"), a.get("basis"), a.get("measurement_mode")]) for a in out.get("alternatives") or [])
             if not frames or max(frames.values()) < 2:
@@ -274,11 +307,20 @@ class Policy:
 
     def source_entries(self, sources, tier):
         """Source table of a published record/revision -> only the tier's sources, each with licence_grant."""
-        return [dict(s, licence_grant=bool(self.disposition(s.get("url"))["licence_grant"])) for s in sources or []
-                if self.allowed(s.get("url"), tier)]
+        return [dict(s, licence_grant=bool(self.disposition(s.get("url"), s.get("linked_from"))["licence_grant"])) for s in sources or []
+                if self.allowed(s.get("url"), tier, linked_from=s.get("linked_from"))]
 
-    def documents(self, docs, tier):
-        return [d for d in docs or [] if self.allowed(d.get("url"), tier)]
+    def documents(self, docs, tier, linked_from=None):
+        """Document links of a record; a document on a document_host inherits from `linked_from` (the record's own page)."""
+        return [d for d in docs or [] if self.allowed(d.get("url"), tier, linked_from=d.get("linked_from") or linked_from)]
+
+    def page_url(self, sources):
+        """The record's own page: first source that is neither inherited (via) nor a document (linked_from) nor on a document host."""
+        for s in sources or []:
+            e = self.entry(host_of(s.get("url")))
+            if not s.get("via") and not s.get("linked_from") and not (e and e.get("kind") == "document_host"):
+                return s.get("url")
+        return None
 
     def identity_ok(self, own_urls, tier):
         own = list(own_urls)
@@ -286,9 +328,9 @@ class Policy:
 
     def note_published(self, rec):
         """Count unlisted domains cited by a published (gated) record: values, record sources, documents."""
-        by = {s["id"]: s.get("url") for s in rec.get("sources") or []}
+        by = {s["id"]: {"url": s.get("url"), "linked_from": s.get("linked_from")} for s in rec.get("sources") or []}
         for s in rec.get("sources") or []:
-            self.note_unlisted(s.get("url"), "sources")
+            self.note_unlisted({"url": s.get("url"), "linked_from": s.get("linked_from")}, "sources")
         for d in rec.get("documents") or []:
             self.note_unlisted(d.get("url"), "documents")
         for sp in (rec.get("specs") or {}).values():
@@ -302,17 +344,17 @@ class Policy:
         if (self.exclude_demo and record.get("demo")) or record.get("category") in self.exclude_categories:
             return None
         srcs = record.get("sources") or []
-        if not self.identity_ok((s.get("url") for s in srcs if not s.get("via")), tier):
+        if not self.identity_ok(({"url": s.get("url"), "linked_from": s.get("linked_from")} for s in srcs if not s.get("via")), tier):
             return None
         rec = copy.deepcopy(record)
         for f in self.drop_fields:
             rec.pop(f, None)
-        url = {s["id"]: s.get("url") for s in srcs}
+        url = {s["id"]: ({"url": s.get("url"), "linked_from": s["linked_from"]} if s.get("linked_from") else s.get("url")) for s in srcs}
         sup = (lambda k, s, v, c: support(record["id"], k, url.get(s), v, c)) if support else None
         rec["specs"], _ = self.gate_specs(rec.get("specs") or {}, tier, lambda k, s: url.get(s), sup)
         rec["sources"] = self.source_entries(srcs, tier)
         if "documents" in rec:
-            rec["documents"] = self.documents(rec["documents"], tier)
+            rec["documents"] = self.documents(rec["documents"], tier, self.page_url(srcs))
         for fld in ("name", "variant_label", "variant", "family"):
             if isinstance(rec.get(fld), str):
                 rec[fld] = TAG.sub("", rec[fld]).strip()

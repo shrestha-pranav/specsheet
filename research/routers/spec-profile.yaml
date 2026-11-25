@@ -109,7 +109,8 @@ conditions:
   enum:
   - complete_enumeration
   description: 'A false/0 written only because the maker''s own structured spec section prints a complete list for the unit (every band). Coordinator
-    ruling 1 (2026-11-24); prose, marketing bullets, partial tables, ''up to'' phrasing or a missing row never produce a negative.'
+    ruling 1 (2026-11-24); prose, marketing bullets, partial tables, ''up to'' phrasing or a missing row never produce a negative. Ruling 2 (2026-11-24
+    r2): the same basis on a not_applicable Wi-Fi key of a wired gateway whose complete interface enumeration names no Wi-Fi radio.'
 groups:
 - id: general
   label: General & identity
@@ -256,6 +257,10 @@ specs:
   tier: core
   why: Wi-Fi 6 vs 6E vs 7 decides band and feature support
   level: model
+  conditions:
+  - basis
+  basis_conditions:
+  - basis
   enum:
   - wifi4
   - wifi5
@@ -267,6 +272,9 @@ specs:
     column: true
     default_visible: true
   traps:
+  - 'not_applicable (basis=complete_enumeration) only for a wired gateway whose maker spec enumerates its complete interface set and names no
+    Wi-Fi radio (Ubiquiti cloud gateways without the Integrated WiFi section, GL.iNet Brume 2/3): coordinator ruling 2, 2026-11-24 r2. A missing
+    Wi-Fi row alone never does it; the same not_applicable is written on band_count, has_6ghz and the per-band rates'
   - '''Wi-Fi 6'' printed on a box can be a dual-band AX1800 with 2x2; ''Wi-Fi 6E'' = 6 GHz band, plain ''Wi-Fi 6'' has none'
   - Wi-Fi 7 SKUs can omit 320 MHz, MLO or 6 GHz (Wi-Fi 7 'lite' BE3600)
   sources:
@@ -297,6 +305,10 @@ specs:
   tier: core
   why: Tri-band/quad-band routers add a second 5 GHz or a 6 GHz radio (and often the mesh backhaul)
   level: model
+  conditions:
+  - basis
+  basis_conditions:
+  - basis
   facet:
     kind: enum
   traps:
@@ -334,6 +346,10 @@ specs:
   tier: core
   why: Per-band link rate is the figure the class number sums
   level: model
+  conditions:
+  - basis
+  basis_conditions:
+  - basis
   facet: false
   traps:
   - Theoretical PHY rate at max streams x max width; real client rates are ~50% and limited by the client's own streams (phones are 2x2)
@@ -348,6 +364,10 @@ specs:
   tier: core
   why: Per-band link rate is the figure the class number sums
   level: model
+  conditions:
+  - basis
+  basis_conditions:
+  - basis
   facet:
     kind: range
     bins:
@@ -384,6 +404,10 @@ specs:
   tier: core
   why: Per-band link rate is the figure the class number sums
   level: model
+  conditions:
+  - basis
+  basis_conditions:
+  - basis
   facet: false
   traps:
   - Theoretical PHY rate at max streams x max width; real client rates are ~50% and limited by the client's own streams (phones are 2x2)

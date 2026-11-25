@@ -43,5 +43,26 @@ class LatestHdmi(unittest.TestCase):
         self.assertNotIn("hdmi.ports_4k120", run({"HDMI Input": "4ea (supports 4K 120Hz, eARC, VRR, ALLM, QMS, QFT)"}))
 
 
+class Has4k120(unittest.TestCase):
+    """Coordinator ruling r2: affirmative-only 'at least one HDMI input takes 4K 120 Hz'; never a port count, never false."""
+    def test_affirmative(self):
+        for rows in ({"HDMI Input": "4ea (supports 4K 120Hz, eARC, VRR, ALLM, QMS, QFT)"},
+                     {"HDMI Maximum Input Rate": "4K 144Hz (for HDMI 1/2/3/4)"},
+                     {"HDMI": "4x HDMI 2.1 (HDMI 1-2: 4K@144Hz) | (HDMI 3-4: 4K@60Hz) HDMI4 with eARC"},
+                     {"HDMI 2.1": "4x HDMI 2.1 (4K@144HZ) HDMI1 with eARC"},
+                     {"Latest HDMI (4K @ 120Hz)": "HDMI ports 3,4"}):
+            self.assertIs(run(rows).get("hdmi.has_4k120"), True, rows)
+
+    def test_port_count_untouched(self):
+        got = run({"HDMI Input": "4ea (supports 4K 120Hz, eARC, VRR, ALLM, QMS, QFT)"})
+        self.assertNotIn("hdmi.ports_4k120", got)
+
+    def test_never_false_or_from_other_rows(self):
+        for rows in ({"HDMI Maximum Input Rate": "4K 60Hz (for HDMI 1/2/3)"}, {"HDMI": "4 HDMI (1 eARC)"}, {"HDMI Type": "2.1"},
+                     {"Variable Refresh Rate (VRR)": "Yes (4K2K@48~144Hz)"}, {"Refresh Rate": "120Hz Native"},
+                     {"HDMI Input": "3ea (supports eARC, ALLM)"}, {"Latest HDMI (4K @ 120Hz)": "Yes"}):
+            self.assertNotIn("hdmi.has_4k120", run(rows), rows)
+
+
 if __name__ == "__main__":
     unittest.main()

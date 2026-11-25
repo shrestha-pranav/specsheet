@@ -15,16 +15,18 @@ Traps    : 'Spatial Streams 6' is a sum over radios (not a per-band figure): not
            max-rate row only (the 'Channel Bandwidth' row is not per band). Gateway LAN count = Port Layout total minus the stated default WAN ports
            (ports are re-assignable: wan_lan_configurable when Max. WAN Port Count exceeds the default). Weights with two labelled figures
            (with/without SSD) keep 'Device:' or nothing. has_6ghz True from a 6 GHz band row; v2: False (basis=complete_enumeration) only when every per-band group (MIMO, Max. Data Rate, TX power, antenna gain) names the same 2.4 + 5 GHz radios. Silence is not False.
+           v3: wired cloud gateways (no 'Integrated WiFi' section, complete Port Layout, no radio named) -> Wi-Fi keys not_applicable.
 """
 import gzip, json, re, sys, time
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 import _contract as C
 import _router as R
+import _nowifi as NW
 import _lt as L
 import _run
 
-ID, VERSION, SOURCE = "ubiquiti_routers", 2, "ubiquiti-us-routers"
+ID, VERSION, SOURCE = "ubiquiti_routers", 3, "ubiquiti-us-routers"
 CATEGORIES = {"routers"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://techspecs.ui.com"
@@ -227,6 +229,15 @@ def parse_html(snap, h):
         mw = get("Max. WAN Port Count")
         if mw and wl and re.fullmatch(r"\d+", mw) and int(mw) > wan_n:
             add("port.wan_lan_configurable", True, f"Max. WAN Port Count {mw}; Default WAN Ports {wan}", "Max. WAN Port Count")
+    # v3, coordinator ruling 2 (2026-11-24 r2): a cloud gateway whose spec tree is the maker's full section template (Overview + Hardware) WITHOUT
+    # the 'Integrated WiFi' section that every Wi-Fi gateway carries (UDR7, UX7), whose Port Layout enumerates every port, and which names no
+    # Wi-Fi radio anywhere (no WiFi Standard / band rows / 802.11 / wireless text) is a wired gateway: the Wi-Fi keys are not_applicable.
+    slugs = {(s.get("section") or {}).get("slug") for s in (p.get("technicalSpecification") or {}).get("sections") or []}
+    if (hints.get("device_type") == "router" and layout and ok and wl and all(wsp) and {"overview", "hardware"} <= slugs
+            and "integrated-wifi" not in slugs and not mimo and not rates and std is None
+            and not any(NW.WIFI_WORDS.search(f"{lab} {v}") for (par, lab), v in rows.items() if lab != "Processor")):
+        NW.add_no_wifi(pr, ADAPTER, snap, "Port Layout: " + raw + " || sections: " + ", ".join(sorted(x for x in slugs if x)), "model_code", model,
+                      "technicalSpecification sections (no Integrated WiFi) + Port Layout")
     # PoE
     pm = get("Power Method")
     budget = get("PoE Budget")

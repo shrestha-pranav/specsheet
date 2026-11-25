@@ -60,3 +60,13 @@ label date code, NAND part). Official sources rarely carry these; reviewers/tear
   _ssd.interface() now reads "PCIe® 5.0 x4" (the ® broke the regex: Samsung 9100 PRO, 980 PRO gen/lanes/protocol).
 - Not done: SanDisk NVMe DRAM beyond the prose already read (no datasheet PDFs are linked from the crawled pages, and documents.sandisk.com has
   no data/source-policy.yaml entry); Kingston NV3/NV2/NV1 datasheets print no DRAM row.
+
+## Preset fill r2 (A2, 2026-11-24): coordinator ruling 3, SanDisk datasheets
+- New source `sandisk-us-ssd-datasheets` (`crawler/adapters/sandisk_datasheets.py`): the datasheet PDFs each sandisk.com internal-SSD line page
+  links (`/tools/documentRequestHandler?docPath=...` -> documents.sandisk.com; www.sandisk.com robots allows /tools/, documents.sandisk.com has
+  no robots.txt). 35 fetched, all 200. Only `hw.dram_type`, only from a DRAM / DRAM CACHE row that is one value spanning every capacity column,
+  tied to the line page's configurations through the MODEL NUMBERS row. Yes = dram (SN8100, NAS 800, Optimus GX PRO 8100 / 850X / 850P);
+  Host Memory Buffer = dramless_hmb (Optimus 5100, GX 7100 / 7100M / 7100X); "No" = dramless (SATA 320 / 520 / NAS 600, ruling 5).
+- No DRAM row (silence, unknown): WD_BLACK SN850X, SN850P, SN770M, SN7100, SN7100X, WD Blue SN5000 / SN5100, WD Green SN3000, PC SN5000S /
+  SN5100S / SN8000S, SN7100S, SSD Plus NVMe. The Optimus GX PRO 850X datasheet says DRAM Yes, but it is a separate line page: nothing transfers
+  to the WD_BLACK SN850X configurations by name similarity.

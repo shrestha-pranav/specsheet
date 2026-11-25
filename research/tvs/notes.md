@@ -55,3 +55,8 @@ fetched first), TCL (83 SKUs); per-label value histograms (team/reports/2026-11-
 - **4K 120 Hz ports**: LG "HDMI Input: 4ea (supports 4K 120Hz, eARC, VRR, ...)" without a trailing "(N port)" stays unresolved: the same page
   prints eARC on one port only ("eARC (HDMI 2)"), so the list is a union of port features, not a per-port statement. LG's older
   "Latest HDMI (4K @ 120Hz): HDMI ports 3,4" row is an explicit port list and is counted. TCL US pages print "4 HDMI (1 eARC)" with no rate.
+- **`hdmi.has_4k120`** (coordinator ruling, 2026-11-24 round 2): affirmative-only bool, "at least one HDMI input takes 4K at 120 Hz". Set from an
+  HDMI input cell (labels HDMI Maximum Input Rate / HDMI 2.1 / HDMI / HDMI Input) printing a 4K figure of 120 Hz or more, or from LG's
+  "Latest HDMI (4K @ 120Hz)" port list. Never false, never a port count: `hdmi.ports_4k120` keeps the rules above. The preset
+  `tv-4-hdmi-4k120` ("TVs with 4K 120 Hz HDMI") gates on this key plus a native 120 Hz panel; the port count is a column. TCL rows with no
+  4K rate and every Vizio row ("HDMI Type: 2.1" names no rate) stay unknown.

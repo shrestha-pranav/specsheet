@@ -18,3 +18,9 @@ Role: retailer data = aliases, MPN candidates, prices, availability; never prima
 - BenQ US: adapter `benq_monitors@1` (benq-us-monitors), /en-us/sitemap.xml -> 136 /monitor/<line>/<model>/spec.html (accessory/software lines
   dropped), server-rendered name/detail rows. flk.pwm from "Flicker-free Technology: Yes" only; USB-C PD from the Power Delivery row or upstream port label.
 - Dell US: still no adapter. /apd/ monitor pages load the tech-spec block client-side and the product sitemap carries no monitor URLs; not retried.
+
+## Lenovo.com monitor pages, A2 preset fill r2 (2026-11-24; crawler UA, 1 req/s, 13 GETs)
+- robots.txt allows /us/en/p/; the US sitemap (sitemap-auto/089-intsitemap-us-en.xml) lists 64 monitor product pages; product pages answer
+  200 with the spec table server-rendered as JSON (`organizedSpecs` headline/text rows). **No flicker statement in it**: the only related row
+  is "Eye Caring: Yes" (11 of 11 pages sampled, gaming/home/office), which does not say flicker-free or name a TUV flicker certificate, so
+  nothing is read and no adapter was built. Lenovo `flk.pwm` stays PSREF-only (certification cell naming TUV Rheinland Flicker Free).

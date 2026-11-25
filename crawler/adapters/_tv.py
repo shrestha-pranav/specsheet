@@ -276,6 +276,18 @@ def emit(pr, brand, model, rows, adapter, stage, obs):
         kk, vv = find(rows, r"latest hdmi \(4k ?@ ?120 ?hz\)")
         if kk and (m := re.fullmatch(r"HDMI(?:\s*ports?)?\s*((?:\d\s*(?:,|&|and|/)?\s*)+)", vv, re.I)):
             add("hdmi.ports_4k120", len(set(re.findall(r"\d", m.group(1)))), kk)
+    # Coordinator ruling (2026-11-24 r2): hdmi.has_4k120 = at least one HDMI input takes 4K at >= 120 Hz. Affirmative only (never false):
+    # an HDMI input cell that states a 4K figure of 120 Hz or more (LG '4ea (supports 4K 120Hz, eARC ...)', Samsung '4K 144Hz (for HDMI
+    # 1/2/3/4)', TCL 'HDMI 1-2: 4K@144Hz'), or LG's 'Latest HDMI (4K @ 120Hz)' row naming its ports. It never sets the port count.
+    for lab in ("HDMI Maximum Input Rate", "HDMI 2.1", "HDMI", "HDMI Input"):
+        kk, vv = find(rows, re.escape(lab))
+        if kk and any(int(r) >= 120 for r in re.findall(r"4K\s*@?\s*(\d{2,3})\s*Hz", clean(vv), re.I)):
+            add("hdmi.has_4k120", True, kk)
+            break
+    if "hdmi.has_4k120" not in keys:
+        kk, vv = find(rows, r"latest hdmi \(4k ?@ ?120 ?hz\)")
+        if kk and re.fullmatch(r"HDMI(?:\s*ports?)?\s*((?:\d\s*(?:,|&|and|/)?\s*)+)", vv, re.I):
+            add("hdmi.has_4k120", True, kk)
     k, v = find(rows, r"hdmi maximum input rate")
     if k:
         add("hdmi.max_input", v[:60], k)
