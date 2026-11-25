@@ -1200,6 +1200,36 @@ claim_policies:
     statuses: [known]
     require_normalized: true
     keys: [pd.pps, pd.pps_max_voltage, pd.pps_max_current_a, pd.max_fixed_voltage, pd.epr, out.ports]
+- id: claim/document-spec-r2@1
+  since: '2026-11-24'
+  rationale: 'Second document transform docspec-attach@1 (scripts/docspec_attach.py, extractor docspec@1 = crawler/adapters/_docspec.py),
+    separate from docattach@1 so claim/document-power-pdo@1 stays pinned. Same inputs and same identity guard as docattach@1 (entity observed on
+    the linking page AND the document text names its own mfr_model / mfr_sku exactly, or its base SKU before the first "-" when that base is 6+
+    letters+digits, the sandisk_datasheets@1 rule); a document naming a same-brand model not on any of its linking pages attaches nothing. Text
+    layer only (no OCR). Only single spanning table cells are read (a cell split into per-capacity columns, or one key with two values in one
+    document, reads nothing). SSDs: if.protocol usb / usb_uasp only from an INTERFACE row naming USB 2.0 / 3.x (Thunderbolt, USB4 or a
+    connector-only cell = nothing, ruling 4); hw.dram_type Yes / DRAM part -> dram, HMB -> dramless_hmb, No / None / DRAM-less -> dramless
+    (ruling 5; not emitted next to a page dramless_hmb / dramless_none, the same fact less specific); hw.nand_type exactly one of SLC..PLC
+    ("3-bit MLC" = tlc); hw.controller a part-like token only. Monitors: flk.pwm none only from a "Flicker Safe" / "Flicker-free" cell reading Yes
+    or a bullet (same meaning as the lg/asus page label rule flicker_free); usb.usbc_pd_w only from "USB Type-C with N W Power Delivery"
+    (upstream; downstream / USB-A lines skipped). Affirmative only: nothing from silence.'
+  audit:
+    by: A2/A3 doc parsers r2
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-doc-parsers-r2.md; tests/test_docspec.py; all 134 docspec@1 claims of the scratch import read against their
+      quotes: 127 agree with an existing page value of the same key, 0 disagree; new values are if.protocol usb on SanDisk portable SSDs
+      (SDSSDE10/30/31/70/7S) and hw.dram_type dram + hw.nand_type tlc on PC SN8050S.'
+    parsers:
+      docspec-attach@1: 'sha256:b1d40533c07db5aeb433'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [docspec@1]
+    source_ids: [documents]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys: [if.protocol, hw.dram_type, hw.nand_type, hw.controller, flk.pwm, usb.usbc_pd_w]
 relation_policies:
 - id: rel/source-stated-hierarchy@5
   since: '2026-11-24'

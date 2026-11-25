@@ -70,7 +70,8 @@ SKIP_KINDS = {"other": "skip:other", "marketing": "skip:marketing"}
 
 def classify(url, text=""):
     p = urllib.parse.urlsplit(url)
-    hay = (urllib.parse.unquote(p.netloc + p.path) + " | " + (text or "")).lower()
+    dp = urllib.parse.parse_qs(p.query).get("docPath")          # handler links: classify by the document path they point at
+    hay = (urllib.parse.unquote(p.netloc + p.path) + (" " + dp[0].replace("/doc-library/", "/") if dp else "") + " | " + (text or "")).lower()
     kind = next((k for k, rx in KIND_RX if rx.search(hay)), "other_unlabelled")
     path = "/" + urllib.parse.unquote(p.path).lower()
     lang = "en" if EN_RX.search(path) else next((k for k, rx in LANG_RX.items() if rx.search(path)), "und")
@@ -135,11 +136,16 @@ def dedicated_urls():
                 for f in ("url", "final_url"):
                     if str(r.get(f) or "").lower().split("?")[0].endswith(".pdf") or "documentRequestHandler" in str(r.get(f) or ""):
                         out.add(norm_url(r[f]))
-                        out.add("basename:" + urllib.parse.unquote(urllib.parse.urlsplit(r[f]).path).rsplit("/", 1)[-1].lower())
-                        q = urllib.parse.parse_qs(urllib.parse.urlsplit(r[f]).query).get("docPath")
-                        if q:
-                            out.add("basename:" + q[0].rsplit("/", 1)[-1].lower())
+                        out.add("basename:" + doc_basename(r[f]))
     return out
+
+
+def doc_basename(url):
+    """File name of a document URL; for a handler URL ('/tools/documentRequestHandler?docPath=/x/y.pdf') the docPath's file name, never the
+    handler's own name (r2 fix: 'documentrequesthandler' matched every SanDisk handler link, so portable datasheets were skipped as dedicated)."""
+    p = urllib.parse.urlsplit(url)
+    q = urllib.parse.parse_qs(p.query).get("docPath")
+    return (q[0] if q else urllib.parse.unquote(p.path)).rsplit("/", 1)[-1].lower()
 
 
 def discover():
@@ -229,7 +235,7 @@ def discover():
         docs.append({"doc_id": hashlib.sha256(nu.encode()).hexdigest()[:16], "url": L["url"], "norm_url": nu, "kind": kind, "lang": lang,
                      "stem": stem(L["url"]), "link_text": text, "categories": cats,
                      "found_on": sorted(L["found_on"].values(), key=lambda x: (str(x["source_id"]), x["ref"])), "local": L["local"],
-                     "dedicated": nu in ded or "basename:" + urllib.parse.unquote(urllib.parse.urlsplit(L["url"]).path).rsplit("/", 1)[-1].lower() in ded})
+                     "dedicated": nu in ded or "basename:" + doc_basename(L["url"]) in ded})
     decide(docs)
     docs.sort(key=lambda d: (d["priority"], d["norm_url"]))
     STORE.mkdir(parents=True, exist_ok=True)

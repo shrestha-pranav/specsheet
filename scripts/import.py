@@ -42,6 +42,7 @@ import bundles as B  # noqa: E402
 import tvcert as TC  # noqa: E402
 import xwalk as XW  # noqa: E402
 import docattach as DA  # noqa: E402
+import docspec_attach as DS  # noqa: E402
 import registry  # noqa: E402
 import identity as I  # noqa: E402
 import normalize as N  # noqa: E402
@@ -889,7 +890,7 @@ def main():
     locked_new, policy_lock_digest = dec.check_lock(write=not (bool(a.source) or a.no_mint))
     parsers = {sid: registry.parser_info(sid) for sid, m in registry.SOURCES.items()}
     current_fp = {v["parser"]: v["fingerprint"] for v in parsers.values() if v["parser"]}
-    current_fp.update({B.TRANSFORM: B.fingerprint(), TC.TRANSFORM: TC.fingerprint(), XW.TRANSFORM: XW.fingerprint(), DA.TRANSFORM: DA.fingerprint()})     # r7: shared transforms are pinned like parsers
+    current_fp.update({B.TRANSFORM: B.fingerprint(), TC.TRANSFORM: TC.fingerprint(), XW.TRANSFORM: XW.fingerprint(), DA.TRANSFORM: DA.fingerprint(), DS.TRANSFORM: DS.fingerprint()})     # r7: shared transforms are pinned like parsers
     current_fp[PSPLIT] = "sha256:" + hashlib.sha256(Path(_lcell.__file__).read_bytes()).hexdigest()[:20]       # psref-split cell parser, pinned like a parser
     drift = dec.parser_drift(current_fp)
     for pid, ex, old, new in drift:
@@ -951,6 +952,7 @@ def main():
             TC.apply(w, cat_stats[cat], {"link": link, "parser": PARSER, "crosswalks": data / "decisions" / "tv-crosswalks.yaml"})
         XW.apply(w, cat_stats[cat], {"link": link, "parser": PARSER, "decisions": data / "decisions"})     # r8: crosswalks + same_hardware_as
     doc_stats = DA.apply(worlds, events, {})        # document pipeline: linked manuals/datasheets -> claims on the linking page's entity (scripts/docattach.py)
+    DS.apply(worlds, events, doc_stats)            # r2: SSD datasheet rows (scripts/docspec_attach.py, separate transform: docattach@1 stays pinned)
     ignored_rows = []
     rules = {c: load_label_rules(c) for c in worlds}
     for sid, st in stats.items():

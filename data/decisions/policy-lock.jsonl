@@ -82,3 +82,4 @@
 {"at": "2026-11-24T20:45:15Z", "id": "claim/mfr-ssd-sandisk-datasheet@1", "sha256": "sha256:641d8658472730bcc0d3afed650c230d8744c2c9c7a3088c8397acab62ebdb61"}
 {"at": "2026-11-24T20:45:54Z", "id": "claim/mfr-routers-direct@4", "sha256": "sha256:8443209965cf6e8ee4288fd05629d98144c1cdeed60ac3d4141b7eacd22e614a"}
 {"at": "2026-11-25T00:50:05Z", "id": "claim/document-power-pdo@1", "sha256": "sha256:7242c90b59bfb49e5930eb54c2ae93855563316b045f32336e30929f48ddeef6"}
+{"at": "2026-11-25T03:41:54Z", "id": "claim/document-spec-r2@1", "sha256": "sha256:1862781b5f374d9d8323b605dd17f885e985832f74891b2c13b4e97f49886cb0"}

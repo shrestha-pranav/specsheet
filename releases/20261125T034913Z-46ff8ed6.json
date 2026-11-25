@@ -1,0 +1,496 @@
+{
+ "budget": {
+  "limits": {
+   "_why": "reviews/2026-11-23-astra-review-2.md risk 5: project targets, not hosting limits. Raising api_fail_mib is an explicit reviewed edit of this file.",
+   "api_fail_mib": 150,
+   "api_warn_mib": 100,
+   "repo_pack_migrate_mib": 500,
+   "repo_pack_warn_mib": 250
+  },
+  "messages": [],
+  "state": "ok"
+ },
+ "code": {
+  "dirty": true,
+  "git_head": "564e2bbefd762182a24151d5114eb80976897963",
+  "source_digest": "sha256:4dfaeb166daad78e26d7d8abfc582e2bcbd5f4196d8b97488822292cfb50199c"
+ },
+ "created_at": "2026-11-25T03:49:13Z",
+ "format": "specsheet.release/1",
+ "inputs": {
+  "accepted_digest": "46ff8ed640d63b6bca5bbf4c09d7ec1ccbeb2ad22344a32045ed18522ae35f5b",
+  "imported_at": "2026-11-25T03:45:34Z",
+  "importer": "sha256:81dc13d313875ac3899efc19057bc92ab5b6d8ff1df3a6d25bf32e478dfdcb8b",
+  "ledger": {
+   "digest": "sha256:4b532ba27accee878bc834ed58a98dbe99e54ddebe117f869bec649908dd6fd9",
+   "lines": 0
+  },
+  "normalizer": "sha256:b56272540057ddcfc463d623e8e9372e07d424fdf0c41274b2062f6977b9d16f",
+  "parsers": {
+   "anker": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "anker-us-chargers": {
+    "fingerprint": "sha256:8bb7107d875d52865b9f",
+    "parser": "anker_chargers@2"
+   },
+   "anker-us-powerbanks": {
+    "fingerprint": "sha256:c133eb53d9980d795941",
+    "parser": "anker_powerbanks@5"
+   },
+   "ankersolix-us-stations": {
+    "fingerprint": "sha256:94260f9f8155895c1b47",
+    "parser": "ankersolix_stations@3"
+   },
+   "apple-support": {
+    "fingerprint": "sha256:6bc7c6b84247afa3c9c7",
+    "parser": "apple@1"
+   },
+   "asus-us": {
+    "fingerprint": "sha256:882e02a6786b8e27beab",
+    "parser": "asus@2"
+   },
+   "asus-us-monitors": {
+    "fingerprint": "sha256:06b1bcd48df53b338599",
+    "parser": "asus_monitors@2"
+   },
+   "asus-us-routers": {
+    "fingerprint": "sha256:1eaec9d51b370875bbc9",
+    "parser": "asus_routers@2"
+   },
+   "aukey-us-chargers": {
+    "fingerprint": "sha256:b5c002c27d49233d7281",
+    "parser": "aukey_chargers@2"
+   },
+   "austere": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "baseus": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "belkin": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "belkin-us-chargers": {
+    "fingerprint": "sha256:f596fcb8e433a7d2f486",
+    "parser": "belkin_chargers@2"
+   },
+   "belkin-us-powerbanks": {
+    "fingerprint": "sha256:abb5bf59fadce0dc1ae3",
+    "parser": "belkin_powerbanks@5"
+   },
+   "benq-us-monitors": {
+    "fingerprint": "sha256:ccdb39bc225356f22cb1",
+    "parser": "benq_monitors@2"
+   },
+   "bluetti-us-stations": {
+    "fingerprint": "sha256:eb67456307649422d053",
+    "parser": "bluetti_stations@3"
+   },
+   "byjasco": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "carb-airpurifiers": {
+    "fingerprint": "sha256:44ddcd770c6ab43e412d",
+    "parser": "carb_airpurifiers@1"
+   },
+   "choetech-us-chargers": {
+    "fingerprint": "sha256:b5c002c27d49233d7281",
+    "parser": "choetech_chargers@2"
+   },
+   "csa-dcl-robovac": {
+    "fingerprint": "sha256:46bdba0a94f3705a296a",
+    "parser": "csa_dcl_robovac@2"
+   },
+   "cuktech-us-chargers": {
+    "fingerprint": "sha256:b5c002c27d49233d7281",
+    "parser": "cuktech_chargers@2"
+   },
+   "cuktech-us-powerbanks": {
+    "fingerprint": "sha256:a95b2d2a86119ba7adc7",
+    "parser": "cuktech_powerbanks@5"
+   },
+   "cyberpower": {
+    "fingerprint": "sha256:a3e88411366c8d320d51",
+    "parser": "cyberpower@1"
+   },
+   "dell-us": {
+    "fingerprint": "sha256:13cd4d61b81c005021b6",
+    "parser": "dell@1"
+   },
+   "displayhdr": {
+    "fingerprint": "sha256:254fd4f565c8f164d5e8",
+    "parser": "displayhdr@3"
+   },
+   "dreame-us-robovac": {
+    "fingerprint": "sha256:82418fe203d439831b23",
+    "parser": "dreame_robovac@2"
+   },
+   "ecoflow-us-powerbanks": {
+    "fingerprint": "sha256:ba2e0f46dd314701b79d",
+    "parser": "ecoflow_powerbanks@5"
+   },
+   "ecoflow-us-stations": {
+    "fingerprint": "sha256:eb67456307649422d053",
+    "parser": "ecoflow_stations@3"
+   },
+   "ecovacs-us-robovac": {
+    "fingerprint": "sha256:aadfd4932c14646a8025",
+    "parser": "ecovacs_robovac@3"
+   },
+   "energystar-airpurifiers": {
+    "fingerprint": "sha256:9fbfd29f2f1b9475842e",
+    "parser": "energystar_airpurifiers@1"
+   },
+   "energystar-monitors": {
+    "fingerprint": "sha256:a617410312626e8837c1",
+    "parser": "energystar_monitors@2"
+   },
+   "energystar-tvs": {
+    "fingerprint": "sha256:35b90bbed61b2720ad7c",
+    "parser": "energystar_tvs@1"
+   },
+   "framework-us": {
+    "fingerprint": "sha256:a0d0263be8effbca4213",
+    "parser": "framework@1"
+   },
+   "furman": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "glinet-us-routers": {
+    "fingerprint": "sha256:f2ada2d2de011023401c",
+    "parser": "glinet_routers@3"
+   },
+   "goalzero-us-stations": {
+    "fingerprint": "sha256:eb67456307649422d053",
+    "parser": "goalzero_stations@3"
+   },
+   "hyper-us-chargers": {
+    "fingerprint": "sha256:b5c002c27d49233d7281",
+    "parser": "hyper_chargers@2"
+   },
+   "iniu-us-chargers": {
+    "fingerprint": "sha256:b5c002c27d49233d7281",
+    "parser": "iniu_chargers@2"
+   },
+   "iniu-us-powerbanks": {
+    "fingerprint": "sha256:a95b2d2a86119ba7adc7",
+    "parser": "iniu_powerbanks@5"
+   },
+   "irobot-us-robovac": {
+    "fingerprint": "sha256:9deb0671691dc5ef2498",
+    "parser": "irobot_robovac@3"
+   },
+   "jackery-us-stations": {
+    "fingerprint": "sha256:eb67456307649422d053",
+    "parser": "jackery_stations@3"
+   },
+   "kingston-us-ssd": {
+    "fingerprint": "sha256:3480518802b8d7e319ce",
+    "parser": "kingston_ssd@3"
+   },
+   "kuxiu-us-powerbanks": {
+    "fingerprint": "sha256:ba2e0f46dd314701b79d",
+    "parser": "kuxiu_powerbanks@5"
+   },
+   "lenovo-psref": {
+    "fingerprint": "sha256:758b48fedf2b491a03d4",
+    "parser": "lenovo_psref@3"
+   },
+   "lenovo-psref-monitors": {
+    "fingerprint": "sha256:2a8164ba93f3240a0030",
+    "parser": "lenovo_monitors@3"
+   },
+   "levoit-us-airpurifiers": {
+    "fingerprint": "sha256:18b3c2189006ad84c2f8",
+    "parser": "levoit_airpurifiers@1"
+   },
+   "lg-us": {
+    "fingerprint": "sha256:aa21c2db2583ef6b77b3",
+    "parser": "lg_us@2"
+   },
+   "lg-us-tvs": {
+    "fingerprint": "sha256:9019d077c4a1404c1258",
+    "parser": "lg_tvs@3"
+   },
+   "microsoft-surface": {
+    "fingerprint": "sha256:80cd87b7b1b87d6969e9",
+    "parser": "surface@1"
+   },
+   "mophie-us-chargers": {
+    "fingerprint": "sha256:b5c002c27d49233d7281",
+    "parser": "mophie_chargers@2"
+   },
+   "mophie-us-powerbanks": {
+    "fingerprint": "sha256:ba2e0f46dd314701b79d",
+    "parser": "mophie_powerbanks@5"
+   },
+   "mova-us-robovac": {
+    "fingerprint": "sha256:93a8080a92d643647cd7",
+    "parser": "mova_robovac@2"
+   },
+   "narwal-us-robovac": {
+    "fingerprint": "sha256:2f212aa7076aff13a250",
+    "parser": "narwal_robovac@2"
+   },
+   "nativeunion-us-chargers": {
+    "fingerprint": "sha256:b5c002c27d49233d7281",
+    "parser": "nativeunion_chargers@2"
+   },
+   "nekteck-us-chargers": {
+    "fingerprint": "sha256:b5c002c27d49233d7281",
+    "parser": "nekteck_chargers@2"
+   },
+   "netgear-us-routers": {
+    "fingerprint": "sha256:7a28aa0c5a72eea2a5a2",
+    "parser": "netgear_routers@2"
+   },
+   "plugable-us-chargers": {
+    "fingerprint": "sha256:b5c002c27d49233d7281",
+    "parser": "plugable_chargers@2"
+   },
+   "razer-us": {
+    "fingerprint": "sha256:8752d0e2f07ae8b46ff2",
+    "parser": "razer@1"
+   },
+   "roborock-us-robovac": {
+    "fingerprint": "sha256:15fcaedb2dbacaa8e938",
+    "parser": "roborock_robovac@2"
+   },
+   "samsung-us": {
+    "fingerprint": "sha256:d0e9cabff53a15285159",
+    "parser": "samsung@1"
+   },
+   "samsung-us-ssd": {
+    "fingerprint": "sha256:ad67b32e468f26b4c5f5",
+    "parser": "samsung_ssd@3"
+   },
+   "samsung-us-tvs": {
+    "fingerprint": "sha256:6f231ff7eda5f29fa81a",
+    "parser": "samsung_tvs@3"
+   },
+   "sandisk-us-ssd": {
+    "fingerprint": "sha256:2d85f3bba7fc90807c22",
+    "parser": "sandisk_ssd@5"
+   },
+   "sandisk-us-ssd-datasheets": {
+    "fingerprint": "sha256:c9b039d702aa7945c4e5",
+    "parser": "sandisk_datasheets@1"
+   },
+   "satechi-us-chargers": {
+    "fingerprint": "sha256:b5c002c27d49233d7281",
+    "parser": "satechi_chargers@2"
+   },
+   "sharge-us-chargers": {
+    "fingerprint": "sha256:b5c002c27d49233d7281",
+    "parser": "sharge_chargers@2"
+   },
+   "sharge-us-powerbanks": {
+    "fingerprint": "sha256:ba2e0f46dd314701b79d",
+    "parser": "sharge_powerbanks@5"
+   },
+   "tcl-us-tvs": {
+    "fingerprint": "sha256:30009730b6ab3f2072ef",
+    "parser": "tcl_tvs@3"
+   },
+   "teamgroup-us-ssd": {
+    "fingerprint": "sha256:88817563932faa004f57",
+    "parser": "teamgroup_ssd@5"
+   },
+   "tplink-us-routers": {
+    "fingerprint": "sha256:19f0ca2101fbc63e219c",
+    "parser": "tplink_routers@3"
+   },
+   "tripplite": {
+    "fingerprint": "sha256:949811b25418d7a2b724",
+    "parser": "tripplite@2"
+   },
+   "ubiquiti-us-routers": {
+    "fingerprint": "sha256:3d3d5623b58bb06835bd",
+    "parser": "ubiquiti_routers@3"
+   },
+   "ugreen": {
+    "fingerprint": "sha256:9ec7e1d3fba3aa046c97",
+    "parser": "crawlpy-strips@1"
+   },
+   "ugreen-us-chargers": {
+    "fingerprint": "sha256:b5c002c27d49233d7281",
+    "parser": "ugreen_chargers@2"
+   },
+   "ugreen-us-powerbanks": {
+    "fingerprint": "sha256:a95b2d2a86119ba7adc7",
+    "parser": "ugreen_powerbanks@5"
+   },
+   "vizio-us-tvs": {
+    "fingerprint": "sha256:2b2fae316a70122786e3",
+    "parser": "vizio_tvs@3"
+   },
+   "winix-us-airpurifiers": {
+    "fingerprint": "sha256:52bcd9424007c89b002f",
+    "parser": "winix_airpurifiers@1"
+   }
+  },
+  "policies": {
+   "active": [
+    "claim/mfr-structured-datasheet@3",
+    "claim/asus-techspec-typed@3",
+    "claim/cpu-split@2",
+    "claim/mfr-monitor-structured@4",
+    "claim/energystar-certified-power@2",
+    "claim/displayhdr-certified-tier@2",
+    "claim/mfr-ssd-structured@5",
+    "claim/mfr-ssd-samsung@3",
+    "claim/mfr-routers-structured@3",
+    "claim/mfr-routers-class@3",
+    "claim/mfr-robovac-structured@5",
+    "claim/dcl-matter-certified@2",
+    "claim/mfr-power-banks-structured@7",
+    "claim/mfr-power-stations-structured@4",
+    "claim/tvs-structured@4",
+    "claim/tvs-es-certification-coverage@1",
+    "claim/tvs-es-power-applicability@1",
+    "claim/air-purifiers-structured@1",
+    "claim/air-purifiers-es-same-hardware@1",
+    "claim/mfr-chargers-structured@2",
+    "claim/psref-split@1",
+    "claim/monitor-flicker-label-map@1",
+    "claim/mfr-ssd-kingston@3",
+    "claim/mfr-routers-direct@4",
+    "claim/mfr-monitor-benq@2",
+    "claim/mfr-ssd-sandisk-datasheet@1",
+    "claim/document-power-pdo@1",
+    "claim/document-spec-r2@1",
+    "rel/source-stated-hierarchy@5",
+    "rel/bundle-contents@4",
+    "rel/tvs-es-certification-scope@1",
+    "rel/tvs-crosswalk@1",
+    "rel/air-purifiers-es-same-hardware@1",
+    "rel/air-purifiers-crosswalk@1"
+   ],
+   "approval": {
+    "claim/air-purifiers-es-same-hardware@1": "approved",
+    "claim/air-purifiers-structured@1": "approved",
+    "claim/asus-techspec-typed@3": "approved",
+    "claim/cpu-split@2": "approved",
+    "claim/dcl-matter-certified@2": "approved",
+    "claim/displayhdr-certified-tier@2": "approved",
+    "claim/document-power-pdo@1": "approved",
+    "claim/document-spec-r2@1": "pending",
+    "claim/energystar-certified-power@2": "approved",
+    "claim/mfr-chargers-structured@2": "approved",
+    "claim/mfr-monitor-benq@2": "approved",
+    "claim/mfr-monitor-structured@4": "approved",
+    "claim/mfr-power-banks-structured@7": "approved",
+    "claim/mfr-power-stations-structured@4": "approved",
+    "claim/mfr-robovac-structured@5": "approved",
+    "claim/mfr-routers-class@3": "approved",
+    "claim/mfr-routers-direct@4": "approved",
+    "claim/mfr-routers-structured@3": "approved",
+    "claim/mfr-ssd-kingston@3": "approved",
+    "claim/mfr-ssd-samsung@3": "approved",
+    "claim/mfr-ssd-sandisk-datasheet@1": "approved",
+    "claim/mfr-ssd-structured@5": "approved",
+    "claim/mfr-structured-datasheet@3": "approved",
+    "claim/monitor-flicker-label-map@1": "approved",
+    "claim/psref-split@1": "approved",
+    "claim/tvs-es-certification-coverage@1": "approved",
+    "claim/tvs-es-power-applicability@1": "approved",
+    "claim/tvs-structured@4": "approved",
+    "rel/air-purifiers-crosswalk@1": "approved",
+    "rel/air-purifiers-es-same-hardware@1": "approved",
+    "rel/bundle-contents@4": "approved",
+    "rel/source-stated-hierarchy@5": "approved",
+    "rel/tvs-crosswalk@1": "approved",
+    "rel/tvs-es-certification-scope@1": "approved"
+   },
+   "file": "sha256:3303407e469a8a89f65b627f1e035a8e886a42c9cd23f9c7c0017eda5ab9b784",
+   "lock": "sha256:87c9cc45bec34ab45bfcc309c752aba08e6cb1f7318176a1f29b9d39abacdeda",
+   "parser_drift": []
+  },
+  "profiles": {
+   "air-purifiers": {
+    "digest": "sha256:7249e1a76d6f9149eae5455da6899329fca739bee3fbbda391d888d024c05a05",
+    "version": "0.1.1"
+   },
+   "chargers": {
+    "digest": "sha256:7c1cc2dde6e51f32eb5a50af3fe6115c3bd435f635aabef0c0dd7e191c3c77e6",
+    "version": "1.0.0"
+   },
+   "laptops": {
+    "digest": "sha256:bf2a77d5e4fb692c529e8febcaa8a9b19de69719590c12d6a84b681bf2ebe1df",
+    "version": "0.2"
+   },
+   "monitors": {
+    "digest": "sha256:e79f8049d44cb92da9639d3cf5d8d02a640ed8095e1d71cead40343ccdc5c0c7",
+    "version": "0.2.0"
+   },
+   "power-banks": {
+    "digest": "sha256:f8075da32e75e0b69177d0b99f5f98dd49ba48175d3072a9e0100df82dd7c9ac",
+    "version": "0.1.0"
+   },
+   "power-stations": {
+    "digest": "sha256:8aba02a2f7d2b2f80cecac78ca3400975adccf092d282c6f854ecd0b891cbf5c",
+    "version": "0.1.0"
+   },
+   "power-strips": {
+    "digest": "sha256:341ade220e8becd76d2ba59a6d3eddf9526de433a4bc77880b70719e2d053217",
+    "version": "0.1"
+   },
+   "robot-vacuums": {
+    "digest": "sha256:737030d237207ed4bedfce1fef90dcf318db19e5427cc82d5472bba14446d2cf",
+    "version": "0.1.0"
+   },
+   "routers": {
+    "digest": "sha256:c98794867da587e8ab5c956f73d55a6c306125fcdd26b8d84a048e76680e6f96",
+    "version": "0.2.0"
+   },
+   "ssds": {
+    "digest": "sha256:186514c82d04ad50d35f58de70a706827060dc225e1e6c56c709365c1756417e",
+    "version": "0.2.0"
+   },
+   "tvs": {
+    "digest": "sha256:009b1abff9928bd4b27bd1ed1928a68bb6c9991ef99bbdb60a88d7af72d3faa7",
+    "version": "0.1.0"
+   }
+  },
+  "raw_snapshots": {
+   "digest": "sha256:e3ccb7a08098085beb9115f77be0baa38636735ffaeebe4ed08ea495540a55f7",
+   "observations": 10561
+  },
+  "registry": {
+   "ambiguous": 0,
+   "digest": "sha256:ced3f0ed43fa4475cf19c6db8761e2f7d4eeba5f3112af7669a84e991868207f",
+   "digest_after": "sha256:ced3f0ed43fa4475cf19c6db8761e2f7d4eeba5f3112af7669a84e991868207f",
+   "kind_changes": 0,
+   "migrated_legacy_anchors": 11950,
+   "rebind_attempts": 0
+  }
+ },
+ "output": {
+  "api_files": 18301,
+  "api_gzip_bytes": 23860108,
+  "api_logical_bytes": 97787934,
+  "files": 18313,
+  "gh_pages_commit": "d064d4797638d27ce0c87afe4dc7fbe6c4195b3f",
+  "gh_pages_pack_bytes": 12806345,
+  "logical_bytes": 97973549,
+  "tree_digest": "sha256:e37e9b331f40a8922cfa5ff9177421c9fb94fce5ab2e9358f73ca635731d03bc",
+  "vs_previous": {
+   "changed_bytes": 16280088,
+   "changed_files": 175,
+   "ref": "515a6a8bc0ae5508c82f0d5216c75cdb3c3d5298",
+   "removed_files": 0
+  }
+ },
+ "release": "20261125T034913Z-46ff8ed6",
+ "repository": {
+  "local_object_store_bytes": 64908288,
+  "main_pack_bytes": 12252664
+ }
+}

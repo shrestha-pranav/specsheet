@@ -14,8 +14,9 @@
 # Invariants enforced by the gate: licence_grant yes => free yes; paid yes => licence_grant yes.
 # Changing any disposition = bump policy_version (date.N), add a changelog line. Builds stamp the version into
 # manifest.json; a release refuses to promote with a policy version older than the one in git.
-policy_version: "2026-11-24.6"
+policy_version: "2026-11-24.7"
 changelog:
+  - {version: "2026-11-24.7", by: A2/A3 doc parsers r2, note: "Added images.teamgroupinc.com (TEAMGROUP's own spec-sheet PDF host, linked from www.teamgroupinc.com product pages; docspec@1 documents) with maker default disposition, same as www.teamgroupinc.com."}
   - {version: "2026-11-24.6", by: A3 document pipeline, note: "New kind document_host (inherit: linking_page): shared document CDNs carry the disposition of the maker page that linked the document (scripts/source_policy.py disposition(url, linked_from)); their own flags are the all-false fallback for a document with no linking page. Added cdn.shopify.com, cdn.shopifycdn.net and three per-customer CloudFront distributions seen hosting maker manuals (d2211byn0pk9fi, dix7fd4yse9rd, dz02g1kgtiysz). s3.belkin.com added as a Belkin maker host (maker default disposition)."}
   - {version: "2026-11-24.5", by: coordinator, note: "Added documents.sandisk.com (SanDisk datasheet host) with maker default disposition."}
   - {version: "2026-11-24.4", by: A2, note: "Added techspecs.ui.com (Ubiquiti, ubiquiti-us-routers), www.gl-inet.com (GL.iNet, glinet-us-routers) and www.benq.com (BenQ, benq-us-monitors), new maker sources of coverage r3. Same disposition as the other unaudited makers: free yes, paid no, no licence grant."}
@@ -80,6 +81,7 @@ sources:
   - {domain: www.tp-link.com, match: exact, kind: maker, credit: "TP-Link official specification pages", categories: [routers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: rog.asus.com, match: exact, kind: maker, credit: "ASUS ROG official specification pages", categories: [laptops, monitors], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: www.teamgroupinc.com, match: exact, kind: maker, credit: "TEAMGROUP official specification pages", categories: [ssds], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
+  - {domain: images.teamgroupinc.com, match: exact, kind: maker, credit: "TEAMGROUP official spec sheets (PDF)", categories: [ssds], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: www.sandisk.com, match: exact, kind: maker, credit: "SanDisk official specification pages", categories: [ssds], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: techspecs.ui.com, match: exact, kind: maker, credit: "Ubiquiti official tech specs", categories: [routers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}
   - {domain: www.gl-inet.com, match: exact, kind: maker, credit: "GL.iNet official product pages", categories: [routers], free: true, paid: false, licence_grant: false, evidence: {level: none, checked: null}}

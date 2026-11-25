@@ -1,7 +1,7 @@
 {
  "generated_from": "data/source-policy.yaml",
- "policy_version": "2026-11-24.6",
- "policy_sha256": "04fd1f688da5cedfcdb4da9dbd30835077764868d0d84a21cd37ae0979e31753",
+ "policy_version": "2026-11-24.7",
+ "policy_sha256": "5b66b24febb5684d4179f9a1722be9c0e9373d22c625fc734e89e79e9e676cb4",
  "license_scope": "compilation + values whose sources[] include licence_grant:true; other values are facts with links, not licensed by us",
  "granted": [
   {
@@ -120,6 +120,15 @@
    "match": "exact",
    "kind": "maker",
    "credit": "TEAMGROUP official specification pages",
+   "categories": [
+    "ssds"
+   ]
+  },
+  {
+   "domain": "images.teamgroupinc.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "TEAMGROUP official spec sheets (PDF)",
    "categories": [
     "ssds"
    ]
