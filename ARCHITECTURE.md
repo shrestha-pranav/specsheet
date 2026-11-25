@@ -468,3 +468,10 @@ status, ...)` + per-category typed views for facets, `snapshots(sha256, source, 
   the model; else `document_proposal` event), explicit port attribution, provenance conditions {document_kind, ocr?} that `resolve.py` neither
   groups nor bases on; list items are completed from compatible document rows (note `merged:`), disagreements stay conflicts. Document hosts
   (`kind: document_host, inherit: linking_page` in data/source-policy.yaml) take the linking page's disposition. Gaps: `scripts/coverage_audit.py`.
+- Review 6 (2026-11-25; docattach@2 / docparse@2 / docspec-attach@2): (1) a claim is bound by its own row scope (block, else page, else the
+  document only when it names no other model; uncatalogued siblings count), OCR identity needs confident TOKENS (`raw/_documents/ocr/`
+  sidecar, `documents.py ocr-tokens`; a page mean never vouches) and makes the claim OCR-dependent, variant/region/shared-SKU ambiguity keeps
+  it a candidate (docparse-review@2); trust is carried as provenance conditions identity / identity_scope / identity_variant. (2) Combination
+  context is document scope across blocks and pages; port rows map onto the linking observation's own out.ports claim. (3) Provenance is per
+  linking edge (source entry, claim locator.linked_from, documents[] row with linked_from); a document_host inherits only from a listed
+  `kind: maker` page that is not itself a document, and documents[] never falls back to the record's first source.

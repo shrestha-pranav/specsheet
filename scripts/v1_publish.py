@@ -382,8 +382,8 @@ def publish(api: Path, build_stats: dict, gate_out: dict | None = None):
                 stats[r["status"]] += 1
             stats["inherited"] += sum(1 for r in specs.values() if r.get("inherited_from"))
             d.update({"contents": [], "options": [], "sources": sources_for(eid, specs), "media": [],
-                      "documents": pol.documents([{"url": x["url"], "kind": x["kind"], "label": x["label"] or x["kind"]} for x in docs[eid] if x["url"]], "free",
-                                                 pol.page_url([{"url": x["url"], "linked_from": x.get("linked_from")} for x in srcs[eid]])),
+                      "documents": pol.documents([dict({"url": x["url"], "kind": x["kind"], "label": x["label"] or x["kind"]},
+                                                       **({"linked_from": x["linked_from"]} if x.get("linked_from") else {})) for x in docs[eid] if x["url"]], "free"),
                       "notes": ("Regional (non-US) packages sharing this configuration: %d. " % ex["regional_mtms"] if ex.get("regional_mtms") else "")
                                + "Values are manufacturer-published claims accepted by a recorded decision (data/decisions: ledger or versioned policy).",
                       "demo": False, "marketing_terms": [], "confidence": {"level": "unrated", "scope": "accepted"},

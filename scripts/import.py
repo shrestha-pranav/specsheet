@@ -584,7 +584,8 @@ def do_strip(world, meta, sid, rec, pr, extra, stats):
         e.aliases.setdefault(a["text"], a["kind"])
     e.name = e.name or next((a["text"] for a in pr["aliases"] if a["kind"] == "marketing_name"), None) or m["value"]
     add_src(e, pr, rec)
-    e.documents += pr.get("documents", [])
+    page = e.srcs.get(rec["snapshot"], {}).get("url") or rec["url"]      # review 6 fix 3: an adapter's document links carry their own page edge
+    e.documents += [dict(d, linked_from=d.get("linked_from") or page) for d in pr.get("documents", [])]
     e.absences += [(a, ob) for a in pr["absences"]]
     if (extra or {}).get("discontinued"):
         e.lifecycle = "discontinued"
@@ -794,7 +795,7 @@ def schema(con):
                         PRIMARY KEY(entity_id, id));
     CREATE TABLE invalid_claims(category TEXT, source_id TEXT, key TEXT, error TEXT, n INT, example TEXT);
     CREATE TABLE absences(entity_id TEXT, key TEXT, status TEXT, reason TEXT, source TEXT);
-    CREATE TABLE documents(entity_id TEXT, url TEXT, kind TEXT, label TEXT);
+    CREATE TABLE documents(entity_id TEXT, url TEXT, kind TEXT, label TEXT, linked_from TEXT);
     CREATE TABLE relations(entity_id TEXT, type TEXT, target_id TEXT, status TEXT, method TEXT, decision TEXT);
     CREATE TABLE identity_events(seq INT, event TEXT, category TEXT, entity_id TEXT, anchors TEXT, source_id TEXT, ref TEXT, snapshot TEXT, detail TEXT);
     CREATE TABLE quarantine(category TEXT, kind TEXT, keys TEXT, hits TEXT, source_id TEXT, ref TEXT, snapshot TEXT);
@@ -1174,9 +1175,10 @@ def main():
                     st_ = "not_yet_extracted"     # blocked / ambiguous / not attempted: never 'not published'
                 con.execute("INSERT INTO absences VALUES (?,?,?,?,?)", (e.id, mk or ab["key"], st_, ab.get("reason"), sids.get(ob[2], "s1")))
             seen_d = set()
-            for d in e.documents:
-                if d["url"] not in seen_d:
-                    seen_d.add(d["url"]); con.execute("INSERT INTO documents VALUES (?,?,?,?)", (e.id, d["url"], d.get("kind"), d.get("label")))
+            for d in e.documents:      # one row per linking edge (review 6 fix 3: the document_host policy reads each row's own linked_from)
+                if (d["url"], d.get("linked_from")) not in seen_d:
+                    seen_d.add((d["url"], d.get("linked_from")))
+                    con.execute("INSERT INTO documents VALUES (?,?,?,?,?)", (e.id, d["url"], d.get("kind"), d.get("label"), d.get("linked_from")))
     for r in sorted(rel_rows):
         digest.update(canon(["l"] + list(r[:4])).encode())
     con.executemany("INSERT INTO relations VALUES (?,?,?,?,?,?)", sorted(rel_rows))

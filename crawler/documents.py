@@ -23,6 +23,7 @@ fetch     Budget = one pass over the unique, relevant (decision 'fetch') documen
 extract   raw/_documents/text/<sha>.json (derived, rebuildable): per page {n, text, blocks, method, ocr_conf}. Text layer first
           (`pdftotext -layout`, `pdftotext -bbox-layout` for column blocks); a page whose text layer is empty is rendered (pdftoppm 300 dpi)
           and OCR'd with tesseract (TSV -> mean word confidence). Images (label photos) go straight to OCR.
+ocr-tokens raw/_documents/ocr/<sha>.json (derived, additive): word-level OCR confidences of every OCR page (docattach identity/row trust).
 """
 import argparse, gzip, hashlib, html, json, os, re, shutil, subprocess, sys, tempfile, time, urllib.parse
 from collections import Counter, defaultdict
@@ -448,8 +449,8 @@ def layout_pages(path):
     return r.stdout.decode("utf-8", "replace").split("\f")
 
 
-def ocr_image(img):
-    """tesseract TSV -> (text, mean confidence of words with conf >= 0, words)."""
+def _ocr_tsv(img):
+    """tesseract TSV -> (ordered lines [[(word, conf)]], word confidences >= 0). One OCR run serves the page text and its token sidecar."""
     r = subprocess.run(["tesseract", str(img), "-", "-l", "eng", "--psm", "3", "tsv"], capture_output=True, timeout=300)
     rows = r.stdout.decode("utf-8", "replace").splitlines()[1:]
     lines, confs = defaultdict(list), []
@@ -460,15 +461,23 @@ def ocr_image(img):
         conf = float(f[10])
         if conf >= 0:
             confs.append(conf)
-        lines[(int(f[2]), int(f[3]), int(f[4]))].append(f[11])
-    text = "\n".join(" ".join(ws) for _, ws in sorted(lines.items()))
+        lines[(int(f[2]), int(f[3]), int(f[4]))].append((f[11], round(conf, 1)))
+    return [ws for _, ws in sorted(lines.items())], confs
+
+
+def ocr_image(img):
+    """tesseract TSV -> (text, mean confidence of words with conf >= 0, words)."""
+    lines, confs = _ocr_tsv(img)
+    text = "\n".join(" ".join(w for w, _ in ws) for ws in lines)
     return text, (round(sum(confs) / len(confs), 1) if confs else 0.0), len(confs)
 
 
-def ocr_pdf_page(path, n, dpi=300):
+def ocr_pdf_page(path, n, dpi=300, tokens=False):
     with tempfile.TemporaryDirectory() as td:
         subprocess.run(["pdftoppm", "-q", "-r", str(dpi), "-f", str(n), "-l", str(n), "-png", str(path), f"{td}/p"], capture_output=True, timeout=300)
         imgs = sorted(Path(td).glob("p*.png"))
+        if tokens:
+            return _ocr_tsv(imgs[0])[0] if imgs else []
         return ocr_image(imgs[0]) if imgs else ("", 0.0, 0)
 
 
@@ -526,6 +535,8 @@ def extract(force=False, categories=None):
         tmp = tp.with_suffix(".tmp"); tmp.write_text(json.dumps(res)); tmp.replace(tp)
         stats["extracted"] += 1
         stats["ocr_pages"] += sum(1 for p in res["pages"] if p["method"] == "ocr")
+    if stats["ocr_pages"]:
+        stats.update({f"ocr_tokens_{k}": v for k, v in ocr_tokens().items()})     # word-level sidecar for every new OCR page (docattach@2)
     return dict(stats)
 
 
@@ -534,9 +545,48 @@ def load_text(sha):
     return json.loads(tp.read_text()) if tp.exists() else None
 
 
+# ---------------------------------------------------------------------------------------------------------------- OCR token sidecar
+OCR_TOKENS = "ocrtokens@1"
+
+
+def tokens_path(sha):
+    return STORE / "ocr" / f"{sha.split(':', 1)[-1]}.json"
+
+
+def ocr_tokens(force=False):
+    """raw/_documents/ocr/<sha>.json (derived, additive; review 6 fix 1): per OCR page the word-level tesseract confidences, line by line
+    {n: {text, lines: [[[word, conf], ...], ...]}}. A page mean hides an uncertain model token or electrical digit, so docattach judges
+    identity mentions and PDO rows by their own tokens. `text` must equal the page text of text/<sha>.json (same tesseract run, same
+    order); a mismatch (or no sidecar) means the page has no token evidence and docattach treats every token on it as uncertain."""
+    st = store()
+    stats = Counter()
+    blobs = {r["snapshot"]: r["blob"] for r in st.snapshots() if r.get("status") == 200 and r.get("blob")}
+    for sha, blob in sorted(blobs.items()):
+        doc = load_text(sha)
+        if not doc or not any(p["method"] == "ocr" for p in doc["pages"]):
+            continue
+        tp = tokens_path(sha)
+        if tp.exists() and not force:
+            stats["cached"] += 1
+            continue
+        out = {}
+        for p in doc["pages"]:
+            if p["method"] != "ocr":
+                continue
+            lines = ocr_pdf_page(st.dir / blob, p["n"], tokens=True)
+            text = "\n".join(" ".join(w for w, _ in ws) for ws in lines)
+            out[str(p["n"])] = {"text": text, "lines": [[[w, c] for w, c in ws] for ws in lines]}
+            stats["pages"] += 1
+            stats["pages_text_match" if text == p.get("text", "") else "pages_text_mismatch"] += 1
+        tp.parent.mkdir(parents=True, exist_ok=True)
+        tmp = tp.with_suffix(".tmp"); tmp.write_text(json.dumps({"extractor": OCR_TOKENS, "pages": out})); tmp.replace(tp)
+        stats["documents"] += 1
+    return dict(stats)
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["discover", "fetch", "extract", "stats"])
+    ap.add_argument("cmd", choices=["discover", "fetch", "extract", "ocr-tokens", "stats"])
     ap.add_argument("--limit", type=int)
     ap.add_argument("--dry", action="store_true")
     ap.add_argument("--categories", help="comma list: fetch only documents linked from these categories (rest deferred)")
@@ -547,6 +597,8 @@ def main():
         print(json.dumps(fetch(a.limit, dry=a.dry, categories=a.categories.split(",") if a.categories else None), indent=1))
     elif a.cmd == "extract":
         print(json.dumps(extract(categories=a.categories.split(",") if a.categories else None), indent=1))
+    elif a.cmd == "ocr-tokens":
+        print(json.dumps(ocr_tokens(), indent=1))
     else:
         d = load_discovery()
         st = store()

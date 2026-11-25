@@ -1169,47 +1169,56 @@ claim_policies:
     statuses: [known]
     require_normalized: true
     keys: [hw.dram_type]
-- id: claim/document-power-pdo@3
-  since: '2026-11-24'
-  supersedes: claim/document-power-pdo@1
-  rationale: 'Same rules, extractor and keys as @1, re-issued because docattach@1''s fingerprint covers _charger.py, which now normalises port-name variants (r9, see claim/mfr-chargers-structured@4). docattach and docparse code are unchanged; only the pinned fingerprint moves.'
+- id: claim/document-power-pdo@4
+  since: '2026-11-25'
+  supersedes: claim/document-power-pdo@3
+  rationale: 'Review 6 (reviews/2026-11-24-astra-review-6-docs.md) reissue of @3 for transform docattach@2 / extractor docparse@2. Same source,
+    keys, kinds and tiers; acceptance only narrows. (1) Identity: a claim is accepted only when its own row scope (the block, else the page, else
+    the whole document when the document names no other model) names this entity and no sibling; siblings include UNCATALOGUED models (same
+    identifier shape, or any token after a model label) and catalogued same-brand entities outside the entity''s own lineage; a block or page
+    naming two models scopes nothing. Identity evidence must be text layer: OCR identity, even with text-layer rows, makes the claim
+    OCR-dependent (docparse-ocr@2, never accepted), and an OCR mention counts only when its own words have token confidence >= 60 (the page
+    mean never vouches). A model-level match with another SKU of the same base model, a foreign region token in the file name, or an identifier
+    shared with an unrelated entity is variant-unestablished (docparse-review@2, never accepted) unless the scope names an own SKU. Conditions
+    carry identity, identity_scope, identity_variant (provenance only). (2) Combination context (multi-port headings, "C1 + C2" prefixes) is
+    document scope across block and page boundaries; per-port rows and device maxima never come from inside it. Port rows map only onto the
+    out.ports claim of the linking observation itself; when the entity''s pages disagree on the port layout only explicit single-port rows are
+    attributed. (3) One source entry, claim (locator.linked_from) and documents[] entry per verified linking edge; the source policy inherits
+    only along that edge.'
   audit:
-    by: A2 cleanup
-    at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-cleanup.md; tests/test_documents.py pass unchanged; docattach.py and _docparse.py untouched.'
+    by: A3-impl review 6
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-doc-review6-fixes.md; tests/test_documents.py (review-6 exit fixtures: unknown sibling, two models in one
+      block, base-model / shared-SKU regional variants, low-confidence OCR identity with text-layer PDOs, high page mean with an uncertain digit,
+      split-block and page-spanning combination tables, conflicting port layouts, allowed + withheld linking pages, identical bytes at two URLs,
+      Salsify / CDN-to-CDN and document-URL edges through apply() and the source-policy gate); replay over every stored document.'
     parsers:
-      docattach@1: 'sha256:57253c9adb4fce1df608'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+      docattach@2: 'sha256:912157c3225060b94487'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
-    extractors: [docparse@1]
+    extractors: [docparse@2]
     source_ids: [documents]
     kinds: [official]
     tiers: [manufacturer]
     statuses: [known]
     require_normalized: true
     keys: [pd.pps, pd.pps_max_voltage, pd.pps_max_current_a, pd.max_fixed_voltage, pd.epr, out.ports]
-- id: claim/document-spec-r2@1
-  since: '2026-11-24'
-  rationale: 'Second document transform docspec-attach@1 (scripts/docspec_attach.py, extractor docspec@1 = crawler/adapters/_docspec.py),
-    separate from docattach@1 so claim/document-power-pdo@1 stays pinned. Same inputs and same identity guard as docattach@1 (entity observed on
-    the linking page AND the document text names its own mfr_model / mfr_sku exactly, or its base SKU before the first "-" when that base is 6+
-    letters+digits, the sandisk_datasheets@1 rule); a document naming a same-brand model not on any of its linking pages attaches nothing. Text
-    layer only (no OCR). Only single spanning table cells are read (a cell split into per-capacity columns, or one key with two values in one
-    document, reads nothing). SSDs: if.protocol usb / usb_uasp only from an INTERFACE row naming USB 2.0 / 3.x (Thunderbolt, USB4 or a
-    connector-only cell = nothing, ruling 4); hw.dram_type Yes / DRAM part -> dram, HMB -> dramless_hmb, No / None / DRAM-less -> dramless
-    (ruling 5; not emitted next to a page dramless_hmb / dramless_none, the same fact less specific); hw.nand_type exactly one of SLC..PLC
-    ("3-bit MLC" = tlc); hw.controller a part-like token only. Monitors: flk.pwm none only from a "Flicker Safe" / "Flicker-free" cell reading Yes
-    or a bullet (same meaning as the lg/asus page label rule flicker_free); usb.usbc_pd_w only from "USB Type-C with N W Power Delivery"
-    (upstream; downstream / USB-A lines skipped). Affirmative only: nothing from silence.'
+- id: claim/document-spec-r2@2
+  since: '2026-11-25'
+  supersedes: claim/document-spec-r2@1
+  rationale: 'Same identity rule, extractor (docspec@1), keys and cell rules as @1, reissued for transform docspec-attach@2 (review 6 fix 3):
+    provenance is kept per verified linking edge (one source entry, claim with locator.linked_from and documents[] entry per document URL x
+    snapshot x page x linking page, never shared between identical bytes at two URLs or two linking pages), so the source policy''s
+    document_host inheritance follows the exact edge. An edge whose page URL is not the entity''s own observation of that page attaches nothing.
+    Its fingerprint also covers docattach.py (shared edge helpers).'
   audit:
-    by: A2/A3 doc parsers r2
-    at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-doc-parsers-r2.md; tests/test_docspec.py; all 134 docspec@1 claims of the scratch import read against their
-      quotes: 127 agree with an existing page value of the same key, 0 disagree; new values are if.protocol usb on SanDisk portable SSDs
-      (SDSSDE10/30/31/70/7S) and hw.dram_type dram + hw.nand_type tlc on PC SN8050S.'
+    by: A3-impl review 6
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-doc-review6-fixes.md; tests/test_docspec.py unchanged and passing; replay over every stored SSD / monitor
+      document (published value changes listed in the report).'
     parsers:
-      docspec-attach@1: 'sha256:b1d40533c07db5aeb433'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+      docspec-attach@2: 'sha256:2175444052f5e7cb3ad5'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
   match:
     extractors: [docspec@1]
     source_ids: [documents]
@@ -1403,6 +1412,57 @@ relation_policies:
     types: [same_model]
     parsers: [xwalk@1]
 retired_policies:
+- id: claim/document-power-pdo@3
+  since: '2026-11-24'
+  supersedes: claim/document-power-pdo@1
+  rationale: 'Same rules, extractor and keys as @1, re-issued because docattach@1''s fingerprint covers _charger.py, which now normalises port-name variants (r9, see claim/mfr-chargers-structured@4). docattach and docparse code are unchanged; only the pinned fingerprint moves.'
+  audit:
+    by: A2 cleanup
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-cleanup.md; tests/test_documents.py pass unchanged; docattach.py and _docparse.py untouched.'
+    parsers:
+      docattach@1: 'sha256:57253c9adb4fce1df608'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [docparse@1]
+    source_ids: [documents]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys: [pd.pps, pd.pps_max_voltage, pd.pps_max_current_a, pd.max_fixed_voltage, pd.epr, out.ports]
+  retired: {at: '2026-11-25', superseded_by: claim/document-power-pdo@4, reason: 'review 6 fixes (docattach@2 / docparse@2 / docspec-attach@2): identity scoping, document-scope combination context, per-edge provenance; meaning frozen as locked'}
+- id: claim/document-spec-r2@1
+  since: '2026-11-24'
+  rationale: 'Second document transform docspec-attach@1 (scripts/docspec_attach.py, extractor docspec@1 = crawler/adapters/_docspec.py),
+    separate from docattach@1 so claim/document-power-pdo@1 stays pinned. Same inputs and same identity guard as docattach@1 (entity observed on
+    the linking page AND the document text names its own mfr_model / mfr_sku exactly, or its base SKU before the first "-" when that base is 6+
+    letters+digits, the sandisk_datasheets@1 rule); a document naming a same-brand model not on any of its linking pages attaches nothing. Text
+    layer only (no OCR). Only single spanning table cells are read (a cell split into per-capacity columns, or one key with two values in one
+    document, reads nothing). SSDs: if.protocol usb / usb_uasp only from an INTERFACE row naming USB 2.0 / 3.x (Thunderbolt, USB4 or a
+    connector-only cell = nothing, ruling 4); hw.dram_type Yes / DRAM part -> dram, HMB -> dramless_hmb, No / None / DRAM-less -> dramless
+    (ruling 5; not emitted next to a page dramless_hmb / dramless_none, the same fact less specific); hw.nand_type exactly one of SLC..PLC
+    ("3-bit MLC" = tlc); hw.controller a part-like token only. Monitors: flk.pwm none only from a "Flicker Safe" / "Flicker-free" cell reading Yes
+    or a bullet (same meaning as the lg/asus page label rule flicker_free); usb.usbc_pd_w only from "USB Type-C with N W Power Delivery"
+    (upstream; downstream / USB-A lines skipped). Affirmative only: nothing from silence.'
+  audit:
+    by: A2/A3 doc parsers r2
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-doc-parsers-r2.md; tests/test_docspec.py; all 134 docspec@1 claims of the scratch import read against their
+      quotes: 127 agree with an existing page value of the same key, 0 disagree; new values are if.protocol usb on SanDisk portable SSDs
+      (SDSSDE10/30/31/70/7S) and hw.dram_type dram + hw.nand_type tlc on PC SN8050S.'
+    parsers:
+      docspec-attach@1: 'sha256:b1d40533c07db5aeb433'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [docspec@1]
+    source_ids: [documents]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys: [if.protocol, hw.dram_type, hw.nand_type, hw.controller, flk.pwm, usb.usbc_pd_w]
+  retired: {at: '2026-11-25', superseded_by: claim/document-spec-r2@2, reason: 'review 6 fixes (docattach@2 / docparse@2 / docspec-attach@2): identity scoping, document-scope combination context, per-edge provenance; meaning frozen as locked'}
 - id: rel/bundle-contents@1
   since: '2026-11-23'
   rationale: A bundle package minted by scripts/bundles.py contains the station / robot model its manufacturer page names as a member. The member is explicit

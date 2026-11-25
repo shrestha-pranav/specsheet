@@ -10,6 +10,11 @@ part before the first '-', 6+ chars, letters and digits: datasheets print 'MODEL
 observed on any of its linking pages is a multi-model document: nothing attaches (identity_events document_proposal multi_model_other_page).
 The facts are single spanning table cells (no per-capacity column split, no two values for one key in one document, see _docspec), so they
 hold for every model the document names. Affirmative only; nothing from silence; text layer only.
+docspec-attach@2 (review 6 fix 3): provenance is kept per linking edge exactly as docattach@2 does (DA.edges_of / edge_verified /
+edge_source / add_document): one source entry, claim (locator.linked_from) and documents[] entry {url, kind, label, linked_from} per
+verified (document URL, snapshot, page, linking page); identical bytes at two URLs never share a source entry. The identity rule is
+unchanged: its facts are single spanning cells that hold for every model the document names, so an uncatalogued sibling in the same
+table does not change them (docattach@2's sibling scoping is for per-row power tables).
 """
 import hashlib, json, re, sys
 from collections import Counter
@@ -21,7 +26,7 @@ sys.path.insert(0, str(CODE / "scripts"))
 import _docspec as X  # noqa: E402
 import docattach as DA  # noqa: E402
 
-TRANSFORM = "docspec-attach@1"
+TRANSFORM = "docspec-attach@2"
 SOURCE_ID = DA.SOURCE_ID
 EXTRACTOR = f"{X.NAME}@{X.VERSION}"
 KEYS = {"ssds": {"if.protocol", "hw.dram_type", "hw.nand_type", "hw.controller"}, "monitors": {"flk.pwm", "usb.usbc_pd_w"}}
@@ -111,40 +116,42 @@ def apply(worlds, events, stats, root=None):
             text, w = res["text"], worlds[cat]
             linked = [x for x in doc["found_on"] if x.get("category") == cat and x.get("source_id")]
             local = {id(e) for x in linked for e in by_obs.get((cat, x["source_id"], x["ref"]), [])}
-            for f in linked:
-                for e in by_obs.get((cat, f["source_id"], f["ref"]), []):
-                    done = e.__dict__.setdefault("_docspec_done", set())
-                    if doc["norm_url"] in done:
+            for _, e, fs in DA.edges_of(doc, [cat], by_obs).values():
+                mine = named(e, text)
+                ob = (SOURCE_ID, doc["norm_url"], rec["snapshot"])
+                if not mine:
+                    st["spec_proposal_model_not_named"] += 1
+                    continue
+                others = sorted({v for o in w.ents if id(o) not in local and o.brand == e.brand
+                                 for v in named(o, text) if not any(v in m or m in v for m in mine)})
+                if others:
+                    events.append(("document_proposal", cat, e, w.anchors(e.keys), ob, {"reason": "multi_model_other_page", "url": doc["url"], "others": others[:8]}))
+                    st["spec_proposal_multi_model"] += 1
+                    continue
+                facts = [x for x in res["facts"] if x["key"] in KEYS[cat] and not subsumed(e, x)]
+                if not facts:
+                    continue
+                edges = 0
+                for f in fs:            # review 6 fix 3: one source entry, claim and documents[] entry per verified linking edge
+                    if not DA.edge_verified(e, f):
+                        st["spec_edges_unverified"] += 1
                         continue
-                    done.add(doc["norm_url"])
-                    mine = named(e, text)
-                    ob = (SOURCE_ID, doc["norm_url"], rec["snapshot"])
-                    if not mine:
-                        st["spec_proposal_model_not_named"] += 1
-                        continue
-                    others = sorted({v for o in w.ents if id(o) not in local and o.brand == e.brand
-                                     for v in named(o, text) if not any(v in m or m in v for m in mine)})
-                    if others:
-                        events.append(("document_proposal", cat, e, w.anchors(e.keys), ob, {"reason": "multi_model_other_page", "url": doc["url"], "others": others[:8]}))
-                        st["spec_proposal_multi_model"] += 1
-                        continue
-                    cs = [claim(x, doc["kind"], doc["url"]) for x in res["facts"] if x["key"] in KEYS[cat] and not subsumed(e, x)]
-                    if not cs:
-                        continue
-                    e.obs.add(ob)
-                    if not any(x.get("url") == doc["url"] for x in e.documents):
-                        e.documents.append({"url": doc["url"], "kind": doc["kind"], "label": (doc.get("link_text") or doc["kind"])[:120]})
-                    events.append(("document_attach", cat, e, w.anchors(e.keys), ob, {"url": doc["url"], "identifiers": mine, "claims": len(cs), "transform": TRANSFORM}))
-                    st["spec_attached"] += 1
-                    for c in cs:
+                    edges += 1
+                    DA.add_document(e, doc, f["page_url"])
+                    for x in facts:
+                        c = claim(x, doc["kind"], doc["url"])
                         page = c["locator"]["pdf_page"]
-                        snap = f"{rec['snapshot']}#page={page}"
-                        e.srcs.setdefault(snap, {"url": f"{doc['url'].split('#')[0]}#page={page}", "tier": "manufacturer",
-                                                 "label": f"{doc['kind'].replace('_', ' ')} (PDF p.{page})", "snapshot": snap,
-                                                 "retrieved_at": rec.get("fetched_at"), "linked_from": f["page_url"]})
+                        snap = DA.edge_source(e, doc, rec, page, f["page_url"])
+                        c["locator"]["linked_from"] = f["page_url"]
                         c["observed_at"] = rec.get("fetched_at") or "1970-01-01T00:00:00Z"
                         e.claims.append((c, (SOURCE_ID, doc["norm_url"], snap)))
                         st[f"claims:{cat}:{c['key']}"] += 1
+                if not edges:
+                    continue
+                e.obs.add(ob)
+                events.append(("document_attach", cat, e, w.anchors(e.keys), ob, {"url": doc["url"], "identifiers": mine, "claims": len(facts), "edges": edges,
+                                                                                 "transform": TRANSFORM}))
+                st["spec_attached"] += 1
     for k, v in st.items():
         stats[k] = stats.get(k, 0) + v
     return st

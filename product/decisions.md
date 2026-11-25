@@ -326,3 +326,94 @@ steps: `product/launch-checklist.md`.
   The presets.py and UI changes: `team/briefs/pm-2026-11-24-preset-scope-a4.md`.
 - **Reversible.** Yes. It is a build-time rule over a source file. Setting `scope.sources: null` and
   `include_discontinued: true` restores the whole-category gate for any preset. Owner action: none.
+
+### D9 (2026-11-25, PM round 5): where the facts makers don't publish come from
+Research method: WebSearch/WebFetch only, no Bright Data, no accounts. Robots were read for every candidate. Our crawler's
+UA (`specsheet-crawler/0.1`) falls in the `*` group everywhere, but a site that names Anthropic or AI agents is read by its
+stated intent, not by the letter of `*`. Evidence: [f] = fetched, [s] = search snippet only. Gap counts are from
+docs/api/v1 on 2026-11-25 (in-scope rows per D8, unknown on the gate key).
+- **Decision 1: a source ladder, cheapest and most official first.** (a) The maker's *other* publications: support
+  articles, datasheets, user guides, press pages. (b) A certifier's per-product record, plus a **derived** rule from a
+  certification the maker prints, where the certifier's published criteria imply the fact. (c) Independent measurement
+  that is crawl-permitted, under terms that allow facts with a link. (d) Evidence-backed contributor corrections (D9.2)
+  for anything a human can verify and our agents may not fetch. Only (c) and (d) are new kinds of source.
+- **Why.** Two of the three "maker silences" turned out not to be silence:
+  - **Power-bank PPS.** Belkin prints PPS in its per-SKU support articles ("Meet the BoostCharge Power Bank 20K 45W ...
+    (BPB036)": "45W max USB-C fast charging (PPS supported)"; the 10K FAQ says "PD 3.1 and PPS") [f]. www.belkin.com
+    robots allows `/support-article/` [f]. Belkin is 35 of the 114 unknown rows.
+  - **Monitor PWM.** 95 of the 105 unknown Lenovo rows print a TÜV Rheinland Eye Comfort certification on PSREF, but not
+    "Flicker Free". TÜV's published star table (Certipedia ID 0217009904 [f]) says **1 to 4 stars = "Flicker reduced",
+    5 stars = "Flicker free"**. 33 rows print "(5-star)", so a derived rule fills them. 3-star, 4-star and unstarred rows
+    stay unknown: "reduced" is not "none".
+  - **SSD DRAM.** WD/SanDisk really is silent on SN850X/SN7100/SN5000 (ServeTheHome says WD does not publish it [s]).
+    Every structured independent SSD source fails a test (table below), so SSD DRAM goes to (d) as human-cited family facts.
+- **Ruled out, with evidence.** TCO Certified gen 9 and gen 10 display criteria have no flicker criterion (both PDFs
+  read [f]). Eyesafe 2.0 covers blue light only [s]. ENERGY STAR and EPREL carry none of the three facts. The USB-IF
+  Integrators List needs a login [f], so it is excluded (no accounts). The public usb.org/products list loads by JS and
+  its fields are unverified, so it is a probe, not a source. No Wikipedia per-model DRAM table exists [s].
+- **Dispositions** (proposals; A3 adds the keys `crawl: agent|human_only|none` and kind `measurement`, then lands the YAML in
+  `team/briefs/pm-2026-11-25-independent-sources-a2.md` §1 as policy `2026-11-25.1`). All rows: paid false, licence_grant false.
+| Source | Robots (for us) | Terms | Format | Disposition |
+|---|---|---|---|---|
+| Belkin support articles (www.belkin.com, listed) | allowed [f] | maker, unaudited | prose per SKU | maker, as today: free, `crawl: agent` |
+| psrefstuff.lenovo.com datasheets, download.lenovo.com `/pccbbs/` guides | no rules / PDFs allowed [f] | Lenovo (blocked, Q2) | PDF | maker like PSREF: free, `crawl: agent` |
+| mophie manuals (zagg.com PDFs) | not read | maker | PDF | maker once robots read: free, `crawl: agent` |
+| TÜV Certipedia `/quality_marks/<id>` | allowed, crawl-delay 10; `/search` disallowed [f] | legal notice unreadable | per certificate | certification: free, `crawl: agent` (cert pages only, ≥10 s), to_clear: TÜV legal notice |
+| Notebookcheck reviews | allowed except `/nbcbattery/` [f] | no copying without permission except quotes ≤100 words with a visible link and the name [f]; no automated-access clause | per review | **measurement: free, `crawl: agent`**, value + link + name, quote ≤100 words (we keep ≤125 chars) |
+| ChargerLAB | ClaudeBot, anthropic-ai and Claude-Web `Disallow: /`; `*` gets `ai-train=no, use=reference` [f] | terms page 404 | per review PDO readout | **measurement: free, `crawl: human_only`** (was `free: false`). Agents never fetch it; a person may cite it |
+| Tom's Hardware and other Future plc sites | `*` allowed [f] | US terms ban robots/crawlers that "extract, copy or collect information", and robots.txt grants no permission; linking allowed [f] | review spec table | measurement: free, `crawl: human_only` |
+| StorageReview, TFTCentral, PCMonitors.info | allowed [f] | all rights reserved or none found | review | measurement: free, `crawl: human_only` until terms read |
+| TechPowerUp SSD DB `/ssd-specs/` | ClaudeBot/GPTBot group disallows it, Claude-User and anthropic-ai `Disallow: /`, `*` header reserves AI use [f] | n/a | structured DB | **excluded**: free false, `crawl: none` (re-check unchanged since the earlier exclusion) |
+| TechPowerUp reviews | Claude-User and anthropic-ai `Disallow: /` [f] | n/a | review | measurement: free, `crawl: human_only` |
+| RTINGS | `*` allowed [f] | paywalled since 2026 because of AI reuse [s]; terms URL 404 | paywalled | **excluded**: free false, `crawl: none`. We respect the paywall's intent, and a reader can't check a paywalled link |
+| ssdwiki.com | allowed [f] | none | table | **excluded**: says "DRAM Cache: Yes" for SN7100 while its own notes say HMB [f] |
+| hardware-corner.net, displayspecifications.com, monitornerds, pwmtests, NewMaxx sheet | mostly allowed | all rights reserved or none | aggregator, unsourced | **excluded as sources**; a human may use them as leads |
+- Reversible: yes. Each row is a `policy_version` bump. Owner action: none (Q5 gains an optional TÜV line).
+
+**D9.2 Evidence-backed corrections: GitHub issue form → reviewed claim file in git → ledger decision.**
+Spec: `team/briefs/pm-2026-11-25-corrections-flow.md`. Summary:
+- Who submits: anyone with a GitHub account (we run no accounts), email to `corrections@` (a maintainer transcribes),
+  and agents, which file proposals as claim files with `submitted_by: agent:<role>` and evidence they were allowed to fetch.
+- Evidence, one of: **E1** a photo of the product's own label, box or manual page showing the model number and the fact
+  in one frame; **E2** a link to a maker page or document; **E3** a link to a `measurement` source allowed in D9 (with
+  `crawl: human_only` the person read it, we did not); **E4** the contributor's own instrumented measurement (meter or
+  analyser photo plus method). Text alone is never evidence.
+- Queue: issue label `field-correction` → `scripts/corrections.py` (read-only `gh`) writes `data/corrections/<issue>.yaml`
+  with the claim, evidence type, a sha256 of each evidence image, a short transcription, the issue URL, and a
+  contributor-terms acknowledgement. Images stay on GitHub and are never copied. A human reviewer appends `accept_claim`
+  or `reject_claim` to `data/decisions/ledger.jsonl` with a reason. LLMs may propose, only humans decide (decisions.py rule).
+- How accepted values are labelled: the source is the issue URL (tier `crowd`) or the cited page, whichever is the
+  evidence. **The claim kind follows the evidence, not the channel**: E1/E2 = `official` ("maker label, contributor photo"),
+  E3/E4 = `measured`. A correction never overwrites a maker value. A disagreement publishes as `conflicted`/alternatives.
+- Abuse: ≤10 open corrections per account, a conflict-of-interest checkbox (maker staff are welcome, but their claim is
+  E2 or nothing), the identity check (model number visible), a later `reject_claim` wins, and every crowd-sourced change is
+  listed in `/v1/changes` with its kind. We store the issue URL, never the handle.
+- **Contributor terms (D1 prerequisite):** a required checkbox: "I license this contribution under ODbL 1.0 (database)
+  and DbCL 1.0 (contents). It is my own observation or a fact from the source I cite, and my photos stay mine: I only
+  link them." The relicensing clause needed for a future alternative licence (D1.2) is **held for counsel (Q1)**. Until
+  it is approved, crowd values are excluded from any alternative licence. First-hand E1/E4 values may carry our ODbL
+  grant. E2/E3 values inherit their cited source's disposition.
+- Options considered: a site-hosted form with our own accounts (rejected: accounts, PII, spam surface); Discussions
+  (rejected: unstructured); email only (kept as a fallback, but it does not scale). Reversible: yes. Owner: approve the
+  checkbox wording (Q1, can ship without the relicensing clause).
+
+### D10 (2026-11-25, PM round 5): measured vs claimed values: display and presets
+- **Kinds stay as in the schema**, with two `measurement.mode` values added (A3): `inspection` (teardown, PCB photo) and
+  `optical` (photodiode flicker). `advertised_by_device` already covers a USB-PD analyser's PDO readout. A **derived**
+  value names its rule id and the certification it rests on.
+- **Display.** Every value carries a provenance badge: *Maker* · *Maker label (contributor photo)* · *Certified:
+  <body>* · *Derived from <cert>* · *Measured by <source>, <date>* · *Reported by <source>*. The tooltip gives method,
+  sample and link. Headline order is unchanged (resolve.py: official > derived > reported > measured). A measurement never
+  replaces a maker value. A disagreement shows both values.
+- **Presets count measured values, labelled.** A gate key counts a row as known whatever the kind, provided an accepted
+  decision covers it. The card breaks fill down by kind (illustrative: "PWM known N/442: 303 maker · 33 derived from TÜV
+  5-star · M measured"), and names any brand covered only by non-maker values. A row whose filtered key has a **disagreeing
+  alternative of another kind** (maker "none" vs measured "low-freq") moves from *match* to *might match*, marked "sources
+  disagree". It is never matched silently. Why: the user's question is the fact. Who observed it is a label, and refusing
+  measured data would leave the presets maker-gated forever. Rejected: (a) official-only gates (the PPS and DRAM presets
+  could never pass); (b) a 25% cap on non-official values (arbitrary; disclosure does the job). Runner-up: (b), if users
+  read measured fill as maker-backed.
+- Revision guard: a measured value binds to the configs named in its evidence. A family-wide measured claim needs either
+  two independent samples, or a sample plus a maker statement that the line has one design (SSD `level: revision` trap).
+- Paid/licence: unchanged (D1.3). Measured third-party values are free, linked facts and are never granted or sold.
+- Reversible: yes (build rule plus UI). Owner action: none.

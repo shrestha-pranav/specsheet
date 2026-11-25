@@ -23,7 +23,7 @@ import json
 # Document pipeline (scripts/docattach.py): provenance conditions say WHICH evidence a claim came from (a manual, an OCR'd page), not under
 # which operating condition the value holds. They are neither grouping nor basis conditions: a manual and the product page stating the
 # same value are one assertion; stating different values is a conflict, never two incomparable "bases".
-PROVENANCE = ("document_kind", "ocr", "ocr_conf")
+PROVENANCE = ("document_kind", "ocr", "ocr_conf", "identity", "identity_scope", "identity_variant")      # identity*: docattach@2 identity-evidence trust
 MERGE_NOTE = "merged: page rows completed from linked documents (only fields the page left empty; nothing overridden)"
 KIND_ORDER = ["official", "derived", "reported", "measured"]
 ABSENCE_OK = {"unknown", "not_published", "not_applicable", "not_yet_extracted"}

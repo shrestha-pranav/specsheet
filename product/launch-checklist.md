@@ -44,6 +44,9 @@ Directory submissions and announce moved after acceptance.
     `site.email_enabled=true`.
 18. [agent] First weekly kpi.sql run returns every row, with test traffic from step 16 classed `test`.
 
+18b. [agent] Corrections flow (D9.2, brief `pm-2026-11-25-corrections-flow`): issue form, claim files, queue, ledger
+    accept/reject, provenance badges. It does not block L1. Without it, the SSD DRAM preset stays "help us fill this".
+
 **L1 acceptance (all true before announce):** pages approved (11); gate fixtures green and coverage published (9);
 route matrix green live (16); one-source restore (8) and release rollback (16) done; contact verified (17); takedown
 drill done (14); metrics query works (18); freshness, coverage and unknown states visible in the UI.

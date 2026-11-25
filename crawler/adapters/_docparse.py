@@ -1,15 +1,21 @@
 """Pure document parsers for the generic document stage (crawler/documents.py -> scripts/docattach.py). No network, deterministic.
 
-Input = the derived text of one document (crawler/documents.py extract): pages [{n, text, blocks, method, ocr_conf}]. `blocks` are the
-column-local text blocks of `pdftotext -bbox-layout` (multi-column, multi-language manuals stay readable); a page without blocks (OCR) is
-read line by line as one block.
+Input = the derived text of one document (crawler/documents.py extract): pages [{n, text, blocks, method, ocr_conf, tokens?}]. `blocks`
+are the column-local text blocks of `pdftotext -bbox-layout` (multi-column, multi-language manuals stay readable); a page without blocks
+(OCR) is read line by line as one block. `tokens` (OCR pages, from the raw/_documents/ocr sidecar, attached by scripts/docattach.py) =
+per line [[word, conf]]: every row/device entry read from an OCR page carries `tok_conf` = the lowest confidence of a digit-bearing word
+it was read from (all words when none has a digit), None when the page has no token evidence (review 6: a high page mean must never
+rescue an uncertain electrical digit).
 
 power_output(doc) -- chargers + power banks. Reuses the page parsers' PDO model (_powerbank.pdos / _charger.norm_pdo), so a document port
 row has the out.ports shape {fixed_pdos, pps, max_w}. Grammar, per block in reading order:
   - a port prefix 'USB-C1 / USB-C2 :' / 'USB-C1: 5V 3A ...' / 'USB-A1 QC3.0:' opens the named port(s); unprefixed PDO lines continue them
     ('20.0V 3.25A (65.0W Max)', 'PPS: 3.3V-16.0V 3.25A Max'); a new prefix, a header or the block end closes them;
   - mode headers: 'Use One Port' / 'Use 1 Port' / 'Single Port' -> single; 'Use Two Ports' / 'Multi Port' / 'N Ports in use' /
-    'Simultaneous' -> multi. A '+' prefix ('USB-C1 + USB-C2 :') opens a combination context for the rest of the block;
+    'Simultaneous' -> multi. A '+' prefix ('USB-C1 + USB-C2 :') opens a combination context. docparse@2 (review 6 fix 2): mode and
+    combination context are DOCUMENT scope: they survive block and page boundaries (a heading block followed by a row block, a table
+    continued on the next page) and only an explicit mode heading changes them (single heading: closes the combination). Fail closed: a
+    continuation after a combination is never read as a single port;
   - per-port rows are kept ONLY outside multi mode and outside a combination context (combination rows are reduced profiles, not the
     port's capability); 'Input' sections are skipped until an 'Output' heading; efficiency test points (a line with %) are never PDOs.
   - a PDO/PPS line that names no port is device-level evidence only (never a port).
@@ -24,7 +30,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _powerbank as P  # noqa: E402
 import _charger as CH  # noqa: E402
 
-VERSION = 1
+VERSION = 2
 NAME = "docparse"
 
 PNAME = r"(?:USB[- ]?[AC]\s?\d?|Type[- ]?C\s?\d?|C\d|A\d|[AC](?=\s*[:：/]))"
@@ -41,11 +47,23 @@ EFFICIENCY = re.compile(r"\d\s*%|efficien", re.I)
 MODEL_TOKEN = re.compile(r"(?<![A-Z0-9])([A-Z]{1,3}\d{3,5}[A-Z0-9]{0,4})(?![A-Z0-9])")
 
 
+def word_conf(words):
+    """[[word, conf]] of one OCR line -> the confidence that line's critical tokens carry: lowest digit-bearing word, else lowest word."""
+    dig = [c for w, c in words if re.search(r"\d", w)]
+    allc = [c for _, c in words]
+    return min(dig) if dig else (min(allc) if allc else None)
+
+
 def _text_blocks(page):
-    """-> list of blocks (list of lines) in reading order."""
+    """-> list of blocks (list of (line, token conf)) in reading order. Token conf: None on a text-layer page (not OCR) and on an OCR page
+    without token evidence."""
     if page.get("blocks"):
-        return [b["lines"] for b in page["blocks"]]
-    return [[l for l in page.get("text", "").splitlines() if l.strip()]]
+        return [[(l, None) for l in b["lines"]] for b in page["blocks"]]
+    raw = page.get("text", "").split("\n")
+    tok = page.get("tokens")
+    if tok is not None and len(tok) != len(raw):
+        tok = None
+    return [[(l, word_conf(tok[i]) if tok is not None else None) for i, l in enumerate(raw) if l.strip()]]
 
 
 def _clean(s):
@@ -65,18 +83,22 @@ def _pdo_bits(text):
 
 def power_output(doc):
     ports, device, named = [], [], []
+    mode, combo = None, False                 # document scope (docparse@2): survives block and page boundaries
     for page in doc.get("pages") or []:
         ocr = page.get("method") == "ocr"
-        mode, direction = None, None
-        for lines in _text_blocks(page):
+        direction = None
+        for blines in _text_blocks(page):
+            lines = [l for l, _ in blines]
             block_text = " | ".join(lines)
-            cur, combo = None, False
-            for raw in lines:
+            cur = None
+            for raw, tconf in blines:
                 ln = _clean(raw)
                 if not ln:
                     continue
+                pg = dict(page, _tc=tconf)
                 if PPS_NAMED.search(ln) and direction != "in":
-                    named.append({"page": page["n"], "quote": ln[:200], "ocr": ocr, "ocr_conf": page.get("ocr_conf")})
+                    named.append({"page": page["n"], "quote": ln[:200], "ocr": ocr, "ocr_conf": page.get("ocr_conf"), "tok_conf": tconf if ocr else None,
+                                  "block": block_text[:600]})
                 if SINGLE_H.search(ln):
                     mode, cur, combo = "single", None, False
                 elif MULTI_H.search(ln):
@@ -100,7 +122,7 @@ def power_output(doc):
                     continue
                 if PLUS_PREFIX.match(ln):
                     combo, cur = True, None
-                    _device(device, ln, page, "multi", ocr, "port", block_text)
+                    _device(device, ln, pg, "multi", ocr, "port", block_text)
                     continue
                 m = PREFIX.match(ln)
                 if m:
@@ -110,15 +132,15 @@ def power_output(doc):
                     eff = "multi" if (mode == "multi" or combo) else (mode or "unstated")
                     if eff == "multi":
                         cur = None
-                        _device(device, rest, page, eff, ocr, "port", block_text)
+                        _device(device, rest, pg, eff, ocr, "port", block_text)
                         continue
                     if not CH.has_pdo(rest) and rest.strip() and not re.search(r"\d\s*W", rest):
                         cur = None          # a protocol list / prose after a port name ('USB-C2: QC3.0 / PD3.0'), not a PDO table
                         continue
                     cur = {"name": name, "tokens": toks, "text": rest, "page": page["n"], "mode": eff, "ocr": ocr,
-                           "ocr_conf": page.get("ocr_conf"), "block": block_text[:600]}
+                           "ocr_conf": page.get("ocr_conf"), "tok_conf": tconf if ocr else None, "block": block_text[:600]}
                     ports.append(cur)
-                    _device(device, rest, page, eff, ocr, "port", block_text)
+                    _device(device, rest, pg, eff, ocr, "port", block_text)
                     continue
                 cont = cur is not None and (re.match(r"^\s*\d+(?:\.\d+)?\s*A\b", ln) or re.search(r"(?i)\d\s*W\s*Max", ln))
                 if CH.has_pdo(ln) or re.match(r"(?i)^\s*PPS\b", ln) or cont:
@@ -127,9 +149,12 @@ def power_output(doc):
                         # a PDO wrapped across lines ('... / 28.0V' + '5.0A, 140.0W (140.0W Max)') is re-joined with a space
                         sep = " " if re.search(r"\d\s*V\s*$", cur["text"]) else " / "
                         cur["text"] = (cur["text"] + sep + ln).strip(" /")
-                        _device(device, cur["text"], page, eff, ocr, "port", block_text)
+                        if ocr:
+                            cur["tok_conf"] = _min_conf(cur["tok_conf"], tconf)
+                            pg["_tc"] = cur["tok_conf"]
+                        _device(device, cur["text"], pg, eff, ocr, "port", block_text)
                     else:
-                        _device(device, ln, page, eff, ocr, "out" if direction == "out" else None, block_text)
+                        _device(device, ln, pg, eff, ocr, "out" if direction == "out" else None, block_text)
                     continue
                 cur = None               # prose: the port row is over
     out_ports, by_tok = [], {}
@@ -138,7 +163,7 @@ def power_output(doc):
         if not (fx or pps):
             continue
         out_ports.append({"name": p["name"], "tokens": p["tokens"], "fixed_pdos": fx or None, "pps": pps or None, "max_w": mw,
-                          "vmax": vmax, "page": p["page"], "mode": p["mode"], "ocr": p["ocr"], "ocr_conf": p["ocr_conf"],
+                          "vmax": vmax, "page": p["page"], "mode": p["mode"], "ocr": p["ocr"], "ocr_conf": p["ocr_conf"], "tok_conf": p["tok_conf"],
                           "quote": (p["name"] + ": " + p["text"])[:300], "block": p["block"]})
     # one document, one port, two different rows (repeated language sections OCR'd differently, a table we misread): that port is not
     # attributable from this document (device-level evidence only)
@@ -163,7 +188,12 @@ def _device(device, text, page, mode, ocr, ctx=None, block=""):
     fx, pps, mw, vmax = _pdo_bits(text)
     if fx or pps:
         device.append({"page": page["n"], "mode": mode, "ctx": ctx, "fixed": fx, "pps": pps, "vmax": vmax, "ocr": ocr, "ocr_conf": page.get("ocr_conf"),
-                       "quote": P.clean(text)[:200], "block": block[:600]})
+                       "tok_conf": page.get("_tc") if ocr else None, "quote": P.clean(text)[:200], "block": block[:600]})
+
+
+def _min_conf(a, b):
+    """Lowest of two token confidences; None (no token evidence) wins: uncertainty is never averaged away."""
+    return None if a is None or b is None else min(a, b)
 
 
 def models(doc):

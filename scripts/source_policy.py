@@ -58,6 +58,18 @@ def host_of(url):
     return h.lower().rstrip(".")
 
 
+DOC_URL = re.compile(r"\.(?:pdf|docx?|xlsx?|zip|png|jpe?g|webp)$|documentrequesthandler", re.I)
+
+
+def is_document_url(url):
+    """A URL that is itself a document (file), never a page: it cannot be an inheritance endpoint for a document_host document."""
+    try:
+        path = urllib.parse.urlsplit(str(url or "")).path
+    except ValueError:
+        return True
+    return bool(DOC_URL.search(path))
+
+
 def is_expression(v):
     if isinstance(v, str):
         return bool(EXPR.search(v))
@@ -177,7 +189,10 @@ class Policy:
         """Per-host disposition. A host listed as `kind: document_host, inherit: linking_page` (shared CDNs: cdn.shopify.com serves many
         makers) has no disposition of its own: the document gets the disposition of the page that linked it (its domain), so a maker's
         manual on a shared CDN is exactly as publishable as that maker's page. Without a linking page it falls back to the host's own
-        (all-false) flags. A linking page on another document host is never followed (no inheritance chains)."""
+        (all-false) flags. No inheritance chains, independent of how the linking host is classified (review 6 fix 3): the linking page
+        must be a listed `kind: maker` host other than the document's own host, and must not itself be a document URL (a PDF, a document
+        handler); any other edge (another document host, a retail/unlisted host, a document on a maker host) is ineligible and the
+        document keeps the all-false fallback."""
         url, lf = self.split_ref(url)
         linked_from = linked_from or lf
         h = host_of(url)
@@ -185,7 +200,7 @@ class Policy:
         if s is not None and s.get("kind") == "document_host" and linked_from:
             ph = host_of(linked_from)
             ps = self.entry(ph) if ph else None
-            if ps is None or ps.get("kind") != "document_host":
+            if ps is not None and ps.get("kind") == "maker" and ph != h and not is_document_url(linked_from):
                 ck = (h, ph)
                 d = self._cache.get(ck)
                 if d is None:
@@ -310,9 +325,11 @@ class Policy:
         return [dict(s, licence_grant=bool(self.disposition(s.get("url"), s.get("linked_from"))["licence_grant"])) for s in sources or []
                 if self.allowed(s.get("url"), tier, linked_from=s.get("linked_from"))]
 
-    def documents(self, docs, tier, linked_from=None):
-        """Document links of a record; a document on a document_host inherits from `linked_from` (the record's own page)."""
-        return [d for d in docs or [] if self.allowed(d.get("url"), tier, linked_from=d.get("linked_from") or linked_from)]
+    def documents(self, docs, tier):
+        """Document links of a record, one entry per linking edge {url, linked_from}: a document on a document_host inherits from its OWN
+        edge's linking page only (review 6 fix 3: never from the record's first source); an entry without linked_from keeps the host's
+        all-false fallback."""
+        return [d for d in docs or [] if self.allowed(d.get("url"), tier, linked_from=d.get("linked_from"))]
 
     def page_url(self, sources):
         """The record's own page: first source that is neither inherited (via) nor a document (linked_from) nor on a document host."""
@@ -332,7 +349,7 @@ class Policy:
         for s in rec.get("sources") or []:
             self.note_unlisted({"url": s.get("url"), "linked_from": s.get("linked_from")}, "sources")
         for d in rec.get("documents") or []:
-            self.note_unlisted(d.get("url"), "documents")
+            self.note_unlisted({"url": d.get("url"), "linked_from": d.get("linked_from")}, "documents")
         for sp in (rec.get("specs") or {}).values():
             for sid in {x for x in sp.get("sources") or []}:
                 if sid in by:
@@ -354,7 +371,7 @@ class Policy:
         rec["specs"], _ = self.gate_specs(rec.get("specs") or {}, tier, lambda k, s: url.get(s), sup)
         rec["sources"] = self.source_entries(srcs, tier)
         if "documents" in rec:
-            rec["documents"] = self.documents(rec["documents"], tier, self.page_url(srcs))
+            rec["documents"] = self.documents(rec["documents"], tier)
         for fld in ("name", "variant_label", "variant", "family"):
             if isinstance(rec.get(fld), str):
                 rec[fld] = TAG.sub("", rec[fld]).strip()
