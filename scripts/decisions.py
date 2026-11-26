@@ -21,7 +21,8 @@ Governance (review 2 risk 1):
   - every active claim policy needs an explicit key allowlist (`match.keys`: list, or {source_id: [keys]}) plus `source_ids` and
     `extractors`; relation policies are explicit `rules` of {method, types, parsers} (exact method, exact parser id@version), no globs.
   - `audit: {by, at, evidence, parsers: {extractor: parser_fingerprint}}` records what was audited; `approval: {state: pending|approved,
-    by, at}` records who approved it. Parser drift (current fingerprint != audited one) is reported, and is fatal under --strict-parsers.
+    by, at}` records who approved it; only an approved policy (state approved + by + at) auto-accepts claims/relations — a pending one's
+    claims stay candidates and its relations stay proposed (preview only, never trusted), counted in `held` (2026-11-26). Parser drift (current fingerprint != audited one) is reported, and is fatal under --strict-parsers.
 """
 import fnmatch, hashlib, json, re, sys, time
 from pathlib import Path
@@ -58,6 +59,7 @@ class Decisions:
         self.retired_policies = doc.get("retired_policies") or []
         self.policy_doc = doc
         self.lock_path = self.dir / "policy-lock.jsonl"
+        self._held = {}             # unapproved policy id -> {"claims": {cid}, "relations": {(from, type, to)}} it would have auto-accepted
         self._validate()
         self.claims, self.relations, self.merges, self.splits = {}, {}, [], []
         self.lines = 0
@@ -153,7 +155,8 @@ class Decisions:
         return out
 
     def approvals(self):
-        return {p["id"]: ((p.get("approval") or {}).get("state") or "missing") for p in self.active()}
+        st = lambda p: (p.get("approval") or {}).get("state") or "missing"
+        return {p["id"]: ("approved-incomplete" if st(p) == "approved" and not self._approved(p) else st(p)) for p in self.active()}   # needs by + at
 
     # ------------------------------------------------------------------ claims
     def claim_state(self, cid, ctx):
@@ -172,10 +175,28 @@ class Decisions:
                 return "candidate", None
         if d:
             return ("accepted" if d["action"] == "accept_claim" else "rejected"), d["id"]
+        pending = []
         for p in self.claim_policies:
             if self._match(p, ctx):
-                return "accepted", p["id"]
+                if self._approved(p):
+                    return "accepted", p["id"]
+                pending.append(p["id"])                # a pending policy never auto-accepts: its claims stay candidates (preview only)
+        for pid in pending:
+            self._hold(pid, "claims", cid)
         return "candidate", None
+
+    @staticmethod
+    def _approved(p):
+        a = p.get("approval") or {}
+        return a.get("state") == "approved" and bool(a.get("by")) and bool(a.get("at"))
+
+    def _hold(self, pid, what, target):
+        self._held.setdefault(pid, {"claims": set(), "relations": set()})[what].add(target)
+
+    @property
+    def held(self):
+        """-> {policy id: {"claims": n, "relations": n}} that an approval would publish (unique targets; governance report)."""
+        return {pid: {k: len(v) for k, v in h.items()} for pid, h in sorted(self._held.items())}
 
     @staticmethod
     def _match(p, ctx):
@@ -202,10 +223,16 @@ class Decisions:
         d = self.relations.get((frm, typ, to))
         if d:
             return ("approved" if d["action"] == "approve_relation" else "rejected"), d["id"]
+        pending = []
         for p in self.relation_policies:
             for r in p.get("rules") or []:
                 if r["method"] == method and typ in r["types"] and parser in r["parsers"]:
-                    return "approved", p["id"]
+                    if self._approved(p):
+                        return "approved", p["id"]
+                    pending.append(p["id"])            # pending relation policy: the relation stays proposed
+                    break
+        for pid in pending:
+            self._hold(pid, "relations", (frm, typ, to))
         return "proposed", None
 
     def merge_allowed(self, anchors):

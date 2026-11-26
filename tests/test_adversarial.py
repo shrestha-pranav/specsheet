@@ -33,9 +33,9 @@ def write_policies(d, doc, ledger=""):
 
 
 CLAIM_POL = {"id": "claim/x@1", "since": "2026-11-23", "rationale": "fixture", "audit": {"by": "t", "at": "2026-11-23", "evidence": "e", "parsers": {"xa@1": "sha256:aaa"}},
-             "approval": {"state": "pending", "by": None, "at": None},
+             "approval": {"state": "approved", "by": "fixture-approver", "at": "2026-11-26"},     # 2026-11-26 gate: only approved policies auto-accept
              "match": {"extractors": ["xa@1"], "source_ids": ["xs"], "kinds": ["official"], "statuses": ["known"], "keys": {"xs": ["gen.a"]}}}
-REL_POL = {"id": "rel/x@1", "since": "2026-11-23", "rationale": "fixture", "rules": [{"method": "adapter:xs", "types": ["configuration_of"], "parsers": ["xa@1"]}]}
+REL_POL = {"id": "rel/x@1", "since": "2026-11-23", "rationale": "fixture", "approval": {"state": "approved", "by": "fixture-approver", "at": "2026-11-26"}, "rules": [{"method": "adapter:xs", "types": ["configuration_of"], "parsers": ["xa@1"]}]}
 
 
 class Governance(unittest.TestCase):
@@ -101,7 +101,9 @@ class Governance(unittest.TestCase):
         dec = self.dec()
         self.assertEqual(dec.parser_drift({"xa@1": "sha256:aaa"}), [])
         self.assertEqual(dec.parser_drift({"xa@1": "sha256:bbb"}), [("claim/x@1", "xa@1", "sha256:aaa", "sha256:bbb")])
-        self.assertEqual(dec.approvals(), {"claim/x@1": "pending", "rel/x@1": "missing"})
+        self.assertEqual(dec.approvals(), {"claim/x@1": "approved", "rel/x@1": "approved"})
+        bare = {k: v for k, v in REL_POL.items() if k != "approval"}
+        self.assertEqual(self.dec(rel=bare).approvals()["rel/x@1"], "missing")
 
     def test_repo_policies_pass_their_own_governance(self):
         dec = D.Decisions(ROOT / "data")

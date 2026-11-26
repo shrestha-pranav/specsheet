@@ -42,14 +42,17 @@ claim_policies:
   - id: claim/widgetco-spec@1
     since: "2026-11-23"
     rationale: fixture
+    approval: {state: approved, by: fixture-approver, at: "2026-11-26"}
     match: {extractors: [widgetco@1], source_ids: [widgetco-us], kinds: [official], tiers: [manufacturer], statuses: [known], require_normalized: true,
             keys: [gen.size, gen.kind]}
   - id: claim/widget-cert@1
     since: "2026-11-23"
     rationale: fixture
+    approval: {state: approved, by: fixture-approver, at: "2026-11-26"}
     match: {extractors: [widgetcert@1], source_ids: [widget-cert], kinds: [official], tiers: [certifier], keys: [cert.tier], statuses: [known]}
 relation_policies:
   - {id: rel/fixture-adapter@1, since: "2026-11-23", rationale: fixture,
+     approval: {state: approved, by: fixture-approver, at: "2026-11-26"},
      rules: [{method: "adapter:widgetco-us", types: [variant_of, package_of], parsers: [widgetco@1]}]}
 """
 

@@ -80,7 +80,7 @@ class Fixture(unittest.TestCase):
         (t / "data" / "decisions").mkdir(parents=True)
         pols = ["format: specsheet.policies/1", "claim_policies:"]
         for sid, (_, tier, ext, keys) in SRC.items():
-            pols += [f"  - id: claim/{sid}@1", '    since: "2026-11-24"', "    rationale: fixture",
+            pols += [f"  - id: claim/{sid}@1", '    since: "2026-11-24"', "    rationale: fixture", '    approval: {state: approved, by: fixture-approver, at: \"2026-11-26\"}',
                      f"    match: {{extractors: [{ext}], source_ids: [{sid}], kinds: [official], tiers: [{tier}], statuses: [known], keys: [{', '.join(keys)}]}}"]
         pols += ["relation_policies: []"]
         (t / "data" / "decisions" / "policies.yaml").write_text("\n".join(pols) + "\n")

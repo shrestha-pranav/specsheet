@@ -1,0 +1,7 @@
+# Brief: enforce policy approval. Owner: A3-gov. Read common.md, scripts/decisions.py (claim_state, relation_state), team/queue/approval-gate.patch (coordinator's draft).
+Bug: approval was metadata only — a pending policy auto-accepted claims as soon as it was in policies.yaml. AOC values went live under pending claim/mfr-monitor-aoc for ~1h (taken down by source-policy free:false in 85fc68d1).
+1. Apply the draft: only policies with approval.state approved + by + at auto-accept claims/relations; pending => candidate (preview), never trusted.
+2. Test fixtures (test_adversarial, test_corrections, test_new_category, test_r6/r7/r8, test_replay, test_source_policy, others) build policies with approval pending and expect acceptance. Update fixtures to approve explicitly (fixture approver 'fixture-approver', fixture date) — do NOT weaken the gate. Add tests: pending policy => its claims candidate/preview only, never in trusted index; approving it => accepted next build; relation policy same.
+3. Governance check: release/build output lists pending policies with claim counts that are held back (so the coordinator sees what approval would publish).
+4. Confirm the real data build is unchanged when all non-AOC policies are approved (diff trusted index before/after; only AOC-related differences allowed).
+Do not run release.sh; finish with bare import.py --strict-parsers + build.py under flock rc 0 and all tests/test_*.py passing. Report team/reports/2026-11-26-a3-approval-gate.md (<=30 lines).

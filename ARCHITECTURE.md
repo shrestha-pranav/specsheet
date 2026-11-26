@@ -430,7 +430,9 @@ status, ...)` + per-category typed views for facets, `snapshots(sha256, source, 
 ### 15.8 Decisions, identity and publication (A3-impl r2, 2026-11-22; implements the Astra data-model review P0/P1)
 - **Inputs of record** (git): `data/_ids/registry.jsonl` (anchor `category|scheme|issuer|value|market` -> id, append-only; ids
   are looked up, never reminted; new ids minted in sorted anchor order, length-capped), `data/_ids/tombstones.jsonl`,
-  `data/decisions/policies.yaml` (versioned auto-accept policies) and `data/decisions/ledger.jsonl` (human decisions:
+  `data/decisions/policies.yaml` (versioned auto-accept policies; only `approval: {state: approved, by, at}` auto-accepts — a
+  pending policy's claims stay candidates (preview only) and its relations proposed; import prints/records them under
+  `governance.held_by_pending` with the counts approval would publish, 2026-11-26) and `data/decisions/ledger.jsonl` (human decisions:
   accept/reject claim, approve/reject relation, merge, split). `state/specsheet.sqlite` = f(raw/, these files); acceptance
   test `tests/test_replay.py` deletes it, replays (both source orders, `--no-mint`) and compares ids/links/claims/rejections.
 - **Identity** (`scripts/identity.py`): scoped keys (scheme, issuer, normalised value, market, level); GTINs check-digit

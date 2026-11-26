@@ -285,6 +285,9 @@ SAM = [("QN65S90FAFXZA", "US", 64.5), ("QN55S90FAEXZA", "US", 54.6), ("QN85S90FA
        ("QN77S90FAFXZA", "US", 76.7)]
 
 
+FIXTURE_APPROVAL = {"state": "approved", "by": "fixture-approver", "at": "2026-11-26"}   # 2026-11-26 gate: only approved policies auto-accept
+
+
 def policies():
     real = {p["id"]: p for p in (yaml.safe_load((CODE / "data" / "decisions" / "policies.yaml").read_text()) or {}).get("claim_policies", []) +
             yaml.safe_load((CODE / "data" / "decisions" / "policies.yaml").read_text()).get("relation_policies", [])}
@@ -293,16 +296,16 @@ def policies():
         p["match"]["source_ids"] = ["es-tvx"]; p["match"]["keys"] = {"es-tvx": p["match"]["keys"]["energystar-tvs"]}
     scope = copy.deepcopy(real["rel/tvs-es-certification-scope@1"]); scope["rules"][0]["parsers"] = ["esx@1+tvcert@1"]
     return {"format": "specsheet.policies/1", "claim_policies": [
-        {"id": "claim/fx-site@1", "since": "2026-11-23", "rationale": "fixture", "match": {
+        {"id": "claim/fx-site@1", "since": "2026-11-23", "rationale": "fixture", "approval": FIXTURE_APPROVAL, "match": {
             "extractors": ["kitco@1", "lgx@1", "samx@1"], "source_ids": ["kitco-us", "lgx-us", "samx-us"], "kinds": ["official"],
             "tiers": ["manufacturer"], "statuses": ["known"], "require_normalized": False, "keys": ["gen.power", "gen.viewable_diag", "phys.weight", "panel.display_tech"]}},
-        {"id": "claim/fx-es-direct@1", "since": "2026-11-23", "rationale": "fixture: the direct ES list includes panel facts", "match": {
+        {"id": "claim/fx-es-direct@1", "since": "2026-11-23", "rationale": "fixture: the direct ES list includes panel facts", "approval": FIXTURE_APPROVAL, "match": {
             "extractors": ["esx@1"], "source_ids": ["es-tvx"], "kinds": ["official"], "tiers": ["regulatory"], "statuses": ["known"],
             "require_normalized": False, "keys": ["pwr.energy_star", "panel.display_tech", "gen.viewable_diag", "pwr.on_mode_doe_w"]}},
         cov, pw],
         "relation_policies": [
-            {"id": "rel/fx-bundle@1", "since": "2026-11-23", "rationale": "fixture: the r6-shaped rule", "rules": [{"method": "bundle:kitco-us", "types": ["contains"], "parsers": ["kitco@1"]}]},
-            {"id": "rel/fx-bundle@2", "since": "2026-11-23", "rationale": "fixture", "rules": [{"method": "bundle:kitco-us", "types": ["contains"], "parsers": ["kitco@1+bundles@2"]}]},
+            {"id": "rel/fx-bundle@1", "since": "2026-11-23", "rationale": "fixture: the r6-shaped rule", "approval": FIXTURE_APPROVAL, "rules": [{"method": "bundle:kitco-us", "types": ["contains"], "parsers": ["kitco@1"]}]},
+            {"id": "rel/fx-bundle@2", "since": "2026-11-23", "rationale": "fixture", "approval": FIXTURE_APPROVAL, "rules": [{"method": "bundle:kitco-us", "types": ["contains"], "parsers": ["kitco@1+bundles@2"]}]},
             scope, copy.deepcopy(real["rel/tvs-crosswalk@1"])]}
 
 

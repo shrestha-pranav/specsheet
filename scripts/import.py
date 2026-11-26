@@ -1370,6 +1370,10 @@ def main():
     con.execute("INSERT INTO meta VALUES (?,?)", ("inputs", json.dumps(inputs, sort_keys=True)))
     con.commit(); con.close()
     os.replace(tmp, dbp)
+    for pid, st in sorted(dec.approvals().items()):     # 2026-11-26 approval gate: show the coordinator what approving would publish
+        if st != "approved":
+            h = dec.held.get(pid, {})
+            print(f"governance: {pid} is {st}: holding back {h.get('claims', 0)} claims, {h.get('relations', 0)} relations (candidate/proposed, preview only)", file=sys.stderr)
     print(json.dumps({"db": str(dbp), "seconds": round(time.time() - t0, 1), "accepted_digest": digest.hexdigest(),
                       "entities": {c: dict(v) for c, v in out_counts.items()}, "claims_review": {c: dict(v) for c, v in review_counts.items()},
                       "ids": {"reused": reused, "new": minted, "registry_lines_appended": flushed, "id_conflicts": len(id_conflicts)},
@@ -1379,6 +1383,7 @@ def main():
                       "stem_proposals": {c: dict(v) for c, v in cat_stats.items()},
                       "invalid_claims": sum(invalid.values()), "corrections": corr_stats, "documents": dict(sorted(doc_stats.items())), "unmapped_rows": len(um_rows), "ignored_label_rows": len(ignored_rows),
                       "governance": {"policies_locked_now": locked_new, "parser_drift": len(drift), "pending_approval": sorted(k for k, v in dec.approvals().items() if v != "approved"),
+                                     "held_by_pending": {k: dict(v, approval=dec.approvals().get(k, "missing")) for k, v in dec.held.items()},
                                      "registry": inputs["registry"], "raw_snapshots": inputs["raw_snapshots"], "parse_cache": dict(parse_cache),
                                      "html_entities_decoded": sum(v.get("html_entities_decoded", 0) for v in stats.values()),
                                      "quarantined_cross_market": sum(v.get("quarantined_cross_market", 0) for v in stats.values())}}, indent=1))

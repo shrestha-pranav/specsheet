@@ -47,6 +47,7 @@ claim_policies:
   - id: claim/widgetco-spec@1
     since: "2026-11-25"
     rationale: fixture
+    approval: {state: approved, by: fixture-approver, at: "2026-11-26"}
     match: {extractors: [widgetco@1], source_ids: [widgetco-us], kinds: [official], tiers: [manufacturer], statuses: [known], keys: [gen.size, gen.kind, gen.flag]}
 relation_policies: []
 """

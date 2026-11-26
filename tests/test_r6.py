@@ -126,11 +126,12 @@ claim_policies:
   - id: claim/kitco-spec@1
     since: "2026-11-23"
     rationale: fixture
+    approval: {state: approved, by: fixture-approver, at: "2026-11-26"}
     match: {extractors: [kitco@1], source_ids: [kitco-us], kinds: [official], tiers: [manufacturer], statuses: [known], require_normalized: true,
             keys: [gen.power, phys.weight]}
 relation_policies:
-  - {id: rel/fixture-bundle@1, since: "2026-11-23", rationale: fixture, rules: [{method: "bundle:kitco-us", types: [contains], parsers: [kitco@1]}]}
-  - {id: rel/fixture-bundle@2, since: "2026-11-23", rationale: "r7: the bundles@2 transform", rules: [{method: "bundle:kitco-us", types: [contains], parsers: ["kitco@1+bundles@2"]}]}
+  - {id: rel/fixture-bundle@1, since: "2026-11-23", rationale: fixture, approval: {state: approved, by: fixture-approver, at: "2026-11-26"}, rules: [{method: "bundle:kitco-us", types: [contains], parsers: [kitco@1]}]}
+  - {id: rel/fixture-bundle@2, since: "2026-11-23", rationale: "r7: the bundles@2 transform", approval: {state: approved, by: fixture-approver, at: "2026-11-26"}, rules: [{method: "bundle:kitco-us", types: [contains], parsers: ["kitco@1+bundles@2"]}]}
 """
 
 

@@ -219,12 +219,15 @@ CARB = [(m, t) for m, t in (("B-100", "mechanical"), ("B-100C", "mechanical"), (
 MFR = [("Core 40", 150), ("Core 50", 160), ("Core 60", 170)]
 
 
+FIXTURE_APPROVAL = {"state": "approved", "by": "fixture-approver", "at": "2026-11-26"}   # 2026-11-26 gate: only approved policies auto-accept
+
+
 def policies():
     real = {p["id"]: p for p in (lambda d: d["claim_policies"] + d["relation_policies"])(yaml.safe_load((CODE / "data" / "decisions" / "policies.yaml").read_text()))}
     shc, shr, xw = (copy.deepcopy(real[i]) for i in NEW)        # the REAL allowlists / rules, re-pointed at the fixture source ids
     shc["match"].update(extractors=["esa_same_hardware@1"], source_ids=["es-apx"], keys={"es-apx": shc["match"]["keys"]["energystar-airpurifiers"]})
     shr["rules"][0]["parsers"] = ["esa@1+xwalk@1"]
-    fx = lambda i, ex, sid, tier, keys: {"id": i, "since": "2026-11-24", "rationale": "fixture", "match": {
+    fx = lambda i, ex, sid, tier, keys: {"id": i, "since": "2026-11-24", "rationale": "fixture", "approval": FIXTURE_APPROVAL, "match": {
         "extractors": [ex], "source_ids": [sid], "kinds": ["official"], "tiers": [tier], "statuses": ["known"], "require_normalized": False, "keys": keys}}
     return {"format": "specsheet.policies/2", "claim_policies": [
         fx("claim/fx-es@1", "esa@1", "es-apx", "regulatory", ["cadr.smoke_cfm", "eff.energy_star", "ozone.carb_type"]),

@@ -1,0 +1,39 @@
+diff --git a/scripts/decisions.py b/scripts/decisions.py
+index 9b0b6ce53..5166c18c4 100644
+--- a/scripts/decisions.py
++++ b/scripts/decisions.py
+@@ -21,7 +21,7 @@ Governance (review 2 risk 1):
+   - every active claim policy needs an explicit key allowlist (`match.keys`: list, or {source_id: [keys]}) plus `source_ids` and
+     `extractors`; relation policies are explicit `rules` of {method, types, parsers} (exact method, exact parser id@version), no globs.
+   - `audit: {by, at, evidence, parsers: {extractor: parser_fingerprint}}` records what was audited; `approval: {state: pending|approved,
+-    by, at}` records who approved it. Parser drift (current fingerprint != audited one) is reported, and is fatal under --strict-parsers.
++    by, at}` records who approved it; only an approved policy (state approved + by + at) auto-accepts — pending claims stay candidates (2026-11-26). Parser drift (current fingerprint != audited one) is reported, and is fatal under --strict-parsers.
+ """
+ import fnmatch, hashlib, json, re, sys, time
+ from pathlib import Path
+@@ -110,6 +110,8 @@ class Decisions:
+             if isinstance(m["keys"], dict) and set(m["keys"]) - set(m["source_ids"]):
+                 raise SystemExit(f"policies.yaml {p['id']}: keys{{source}} names a source not in source_ids")
+         for p in self.relation_policies:
++            if not self._approved(p):
++                continue
+             for r in p.get("rules") or []:
+                 if any(ch in r.get("method", "*") for ch in "*?[") or not r.get("types") or not r.get("parsers"):
+                     raise SystemExit(f"policies.yaml {p['id']}: relation rules need an exact method, types and parsers (no globs)")
+@@ -173,10 +175,15 @@ class Decisions:
+         if d:
+             return ("accepted" if d["action"] == "accept_claim" else "rejected"), d["id"]
+         for p in self.claim_policies:
+-            if self._match(p, ctx):
++            if self._approved(p) and self._match(p, ctx):     # a pending policy never auto-accepts: its claims stay candidates (preview only)
+                 return "accepted", p["id"]
+         return "candidate", None
+ 
++    @staticmethod
++    def _approved(p):
++        a = p.get("approval") or {}
++        return a.get("state") == "approved" and bool(a.get("by")) and bool(a.get("at"))
++
+     @staticmethod
+     def _match(p, ctx):
+         m = p.get("match") or {}
