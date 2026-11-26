@@ -48,7 +48,7 @@ def codeof(t, slug):
 
 
 class Dell:
-    id, version, source_id, categories = "dell", 2, "dell-us", {"laptops"}
+    id, version, source_id, categories = "dell", 3, "dell-us", {"laptops"}
 
     def __init__(self):
         self.store = C.BlobStore(self.source_id)

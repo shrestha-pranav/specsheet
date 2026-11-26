@@ -58,7 +58,7 @@ class Dell(unittest.TestCase):
         p = X.dell(["1 x USB Type‑C 3.2 Gen 2 (10 Gbps) – supporting DisplayPort™ and Power Delivery", "1 x 4.5 mm barrel power port"])
         self.assertEqual(p["charge_port"], "barrel")
         p = X.dell(["2 USB-C 3.2 Gen 2 (10 Gbps) ports with DisplayPort™ and Power Delivery", "1 power-adapter port"])
-        self.assertNotIn("charge_port", p)            # dedicated port of unstated shape: nothing
+        self.assertEqual(p["charge_port"], "dedicated")  # r9: named power-adapter port of unstated shape
         self.assertEqual(p["usbc_list"][0]["dp_alt"], "DisplayPort")
 
     def test_refusals(self):

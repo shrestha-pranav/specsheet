@@ -434,7 +434,7 @@ class TestTuvRule(unittest.TestCase):
     def test_policy_accepts_only_derived(self):
         sys.path.insert(0, str(CODE / "scripts"))
         import decisions as D
-        pol = next(p for p in D.Decisions(CODE / "data").claim_policies if p["id"] == "claim/derive-tuv-eye-comfort-5star@3")
+        pol = max((p for p in D.Decisions(CODE / "data").claim_policies if p["id"].startswith("claim/derive-tuv-eye-comfort-5star@")), key=lambda p: int(p["id"].rsplit("@", 1)[1]))  # latest active version (re-pins bump it)
         ctx = {"source_id": "lenovo-psref-monitors", "extractor": "lenovo_monitors@6", "key": "flk.pwm", "kind": "derived", "tier": "manufacturer",
                "status": "known", "normalized": True}
         self.assertTrue(D.Decisions._match(pol, ctx))

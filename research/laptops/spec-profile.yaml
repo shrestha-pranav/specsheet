@@ -922,6 +922,7 @@ specs:
   why: Dedicated charge port (barrel/MagSafe/USB-C)
   traps:
   - Proprietary vs USB-C charging
+  - 'Values: usb-c | barrel | proprietary | magsafe | dedicated (A1 2026-11-26: maker lists a separate DC-in/power-adapter port of unstated shape; never inferred from absent USB-C charging). A list when the maker states both.'
   sources:
   - Apple specs
   example: usb-c

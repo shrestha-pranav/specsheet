@@ -77,7 +77,7 @@ def mtm_region(m):
 
 
 class LenovoPsref:
-    id, version, source_id, categories = "lenovo_psref", 4, "lenovo-psref", {"laptops"}
+    id, version, source_id, categories = "lenovo_psref", 5, "lenovo-psref", {"laptops"}
 
     def __init__(self):
         self.store = C.BlobStore(self.source_id)

@@ -68,7 +68,7 @@ def curl_snapshot(store, ref, url, adapter, ext=".html"):
 
 
 class Surface:
-    id, version, source_id, categories = "surface", 2, "microsoft-surface", {"laptops"}
+    id, version, source_id, categories = "surface", 3, "microsoft-surface", {"laptops"}
 
     def __init__(self):
         self.store = C.BlobStore(self.source_id)

@@ -145,3 +145,12 @@
 {"at": "2026-11-26T09:35:48Z", "id": "claim/mfr-routers-structured@4", "sha256": "sha256:a72f02c9648f2154b53871035c77b1e9aae403274904f1adbae5c6e0c13d6d3f"}
 {"at": "2026-11-26T09:35:48Z", "id": "claim/mfr-routers-class@4", "sha256": "sha256:a210d332d5a5948d253a5d2b9bcf73e9d2eef4dfe7a5a7163755b4b393f77c84"}
 {"at": "2026-11-26T09:39:06Z", "id": "claim/mfr-monitor-aoc@2", "sha256": "sha256:448f5ddda31df0e1efefeab9f3edb17ce837e6ccf9e292290b043e16119d37bf"}
+{"at": "2026-11-26T10:10:02Z", "id": "claim/mfr-structured-datasheet@5", "sha256": "sha256:806a2b29eaa0ab34bbb0e619680dc08d8ba21ed87a8981b6f244b1282d1189d4"}
+{"at": "2026-11-26T10:10:02Z", "id": "claim/asus-techspec-typed@5", "sha256": "sha256:f14a4cdff5e26e378afa691e658cd34206199d988a37ed6d2c3c2d213427f3de"}
+{"at": "2026-11-26T10:10:02Z", "id": "claim/mfr-routers-structured@5", "sha256": "sha256:88d2564594e7966a655ca84078188d72b4d5f9958a2b4fffc19360564078cd02"}
+{"at": "2026-11-26T10:10:02Z", "id": "claim/mfr-routers-class@5", "sha256": "sha256:fecba983f6b6e3f4b9f658775e5cda5bb2f7649b30b599a4500a5bd1ea2fe3eb"}
+{"at": "2026-11-26T10:10:02Z", "id": "claim/mfr-laptop-ports@2", "sha256": "sha256:b18ca6539f65e72497ee084a68255bb0a09812c98519d7b53d6820a552a167dd"}
+{"at": "2026-11-26T10:10:02Z", "id": "rel/source-stated-hierarchy@13", "sha256": "sha256:64060bba59cb8e38cccd79b75662f8cfa8a4938eefa75570f554ef0483c23382"}
+{"at": "2026-11-26T10:11:21Z", "id": "claim/mfr-monitor-structured@10", "sha256": "sha256:8b4aa2192bff3b8393cf507cd66edae2467bef767b53b84756bd2e336e05ec61"}
+{"at": "2026-11-26T10:11:21Z", "id": "claim/derive-tuv-eye-comfort-5star@4", "sha256": "sha256:4d728279a2c349433df4d5bbb7623b6380e30ce93993fdb7e4153fece2a781ad"}
+{"at": "2026-11-26T10:11:21Z", "id": "rel/source-stated-hierarchy@14", "sha256": "sha256:a79a03c7ac9b78f1094d516bf87469470a9a61c783f9ca595a86c5c2e7995908"}

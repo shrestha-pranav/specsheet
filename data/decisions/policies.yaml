@@ -8,18 +8,18 @@
 # (preview dataset only) until a human ledger line (ledger.jsonl) accepts or rejects it.
 format: specsheet.policies/2
 claim_policies:
-- id: claim/mfr-structured-datasheet@4
-  since: '2026-11-25'
-  supersedes: claim/mfr-structured-datasheet@3
-  rationale: 'Same sources, kinds, tiers and normalisation as @3, re-issued for the parser bump lenovo_psref@3 -> @4. WIDENING: port.charge_port, port.tb_usb4 and port.video_out added to the lenovo-psref allowlist. lenovo_psref@4 reads the MTM''s own Standard Ports cell through crawler/adapters/_lports.py: one ^|^ segment per port group, each fact located at the segment(s) that state it (locator.segments), never pooled. port.usbc_list becomes one item per physical USB-C port (''2x'' -> 2) with only the printed protocol / Gbps / PD input range / PD output W / DisplayPort version; port.tb_usb4 = the highest of Thunderbolt 5 > Thunderbolt 4 > USB4 printed on a USB-C segment (affirmative only, never none); port.video_out = the dedicated HDMI/DisplayPort segments, literal; port.charge_port = proprietary (Slim tip power connector) / barrel (Round tip power connector), or usb-c only when no power connector is named and a USB-C segment prints a PD input wattage or charging only (complete-enumeration negative over a fully understood cell; two different connectors = nothing). A cell with any segment not understood or platform-dependent (''DisplayPort 2.1 (Gorgon Point) / DisplayPort 1.4a (Hawk Point)'') keeps the @3 literal usbc_list and yields nothing else. All other lenovo_psref claims byte-identical to @3. tripplite@2 and cyberpower@1 unchanged.'
+- id: claim/mfr-structured-datasheet@5
+  since: '2026-11-26'
+  supersedes: claim/mfr-structured-datasheet@4
+  rationale: 'Same sources, kinds, tiers and normalisation as @3, re-issued for the parser bump lenovo_psref@3 -> @4. WIDENING: port.charge_port, port.tb_usb4 and port.video_out added to the lenovo-psref allowlist. lenovo_psref@4 reads the MTM''s own Standard Ports cell through crawler/adapters/_lports.py: one ^|^ segment per port group, each fact located at the segment(s) that state it (locator.segments), never pooled. port.usbc_list becomes one item per physical USB-C port (''2x'' -> 2) with only the printed protocol / Gbps / PD input range / PD output W / DisplayPort version; port.tb_usb4 = the highest of Thunderbolt 5 > Thunderbolt 4 > USB4 printed on a USB-C segment (affirmative only, never none); port.video_out = the dedicated HDMI/DisplayPort segments, literal; port.charge_port = proprietary (Slim tip power connector) / barrel (Round tip power connector), or usb-c only when no power connector is named and a USB-C segment prints a PD input wattage or charging only (complete-enumeration negative over a fully understood cell; two different connectors = nothing). A cell with any segment not understood or platform-dependent (''DisplayPort 2.1 (Gorgon Point) / DisplayPort 1.4a (Hawk Point)'') keeps the @3 literal usbc_list and yields nothing else. All other lenovo_psref claims byte-identical to @3. tripplite@2 and cyberpower@1 unchanged. r9: lenovo_psref@5 (_lports: a power connector or DC-in without a tip shape -> dedicated; no stored cell has one, claims byte-identical to @4). No key widening (port.charge_port already allowed).'
   audit:
-    by: A2-keys
-    at: '2026-11-25'
-    evidence: 'team/reports/2026-11-25-a2-zero-keys.md; claim diff @3 vs @4 over every stored US PSREF row (282 bundles): only Standard Ports claims change: 2082 literal port.usbc_list -> structured, +1177 port.tb_usb4, +2009 port.video_out, +1863 port.charge_port, 21 cells (Gorgon/Hawk Point dual-platform) unchanged literal; 0 other claims change. tests/test_zero_keys_ports.py'
-    parsers: {lenovo_psref@4: 'sha256:46b5cffaa3f0697920c7', tripplite@2: 'sha256:949811b25418d7a2b724', cyberpower@1: 'sha256:a3e88411366c8d320d51'}
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+    by: A2-lap2 r9
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r9-chargeport.md; in-memory claim diff lenovo_psref@4 vs @5 over every stored US PSREF row (scratch import): port.charge_port barrel 351 / proprietary 390 / usb-c 1122 identical; 0 dedicated (no stored cell prints a power connector of unstated shape); 0 other claims change. tests/test_a2_r9_chargeport.py'
+    parsers: {lenovo_psref@5: 'sha256:e5ba2db22c514b340e50', tripplite@2: 'sha256:949811b25418d7a2b724', cyberpower@1: 'sha256:a3e88411366c8d320d51'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26c}
   match:
-    extractors: [lenovo_psref@4, import.py+psref-mapping@1, tripplite@2, cyberpower@1, import.py+label-mapping@1]
+    extractors: [lenovo_psref@5, import.py+psref-mapping@1, tripplite@2, cyberpower@1, import.py+label-mapping@1]
     source_ids: [lenovo-psref, tripplite, cyberpower]
     kinds: [official]
     tiers: [manufacturer]
@@ -38,26 +38,26 @@ claim_policies:
         load.voltage, outlets.count, outlets.covers, outlets.switch, phys.dimensions, phys.material, phys.mounting, phys.weight_lb, safety.breaker, safety.led_details,
         surge.dataline, surge.emi_rfi, surge.joules, surge.max_spike_voltage, surge.max_surge_current, surge.response_time, surge.vpr_max, type.ul1363_listed,
         type.ul1449_edition, type.ul1449_listed, usb.pd, usb.ports, usb.total_w]
-- id: claim/asus-techspec-typed@4
+- id: claim/asus-techspec-typed@5
   since: '2026-11-26'
-  supersedes: claim/asus-techspec-typed@3
-  rationale: 'Same rules as @3 (labelled ASUS techspec / ROG JSON-LD cells, only values that normalise, explicit key allowlist), re-issued for asus@2 -> @3. WIDENING: port.usbc_list, port.tb_usb4, port.video_out added to the asus-us allowlist. asus@3 reads the I/O Ports cell with crawler/adapters/_xports.asus (same per-port model as Lenovo _lports): one item per physical USB-C port (''2x'' = two items), each fact only from the port group that prints it (protocol = the printed USB/Thunderbolt name, usb_gbps only from one printed ''N Gbps'', dp_alt only when the group names DisplayPort; ''support display'' is not DisplayPort; a bare ''power delivery'' sets no wattage and no charge port); tb_usb4 = highest TB5 > TB4 > USB4 printed on a USB-C group; video_out = the dedicated HDMI groups, literal. Emitted only when every group of the cell is understood and every option of a model-code cell agrees; a hedged USB-C/video group (''Up to 2x ... Type C''), an unknown group or a cell with no USB-C keeps the @3 literal claim. port.charge_port is never written for ASUS (DC-in shape and PD direction are not printed). All other asus claims are byte-identical.'
+  supersedes: claim/asus-techspec-typed@4
+  rationale: 'Same rules as @3 (labelled ASUS techspec / ROG JSON-LD cells, only values that normalise, explicit key allowlist), re-issued for asus@2 -> @3. WIDENING: port.usbc_list, port.tb_usb4, port.video_out added to the asus-us allowlist. asus@3 reads the I/O Ports cell with crawler/adapters/_xports.asus (same per-port model as Lenovo _lports): one item per physical USB-C port (''2x'' = two items), each fact only from the port group that prints it (protocol = the printed USB/Thunderbolt name, usb_gbps only from one printed ''N Gbps'', dp_alt only when the group names DisplayPort; ''support display'' is not DisplayPort; a bare ''power delivery'' sets no wattage and no charge port); tb_usb4 = highest TB5 > TB4 > USB4 printed on a USB-C group; video_out = the dedicated HDMI groups, literal. Emitted only when every group of the cell is understood and every option of a model-code cell agrees; a hedged USB-C/video group (''Up to 2x ... Type C''), an unknown group or a cell with no USB-C keeps the @3 literal claim. port.charge_port is never written for ASUS (DC-in shape and PD direction are not printed). All other asus claims are byte-identical. WIDENING: port.charge_port added to the asus-us allowlist; only value emitted is dedicated (maker''s I/O Ports cell lists a DC-in), r9: port.charge_port gains the value dedicated (A1 ruling): the maker''s port list names a separate DC-in / power-adapter / power connector of unstated shape; never inferred from absence of USB-C charging. Dedicated + USB-C charging both stated -> list [dedicated, usb-c].'
   audit:
-    by: A2-lap r8
+    by: A2-lap2 r9
     at: '2026-11-26'
-    evidence: 'team/reports/2026-11-26-a2-r8-laptops-names.md; in-memory claim diff asus@2 (git worktree HEAD) vs @3 over all 142 stored asus-us pages: 334 literal port.usbc_list claims replaced by 334 structured port.usbc_list + 271 port.tb_usb4 + 167 port.video_out; 25 cells keep the literal; identifiers and aliases identical. tests/test_a2_r8_laptop_ports.py'
+    evidence: 'team/reports/2026-11-26-a2-r9-chargeport.md; scratch import asus@3 vs @4 over 142 stored asus-us pages: +25 port.charge_port=dedicated (DC-in), 0 other claim changes. tests/test_a2_r9_chargeport.py'
     parsers:
-      asus@3: 'sha256:e4567d9a4abf86d3a49b'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26b}
+      asus@4: 'sha256:d7207c7067ec94343149'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26c}
   match:
-    extractors: [asus@3]
+    extractors: [asus@4]
     source_ids: [asus-us]
     kinds: [official]
     tiers: [manufacturer]
     statuses: [known, not_applicable]
     require_normalized: true
     keys:
-      asus-us: [cpu.model, disp.size, gen.color, in.webcam, mem.max, mem.size, mem.soldered, phys.weight, port.tb_usb4, port.usbc_list, port.video_out, pwr.battery_wh, stor.size, sw.os]
+      asus-us: [cpu.model, disp.size, gen.color, in.webcam, mem.max, mem.size, mem.soldered, phys.weight, port.charge_port, port.tb_usb4, port.usbc_list, port.video_out, pwr.battery_wh, stor.size, sw.os]
 - id: claim/cpu-split@2
   since: '2026-11-23'
   supersedes: claim/cpu-split@1
@@ -77,19 +77,19 @@ claim_policies:
     keys:
       asus-us: [cpu.base_clock, cpu.boost_clock, cpu.cache, cpu.cores, cpu.cores_threads, cpu.model, cpu.threads]
       lenovo-psref: [cpu.base_clock, cpu.boost_clock, cpu.cache, cpu.cores, cpu.cores_threads, cpu.model, cpu.threads]
-- id: claim/mfr-monitor-structured@9
-  since: '2026-11-25'
-  supersedes: claim/mfr-monitor-structured@8
-  rationale: 'Same meaning as @8 for every key it already accepted (lenovo_monitors@6 unchanged), re-issued for lg_us@3 -> @4 and asus_monitors@3 -> @4 (A2-mon r5). WIDENING: usb.kvm and res.refresh_native added to the lg-us allowlist, res.refresh_native to the asus-us-monitors allowlist. lg_us@4: usb.kvm from the maker''s own spec row ''KVM: Yes'' (True) / ''KVM: No'' (False), never prose or absence; res.refresh_native only from a ''Refresh Rate'' row that is one plain ''NHz'' on a page with no ''Dual Mode Refresh Rate'' row (''O/C'', ''up to'', several figures, H/V frequency -> nothing); flk.pwm none (already allowed) also from a feature-badge alt text line exactly ''Flicker-Free'' on a CMS image asset whose SKU metaproperty is exactly the page''s model (the UL Verified badge set ''Flicker-Free / Discomfort Glare Free / Low Blue Light Platinum''), only when the v3 footnote/copy rule found nothing. asus_monitors@4: res.refresh_native only where the single-model page''s own copy says ''native N Hz'' explicitly (one distinct N, N <= Refresh Rate (Max)); ''Refresh Rate (Max)'' alone never maps. Every other claim byte-identical.'
+- id: claim/mfr-monitor-structured@10
+  since: '2026-11-26'
+  supersedes: claim/mfr-monitor-structured@9
+  rationale: 'Same meaning as @8 for every key it already accepted (lenovo_monitors@6 unchanged), re-issued for lg_us@3 -> @4 and asus_monitors@3 -> @4 (A2-mon r5). WIDENING: usb.kvm and res.refresh_native added to the lg-us allowlist, res.refresh_native to the asus-us-monitors allowlist. lg_us@4: usb.kvm from the maker''s own spec row ''KVM: Yes'' (True) / ''KVM: No'' (False), never prose or absence; res.refresh_native only from a ''Refresh Rate'' row that is one plain ''NHz'' on a page with no ''Dual Mode Refresh Rate'' row (''O/C'', ''up to'', several figures, H/V frequency -> nothing); flk.pwm none (already allowed) also from a feature-badge alt text line exactly ''Flicker-Free'' on a CMS image asset whose SKU metaproperty is exactly the page''s model (the UL Verified badge set ''Flicker-Free / Discomfort Glare Free / Low Blue Light Platinum''), only when the v3 footnote/copy rule found nothing. asus_monitors@4: res.refresh_native only where the single-model page''s own copy says ''native N Hz'' explicitly (one distinct N, N <= Refresh Rate (Max)); ''Refresh Rate (Max)'' alone never maps. Every other claim byte-identical. r9: fingerprint pin only (lenovo_monitors imports lenovo_psref@5).'
   audit:
-    by: A2-mon r5
-    at: '2026-11-25'
-    evidence: 'team/reports/2026-11-25-a2-r5-monitors-stations.md; in-memory claim diff over every stored snapshot: lg_us@3 vs @4 (504 pages) +401 res.refresh_native, +16 usb.kvm (all True), +2 flk.pwm none (34GX900A-B, 45GX900A-B), 0 removed, 0 changed; asus_monitors@3 vs @4 (346 pages) +4 res.refresh_native (MB16AHG 144, PG27AQDP 480, VG27AQML1A 240, VG328QA1A 165), 0 removed; identifiers/aliases identical. tests/test_a2_mon_r5.py'
+    by: A2-lap2 r9
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r9-chargeport.md; lenovo_monitors@6 old vs new fingerprint (lenovo_monitors imports lenovo_psref, which moved to @5 for r9; _lports charge_port only): fingerprint pin, no extractor or claim change (monitor claims never read Standard Ports charge_port).'
     parsers:
-      lenovo_monitors@6: 'sha256:6648c4532a12e82e71a6'
+      lenovo_monitors@6: 'sha256:562ebc6804d7630f3f55'
       lg_us@4: 'sha256:f85d547907ba2f4cd231'
       asus_monitors@4: 'sha256:a03b47b4af0f4a10c940'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25c}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26c}
   match:
     extractors: [lenovo_monitors@6, lg_us@4, asus_monitors@4]
     source_ids: [lenovo-psref-monitors, lg-us, asus-us-monitors]
@@ -107,17 +107,17 @@ claim_policies:
       asus-us-monitors: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.size_class, gen.viewable_diag, hdr.contrast_static,
         hdr.marketed_label, hdr.peak_marketed, hdr.sdr_typ, motion.gtg_marketed, panel.surface, panel.technology, pwr.typical, res.aspect, res.height_px, res.native,
         res.refresh_max, res.refresh_native, res.vrr_types, res.width_px, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
-- id: claim/derive-tuv-eye-comfort-5star@3
-  since: '2026-11-25'
-  supersedes: claim/derive-tuv-eye-comfort-5star@2
-  rationale: 'Re-issue of @2 for the parser pin lenovo_monitors@5 -> @6 only (same rule, kinds, keys as @1/@2; the TÜV derivation code is byte-identical).'
+- id: claim/derive-tuv-eye-comfort-5star@4
+  since: '2026-11-26'
+  supersedes: claim/derive-tuv-eye-comfort-5star@3
+  rationale: 'Re-issue of @2 for the parser pin lenovo_monitors@5 -> @6 only (same rule, kinds, keys as @1/@2; the TÜV derivation code is byte-identical). r9: fingerprint pin only (lenovo_monitors imports lenovo_psref@5).'
   audit:
-    by: A2-keys
-    at: '2026-11-25'
-    evidence: 'flk.pwm derived claims identical lenovo_monitors@4 vs @6 over all 195 stored bundles (team/reports/2026-11-25-a2-zero-keys.md).'
+    by: A2-lap2 r9
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r9-chargeport.md; lenovo_monitors@6 old vs new fingerprint (lenovo_monitors imports lenovo_psref, which moved to @5 for r9; _lports charge_port only): fingerprint pin, no extractor or claim change (monitor claims never read Standard Ports charge_port).'
     parsers:
-      lenovo_monitors@6: 'sha256:6648c4532a12e82e71a6'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+      lenovo_monitors@6: 'sha256:562ebc6804d7630f3f55'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26c}
   match:
     extractors: [lenovo_monitors@6]
     source_ids: [lenovo-psref-monitors]
@@ -214,19 +214,19 @@ claim_policies:
       perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption,
       therm.temp_operating, port.drop]
     require_normalized: true
-- id: claim/mfr-routers-structured@4
+- id: claim/mfr-routers-structured@5
   since: '2026-11-26'
-  supersedes: claim/mfr-routers-structured@3
-  rationale: 'Fingerprint pin only: same extractors, sources, kinds, keys and rules as mfr-routers-structured@3. asus_routers.py imports asus (A.parse_table), which moved to asus@3 for laptop I/O Ports (A2-lap r8); parse_table and asus_routers.py are byte-identical.'
+  supersedes: claim/mfr-routers-structured@4
+  rationale: 'Fingerprint pin only: same extractors, sources, kinds, keys and rules as mfr-routers-structured@3. asus_routers.py imports asus (A.parse_table), which moved to asus@3 for laptop I/O Ports (A2-lap r8); parse_table and asus_routers.py are byte-identical. r9: fingerprint pin only (asus@4).'
   audit:
-    by: A2-lap r8
+    by: A2-lap2 r9
     at: '2026-11-26'
-    evidence: 'team/reports/2026-11-26-a2-r8-laptops-names.md; in-memory claim diff asus_routers@2 old vs new fingerprint over all 82 stored asus-us-routers pages: 0 added, 0 removed; identifiers and aliases identical.'
+    evidence: 'team/reports/2026-11-26-a2-r9-chargeport.md; asus_routers@2 old vs new fingerprint over all stored asus-us-routers pages: 0 claims added/removed (asus_routers imports asus.parse_table only; scratch import shows no router claim change).'
     parsers:
       tplink_routers@3: 'sha256:19f0ca2101fbc63e219c'
       netgear_routers@2: 'sha256:7a28aa0c5a72eea2a5a2'
-      asus_routers@2: 'sha256:32f8071aaca90f19d6c4'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26b}
+      asus_routers@2: 'sha256:d541e6e55ac029d718c7'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26c}
   match:
     extractors: [tplink_routers@3, netgear_routers@2, asus_routers@2]
     source_ids: [tplink-us-routers, netgear-us-routers, asus-us-routers]
@@ -239,18 +239,18 @@ claim_policies:
       port.multigig_count, port.wan_lan_configurable, port.usb_count, port.usb_standard, mesh.supported, mesh.systems, mesh.coverage_sqft, sw.vpn_server,
       sw.vpn_client, sw.wireguard, sw.operating_modes, sw.parental_controls, isp.ipv6, phys.weight, phys.dimensions, sup.hardware_version]
     require_normalized: true
-- id: claim/mfr-routers-class@4
+- id: claim/mfr-routers-class@5
   since: '2026-11-26'
-  supersedes: claim/mfr-routers-class@3
-  rationale: 'Fingerprint pin only: same extractors, sources, kinds, keys and rules as mfr-routers-class@3. asus_routers.py imports asus (A.parse_table), which moved to asus@3 for laptop I/O Ports (A2-lap r8); parse_table and asus_routers.py are byte-identical.'
+  supersedes: claim/mfr-routers-class@4
+  rationale: 'Fingerprint pin only: same extractors, sources, kinds, keys and rules as mfr-routers-class@3. asus_routers.py imports asus (A.parse_table), which moved to asus@3 for laptop I/O Ports (A2-lap r8); parse_table and asus_routers.py are byte-identical. r9: fingerprint pin only (asus@4).'
   audit:
-    by: A2-lap r8
+    by: A2-lap2 r9
     at: '2026-11-26'
-    evidence: 'team/reports/2026-11-26-a2-r8-laptops-names.md; in-memory claim diff asus_routers@2 old vs new fingerprint over all 82 stored asus-us-routers pages: 0 added, 0 removed; identifiers and aliases identical.'
+    evidence: 'team/reports/2026-11-26-a2-r9-chargeport.md; asus_routers@2 old vs new fingerprint over all stored asus-us-routers pages: 0 claims added/removed (asus_routers imports asus.parse_table only; scratch import shows no router claim change).'
     parsers:
       tplink_routers@3: 'sha256:19f0ca2101fbc63e219c'
-      asus_routers@2: 'sha256:32f8071aaca90f19d6c4'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26b}
+      asus_routers@2: 'sha256:d541e6e55ac029d718c7'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26c}
   match:
     extractors: [tplink_routers@3, asus_routers@2]
     source_ids: [tplink-us-routers, asus-us-routers]
@@ -1522,19 +1522,20 @@ claim_policies:
     statuses: [known]
     require_normalized: true
     keys: [hdmi.ports_4k120, hdmi.has_4k120]
-- id: claim/mfr-laptop-ports@1
+- id: claim/mfr-laptop-ports@2
   since: '2026-11-26'
-  rationale: 'New (A2-lap r8 brief item 1): per-port USB-C facts from the maker''s own port list for Dell (dell@2, www.dell.com spd Tech Specs ''Ports'' list, default configuration of the platform) and Microsoft Surface (surface@2, learn.microsoft.com tech-spec ''Ports and charging'' row), parsed by crawler/adapters/_xports.py in the Lenovo _lports per-port model. Each fact only from the line that states it, never pooled: one item per physical USB-C port; usb_gbps from one printed figure (''80/120 Gbps'' = none); dp_alt only when the port line names DisplayPort (Surface: also its own ''with support for:'' sub-items or an ''All USB-C ports support ...'' line; a separate ''DisplayPort 2.1 with support for monitors'' line is not attributed); pd_in_w only from a printed ''N W charging''; tb_usb4 = highest TB5 > TB4 > USB4 on a USB-C line; video_out = dedicated HDMI lines, literal; charge_port: Dell ''barrel power port'' = barrel, Surface Connect = proprietary, usb-c only when a USB-C line or charging line states charging over USB-C and no other charge path is named (Surface Connect + USB-C = nothing; Dell ''power-adapter port'' of unstated shape = nothing). Whole list refused on any platform/config condition (''AMD Ryzen 200 Series:'', ''only for computers with'', ''OR'', ''(optional)''), unknown line, or Surface size sections that disagree. Dell bare ''USB 3.2 Gen 1 (5 Gbps) port'' lines are read as non-USB-C (Dell names every Type-C port explicitly).'
+  supersedes: claim/mfr-laptop-ports@1
+  rationale: 'New (A2-lap r8 brief item 1): per-port USB-C facts from the maker''s own port list for Dell (dell@2, www.dell.com spd Tech Specs ''Ports'' list, default configuration of the platform) and Microsoft Surface (surface@2, learn.microsoft.com tech-spec ''Ports and charging'' row), parsed by crawler/adapters/_xports.py in the Lenovo _lports per-port model. Each fact only from the line that states it, never pooled: one item per physical USB-C port; usb_gbps from one printed figure (''80/120 Gbps'' = none); dp_alt only when the port line names DisplayPort (Surface: also its own ''with support for:'' sub-items or an ''All USB-C ports support ...'' line; a separate ''DisplayPort 2.1 with support for monitors'' line is not attributed); pd_in_w only from a printed ''N W charging''; tb_usb4 = highest TB5 > TB4 > USB4 on a USB-C line; video_out = dedicated HDMI lines, literal; charge_port: Dell ''barrel power port'' = barrel, Surface Connect = proprietary, usb-c only when a USB-C line or charging line states charging over USB-C and no other charge path is named (Surface Connect + USB-C = nothing; Dell ''power-adapter port'' of unstated shape = nothing). Whole list refused on any platform/config condition (''AMD Ryzen 200 Series:'', ''only for computers with'', ''OR'', ''(optional)''), unknown line, or Surface size sections that disagree. Dell bare ''USB 3.2 Gen 1 (5 Gbps) port'' lines are read as non-USB-C (Dell names every Type-C port explicitly). r9: port.charge_port gains the value dedicated (A1 ruling): the maker''s port list names a separate DC-in / power-adapter / power connector of unstated shape; never inferred from absence of USB-C charging. Dedicated + USB-C charging both stated -> list [dedicated, usb-c].'
   audit:
-    by: A2-lap r8
+    by: A2-lap2 r9
     at: '2026-11-26'
-    evidence: 'team/reports/2026-11-26-a2-r8-laptops-names.md; in-memory claim diff dell@1 vs @2 (100 pages): 78 literal port.usbc_list -> 78 structured + 49 port.tb_usb4 + 64 port.video_out, 21 lists keep the literal; surface@1 vs @2 (15 pages): 8 -> 8 structured + 5 port.tb_usb4 + 4 port.charge_port (usb-c) + 1 port.video_out; identifiers and aliases identical. tests/test_a2_r8_laptop_ports.py'
+    evidence: 'team/reports/2026-11-26-a2-r9-chargeport.md; scratch import dell@2 vs @3 over 100 dell-us pages: +11 port.charge_port=dedicated (power-adapter port); surface@2 vs @3 over 15 pages: 0 changes (4 usb-c kept). No key widening. tests/test_a2_r9_chargeport.py'
     parsers:
-      dell@2: 'sha256:7764cf3160817e580b53'
-      surface@2: 'sha256:9fc80d009457850426be'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26b}
+      dell@3: 'sha256:a03c94d24865f76dae93'
+      surface@3: 'sha256:64272f1d131c238f62cb'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26c}
   match:
-    extractors: [dell@2, surface@2]
+    extractors: [dell@3, surface@3]
     source_ids: [dell-us, microsoft-surface]
     kinds: [official]
     tiers: [manufacturer]
@@ -1676,6 +1677,319 @@ relation_policies:
   - method: crosswalk:reviewed
     types: [same_model]
     parsers: [xwalk@1]
+- id: rel/source-stated-hierarchy@14
+  since: '2026-11-26'
+  supersedes: rel/source-stated-hierarchy@13
+  rationale: 'Same rules, methods and types as @11; parser pins move: asus@2 -> @3, dell@1 -> @2, surface@1 -> @2 (A2-lap r8: per-port port claims only), sandisk_ssd@6 -> @7, samsung_ssd@3 -> @4 (alias sku binding only). Identifier and relation code unchanged. No new method. r9 pins: lenovo_psref@5, asus@4, dell@3, surface@3 (port.charge_port only). @14 also re-pins lenovo_monitors@6 (fingerprint moved because it imports lenovo_psref); @13 was locked by the first r9 import before that drift was found, never approved.'
+  audit:
+    by: A2-lap2 r9
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r9-chargeport.md; identifiers/aliases unchanged for lenovo-psref, asus-us, dell-us, microsoft-surface, lenovo-psref-monitors (scratch import; r9 changes only port.charge_port claims).'
+    parsers:
+      lenovo_psref@5: 'sha256:e5ba2db22c514b340e50'
+      asus@4: 'sha256:d7207c7067ec94343149'
+      dell@3: 'sha256:a03c94d24865f76dae93'
+      surface@3: 'sha256:64272f1d131c238f62cb'
+      razer@1: 'sha256:8752d0e2f07ae8b46ff2'
+      samsung@1: 'sha256:d0e9cabff53a15285159'
+      lenovo_monitors@6: 'sha256:562ebc6804d7630f3f55'
+      samsung_ssd@4: 'sha256:b1bfbfe652623ee2630c'
+      sandisk_ssd@7: 'sha256:f436dae10cc11e468138'
+      teamgroup_ssd@6: 'sha256:75bc6577801ceac73b22'
+      kingston_ssd@4: 'sha256:c93ab26938d6300a1494'
+      tplink_routers@3: 'sha256:19f0ca2101fbc63e219c'
+      crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26c}
+  rules:
+  - method: adapter:lenovo-psref
+    types: [member_of_family, configuration_of]
+    parsers: [lenovo_psref@5]
+  - method: adapter:asus-us
+    types: [member_of_family]
+    parsers: [asus@4]
+  - method: adapter:dell-us
+    types: [member_of_family]
+    parsers: [dell@3]
+  - method: adapter:microsoft-surface
+    types: [member_of_family, configuration_of]
+    parsers: [surface@3]
+  - method: adapter:razer-us
+    types: [member_of_family, configuration_of]
+    parsers: [razer@1]
+  - method: adapter:samsung-us
+    types: [member_of_family, configuration_of]
+    parsers: [samsung@1]
+  - method: adapter:lenovo-psref-monitors
+    types: [package_of]
+    parsers: [lenovo_monitors@6]
+  - method: adapter:samsung-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [samsung_ssd@4]
+  - method: adapter:sandisk-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [sandisk_ssd@7]
+  - method: adapter:teamgroup-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [teamgroup_ssd@6]
+  - method: adapter:kingston-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [kingston_ssd@4]
+  - method: adapter:tplink-us-routers
+    types: [variant_of]
+    parsers: [tplink_routers@3]
+  - method: page-variants:anker
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:baseus
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:belkin
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+retired_policies:
+- id: claim/mfr-monitor-structured@9
+  since: '2026-11-25'
+  supersedes: claim/mfr-monitor-structured@8
+  rationale: 'Same meaning as @8 for every key it already accepted (lenovo_monitors@6 unchanged), re-issued for lg_us@3 -> @4 and asus_monitors@3 -> @4 (A2-mon r5). WIDENING: usb.kvm and res.refresh_native added to the lg-us allowlist, res.refresh_native to the asus-us-monitors allowlist. lg_us@4: usb.kvm from the maker''s own spec row ''KVM: Yes'' (True) / ''KVM: No'' (False), never prose or absence; res.refresh_native only from a ''Refresh Rate'' row that is one plain ''NHz'' on a page with no ''Dual Mode Refresh Rate'' row (''O/C'', ''up to'', several figures, H/V frequency -> nothing); flk.pwm none (already allowed) also from a feature-badge alt text line exactly ''Flicker-Free'' on a CMS image asset whose SKU metaproperty is exactly the page''s model (the UL Verified badge set ''Flicker-Free / Discomfort Glare Free / Low Blue Light Platinum''), only when the v3 footnote/copy rule found nothing. asus_monitors@4: res.refresh_native only where the single-model page''s own copy says ''native N Hz'' explicitly (one distinct N, N <= Refresh Rate (Max)); ''Refresh Rate (Max)'' alone never maps. Every other claim byte-identical.'
+  audit:
+    by: A2-mon r5
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a2-r5-monitors-stations.md; in-memory claim diff over every stored snapshot: lg_us@3 vs @4 (504 pages) +401 res.refresh_native, +16 usb.kvm (all True), +2 flk.pwm none (34GX900A-B, 45GX900A-B), 0 removed, 0 changed; asus_monitors@3 vs @4 (346 pages) +4 res.refresh_native (MB16AHG 144, PG27AQDP 480, VG27AQML1A 240, VG328QA1A 165), 0 removed; identifiers/aliases identical. tests/test_a2_mon_r5.py'
+    parsers:
+      lenovo_monitors@6: 'sha256:6648c4532a12e82e71a6'
+      lg_us@4: 'sha256:f85d547907ba2f4cd231'
+      asus_monitors@4: 'sha256:a03b47b4af0f4a10c940'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25c}
+  match:
+    extractors: [lenovo_monitors@6, lg_us@4, asus_monitors@4]
+    source_ids: [lenovo-psref-monitors, lg-us, asus-us-monitors]
+    kinds: [official, derived]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    require_normalized: true
+    keys:
+      lenovo-psref-monitors: [color.dci_p3, color.srgb, ergo.vesa, ergo.weight, ergo.weight_panel, gen.color, gen.curvature, gen.size_class, hdr.contrast_static,
+        hdr.marketed_label, hdr.sdr_typ, panel.bit_depth, panel.surface, panel.technology, pwr.max, pwr.typical, res.aspect, res.height_px, res.native,
+        res.ppi, res.refresh_max, res.refresh_native, res.vrr_types, res.width_px, sup.warranty_years, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
+      lg-us: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, flk.pwm, gen.size_class, gen.viewable_diag, hdr.contrast_static, hdr.sdr_typ,
+        motion.gtg_marketed, panel.surface, panel.technology, pwr.external_adapter, pwr.max, pwr.typical, res.aspect, res.height_px, res.native, res.refresh_max,
+        res.refresh_native, res.vrr_types, res.width_px, sup.warranty_years, usb.kvm, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count]
+      asus-us-monitors: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.size_class, gen.viewable_diag, hdr.contrast_static,
+        hdr.marketed_label, hdr.peak_marketed, hdr.sdr_typ, motion.gtg_marketed, panel.surface, panel.technology, pwr.typical, res.aspect, res.height_px, res.native,
+        res.refresh_max, res.refresh_native, res.vrr_types, res.width_px, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-monitor-structured@10, reason: 'r9 fingerprint re-pin (lenovo_psref@5 import); @9 meaning frozen as locked'}
+- id: claim/derive-tuv-eye-comfort-5star@3
+  since: '2026-11-25'
+  supersedes: claim/derive-tuv-eye-comfort-5star@2
+  rationale: 'Re-issue of @2 for the parser pin lenovo_monitors@5 -> @6 only (same rule, kinds, keys as @1/@2; the TÜV derivation code is byte-identical).'
+  audit:
+    by: A2-keys
+    at: '2026-11-25'
+    evidence: 'flk.pwm derived claims identical lenovo_monitors@4 vs @6 over all 195 stored bundles (team/reports/2026-11-25-a2-zero-keys.md).'
+    parsers:
+      lenovo_monitors@6: 'sha256:6648c4532a12e82e71a6'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+  match:
+    extractors: [lenovo_monitors@6]
+    source_ids: [lenovo-psref-monitors]
+    kinds: [derived]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      lenovo-psref-monitors: [flk.pwm]
+  retired: {at: '2026-11-26', superseded_by: claim/derive-tuv-eye-comfort-5star@4, reason: 'r9 fingerprint re-pin (lenovo_psref@5 import); @3 meaning frozen as locked'}
+- id: rel/source-stated-hierarchy@13
+  since: '2026-11-26'
+  supersedes: rel/source-stated-hierarchy@12
+  rationale: 'Same rules, methods and types as @11; parser pins move: asus@2 -> @3, dell@1 -> @2, surface@1 -> @2 (A2-lap r8: per-port port claims only), sandisk_ssd@6 -> @7, samsung_ssd@3 -> @4 (alias sku binding only). Identifier and relation code unchanged. No new method. r9 pins: lenovo_psref@5, asus@4, dell@3, surface@3 (port.charge_port only).'
+  audit:
+    by: A2-lap2 r9
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r9-chargeport.md; scratch import: identifiers/aliases unchanged for lenovo-psref, asus-us, dell-us, microsoft-surface (r9 changes only port.charge_port claims).'
+    parsers:
+      lenovo_psref@5: 'sha256:e5ba2db22c514b340e50'
+      asus@4: 'sha256:d7207c7067ec94343149'
+      dell@3: 'sha256:a03c94d24865f76dae93'
+      surface@3: 'sha256:64272f1d131c238f62cb'
+      razer@1: 'sha256:8752d0e2f07ae8b46ff2'
+      samsung@1: 'sha256:d0e9cabff53a15285159'
+      lenovo_monitors@6: 'sha256:6648c4532a12e82e71a6'
+      samsung_ssd@4: 'sha256:b1bfbfe652623ee2630c'
+      sandisk_ssd@7: 'sha256:f436dae10cc11e468138'
+      teamgroup_ssd@6: 'sha256:75bc6577801ceac73b22'
+      kingston_ssd@4: 'sha256:c93ab26938d6300a1494'
+      tplink_routers@3: 'sha256:19f0ca2101fbc63e219c'
+      crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'
+  approval: {state: pending}
+  rules:
+  - method: adapter:lenovo-psref
+    types: [member_of_family, configuration_of]
+    parsers: [lenovo_psref@5]
+  - method: adapter:asus-us
+    types: [member_of_family]
+    parsers: [asus@4]
+  - method: adapter:dell-us
+    types: [member_of_family]
+    parsers: [dell@3]
+  - method: adapter:microsoft-surface
+    types: [member_of_family, configuration_of]
+    parsers: [surface@3]
+  - method: adapter:razer-us
+    types: [member_of_family, configuration_of]
+    parsers: [razer@1]
+  - method: adapter:samsung-us
+    types: [member_of_family, configuration_of]
+    parsers: [samsung@1]
+  - method: adapter:lenovo-psref-monitors
+    types: [package_of]
+    parsers: [lenovo_monitors@6]
+  - method: adapter:samsung-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [samsung_ssd@4]
+  - method: adapter:sandisk-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [sandisk_ssd@7]
+  - method: adapter:teamgroup-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [teamgroup_ssd@6]
+  - method: adapter:kingston-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [kingston_ssd@4]
+  - method: adapter:tplink-us-routers
+    types: [variant_of]
+    parsers: [tplink_routers@3]
+  - method: page-variants:anker
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:baseus
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:belkin
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  retired: {at: '2026-11-26', superseded_by: rel/source-stated-hierarchy@14, reason: 'same-round re-issue: @13 locked before the lenovo_monitors fingerprint drift was seen (never approved); rules identical'}
+- id: claim/mfr-structured-datasheet@4
+  since: '2026-11-25'
+  supersedes: claim/mfr-structured-datasheet@3
+  rationale: 'Same sources, kinds, tiers and normalisation as @3, re-issued for the parser bump lenovo_psref@3 -> @4. WIDENING: port.charge_port, port.tb_usb4 and port.video_out added to the lenovo-psref allowlist. lenovo_psref@4 reads the MTM''s own Standard Ports cell through crawler/adapters/_lports.py: one ^|^ segment per port group, each fact located at the segment(s) that state it (locator.segments), never pooled. port.usbc_list becomes one item per physical USB-C port (''2x'' -> 2) with only the printed protocol / Gbps / PD input range / PD output W / DisplayPort version; port.tb_usb4 = the highest of Thunderbolt 5 > Thunderbolt 4 > USB4 printed on a USB-C segment (affirmative only, never none); port.video_out = the dedicated HDMI/DisplayPort segments, literal; port.charge_port = proprietary (Slim tip power connector) / barrel (Round tip power connector), or usb-c only when no power connector is named and a USB-C segment prints a PD input wattage or charging only (complete-enumeration negative over a fully understood cell; two different connectors = nothing). A cell with any segment not understood or platform-dependent (''DisplayPort 2.1 (Gorgon Point) / DisplayPort 1.4a (Hawk Point)'') keeps the @3 literal usbc_list and yields nothing else. All other lenovo_psref claims byte-identical to @3. tripplite@2 and cyberpower@1 unchanged.'
+  audit:
+    by: A2-keys
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a2-zero-keys.md; claim diff @3 vs @4 over every stored US PSREF row (282 bundles): only Standard Ports claims change: 2082 literal port.usbc_list -> structured, +1177 port.tb_usb4, +2009 port.video_out, +1863 port.charge_port, 21 cells (Gorgon/Hawk Point dual-platform) unchanged literal; 0 other claims change. tests/test_zero_keys_ports.py'
+    parsers: {lenovo_psref@4: 'sha256:46b5cffaa3f0697920c7', tripplite@2: 'sha256:949811b25418d7a2b724', cyberpower@1: 'sha256:a3e88411366c8d320d51'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+  match:
+    extractors: [lenovo_psref@4, import.py+psref-mapping@1, tripplite@2, cyberpower@1, import.py+label-mapping@1]
+    source_ids: [lenovo-psref, tripplite, cyberpower]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    require_normalized: true
+    keys:
+      lenovo-psref: [cpu.ai_pc_category, cpu.chipset, cpu.model, cpu.npu_tops, disp.color_calibration, disp.size, disp.touch, gen.announce_date, gen.color,
+        gen.country_region, gen.region, gpu.model, in.fingerprint, in.kb_layout, in.tpm, in.webcam, input.pen, input.touchpad, mem.max, mem.size, phys.dimensions,
+        phys.material, phys.surface_treatment, phys.weight, port.card_reader, port.charge_port, port.docking, port.ethernet, port.tb_usb4, port.usbc_list, port.video_out, pwr.battery_wh, pwr.charger_w,
+        stor.size, stor.slots, sw.end_of_support, sw.included_upgrade, sw.os, sw.warranty, wl.wifi, wl.wwan]
+      tripplite: [cert.cew_usd, cert.warranty_years, cord.gauge_awg, cord.jacket, cord.length_ft, cord.plug_style, cord.plug_type, load.max_amps, load.max_watts,
+        load.voltage, outlets.count, outlets.right_angle, outlets.rotating, outlets.switch, phys.dimensions, phys.material, phys.weight_lb, safety.auto_shutoff,
+        safety.led_details, surge.dataline, surge.emi_rfi, surge.joules, surge.max_surge_current, surge.response_time, surge.vpr_max, type.ul1363_listed,
+        type.ul1449_listed, usb.total_w]
+      cyberpower: [cert.cew_usd, cert.listing_mark, cert.warranty_years, cord.length_ft, cord.plug_style, cord.plug_type, load.max_amps, load.max_watts,
+        load.voltage, outlets.count, outlets.covers, outlets.switch, phys.dimensions, phys.material, phys.mounting, phys.weight_lb, safety.breaker, safety.led_details,
+        surge.dataline, surge.emi_rfi, surge.joules, surge.max_spike_voltage, surge.max_surge_current, surge.response_time, surge.vpr_max, type.ul1363_listed,
+        type.ul1449_edition, type.ul1449_listed, usb.pd, usb.ports, usb.total_w]
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-structured-datasheet@5, reason: 'r9 parser bump lenovo_psref@4 -> @5 (port.charge_port dedicated); @4 meaning frozen as locked'}
+- id: claim/asus-techspec-typed@4
+  since: '2026-11-26'
+  supersedes: claim/asus-techspec-typed@3
+  rationale: 'Same rules as @3 (labelled ASUS techspec / ROG JSON-LD cells, only values that normalise, explicit key allowlist), re-issued for asus@2 -> @3. WIDENING: port.usbc_list, port.tb_usb4, port.video_out added to the asus-us allowlist. asus@3 reads the I/O Ports cell with crawler/adapters/_xports.asus (same per-port model as Lenovo _lports): one item per physical USB-C port (''2x'' = two items), each fact only from the port group that prints it (protocol = the printed USB/Thunderbolt name, usb_gbps only from one printed ''N Gbps'', dp_alt only when the group names DisplayPort; ''support display'' is not DisplayPort; a bare ''power delivery'' sets no wattage and no charge port); tb_usb4 = highest TB5 > TB4 > USB4 printed on a USB-C group; video_out = the dedicated HDMI groups, literal. Emitted only when every group of the cell is understood and every option of a model-code cell agrees; a hedged USB-C/video group (''Up to 2x ... Type C''), an unknown group or a cell with no USB-C keeps the @3 literal claim. port.charge_port is never written for ASUS (DC-in shape and PD direction are not printed). All other asus claims are byte-identical.'
+  audit:
+    by: A2-lap r8
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r8-laptops-names.md; in-memory claim diff asus@2 (git worktree HEAD) vs @3 over all 142 stored asus-us pages: 334 literal port.usbc_list claims replaced by 334 structured port.usbc_list + 271 port.tb_usb4 + 167 port.video_out; 25 cells keep the literal; identifiers and aliases identical. tests/test_a2_r8_laptop_ports.py'
+    parsers:
+      asus@3: 'sha256:e4567d9a4abf86d3a49b'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26b}
+  match:
+    extractors: [asus@3]
+    source_ids: [asus-us]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    require_normalized: true
+    keys:
+      asus-us: [cpu.model, disp.size, gen.color, in.webcam, mem.max, mem.size, mem.soldered, phys.weight, port.tb_usb4, port.usbc_list, port.video_out, pwr.battery_wh, stor.size, sw.os]
+  retired: {at: '2026-11-26', superseded_by: claim/asus-techspec-typed@5, reason: 'r9 parser bump asus@3 -> @4 (port.charge_port dedicated); @4 meaning frozen as locked'}
+- id: claim/mfr-laptop-ports@1
+  since: '2026-11-26'
+  rationale: 'New (A2-lap r8 brief item 1): per-port USB-C facts from the maker''s own port list for Dell (dell@2, www.dell.com spd Tech Specs ''Ports'' list, default configuration of the platform) and Microsoft Surface (surface@2, learn.microsoft.com tech-spec ''Ports and charging'' row), parsed by crawler/adapters/_xports.py in the Lenovo _lports per-port model. Each fact only from the line that states it, never pooled: one item per physical USB-C port; usb_gbps from one printed figure (''80/120 Gbps'' = none); dp_alt only when the port line names DisplayPort (Surface: also its own ''with support for:'' sub-items or an ''All USB-C ports support ...'' line; a separate ''DisplayPort 2.1 with support for monitors'' line is not attributed); pd_in_w only from a printed ''N W charging''; tb_usb4 = highest TB5 > TB4 > USB4 on a USB-C line; video_out = dedicated HDMI lines, literal; charge_port: Dell ''barrel power port'' = barrel, Surface Connect = proprietary, usb-c only when a USB-C line or charging line states charging over USB-C and no other charge path is named (Surface Connect + USB-C = nothing; Dell ''power-adapter port'' of unstated shape = nothing). Whole list refused on any platform/config condition (''AMD Ryzen 200 Series:'', ''only for computers with'', ''OR'', ''(optional)''), unknown line, or Surface size sections that disagree. Dell bare ''USB 3.2 Gen 1 (5 Gbps) port'' lines are read as non-USB-C (Dell names every Type-C port explicitly).'
+  audit:
+    by: A2-lap r8
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r8-laptops-names.md; in-memory claim diff dell@1 vs @2 (100 pages): 78 literal port.usbc_list -> 78 structured + 49 port.tb_usb4 + 64 port.video_out, 21 lists keep the literal; surface@1 vs @2 (15 pages): 8 -> 8 structured + 5 port.tb_usb4 + 4 port.charge_port (usb-c) + 1 port.video_out; identifiers and aliases identical. tests/test_a2_r8_laptop_ports.py'
+    parsers:
+      dell@2: 'sha256:7764cf3160817e580b53'
+      surface@2: 'sha256:9fc80d009457850426be'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26b}
+  match:
+    extractors: [dell@2, surface@2]
+    source_ids: [dell-us, microsoft-surface]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      dell-us: [port.charge_port, port.tb_usb4, port.usbc_list, port.video_out]
+      microsoft-surface: [port.charge_port, port.tb_usb4, port.usbc_list, port.video_out]
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-laptop-ports@2, reason: 'r9 parser bump dell@2 -> @3, surface@2 -> @3 (port.charge_port dedicated); @1 meaning frozen as locked'}
+- id: claim/mfr-routers-structured@4
+  since: '2026-11-26'
+  supersedes: claim/mfr-routers-structured@3
+  rationale: 'Fingerprint pin only: same extractors, sources, kinds, keys and rules as mfr-routers-structured@3. asus_routers.py imports asus (A.parse_table), which moved to asus@3 for laptop I/O Ports (A2-lap r8); parse_table and asus_routers.py are byte-identical.'
+  audit:
+    by: A2-lap r8
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r8-laptops-names.md; in-memory claim diff asus_routers@2 old vs new fingerprint over all 82 stored asus-us-routers pages: 0 added, 0 removed; identifiers and aliases identical.'
+    parsers:
+      tplink_routers@3: 'sha256:19f0ca2101fbc63e219c'
+      netgear_routers@2: 'sha256:7a28aa0c5a72eea2a5a2'
+      asus_routers@2: 'sha256:32f8071aaca90f19d6c4'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26b}
+  match:
+    extractors: [tplink_routers@3, netgear_routers@2, asus_routers@2]
+    source_ids: [tplink-us-routers, netgear-us-routers, asus-us-routers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    keys: [gen.pack_count, wifi.generation, wifi.marketing_class, wifi.band_count, wifi.has_6ghz, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_5_2_mbps,
+      wifi.rate_6_mbps, wifi.streams_24, wifi.streams_5, wifi.streams_5_2, wifi.streams_6, wifi.max_width_5_mhz, wifi.max_width_6_mhz, wifi.qam_max, wifi.mlo,
+      wifi.mu_mimo, wifi.ofdma, wifi.wpa3, hw.cpu_cores, hw.cpu_ghz, hw.ram_mb, hw.flash_mb, port.wan_speed_mbps, port.wan_type, port.lan_count, port.lan_max_mbps,
+      port.multigig_count, port.wan_lan_configurable, port.usb_count, port.usb_standard, mesh.supported, mesh.systems, mesh.coverage_sqft, sw.vpn_server,
+      sw.vpn_client, sw.wireguard, sw.operating_modes, sw.parental_controls, isp.ipv6, phys.weight, phys.dimensions, sup.hardware_version]
+    require_normalized: true
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-routers-structured@5, reason: 'r9 fingerprint re-pin (asus@4 import); @4 meaning frozen as locked'}
+- id: claim/mfr-routers-class@4
+  since: '2026-11-26'
+  supersedes: claim/mfr-routers-class@3
+  rationale: 'Fingerprint pin only: same extractors, sources, kinds, keys and rules as mfr-routers-class@3. asus_routers.py imports asus (A.parse_table), which moved to asus@3 for laptop I/O Ports (A2-lap r8); parse_table and asus_routers.py are byte-identical.'
+  audit:
+    by: A2-lap r8
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r8-laptops-names.md; in-memory claim diff asus_routers@2 old vs new fingerprint over all 82 stored asus-us-routers pages: 0 added, 0 removed; identifiers and aliases identical.'
+    parsers:
+      tplink_routers@3: 'sha256:19f0ca2101fbc63e219c'
+      asus_routers@2: 'sha256:32f8071aaca90f19d6c4'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26b}
+  match:
+    extractors: [tplink_routers@3, asus_routers@2]
+    source_ids: [tplink-us-routers, asus-us-routers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys: [gen.device_type, gen.product_line]
+    require_normalized: true
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-routers-class@5, reason: 'r9 fingerprint re-pin (asus@4 import); @4 meaning frozen as locked'}
 - id: rel/source-stated-hierarchy@12
   since: '2026-11-26'
   supersedes: rel/source-stated-hierarchy@11
@@ -1745,7 +2059,7 @@ relation_policies:
   - method: page-variants:belkin
     types: [configuration_of]
     parsers: [crawlpy-strips@1]
-retired_policies:
+  retired: {at: '2026-11-26', superseded_by: rel/source-stated-hierarchy@13, reason: 'r9 parser pins lenovo_psref@5, asus@4, dell@3, surface@3 (port.charge_port only); @12 meaning frozen as locked'}
 - id: claim/mfr-monitor-aoc@1
   since: '2026-11-26'
   rationale: 'New source aoc-us-monitors (crawler/adapters/aoc_monitors.py, A2-mon r8 brief coord-2026-11-26-r8-monitor-makers): the spec accordion of www.aoc.com /us/monitors/<slug> and /us/gaming/monitors/<slug> product pages, discovered from https://www.aoc.com/sitemap-en-us.xml (177 product URLs, category-* listings skipped). www.aoc.com added to data/source-policy.yaml 2026-11-26.3 (maker, crawl agent; robots.txt * Allow /; /us/legal-disclosure has no automated-access clause, its "permanent storage ... of the pages is prohibited" line is a to_clear and the fetcher stores only the spec excerpt). One page = one model: mfr_model = the schema.org Product model, which must equal the URL slug (the <title> is never used: 22B30H3 is titled 24B3HM). Rules: res.refresh_max = the Max Refresh rate row; res.refresh_native = the explicit "N Hz Native" figure of an OC row ("260Hz (OC, 240Hz Native)"), or the single plain "N Hz" row only when no row, title or JSON-LD name/description says OC / overclock / dual mode and no Hz figure there exceeds N (signal-frequency rows excluded); a higher figure elsewhere ("144Hz/OC 180Hz" copy on a 144 Hz row) withholds both keys; "180Hz OC" writes max only. flk.pwm none ONLY from the Flicker-Free row reading Flicker Free / TUV Flicker Free / Yes ("No", Anti Blue Light and silence write nothing). vin.hdmi_count / vin.dp_count = the sum of the per-item counts of the HDMI / DisplayPort rows, only when every item prints a count and none is an output / daisy-chain item; vin.hdmi_version only when one version is named. usb.usbc_inputs only from the USB-C connectivity row via _monports (ambiguous, e.g. "USB-C (PD 90W) x 1" or "USB-C x 2", writes nothing); never 0 (U27U2DP advertises USB-C docking with no USB-C connectivity row, so the Connectivity section is not a complete enumeration); usb.usbc_pd_w only from that row when it is a video input with one W figure; usb.usbc_alt_dp via _monusb; usb.kvm True only from a KVM row naming ports or Yes. panel.technology from Panel type (QD-OLED from "QD - OLED" or OLED + Backlight QD OLED; bare OLED writes nothing). Size class as stated when whole, else derived by size_class_round_half_up@1.'

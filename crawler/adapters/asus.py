@@ -86,7 +86,7 @@ def parse_table(t):
 
 
 class Asus:
-    id, version, source_id, categories = "asus", 3, "asus-us", {"laptops"}
+    id, version, source_id, categories = "asus", 4, "asus-us", {"laptops"}
 
     def __init__(self):
         self.store = C.BlobStore(self.source_id)

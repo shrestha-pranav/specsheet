@@ -11,7 +11,7 @@ Dell '2x USB Type-C with Thunderbolt 4 (40 Gbps) - supporting USB4, DisplayPort 
   - tb_usb4 = highest Thunderbolt 5 > Thunderbolt 4 > USB4 printed on a USB-C segment (affirmative only);
   - video_out = the dedicated HDMI / DisplayPort segments, literal;
   - charge_port: 'barrel power port' -> barrel; 'Surface Connect' -> proprietary; a dedicated power port of unstated shape ('DC-in',
-    'power-adapter port') sets nothing and blocks the usb-c inference; usb-c only when a USB-C segment itself states charging (or a
+    'power-adapter port') -> dedicated (r9: only when the maker's list names such a port; never from the absence of USB-C charging); usb-c only when a USB-C segment itself states charging (or a
     charging line names USB-C as the only charge path); two different stated charge paths -> nothing;
   - any unknown segment, hedge ('Up to 2x', 'OR', 'only for computers with', 'available on select'), or platform/config condition
     ('AMD Ryzen 200 Series:') that governs a port -> {} (the adapter keeps its literal claim).
@@ -92,7 +92,7 @@ def _tb(body):
 def _assemble(segs):
     """segs: list of (idx, kind, n, item_or_text, flags). -> output dict."""
     usbc, video, at, tb = [], [], {}, None
-    charge, clash, dedicated_unknown, usbc_charge = None, False, False, False
+    charge, clash, usbc_charge = None, False, False
     for i, kind, n, x, fl in segs:
         if kind == "usbc":
             usbc += [dict(x) for _ in range(n)]
@@ -107,13 +107,10 @@ def _assemble(segs):
             video.append(x)
             at.setdefault("video_out", []).append(i)
         elif kind == "power":
-            if x is None:
-                dedicated_unknown = True
-            else:
-                if charge not in (None, x):
-                    clash = True
-                charge = x
-                at.setdefault("charge_port", []).append(i)
+            if charge not in (None, x):
+                clash = True
+            charge = x
+            at.setdefault("charge_port", []).append(i)
         elif kind == "charge_paths":                       # 'Fast charging through Surface Connect or USB-C'
             if len(x) > 1:
                 clash = True
@@ -127,12 +124,13 @@ def _assemble(segs):
         out["tb_usb4"] = tb
     if video:
         out["video_out"] = "; ".join(video)
-    if not clash and not dedicated_unknown:
+    if not clash:
         if charge is None and usbc_charge:
             charge = "usb-c"
             at["charge_port"] = at.get("_usbc_charge", [])
-        elif charge is not None and usbc_charge:          # dedicated connector AND USB-C charging both stated: which one is 'the' port is not
-            charge = None
+        elif charge is not None and usbc_charge:          # dedicated connector AND USB-C charging both stated: both are real charge paths (list)
+            charge = sorted({charge, "usb-c"})
+            at["charge_port"] = at.get("charge_port", []) + at.get("_usbc_charge", [])
         if charge:
             out["charge_port"] = charge
     if out:
@@ -156,7 +154,7 @@ def _classify(i, s, side=None, hedged=False):
     if re.search(r"Kensington|lock supported", body, re.I):
         return (i, "skip", 0, None, {})
     if POWER.search(body) and not USBC.search(body):
-        kind = "barrel" if re.search(r"\bbarrel\b", body, re.I) else ("proprietary" if re.search(r"Surface Connect", body, re.I) else None)
+        kind = "barrel" if re.search(r"\bbarrel\b", body, re.I) else ("proprietary" if re.search(r"Surface Connect", body, re.I) else "dedicated")
         return (i, "power", n, kind, {})
     if USBC.search(body):
         it = _usbc(body)

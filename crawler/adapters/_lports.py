@@ -12,7 +12,7 @@ across ports, and only what the segment states literally is returned:
   port.tb_usb4     the highest of Thunderbolt 5 > Thunderbolt 4 > USB4 printed on a USB-C segment. Affirmative only: no 'none'.
   port.video_out   the dedicated HDMI / DisplayPort segments, literal, '; '-joined (USB-C DP alt is in usbc_list, not here).
   port.charge_port the dedicated power connector the cell names ('Slim tip (rectangle) power connector' -> proprietary,
-                   'Round tip power connector' -> barrel). With no power connector in a fully understood cell, 'usb-c' only when a
+                   'Round tip power connector' -> barrel; a power connector / DC-in of unstated shape -> dedicated, r9). With no power connector in a fully understood cell, 'usb-c' only when a
                    USB-C segment states an input wattage or 'charging only' (PD input stated); otherwise nothing.
 Platform-dependent segments ('DisplayPort 2.1 (Gorgon Point) / DisplayPort 1.4a (Hawk Point)', or a 'Platform:' prefix) are
 ambiguous for one MTM: the cell yields nothing.
@@ -96,7 +96,7 @@ def ports(cell):
                 tb = name
                 at["tb_usb4"] = [i]
             continue
-        kind = "proprietary" if re.search(r"slim tip.*power connector", body, re.I) else ("barrel" if re.search(r"round tip power connector", body, re.I) else None)
+        kind = "proprietary" if re.search(r"slim tip.*power connector", body, re.I) else ("barrel" if re.search(r"round tip power connector", body, re.I) else ("dedicated" if re.search(r"\bpower connector\b|\bDC[- ]in\b", body, re.I) else None))
         if kind:
             if charge not in (None, kind):
                 charge_clash = True
