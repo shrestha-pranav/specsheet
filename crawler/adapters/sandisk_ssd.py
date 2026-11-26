@@ -24,6 +24,8 @@ v6 (2026-11-25, A2-keys): therm.heatsink / therm.heatsink_height from the SKU's 
            that SKU's 'Dimensions (L x W x H)' row (inches x 25.4 -> mm, the drive with its sink; < 5 mm = the bare drive's row
            printed on a heatsink SKU (Optimus GX PRO 8100, 0.09"): nothing). The sink style (low-profile vs full) is not stated, so a
            'with Heatsink' SKU gets no therm.heatsink enum value (A1 open question). Silence, the page title or another SKU never count.
+v7 (2026-11-26, A2-lap r8): each data-sku-title alias carries sku = that block's Model Number (the configuration), so import.py
+           bound_label names a configuration from its own title (colour, heatsink, form factor), never a sibling's. Claims/identifiers unchanged.
 """
 import gzip, re, sys, time
 from pathlib import Path
@@ -34,7 +36,7 @@ import _lt as L
 import _ssdprose as SP
 import _run
 
-ID, VERSION, SOURCE = "sandisk_ssd", 6, "sandisk-us-ssd"
+ID, VERSION, SOURCE = "sandisk_ssd", 7, "sandisk-us-ssd"
 CATEGORIES = {"ssds"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.sandisk.com"
@@ -136,7 +138,7 @@ def parse_html(snap, h):
         pr.identifiers.append(L.ident("mfr_sku", part, "configuration", "western digital", parent=model))
         pr.identifiers.append(L.ident("x_orderable_sku", sku, "package", "western digital", role="alias"))
         if titles.get(sku):
-            pr.aliases.append({"text": S.clean(titles[sku]), "kind": "marketing_name"})
+            pr.aliases.append({"text": S.clean(titles[sku]), "kind": "marketing_name", "sku": part})   # v7: bound to its own configuration
         pr.aliases.append({"text": line, "kind": "marketing_name"})
         used = set()
 

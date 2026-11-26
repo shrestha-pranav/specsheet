@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Dell (US) adapter v1, contract ARCHITECTURE 15.5.
+"""Dell (US) adapter v2 (v2: Ports list -> per-port port.usbc_list + port.tb_usb4 / port.video_out / port.charge_port via _xports.dell,
+A2-lap r8), contract ARCHITECTURE 15.5.
 
 discover : https://www.dell.com/index-product-pages-hreflang-sitemap.xml.gz -> dhs-product-urls-hreflang-sitemap-000N.xml.gz;
            keep en-us /shop/laptop-computers/spd/<slug> (tablets dropped). ~100 platform pages.
@@ -20,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _contract as C
 import _lt as L
 import _run
+import _xports
 
 IDX = "https://www.dell.com/index-product-pages-hreflang-sitemap.xml.gz"
 DELAY = 1.0
@@ -46,7 +48,7 @@ def codeof(t, slug):
 
 
 class Dell:
-    id, version, source_id, categories = "dell", 1, "dell-us", {"laptops"}
+    id, version, source_id, categories = "dell", 2, "dell-us", {"laptops"}
 
     def __init__(self):
         self.store = C.BlobStore(self.source_id)
@@ -107,13 +109,19 @@ class Dell:
         pr.aliases.append({"text": name or (html.unescape(title.group(1)).split("|")[0].strip() if title else slug), "kind": "marketing_name"})
         i = t.find("id=tech-spec-container")
         spec = t[i:i + 40000] if i >= 0 else ""
-        n = 0
+        n, ports_cells = 0, []
         for lab, body in re.findall(r'<li class=mb-2><div class="h5 fw-bold mb-0">(.*?)</div>(.*?)</li>', spec, re.S):
             lab = L.lines(lab)[0].rstrip(" *") if L.lines(lab) else ""
             ls = L.lines(body)
             if lab and ls:
                 n += 1
+                if LABELMAP.get(lab) == "port.usbc_list":
+                    ports_cells.append((lab, ls))
                 L.mapped(pr, f"{self.id}@{self.version}", snap, LABELMAP, lab, ls, "model_code", up)
+        for c in [c for c in pr.claims if c["key"] == "port.usbc_list" and (c.get("locator") or {}).get("label") == "Ports"]:
+            v = next(ln for lab_, ln in ports_cells if lab_ == "Ports") if ports_cells else None
+            if v is not None:
+                _xports.replace_claims(pr, C, c, _xports.dell(v), up)
         for c in pr.claims:
             c["locator"]["config"] = "default"
         # component option lists (orderable choices on this platform): kept as fingerprints, no claim (they are not the default config)

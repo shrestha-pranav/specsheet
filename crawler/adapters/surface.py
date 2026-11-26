@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Microsoft Surface laptops (US) adapter v1, contract ARCHITECTURE 15.5.
+"""Microsoft Surface laptops (US) adapter v2 (v2: learn "Ports and charging" list -> per-port port.usbc_list + port.tb_usb4 /
+port.video_out / port.charge_port via _xports.surface, A2-lap r8), contract ARCHITECTURE 15.5.
 
 discover : (a) Microsoft Store list pages /en-us/store/b/buy-surface-laptop + /store/b/shop-all-microsoft-surface -> every
                /en-us/store/configure/surface-laptop*/<productId> (consumer laptops; dev box excluded);
@@ -22,6 +23,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _contract as C
 import _lt as L
 import _run
+import _xports
 
 DELAY = 1.0
 LISTS = ["https://www.microsoft.com/en-us/store/b/buy-surface-laptop", "https://www.microsoft.com/en-us/store/b/shop-all-microsoft-surface"]
@@ -66,7 +68,7 @@ def curl_snapshot(store, ref, url, adapter, ext=".html"):
 
 
 class Surface:
-    id, version, source_id, categories = "surface", 1, "microsoft-surface", {"laptops"}
+    id, version, source_id, categories = "surface", 2, "microsoft-surface", {"laptops"}
 
     def __init__(self):
         self.store = C.BlobStore(self.source_id)
@@ -154,7 +156,10 @@ class Surface:
             if len(c) < 2 or not L.lines(c[0]) or L.lines(c[0])[0] == "Feature":
                 continue
             rows += 1
-            L.mapped(pr, a, snap, LABELMAP, L.lines(c[0])[0].lower().replace("&", "and").strip(" :"), [re.sub(r"^[-•]\s*", "", l) for l in L.lines(c[1])], "model_code", slug)
+            lab, ls = L.lines(c[0])[0].lower().replace("&", "and").strip(" :"), [re.sub(r"^[-•]\s*", "", l) for l in L.lines(c[1])]
+            L.mapped(pr, a, snap, LABELMAP, lab, ls, "model_code", slug)
+            if LABELMAP.get(lab) == "port.usbc_list" and pr.claims and pr.claims[-1]["key"] == "port.usbc_list":
+                _xports.replace_claims(pr, C, pr.claims[-1], _xports.surface(ls), slug)
         pr.fingerprints["spec_rows"] = rows
         if not rows:
             pr.absences.append({"key": "disp.size", "status": "not_published", "source": "s1", "checked_at": snap.fetched_at})

@@ -38,25 +38,26 @@ claim_policies:
         load.voltage, outlets.count, outlets.covers, outlets.switch, phys.dimensions, phys.material, phys.mounting, phys.weight_lb, safety.breaker, safety.led_details,
         surge.dataline, surge.emi_rfi, surge.joules, surge.max_spike_voltage, surge.max_surge_current, surge.response_time, surge.vpr_max, type.ul1363_listed,
         type.ul1449_edition, type.ul1449_listed, usb.pd, usb.ports, usb.total_w]
-- id: claim/asus-techspec-typed@3
-  since: '2026-11-24'
-  supersedes: claim/asus-techspec-typed@2
-  rationale: 'Same rules as @2 (labelled ASUS techspec / ROG JSON-LD cells, only values that normalise, explicit key allowlist), re-issued for asus@1 -> @2. WIDENING: mem.max and mem.soldered added to the asus-us allowlist. asus@2 derives them from the Memory cell text only (crawler/adapters/asus.py memory_facts, quote kept): mem.max from the option''s own ''Max Capacity:N GB'' / ''Memory Max Up to:N GB'' / ''Max Total system memory up to:N GB''; mem.soldered = soldered for on-board/on-package memory with no SO-DIMM only when the option says ''No expansion possible'' or its stated max equals the on-board amount, socketed for SO-DIMM with no on-board memory, mixed for both. Every option of a model code must state the fact and agree, otherwise nothing; two on-board amounts in one option and footnote-only options say nothing; never from absence. All other asus claims are byte-identical.'
+- id: claim/asus-techspec-typed@4
+  since: '2026-11-26'
+  supersedes: claim/asus-techspec-typed@3
+  rationale: 'Same rules as @3 (labelled ASUS techspec / ROG JSON-LD cells, only values that normalise, explicit key allowlist), re-issued for asus@2 -> @3. WIDENING: port.usbc_list, port.tb_usb4, port.video_out added to the asus-us allowlist. asus@3 reads the I/O Ports cell with crawler/adapters/_xports.asus (same per-port model as Lenovo _lports): one item per physical USB-C port (''2x'' = two items), each fact only from the port group that prints it (protocol = the printed USB/Thunderbolt name, usb_gbps only from one printed ''N Gbps'', dp_alt only when the group names DisplayPort; ''support display'' is not DisplayPort; a bare ''power delivery'' sets no wattage and no charge port); tb_usb4 = highest TB5 > TB4 > USB4 printed on a USB-C group; video_out = the dedicated HDMI groups, literal. Emitted only when every group of the cell is understood and every option of a model-code cell agrees; a hedged USB-C/video group (''Up to 2x ... Type C''), an unknown group or a cell with no USB-C keeps the @3 literal claim. port.charge_port is never written for ASUS (DC-in shape and PD direction are not printed). All other asus claims are byte-identical.'
   audit:
-    by: A2 preset fill
-    at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; claim diff base vs new parser over every stored asus-us snapshot (142 pages): +315 mem.max (64GB 155, 32GB 76, 16GB 30, 8GB 14, 128GB 13, 96GB 12, 40/4/48), +302 mem.soldered (socketed 160, soldered 121, mixed 21), 0 removed, 0 other changes. tests/test_preset_fill_laptops.py (positive + refused cases)'
-    parsers: {asus@2: 'sha256:882e02a6786b8e27beab'}
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+    by: A2-lap r8
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r8-laptops-names.md; in-memory claim diff asus@2 (git worktree HEAD) vs @3 over all 142 stored asus-us pages: 334 literal port.usbc_list claims replaced by 334 structured port.usbc_list + 271 port.tb_usb4 + 167 port.video_out; 25 cells keep the literal; identifiers and aliases identical. tests/test_a2_r8_laptop_ports.py'
+    parsers:
+      asus@3: 'sha256:e4567d9a4abf86d3a49b'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26b}
   match:
-    extractors: [asus@2]
+    extractors: [asus@3]
     source_ids: [asus-us]
     kinds: [official]
     tiers: [manufacturer]
     statuses: [known, not_applicable]
     require_normalized: true
     keys:
-      asus-us: [cpu.model, disp.size, gen.color, in.webcam, mem.max, mem.size, mem.soldered, phys.weight, pwr.battery_wh, stor.size, sw.os]
+      asus-us: [cpu.model, disp.size, gen.color, in.webcam, mem.max, mem.size, mem.soldered, phys.weight, port.tb_usb4, port.usbc_list, port.video_out, pwr.battery_wh, stor.size, sw.os]
 - id: claim/cpu-split@2
   since: '2026-11-23'
   supersedes: claim/cpu-split@1
@@ -168,24 +169,20 @@ claim_policies:
     keys: [hdr.vesa_tier]
     statuses: [known]
     require_normalized: true
-- id: claim/mfr-ssd-structured@7
+- id: claim/mfr-ssd-structured@8
   since: '2026-11-26'
-  supersedes: claim/mfr-ssd-structured@6
-  rationale: 'Same keys, sources, kinds and rules as @6 (sandisk_ssd@6 unchanged), re-issued for teamgroup_ssd@5 -> @6 (A2-st r7). The one change:
-    when the whole-page prose pass (_ssdprose, unchanged) finds no NAND statement and no NAND conflict, each intro paragraph (div.prIntro) is read
-    on its own with the same _ssdprose rules, for hw.nand_type only (the page pass skips a > 600-char run-on sentence that starts in the nav text).
-    Two different values across paragraphs = nothing. Every other claim byte-identical.'
+  supersedes: claim/mfr-ssd-structured@7
+  rationale: 'Same keys, sources, kinds and rules as @7 (teamgroup_ssd@6 unchanged), re-issued for sandisk_ssd@6 -> @7 (A2-lap r8 naming). sandisk_ssd@7 only adds sku (the block''s own Model Number) to each data-sku-title marketing alias, so import.py can name a configuration from its own maker label; every claim and identifier is byte-identical. No widening.'
   audit:
-    by: A2-st r7
+    by: A2-lap r8
     at: '2026-11-26'
-    evidence: 'team/reports/2026-11-26-a2-r7-ssd-tv.md; in-memory claim diff teamgroup_ssd@5 (git worktree HEAD) vs @6 over all 64 stored teamgroup-us-ssd
-      pages: +6 hw.nand_type qlc (CARDEA Z44Q 3 "adopts QLC Flash", Z44A7Q 3 "The product adopts 3D QLC NAND"), 0 removed, 0 changed. tests/test_r7_ssd_tv.py'
+    evidence: 'team/reports/2026-11-26-a2-r8-laptops-names.md; in-memory diff sandisk_ssd@6 (git worktree HEAD) vs @7 over all stored sandisk-us-ssd pages: claims identical (ids masked: extractor tag only), identifiers identical, aliases gain sku. tests/test_a2_r8_names.py'
     parsers:
-      sandisk_ssd@6: 'sha256:8b6fc546e998d3f71a4c'
+      sandisk_ssd@7: 'sha256:f436dae10cc11e468138'
       teamgroup_ssd@6: 'sha256:75bc6577801ceac73b22'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26a}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26b}
   match:
-    extractors: [sandisk_ssd@6, teamgroup_ssd@6]
+    extractors: [sandisk_ssd@7, teamgroup_ssd@6]
     source_ids: [sandisk-us-ssd, teamgroup-us-ssd]
     kinds: [official]
     tiers: [manufacturer]
@@ -195,19 +192,19 @@ claim_policies:
       perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption,
       therm.temp_operating, therm.heatsink, therm.heatsink_height, port.drop]
     require_normalized: true
-- id: claim/mfr-ssd-samsung@3
-  since: '2026-11-24'
-  supersedes: claim/mfr-ssd-samsung@2
-  rationale: 'Same keys and rules as @2 (gen.capacity and id.msrp_us still NOT accepted; up-to speed rule unchanged), re-issued for samsung_ssd@2 -> @3. Changes: (1) ruling 5 via _ssd.dram(): a Cache Memory cell that names HMB (''HMB (Host Memory Buffer)'', 990 EVO / 990 EVO Plus) = hw.dram_type dramless_hmb (was nothing). (2) _ssd.interface() reads ''PCIe® 5.0 x4'' / ''PCIe® Gen 4.0 x 4'' (the registered mark broke the regex): 9100 PRO and 980 PRO gain if.protocol nvme, if.pcie_gen, if.pcie_lanes. (3) ruling 4: portable if.protocol = usb only from a USB 2/3.x Interface cell; USB4 cells write nothing. (4) a non-portable SKU with no Interface row takes if.protocol nvme from its own product name (JSON-LD name ''990 PRO ... SSD NVMe™ M.2''). No key added.'
+- id: claim/mfr-ssd-samsung@4
+  since: '2026-11-26'
+  supersedes: claim/mfr-ssd-samsung@3
+  rationale: 'Same keys and rules as @3 (gen.capacity and id.msrp_us still NOT accepted), re-issued for samsung_ssd@3 -> @4 (A2-lap r8 naming). samsung_ssd@4 only adds sku to the JSON-LD name alias when the JSON-LD sku equals the page SKU; every claim and identifier is byte-identical. No widening.'
   audit:
-    by: A2 preset fill
-    at: '2026-11-24'
-    evidence: 'tests/test_preset_fill_ssds.py; claim diff old vs new over every stored snapshot: +20 if.protocol=usb (USB4 Gen 3x2 SKUs excluded), +14 if.protocol=nvme, +9 if.pcie_gen, +9 if.pcie_lanes, +7 hw.dram_type=dramless_hmb; 0 removed'
+    by: A2-lap r8
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r8-laptops-names.md; in-memory diff samsung_ssd@3 (git worktree HEAD) vs @4 over all 55 stored samsung-us-ssd pages: claims identical (ids masked), identifiers identical, 55 aliases gain sku. tests/test_a2_r8_names.py'
     parsers:
-      samsung_ssd@3: 'sha256:ad67b32e468f26b4c5f5'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+      samsung_ssd@4: 'sha256:b1bfbfe652623ee2630c'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26b}
   match:
-    extractors: [samsung_ssd@3]
+    extractors: [samsung_ssd@4]
     source_ids: [samsung-us-ssd]
     kinds: [official]
     tiers: [manufacturer]
@@ -217,19 +214,19 @@ claim_policies:
       perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption,
       therm.temp_operating, port.drop]
     require_normalized: true
-- id: claim/mfr-routers-structured@3
-  since: '2026-11-24'
-  supersedes: claim/mfr-routers-structured@2
-  rationale: 'Same sources, kinds, tiers, statuses and key list as @2, re-issued for tplink_routers@2 -> @3, netgear_routers@1 -> @2, asus_routers@1 -> @2 (all import crawler/adapters/_router.py). WIDENING (values, not keys): wifi.has_6ghz may now be False, under coordinator ruling 1 (2026-11-24, complete-enumeration negatives): only when the maker''s own spec table prints a complete band list that names 2.4 + 5 GHz and no 6 GHz (_router.band_enum: every GHz figure in the cell is a band token, no ''up to''/''or''/''optional'' hedge, a stated Dual/Tri/Quad-Band count must equal the radios listed). Lists: NETGEAR ''WiFi Bands'' / ''Simultaneous Dual-Band WiFi ...'' rows of the two-cell spec table (every band row of the page must be such a list; an MLO or beamforming row can only say True); ASUS ''Operating Frequency''; TP-Link ''Frequency'', or a ''WiFi Speeds'' row whose per-band rates sum to its class number within 3 % (BE3600 = 2882 + 688), so no radio is missing. The False claim carries condition basis=complete_enumeration (routers profile basis_condition) and keeps the list as raw. True is also read from NETGEAR band rows naming 6 GHz (Orbi 770/870/970, RS300-RS700S) and a TP-Link ''Frequency'' row. NETGEAR ''WiFi Bands'' rows also give per-band rates and NxN streams (RS150 ''5 GHz (3x3), 4.3 Gbps''); their ''160 to 20 MHz'' widths are not read; where the table row has no rates they come from the page''s own product-attribute record (c_wifiBands, only the record whose nearest c_modelNumber is the page model, one distinct value), e.g. RS300 ''5GHz (2x2), 2.9Gbps'', RBE870 ''5 GHz (4x4/240 MHz): 8,640 Mbps''. All other claims are byte-identical to @2 output.'
+- id: claim/mfr-routers-structured@4
+  since: '2026-11-26'
+  supersedes: claim/mfr-routers-structured@3
+  rationale: 'Fingerprint pin only: same extractors, sources, kinds, keys and rules as mfr-routers-structured@3. asus_routers.py imports asus (A.parse_table), which moved to asus@3 for laptop I/O Ports (A2-lap r8); parse_table and asus_routers.py are byte-identical.'
   audit:
-    by: A2 preset fill
-    at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; claim diff over every stored snapshot, frozen pre-edit copy of crawler/ vs new parsers: tplink +52 has_6ghz=false, asus +64 has_6ghz=false (Operating Frequency), netgear +21 has_6ghz=true, +8 has_6ghz=false, +12 rate_5, +1 rate_5_2, +11 rate_24, +7 rate_6, +11 streams_5, +10 streams_24, +7 streams_6; 0 removed, 0 changed. Fixtures tests/test_preset_fill_routers.py (positive, complete-enumeration false, refused).'
+    by: A2-lap r8
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r8-laptops-names.md; in-memory claim diff asus_routers@2 old vs new fingerprint over all 82 stored asus-us-routers pages: 0 added, 0 removed; identifiers and aliases identical.'
     parsers:
       tplink_routers@3: 'sha256:19f0ca2101fbc63e219c'
       netgear_routers@2: 'sha256:7a28aa0c5a72eea2a5a2'
-      asus_routers@2: 'sha256:1eaec9d51b370875bbc9'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+      asus_routers@2: 'sha256:32f8071aaca90f19d6c4'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26b}
   match:
     extractors: [tplink_routers@3, netgear_routers@2, asus_routers@2]
     source_ids: [tplink-us-routers, netgear-us-routers, asus-us-routers]
@@ -242,18 +239,18 @@ claim_policies:
       port.multigig_count, port.wan_lan_configurable, port.usb_count, port.usb_standard, mesh.supported, mesh.systems, mesh.coverage_sqft, sw.vpn_server,
       sw.vpn_client, sw.wireguard, sw.operating_modes, sw.parental_controls, isp.ipv6, phys.weight, phys.dimensions, sup.hardware_version]
     require_normalized: true
-- id: claim/mfr-routers-class@3
-  since: '2026-11-24'
-  supersedes: claim/mfr-routers-class@2
-  rationale: 'Same meaning as @2 (device class and product line from the maker''s own URL section, TP-Link and ASUS only; NETGEAR excluded), re-issued only for the parser bumps tplink_routers@3 and asus_routers@2 (see claim/mfr-routers-structured@3); gen.device_type / gen.product_line output is byte-identical.'
+- id: claim/mfr-routers-class@4
+  since: '2026-11-26'
+  supersedes: claim/mfr-routers-class@3
+  rationale: 'Fingerprint pin only: same extractors, sources, kinds, keys and rules as mfr-routers-class@3. asus_routers.py imports asus (A.parse_table), which moved to asus@3 for laptop I/O Ports (A2-lap r8); parse_table and asus_routers.py are byte-identical.'
   audit:
-    by: A2 preset fill
-    at: '2026-11-24'
-    evidence: 'claim diff (frozen pre-edit crawler/ vs new): 0 changes on gen.device_type / gen.product_line for tplink-us-routers and asus-us-routers.'
+    by: A2-lap r8
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r8-laptops-names.md; in-memory claim diff asus_routers@2 old vs new fingerprint over all 82 stored asus-us-routers pages: 0 added, 0 removed; identifiers and aliases identical.'
     parsers:
       tplink_routers@3: 'sha256:19f0ca2101fbc63e219c'
-      asus_routers@2: 'sha256:1eaec9d51b370875bbc9'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+      asus_routers@2: 'sha256:32f8071aaca90f19d6c4'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26b}
   match:
     extractors: [tplink_routers@3, asus_routers@2]
     source_ids: [tplink-us-routers, asus-us-routers]
@@ -1231,22 +1228,17 @@ claim_policies:
     require_normalized: true
     keys:
       dell-us-monitors: [ergo.vesa, flk.pwm, gen.size_class, gen.viewable_diag, panel.technology, pwr.max, res.height_px, res.native, res.refresh_max, res.refresh_native, res.width_px, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.hdmi_version]
-- id: claim/mfr-ssd-sandisk-datasheet@3
+- id: claim/mfr-ssd-sandisk-datasheet@4
   since: '2026-11-26'
-  supersedes: claim/mfr-ssd-sandisk-datasheet@2
-  rationale: 'Re-issue of @2 for sandisk_datasheets@1 -> @2 (A2-st r7, brief coord-2026-11-26-r7-ssd-tv). DRAM rule byte-identical. WIDENING: hw.nand_type
-    from a NAND / NAND TYPE row of the PRODUCT SPECIFICATIONS table, only when its value is one cell spanning every column (no 3+ space gap) naming
-    exactly one cell type (TLC / QLC / MLC). Bound per table: the row ties only to the MODEL NUMBERS of its own table (WD Green SN3000 prints a QLC
-    1-2 TB table and a TLC 500 GB table), a table with two NAND rows reads nothing. "3D NAND" alone, per-capacity cells (WD Blue SN5000) and prose
-    ("NAND type may vary by model") write nothing; never from the series name or the controller.'
+  supersedes: claim/mfr-ssd-sandisk-datasheet@3
+  rationale: 'Fingerprint pin only: same extractor sandisk_datasheets@2, sources, kinds, keys and rules as @3. sandisk_datasheets.discover imports sandisk_ssd (bumped to @7 for alias sku binding); sandisk_datasheets.py and its parse() are byte-identical.'
   audit:
-    by: A2-st r7
+    by: A2-lap r8
     at: '2026-11-26'
-    evidence: 'team/reports/2026-11-26-a2-r7-ssd-tv.md; in-memory claim diff sandisk_datasheets@1 (git worktree HEAD) vs @2 over all 35 stored datasheets: +68
-      hw.nand_type (tlc 58, qlc 10), 0 removed, 0 changed (DRAM claims identical). tests/test_r7_ssd_tv.py'
+    evidence: 'team/reports/2026-11-26-a2-r8-laptops-names.md; git diff: sandisk_datasheets.py unchanged; fingerprint moves only through the sandisk_ssd import.'
     parsers:
-      sandisk_datasheets@2: 'sha256:b93e3429ec21f5949b8a'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26a}
+      sandisk_datasheets@2: 'sha256:9816ed36830f8a21d243'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26b}
   match:
     extractors: [sandisk_datasheets@2]
     source_ids: [sandisk-us-ssd-datasheets]
@@ -1530,6 +1522,47 @@ claim_policies:
     statuses: [known]
     require_normalized: true
     keys: [hdmi.ports_4k120, hdmi.has_4k120]
+- id: claim/mfr-laptop-ports@1
+  since: '2026-11-26'
+  rationale: 'New (A2-lap r8 brief item 1): per-port USB-C facts from the maker''s own port list for Dell (dell@2, www.dell.com spd Tech Specs ''Ports'' list, default configuration of the platform) and Microsoft Surface (surface@2, learn.microsoft.com tech-spec ''Ports and charging'' row), parsed by crawler/adapters/_xports.py in the Lenovo _lports per-port model. Each fact only from the line that states it, never pooled: one item per physical USB-C port; usb_gbps from one printed figure (''80/120 Gbps'' = none); dp_alt only when the port line names DisplayPort (Surface: also its own ''with support for:'' sub-items or an ''All USB-C ports support ...'' line; a separate ''DisplayPort 2.1 with support for monitors'' line is not attributed); pd_in_w only from a printed ''N W charging''; tb_usb4 = highest TB5 > TB4 > USB4 on a USB-C line; video_out = dedicated HDMI lines, literal; charge_port: Dell ''barrel power port'' = barrel, Surface Connect = proprietary, usb-c only when a USB-C line or charging line states charging over USB-C and no other charge path is named (Surface Connect + USB-C = nothing; Dell ''power-adapter port'' of unstated shape = nothing). Whole list refused on any platform/config condition (''AMD Ryzen 200 Series:'', ''only for computers with'', ''OR'', ''(optional)''), unknown line, or Surface size sections that disagree. Dell bare ''USB 3.2 Gen 1 (5 Gbps) port'' lines are read as non-USB-C (Dell names every Type-C port explicitly).'
+  audit:
+    by: A2-lap r8
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r8-laptops-names.md; in-memory claim diff dell@1 vs @2 (100 pages): 78 literal port.usbc_list -> 78 structured + 49 port.tb_usb4 + 64 port.video_out, 21 lists keep the literal; surface@1 vs @2 (15 pages): 8 -> 8 structured + 5 port.tb_usb4 + 4 port.charge_port (usb-c) + 1 port.video_out; identifiers and aliases identical. tests/test_a2_r8_laptop_ports.py'
+    parsers:
+      dell@2: 'sha256:7764cf3160817e580b53'
+      surface@2: 'sha256:9fc80d009457850426be'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26b}
+  match:
+    extractors: [dell@2, surface@2]
+    source_ids: [dell-us, microsoft-surface]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      dell-us: [port.charge_port, port.tb_usb4, port.usbc_list, port.video_out]
+      microsoft-surface: [port.charge_port, port.tb_usb4, port.usbc_list, port.video_out]
+- id: claim/mfr-monitor-aoc@2
+  since: '2026-11-26'
+  supersedes: claim/mfr-monitor-aoc@1
+  rationale: 'Same-round re-issue of @1 (locked by a parallel import with a placeholder parser fingerprint, never approved); rules identical. New source aoc-us-monitors (crawler/adapters/aoc_monitors.py, A2-mon r8 brief coord-2026-11-26-r8-monitor-makers): the spec accordion of www.aoc.com /us/monitors/<slug> and /us/gaming/monitors/<slug> product pages, discovered from https://www.aoc.com/sitemap-en-us.xml (177 product URLs, category-* listings skipped). www.aoc.com added to data/source-policy.yaml 2026-11-26.3 (maker, crawl agent; robots.txt * Allow /; /us/legal-disclosure has no automated-access clause, its "permanent storage ... of the pages is prohibited" line is a to_clear and the fetcher stores only the spec excerpt). One page = one model: mfr_model = the schema.org Product model, which must equal the URL slug (the <title> is never used: 22B30H3 is titled 24B3HM). Rules: res.refresh_max = the Max Refresh rate row; res.refresh_native = the explicit "N Hz Native" figure of an OC row ("260Hz (OC, 240Hz Native)"), or the single plain "N Hz" row only when no row, title or JSON-LD name/description says OC / overclock / dual mode and no Hz figure there exceeds N (signal-frequency rows excluded); a higher figure elsewhere ("144Hz/OC 180Hz" copy on a 144 Hz row) withholds both keys; "180Hz OC" writes max only. flk.pwm none ONLY from the Flicker-Free row reading Flicker Free / TUV Flicker Free / Yes ("No", Anti Blue Light and silence write nothing). vin.hdmi_count / vin.dp_count = the sum of the per-item counts of the HDMI / DisplayPort rows, only when every item prints a count and none is an output / daisy-chain item; vin.hdmi_version only when one version is named. usb.usbc_inputs only from the USB-C connectivity row via _monports (ambiguous, e.g. "USB-C (PD 90W) x 1" or "USB-C x 2", writes nothing); never 0 (U27U2DP advertises USB-C docking with no USB-C connectivity row, so the Connectivity section is not a complete enumeration); usb.usbc_pd_w only from that row when it is a video input with one W figure; usb.usbc_alt_dp via _monusb; usb.kvm True only from a KVM row naming ports or Yes. panel.technology from Panel type (QD-OLED from "QD - OLED" or OLED + Backlight QD OLED; bare OLED writes nothing). Size class as stated when whole, else derived by size_class_round_half_up@1.'
+  audit:
+    by: A2-mon r8
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r8-monitor-makers.md; 177 pages fetched 2026-11-26 (all 200), 177 models parsed, 0 absences; per-key counts in the report; tests/test_a2_r8_aoc.py'
+    parsers:
+      aoc_monitors@1: 'sha256:e89d1a92ea5971931f3a'
+  approval: {state: pending}
+  match:
+    extractors: [aoc_monitors@1]
+    source_ids: [aoc-us-monitors]
+    kinds: [official, derived]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      aoc-us-monitors: [ergo.vesa, flk.pwm, gen.size_class, gen.viewable_diag, panel.technology, pwr.max, res.height_px, res.native, res.refresh_max, res.refresh_native, res.width_px, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.hdmi_version]
 relation_policies:
 - id: rel/bundle-contents@8
   since: '2026-11-26'
@@ -1643,6 +1676,143 @@ relation_policies:
   - method: crosswalk:reviewed
     types: [same_model]
     parsers: [xwalk@1]
+- id: rel/source-stated-hierarchy@12
+  since: '2026-11-26'
+  supersedes: rel/source-stated-hierarchy@11
+  rationale: 'Same rules, methods and types as @11; parser pins move: asus@2 -> @3, dell@1 -> @2, surface@1 -> @2 (A2-lap r8: per-port port claims only), sandisk_ssd@6 -> @7, samsung_ssd@3 -> @4 (alias sku binding only). Identifier and relation code unchanged. No new method.'
+  audit:
+    by: A2-lap r8
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r8-laptops-names.md; identifiers identical old vs new over every stored page of asus-us (142), dell-us (100), microsoft-surface (15), sandisk-us-ssd and samsung-us-ssd (55).'
+    parsers:
+      lenovo_psref@4: 'sha256:46b5cffaa3f0697920c7'
+      asus@3: 'sha256:e4567d9a4abf86d3a49b'
+      dell@2: 'sha256:7764cf3160817e580b53'
+      surface@2: 'sha256:9fc80d009457850426be'
+      razer@1: 'sha256:8752d0e2f07ae8b46ff2'
+      samsung@1: 'sha256:d0e9cabff53a15285159'
+      lenovo_monitors@6: 'sha256:6648c4532a12e82e71a6'
+      samsung_ssd@4: 'sha256:b1bfbfe652623ee2630c'
+      sandisk_ssd@7: 'sha256:f436dae10cc11e468138'
+      teamgroup_ssd@6: 'sha256:75bc6577801ceac73b22'
+      kingston_ssd@4: 'sha256:c93ab26938d6300a1494'
+      tplink_routers@3: 'sha256:19f0ca2101fbc63e219c'
+      crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26b}
+  rules:
+  - method: adapter:lenovo-psref
+    types: [member_of_family, configuration_of]
+    parsers: [lenovo_psref@4]
+  - method: adapter:asus-us
+    types: [member_of_family]
+    parsers: [asus@3]
+  - method: adapter:dell-us
+    types: [member_of_family]
+    parsers: [dell@2]
+  - method: adapter:microsoft-surface
+    types: [member_of_family, configuration_of]
+    parsers: [surface@2]
+  - method: adapter:razer-us
+    types: [member_of_family, configuration_of]
+    parsers: [razer@1]
+  - method: adapter:samsung-us
+    types: [member_of_family, configuration_of]
+    parsers: [samsung@1]
+  - method: adapter:lenovo-psref-monitors
+    types: [package_of]
+    parsers: [lenovo_monitors@6]
+  - method: adapter:samsung-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [samsung_ssd@4]
+  - method: adapter:sandisk-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [sandisk_ssd@7]
+  - method: adapter:teamgroup-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [teamgroup_ssd@6]
+  - method: adapter:kingston-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [kingston_ssd@4]
+  - method: adapter:tplink-us-routers
+    types: [variant_of]
+    parsers: [tplink_routers@3]
+  - method: page-variants:anker
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:baseus
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:belkin
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+retired_policies:
+- id: claim/mfr-monitor-aoc@1
+  since: '2026-11-26'
+  rationale: 'New source aoc-us-monitors (crawler/adapters/aoc_monitors.py, A2-mon r8 brief coord-2026-11-26-r8-monitor-makers): the spec accordion of www.aoc.com /us/monitors/<slug> and /us/gaming/monitors/<slug> product pages, discovered from https://www.aoc.com/sitemap-en-us.xml (177 product URLs, category-* listings skipped). www.aoc.com added to data/source-policy.yaml 2026-11-26.3 (maker, crawl agent; robots.txt * Allow /; /us/legal-disclosure has no automated-access clause, its "permanent storage ... of the pages is prohibited" line is a to_clear and the fetcher stores only the spec excerpt). One page = one model: mfr_model = the schema.org Product model, which must equal the URL slug (the <title> is never used: 22B30H3 is titled 24B3HM). Rules: res.refresh_max = the Max Refresh rate row; res.refresh_native = the explicit "N Hz Native" figure of an OC row ("260Hz (OC, 240Hz Native)"), or the single plain "N Hz" row only when no row, title or JSON-LD name/description says OC / overclock / dual mode and no Hz figure there exceeds N (signal-frequency rows excluded); a higher figure elsewhere ("144Hz/OC 180Hz" copy on a 144 Hz row) withholds both keys; "180Hz OC" writes max only. flk.pwm none ONLY from the Flicker-Free row reading Flicker Free / TUV Flicker Free / Yes ("No", Anti Blue Light and silence write nothing). vin.hdmi_count / vin.dp_count = the sum of the per-item counts of the HDMI / DisplayPort rows, only when every item prints a count and none is an output / daisy-chain item; vin.hdmi_version only when one version is named. usb.usbc_inputs only from the USB-C connectivity row via _monports (ambiguous, e.g. "USB-C (PD 90W) x 1" or "USB-C x 2", writes nothing); never 0 (U27U2DP advertises USB-C docking with no USB-C connectivity row, so the Connectivity section is not a complete enumeration); usb.usbc_pd_w only from that row when it is a video input with one W figure; usb.usbc_alt_dp via _monusb; usb.kvm True only from a KVM row naming ports or Yes. panel.technology from Panel type (QD-OLED from "QD - OLED" or OLED + Backlight QD OLED; bare OLED writes nothing). Size class as stated when whole, else derived by size_class_round_half_up@1.'
+  audit:
+    by: A2-mon r8
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r8-monitor-makers.md; 177 pages fetched 2026-11-26 (all 200), 177 models parsed, 0 absences; per-key counts in the report; tests/test_a2_r8_aoc.py'
+    parsers:
+      aoc_monitors@1: 'FP_PLACEHOLDER'
+  approval: {state: pending}
+  match:
+    extractors: [aoc_monitors@1]
+    source_ids: [aoc-us-monitors]
+    kinds: [official, derived]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      aoc-us-monitors: [ergo.vesa, flk.pwm, gen.size_class, gen.viewable_diag, panel.technology, pwr.max, res.height_px, res.native, res.refresh_max, res.refresh_native, res.width_px, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.hdmi_version]
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-monitor-aoc@2, reason: 'same-round re-issue: @1 was locked by a parallel import while its audit.parsers fingerprint was still a placeholder; @2 = same rules with the real aoc_monitors@1 fingerprint; @1 never approved'}
+- id: claim/mfr-routers-class@3
+  since: '2026-11-24'
+  supersedes: claim/mfr-routers-class@2
+  rationale: 'Same meaning as @2 (device class and product line from the maker''s own URL section, TP-Link and ASUS only; NETGEAR excluded), re-issued only for the parser bumps tplink_routers@3 and asus_routers@2 (see claim/mfr-routers-structured@3); gen.device_type / gen.product_line output is byte-identical.'
+  audit:
+    by: A2 preset fill
+    at: '2026-11-24'
+    evidence: 'claim diff (frozen pre-edit crawler/ vs new): 0 changes on gen.device_type / gen.product_line for tplink-us-routers and asus-us-routers.'
+    parsers:
+      tplink_routers@3: 'sha256:19f0ca2101fbc63e219c'
+      asus_routers@2: 'sha256:1eaec9d51b370875bbc9'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [tplink_routers@3, asus_routers@2]
+    source_ids: [tplink-us-routers, asus-us-routers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys: [gen.device_type, gen.product_line]
+    require_normalized: true
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-routers-class@4, reason: 'r8 fingerprint re-pin (asus@3 import); @3 meaning frozen as locked'}
+- id: claim/mfr-routers-structured@3
+  since: '2026-11-24'
+  supersedes: claim/mfr-routers-structured@2
+  rationale: 'Same sources, kinds, tiers, statuses and key list as @2, re-issued for tplink_routers@2 -> @3, netgear_routers@1 -> @2, asus_routers@1 -> @2 (all import crawler/adapters/_router.py). WIDENING (values, not keys): wifi.has_6ghz may now be False, under coordinator ruling 1 (2026-11-24, complete-enumeration negatives): only when the maker''s own spec table prints a complete band list that names 2.4 + 5 GHz and no 6 GHz (_router.band_enum: every GHz figure in the cell is a band token, no ''up to''/''or''/''optional'' hedge, a stated Dual/Tri/Quad-Band count must equal the radios listed). Lists: NETGEAR ''WiFi Bands'' / ''Simultaneous Dual-Band WiFi ...'' rows of the two-cell spec table (every band row of the page must be such a list; an MLO or beamforming row can only say True); ASUS ''Operating Frequency''; TP-Link ''Frequency'', or a ''WiFi Speeds'' row whose per-band rates sum to its class number within 3 % (BE3600 = 2882 + 688), so no radio is missing. The False claim carries condition basis=complete_enumeration (routers profile basis_condition) and keeps the list as raw. True is also read from NETGEAR band rows naming 6 GHz (Orbi 770/870/970, RS300-RS700S) and a TP-Link ''Frequency'' row. NETGEAR ''WiFi Bands'' rows also give per-band rates and NxN streams (RS150 ''5 GHz (3x3), 4.3 Gbps''); their ''160 to 20 MHz'' widths are not read; where the table row has no rates they come from the page''s own product-attribute record (c_wifiBands, only the record whose nearest c_modelNumber is the page model, one distinct value), e.g. RS300 ''5GHz (2x2), 2.9Gbps'', RBE870 ''5 GHz (4x4/240 MHz): 8,640 Mbps''. All other claims are byte-identical to @2 output.'
+  audit:
+    by: A2 preset fill
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; claim diff over every stored snapshot, frozen pre-edit copy of crawler/ vs new parsers: tplink +52 has_6ghz=false, asus +64 has_6ghz=false (Operating Frequency), netgear +21 has_6ghz=true, +8 has_6ghz=false, +12 rate_5, +1 rate_5_2, +11 rate_24, +7 rate_6, +11 streams_5, +10 streams_24, +7 streams_6; 0 removed, 0 changed. Fixtures tests/test_preset_fill_routers.py (positive, complete-enumeration false, refused).'
+    parsers:
+      tplink_routers@3: 'sha256:19f0ca2101fbc63e219c'
+      netgear_routers@2: 'sha256:7a28aa0c5a72eea2a5a2'
+      asus_routers@2: 'sha256:1eaec9d51b370875bbc9'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [tplink_routers@3, netgear_routers@2, asus_routers@2]
+    source_ids: [tplink-us-routers, netgear-us-routers, asus-us-routers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    keys: [gen.pack_count, wifi.generation, wifi.marketing_class, wifi.band_count, wifi.has_6ghz, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_5_2_mbps,
+      wifi.rate_6_mbps, wifi.streams_24, wifi.streams_5, wifi.streams_5_2, wifi.streams_6, wifi.max_width_5_mhz, wifi.max_width_6_mhz, wifi.qam_max, wifi.mlo,
+      wifi.mu_mimo, wifi.ofdma, wifi.wpa3, hw.cpu_cores, hw.cpu_ghz, hw.ram_mb, hw.flash_mb, port.wan_speed_mbps, port.wan_type, port.lan_count, port.lan_max_mbps,
+      port.multigig_count, port.wan_lan_configurable, port.usb_count, port.usb_standard, mesh.supported, mesh.systems, mesh.coverage_sqft, sw.vpn_server,
+      sw.vpn_client, sw.wireguard, sw.operating_modes, sw.parental_controls, isp.ipv6, phys.weight, phys.dimensions, sup.hardware_version]
+    require_normalized: true
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-routers-structured@4, reason: 'r8 fingerprint re-pin (asus@3 import); @3 meaning frozen as locked'}
 - id: rel/source-stated-hierarchy@11
   since: '2026-11-26'
   supersedes: rel/source-stated-hierarchy@10
@@ -1713,7 +1883,103 @@ relation_policies:
   - method: page-variants:belkin
     types: [configuration_of]
     parsers: [crawlpy-strips@1]
-retired_policies:
+  retired: {at: '2026-11-26', superseded_by: rel/source-stated-hierarchy@12, reason: 'r8 parser pins (asus@3, dell@2, surface@2, sandisk_ssd@7, samsung_ssd@4); @11 meaning frozen as locked'}
+- id: claim/mfr-ssd-sandisk-datasheet@3
+  since: '2026-11-26'
+  supersedes: claim/mfr-ssd-sandisk-datasheet@2
+  rationale: 'Re-issue of @2 for sandisk_datasheets@1 -> @2 (A2-st r7, brief coord-2026-11-26-r7-ssd-tv). DRAM rule byte-identical. WIDENING: hw.nand_type
+    from a NAND / NAND TYPE row of the PRODUCT SPECIFICATIONS table, only when its value is one cell spanning every column (no 3+ space gap) naming
+    exactly one cell type (TLC / QLC / MLC). Bound per table: the row ties only to the MODEL NUMBERS of its own table (WD Green SN3000 prints a QLC
+    1-2 TB table and a TLC 500 GB table), a table with two NAND rows reads nothing. "3D NAND" alone, per-capacity cells (WD Blue SN5000) and prose
+    ("NAND type may vary by model") write nothing; never from the series name or the controller.'
+  audit:
+    by: A2-st r7
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r7-ssd-tv.md; in-memory claim diff sandisk_datasheets@1 (git worktree HEAD) vs @2 over all 35 stored datasheets: +68
+      hw.nand_type (tlc 58, qlc 10), 0 removed, 0 changed (DRAM claims identical). tests/test_r7_ssd_tv.py'
+    parsers:
+      sandisk_datasheets@2: 'sha256:b93e3429ec21f5949b8a'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26a}
+  match:
+    extractors: [sandisk_datasheets@2]
+    source_ids: [sandisk-us-ssd-datasheets]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys: [hw.dram_type, hw.nand_type]
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-ssd-sandisk-datasheet@4, reason: 'r8 fingerprint re-pin (sandisk_ssd@7 import); @3 meaning frozen as locked'}
+- id: claim/mfr-ssd-samsung@3
+  since: '2026-11-24'
+  supersedes: claim/mfr-ssd-samsung@2
+  rationale: 'Same keys and rules as @2 (gen.capacity and id.msrp_us still NOT accepted; up-to speed rule unchanged), re-issued for samsung_ssd@2 -> @3. Changes: (1) ruling 5 via _ssd.dram(): a Cache Memory cell that names HMB (''HMB (Host Memory Buffer)'', 990 EVO / 990 EVO Plus) = hw.dram_type dramless_hmb (was nothing). (2) _ssd.interface() reads ''PCIe® 5.0 x4'' / ''PCIe® Gen 4.0 x 4'' (the registered mark broke the regex): 9100 PRO and 980 PRO gain if.protocol nvme, if.pcie_gen, if.pcie_lanes. (3) ruling 4: portable if.protocol = usb only from a USB 2/3.x Interface cell; USB4 cells write nothing. (4) a non-portable SKU with no Interface row takes if.protocol nvme from its own product name (JSON-LD name ''990 PRO ... SSD NVMe™ M.2''). No key added.'
+  audit:
+    by: A2 preset fill
+    at: '2026-11-24'
+    evidence: 'tests/test_preset_fill_ssds.py; claim diff old vs new over every stored snapshot: +20 if.protocol=usb (USB4 Gen 3x2 SKUs excluded), +14 if.protocol=nvme, +9 if.pcie_gen, +9 if.pcie_lanes, +7 hw.dram_type=dramless_hmb; 0 removed'
+    parsers:
+      samsung_ssd@3: 'sha256:ad67b32e468f26b4c5f5'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [samsung_ssd@3]
+    source_ids: [samsung-us-ssd]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    keys: [gen.device_class, gen.form_factor, gen.weight, if.pcie_gen, if.pcie_lanes, if.protocol, if.nvme_version, if.usb_standard, if.usb_connector, hw.controller,
+      hw.controller_vendor, hw.dram_type, hw.dram_size, hw.dram_gen, hw.nand_type, hw.nand_vendor, perf.seq_read, perf.seq_write, perf.rand_read_iops_qd1,
+      perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption,
+      therm.temp_operating, port.drop]
+    require_normalized: true
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-ssd-samsung@4, reason: 'r8 parser bump samsung_ssd@3 -> @4 (alias sku binding only); @3 meaning frozen as locked'}
+- id: claim/mfr-ssd-structured@7
+  since: '2026-11-26'
+  supersedes: claim/mfr-ssd-structured@6
+  rationale: 'Same keys, sources, kinds and rules as @6 (sandisk_ssd@6 unchanged), re-issued for teamgroup_ssd@5 -> @6 (A2-st r7). The one change:
+    when the whole-page prose pass (_ssdprose, unchanged) finds no NAND statement and no NAND conflict, each intro paragraph (div.prIntro) is read
+    on its own with the same _ssdprose rules, for hw.nand_type only (the page pass skips a > 600-char run-on sentence that starts in the nav text).
+    Two different values across paragraphs = nothing. Every other claim byte-identical.'
+  audit:
+    by: A2-st r7
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r7-ssd-tv.md; in-memory claim diff teamgroup_ssd@5 (git worktree HEAD) vs @6 over all 64 stored teamgroup-us-ssd
+      pages: +6 hw.nand_type qlc (CARDEA Z44Q 3 "adopts QLC Flash", Z44A7Q 3 "The product adopts 3D QLC NAND"), 0 removed, 0 changed. tests/test_r7_ssd_tv.py'
+    parsers:
+      sandisk_ssd@6: 'sha256:8b6fc546e998d3f71a4c'
+      teamgroup_ssd@6: 'sha256:75bc6577801ceac73b22'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26a}
+  match:
+    extractors: [sandisk_ssd@6, teamgroup_ssd@6]
+    source_ids: [sandisk-us-ssd, teamgroup-us-ssd]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    keys: [gen.capacity, gen.device_class, gen.form_factor, gen.weight, if.pcie_gen, if.pcie_lanes, if.protocol, if.nvme_version, if.usb_standard, if.usb_connector,
+      hw.controller, hw.controller_vendor, hw.dram_type, hw.dram_size, hw.dram_gen, hw.nand_type, hw.nand_vendor, perf.seq_read, perf.seq_write, perf.rand_read_iops_qd1,
+      perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption,
+      therm.temp_operating, therm.heatsink, therm.heatsink_height, port.drop]
+    require_normalized: true
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-ssd-structured@8, reason: 'r8 parser bump sandisk_ssd@6 -> @7 (alias sku binding only); @7 meaning frozen as locked'}
+- id: claim/asus-techspec-typed@3
+  since: '2026-11-24'
+  supersedes: claim/asus-techspec-typed@2
+  rationale: 'Same rules as @2 (labelled ASUS techspec / ROG JSON-LD cells, only values that normalise, explicit key allowlist), re-issued for asus@1 -> @2. WIDENING: mem.max and mem.soldered added to the asus-us allowlist. asus@2 derives them from the Memory cell text only (crawler/adapters/asus.py memory_facts, quote kept): mem.max from the option''s own ''Max Capacity:N GB'' / ''Memory Max Up to:N GB'' / ''Max Total system memory up to:N GB''; mem.soldered = soldered for on-board/on-package memory with no SO-DIMM only when the option says ''No expansion possible'' or its stated max equals the on-board amount, socketed for SO-DIMM with no on-board memory, mixed for both. Every option of a model code must state the fact and agree, otherwise nothing; two on-board amounts in one option and footnote-only options say nothing; never from absence. All other asus claims are byte-identical.'
+  audit:
+    by: A2 preset fill
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; claim diff base vs new parser over every stored asus-us snapshot (142 pages): +315 mem.max (64GB 155, 32GB 76, 16GB 30, 8GB 14, 128GB 13, 96GB 12, 40/4/48), +302 mem.soldered (socketed 160, soldered 121, mixed 21), 0 removed, 0 other changes. tests/test_preset_fill_laptops.py (positive + refused cases)'
+    parsers: {asus@2: 'sha256:882e02a6786b8e27beab'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [asus@2]
+    source_ids: [asus-us]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    require_normalized: true
+    keys:
+      asus-us: [cpu.model, disp.size, gen.color, in.webcam, mem.max, mem.size, mem.soldered, phys.weight, pwr.battery_wh, stor.size, sw.os]
+  retired: {at: '2026-11-26', superseded_by: claim/asus-techspec-typed@4, reason: 'r8 parser bump asus@2 -> @3 (per-port I/O Ports); @3 meaning frozen as locked'}
 - id: claim/mfr-ssd-structured@6
   since: '2026-11-25'
   supersedes: claim/mfr-ssd-structured@5

@@ -382,8 +382,10 @@ def own_alias(pr, sku):
     are indistinguishable by capacity, so they get None. No capacity claim, or no alias stating it -> None (caller: neutral_name())."""
     others = _skus_on_page(pr) - {sku}
     mk = [a for a in pr["aliases"] if a["kind"] == "marketing_name"]
+    if (b := bound_label(pr, sku)) is not None or any((a.get("sku") or (a.get("locator") or {}).get("sku")) == sku for a in mk):
+        return b                                        # r8: the adapter bound this SKU's own label (None = its labels disagree)
     for a in mk:
-        if (a.get("sku") or (a.get("locator") or {}).get("sku")) == sku or _names_sku(a["text"], sku) and not any(_names_sku(a["text"], o) for o in others):
+        if _names_sku(a["text"], sku) and not any(_names_sku(a["text"], o) for o in others):
             return a["text"]
     cap = _own_cap(pr, sku)
     if cap is None:
@@ -397,6 +399,39 @@ def own_alias(pr, sku):
         if len(toks) == 1 and abs(next(iter(toks)) - cap) / cap <= 0.03:
             return a["text"]
     return None
+
+
+def _strip_caps(text):
+    out = re.sub(r"\s*(?:[-,/|]\s*)?\(?\b\d+(?:\.\d+)?\s*(?:TB|GB)\b\)?", "", text, flags=re.I)
+    out = re.sub(r"\s*([-,])\s*(?=[-,])", "", out)                   # '- ,' left where a capacity sat between two separators
+    return re.sub(r"\s{2,}", " ", out).strip(" -,/|")
+
+
+def bound_label(pr, sku):
+    """a2 r8: the maker's own per-SKU label (marketing_name alias carrying sku = this configuration: SanDisk/WD data-sku-title, Samsung
+    one-SKU page name). Never a sibling's words. One label: kept when its GB/TB figures equal the configuration's own gen.capacity (+-3%) or
+    the page has no capacity claim, else those figures are removed. Several labels (one Model Number sold under several orderable SKUs):
+    their capacity-free forms must agree, else only their common leading words are kept. No bound label -> None."""
+    labs = list(dict.fromkeys(a["text"] for a in pr["aliases"] if a["kind"] == "marketing_name"
+                              and (a.get("sku") or (a.get("locator") or {}).get("sku")) == sku))
+    if not labs:
+        return None
+    if len(labs) == 1:
+        toks, cap = _caps(labs[0]), _own_cap(pr, sku)
+        if not toks or not any(c.get("key") == "gen.capacity" for c in pr["claims"]) or (cap is not None and all(abs(t - cap) / cap <= 0.03 for t in toks)):
+            return labs[0]
+        return _strip_caps(labs[0]) or None
+    free = [_strip_caps(t) for t in labs]
+    if len(set(free)) == 1:
+        return free[0] or None
+    words = [f.split() for f in free]                   # the labels disagree (maker lists one Model Number under different
+    common = []                                         # descriptors): keep only the words every label shares, from the start
+    for ws in zip(*words):
+        if len(set(ws)) != 1:
+            break
+        common.append(ws[0])
+    out = " ".join(common).strip(" -,/|")
+    return out or None
 
 
 def neutral_name(name, pr, sku):

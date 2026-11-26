@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""ASUS (US) adapter v2 (v2: mem.max / mem.soldered from the Memory cell text, memory_facts), contract ARCHITECTURE 15.5.
+"""ASUS (US) adapter v3 (v3: I/O Ports cell -> per-port port.usbc_list + port.tb_usb4 / port.video_out via _xports.asus, A2-lap r8;
+v2: mem.max / mem.soldered from the Memory cell text, memory_facts), contract ARCHITECTURE 15.5.
 
 discover : odinapi SeriesFilterResult (the list API the asus.com/us laptop finder uses), PageSize=300 -> 280 rows =
            122 series pages (www.asus.com) + 158 per-CONFIG rows (rog.asus.com; PartNo + SalesModelName like G835LXG-DB96)
@@ -19,6 +20,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _contract as C
 import _run
+import _xports
 
 API = ("https://odinapi.asus.com/recent-data/apiv2/SeriesFilterResult?SystemCode=asus&WebsiteCode=us&ProductLevel1Code=laptops"
        "&PageSize=300&PageIndex=1&CategoryName=&SeriesName=&SubSeriesName=&Spec=&SubSpec=&PriceMin=&PriceMax=&Sort=Recommend&siteID=www&sitelang=")
@@ -84,7 +86,7 @@ def parse_table(t):
 
 
 class Asus:
-    id, version, source_id, categories = "asus", 2, "asus-us", {"laptops"}
+    id, version, source_id, categories = "asus", 3, "asus-us", {"laptops"}
 
     def __init__(self):
         self.store = C.BlobStore(self.source_id)
@@ -132,6 +134,8 @@ class Asus:
                         opts = cells[i]
                         pr.claims.append(C.claim(code, key, opts if len(opts) > 1 else opts[0], None, " | ".join(opts), "s1", f"{self.id}@{self.version}",
                                                  "adapter", obs, locator={"model_code": code, "label": label}))
+                        if label == "I/O Ports":    # v3: every option of the cell must give the same fully understood port list
+                            _xports.replace_claims(pr, C, pr.claims[-1], _xports.asus_options(opts), code)
                         if label == "Memory":
                             for k2, v2 in memory_facts(opts).items():
                                 pr.claims.append(C.claim(code, k2, v2, "GB" if k2 == "mem.max" else None, " | ".join(opts), "s1", f"{self.id}@{self.version}",
@@ -163,6 +167,8 @@ class Asus:
                         if key and p.get("value"):
                             pr.claims.append(C.claim(sku, key, p["value"], None, p["value"], "s1", f"{self.id}@{self.version}", "adapter", obs,
                                                      locator={"sku": sku, "label": p["name"]}))
+                            if p.get("name") == "I/O Ports":
+                                _xports.replace_claims(pr, C, pr.claims[-1], _xports.asus(p["value"]), sku)
                             if key == "mem.size":
                                 for k2, v2 in memory_facts([p["value"]]).items():
                                     pr.claims.append(C.claim(sku, k2, v2, "GB" if k2 == "mem.max" else None, p["value"], "s1", f"{self.id}@{self.version}",

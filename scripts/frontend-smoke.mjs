@@ -70,8 +70,11 @@ assert(laptop.preview, 'laptops exposes a preview index');
 assert(!rows.some(r=>r.unreviewed), 'Trusted listing has no unreviewed rows');
 const previewRows = await ui.indexFor(laptop, true);
 assert.equal(previewRows.filter(r=>r.unreviewed).length, laptop.preview.only_preview, 'Preview-only rows flagged');
-assert(['Dell','Apple'].every(b=>previewRows.some(r=>r.brand===b && r.unreviewed)), 'Preview-only brands visible when on');
-assert(!rows.some(r=>r.brand==='Dell'), 'Preview-only brands hidden by default');
+// preview-only brands = brands with unreviewed rows and no trusted row (set changes as policies are approved; Dell laptops became trusted 2026-11-26)
+const trustedBrands = new Set(rows.map(r=>r.brand));
+const previewOnly = [...new Set(previewRows.filter(r=>r.unreviewed).map(r=>r.brand))].filter(b=>!trustedBrands.has(b));
+assert(previewOnly.length > 0, 'Preview-only brands visible when on');
+assert(previewOnly.every(b=>!rows.some(r=>r.brand===b)), 'Preview-only brands hidden by default');
 assert.match(ui.displayValue({status:'known',value:1.65,qualifier:'from'}, {unit:'kg',type:'number'}), /^from 1\.65 kg$/);
 assert.match(ui.displayValue({status:'known',value:1000,display:'1 TB'}, {unit:'GB',type:'number'}), /^1 TB$/);
 assert.doesNotMatch(ui.displayValue({status:'known',value:1000,display:'1 TB'}, {unit:'GB',type:'number'}), /GB/);

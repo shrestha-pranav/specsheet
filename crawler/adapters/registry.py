@@ -37,6 +37,7 @@ SOURCES = {
     "benq-us-monitors": {"brand": "benq", "brand_name": "BenQ", "category": "monitors", "module": "benq_monitors", "importer": "model"},
     "asus-us-monitors": {"brand": "asus", "brand_name": "ASUS", "category": "monitors", "module": "asus_monitors", "importer": "model"},
     "dell-us-monitors": {"brand": "dell", "brand_name": "Dell", "category": "monitors", "module": "dell_monitors", "importer": "model"},
+    "aoc-us-monitors": {"brand": "aoc", "brand_name": "AOC", "category": "monitors", "module": "aoc_monitors", "importer": "model"},
     "samsung-us-ssd": {"brand": "samsung", "brand_name": "Samsung", "category": "ssds", "module": "samsung_ssd", "importer": "generic"},
     "sandisk-us-ssd": {"brand": "western digital", "brand_name": "WD / SanDisk", "category": "ssds", "module": "sandisk_ssd", "importer": "generic"},
     "teamgroup-us-ssd": {"brand": "team", "brand_name": "TEAMGROUP", "category": "ssds", "module": "teamgroup_ssd", "importer": "generic"},

@@ -81,3 +81,16 @@ Role: retailer data = aliases, MPN candidates, prices, availability; never prima
 - Discovery works without /search: web search returns /quality_marks/<10-digit ID> pages per model (e.g. 1111269412 = DELL "Display Unit
   U2724D, U2724Db", Flicker Free mark; 1111276213 = Eye Comfort 3.0 U2724D/U2724Dt). /keywords/1830 is the "Flicker Free" mark definition.
   These were seen as search snippets only: not verified, not stored, not used.
+
+## Monitor makers, A2-mon r8 (2026-11-26; crawler UA, 1 req/s, ~195 GETs): AOC adapter aoc_monitors@1 (aoc-us-monitors); 4 makers human_only
+- **AOC (www.aoc.com): crawlable, adapter built.** robots `User-Agent: * Allow: /`. /us/legal-disclosure: no automated-access clause, but
+  "Permanent storage, reproduction or distribution of the pages is prohibited" (to_clear; the fetcher keeps only title + JSON-LD + spec accordion).
+  Discovery = sitemap-en-us.xml (177 product URLs). 177/177 at 200. Identity = JSON-LD Product `model` == URL slug (22B30H3's <title> says 24B3HM).
+  Traps: the only refresh row is 'Max Refresh rate'; OC is sometimes only in the copy (24G51F row 144 Hz, copy '144Hz/OC 180Hz'; Q27G41ZE
+  'overclocked 260Hz'), so a plain row is native only when no OC/higher figure appears anywhere on the page. No USB-C row on U27U2DP although
+  its copy advertises USB-C docking: the Connectivity section is not a complete enumeration, no usbc_inputs 0 is written.
+- **HP (www.hp.com): human_only (terms).** robots 200 and allows AI crawlers, but Permitted Uses = personal/business purchasing, no copying of
+  Materials, and the Acceptable Use Policy bars high-volume robots/spiders/scripts for data gathering. Product pages not fetched.
+- **ViewSonic (www.viewsonic.com): human_only (robots).** robots.txt `User-agent: Claude*` / `anthropic*` `Disallow: /`. Nothing else fetched.
+- **Acer (www.acer.com): blocked.** robots.txt: HTTP/2 stream reset, no response (r2: timeouts). Not retried, no other fetcher.
+- **GIGABYTE (www.gigabyte.com): blocked.** robots.txt 403 Akamai Access Denied. Not retried, no other fetcher.

@@ -11,6 +11,8 @@ parse    : pure. configuration identifier mfr_sku = orderable part (MZ-V9P4T0B/A
            (MZ-V9P), series = product line slug; only THIS page's SKU row of the group is emitted.
 Traps    : 'Storage Memory: V-NAND 3-bit MLC' means TLC (raw kept); 'Sequential Read: Up to ...' is the marketed in-cache number; 'Capacity' appears
            twice per SKU (marketing '1TB' and decimal '1,000GB (1GB=1 billion bytes)'); no TBW row on the page (datasheet PDF only), no NAND layer count.
+v4 (2026-11-26, A2-lap r8): the Product JSON-LD name alias carries sku = the page SKU when the JSON-LD sku equals it (import.py bound_label
+           names the configuration from it, never from the model's first page). Claims and identifiers unchanged.
 """
 import json, re, sys, time
 from pathlib import Path
@@ -20,7 +22,7 @@ import _ssd as S
 import _lt as L
 import _run
 
-ID, VERSION, SOURCE = "samsung_ssd", 3, "samsung-us-ssd"
+ID, VERSION, SOURCE = "samsung_ssd", 4, "samsung-us-ssd"
 CATEGORIES = {"ssds"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.samsung.com"
@@ -105,8 +107,8 @@ class SamsungSsd:
         pr.identifiers.append(L.ident("mfr_model", stem, "model", "samsung", series=series))
         pr.identifiers.append(L.ident("mfr_sku", code, "configuration", "samsung", parent=stem))
         j = b.get("product_jsonld") or {}
-        if j.get("name"):
-            pr.aliases.append({"text": j["name"], "kind": "marketing_name"})
+        if j.get("name"):                       # v4: the page's own Product name names THIS SKU when its JSON-LD sku is the page SKU
+            pr.aliases.append({"text": j["name"], "kind": "marketing_name", **({"sku": code} if norm(j.get("sku") or "") == want else {})})
         pr.aliases.append({"text": snap.ref.hints.get("slug", ""), "kind": "retail_slug"})
         T = {}                                  # label -> values in page order, across all groups (layout differs per product group)
         for g in row.get("fullSpecs", []):

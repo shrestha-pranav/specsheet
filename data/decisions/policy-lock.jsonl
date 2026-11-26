@@ -135,3 +135,13 @@
 {"at": "2026-11-26T08:51:11Z", "id": "claim/mfr-power-stations-structured@8", "sha256": "sha256:2475e9f790f51ef3ebae3446a01a9f3b8d2ad2fdcb10fb9008af36e75ba87288"}
 {"at": "2026-11-26T08:51:11Z", "id": "claim/spec-image-power-pdo@2", "sha256": "sha256:f395ecc79040ccfbeb1c5843dc81ff287e4b9325f4f2ec948d0705bf35a76f8e"}
 {"at": "2026-11-26T08:51:11Z", "id": "rel/bundle-contents@8", "sha256": "sha256:9eb5907b4649740d120f868e321409776694fce05170d3223e4f6b3b1fbeaac2"}
+{"at": "2026-11-26T09:35:28Z", "id": "claim/asus-techspec-typed@4", "sha256": "sha256:5b9eadadf157dc8227bf5d5d8c2cfbef778340d6674a10c073cddf2f58c21e95"}
+{"at": "2026-11-26T09:35:28Z", "id": "claim/mfr-ssd-structured@8", "sha256": "sha256:f1835dabf07e933f01033b46ea7757d9e650f509eab0cb1b6f00e48785b75c39"}
+{"at": "2026-11-26T09:35:28Z", "id": "claim/mfr-ssd-samsung@4", "sha256": "sha256:d78295cc6129b224fd71075c4a46416f9baaedaa2b82805da9ea3b5855bfebf4"}
+{"at": "2026-11-26T09:35:28Z", "id": "claim/mfr-ssd-sandisk-datasheet@4", "sha256": "sha256:16d19e56a9ddefa63ea7ba8291ac62d12d313685fde03bdaa33b2efd8a6a495c"}
+{"at": "2026-11-26T09:35:28Z", "id": "claim/mfr-laptop-ports@1", "sha256": "sha256:6e39830659f2f6cc0c5202ea9ec5b1aef935604d8447133357199b3a46efbdc0"}
+{"at": "2026-11-26T09:35:28Z", "id": "rel/source-stated-hierarchy@12", "sha256": "sha256:e61e2a8f3593916c57732b82c2b86c6c0617e16cd02dcb0d8ceb1088b1842b21"}
+{"at": "2026-11-26T09:35:28Z", "id": "claim/mfr-monitor-aoc@1", "sha256": "sha256:96cd1ae235ee02a18e3b161d090a3c2b2628184a192a2fc88fe96ed99454a7d5"}
+{"at": "2026-11-26T09:35:48Z", "id": "claim/mfr-routers-structured@4", "sha256": "sha256:a72f02c9648f2154b53871035c77b1e9aae403274904f1adbae5c6e0c13d6d3f"}
+{"at": "2026-11-26T09:35:48Z", "id": "claim/mfr-routers-class@4", "sha256": "sha256:a210d332d5a5948d253a5d2b9bcf73e9d2eef4dfe7a5a7163755b4b393f77c84"}
+{"at": "2026-11-26T09:39:06Z", "id": "claim/mfr-monitor-aoc@2", "sha256": "sha256:448f5ddda31df0e1efefeab9f3edb17ce837e6ccf9e292290b043e16119d37bf"}
