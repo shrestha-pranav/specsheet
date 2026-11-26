@@ -174,7 +174,7 @@ class ValueGate(_Img, unittest.TestCase):
 class Policy(unittest.TestCase):
     def test_pending_policy_allowlists(self):
         pol = yaml.safe_load((CODE / "data" / "decisions" / "policies.yaml").read_text())
-        p = next(x for x in pol["claim_policies"] if x["id"] == "claim/spec-image-power-pdo@2")   # review-8 re-pin
+        p = next(x for x in pol["claim_policies"] if x["id"] == "claim/spec-image-power-pdo@3")   # r10 re-pin (_docparse safety-class lines)
         a = p["approval"]; self.assertIn(a["state"], ("pending", "approved")); self.assertTrue(a["state"] == "pending" or (a.get("by") and a.get("at")))
         self.assertEqual(p["match"]["extractors"], [IA.EXTRACTOR])
         self.assertEqual(p["match"]["source_ids"], [IA.SOURCE_ID])

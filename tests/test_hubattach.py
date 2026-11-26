@@ -93,7 +93,7 @@ class Hub(_Store, unittest.TestCase):
 class Policy(unittest.TestCase):
     def test_pending_policy(self):
         pol = yaml.safe_load((CODE / "data" / "decisions" / "policies.yaml").read_text())
-        p = next(x for x in pol["claim_policies"] if x["id"] == "claim/hub-document-power-pdo@2")
+        p = next(x for x in pol["claim_policies"] if x["id"] == "claim/hub-document-power-pdo@3")   # r10 re-pin
         a = p["approval"]; self.assertIn(a["state"], ("pending", "approved")); self.assertTrue(a["state"] == "pending" or (a.get("by") and a.get("at")))
         self.assertEqual(p["match"]["extractors"], [HA.EXTRACTOR])
         self.assertEqual(p["audit"]["parsers"][HA.TRANSFORM], HA.fingerprint())

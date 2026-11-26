@@ -20,6 +20,17 @@ v3 (2026-11-25, A2-keys): usb.usbc_alt_dp from the one USB-C video-input I/O lin
 v4 (2026-11-25, A2-mon r5): res.refresh_native only where the maker's own copy on this single-model page says 'native N Hz' explicitly
            ('Overclock to 260Hz (native 240Hz)', 'Native 144Hz refresh rate'); one distinct N on the page, N <= the stated Refresh Rate
            (Max). 'Refresh Rate (Max)' alone is up-to wording and never becomes native; multi-model pages write nothing.
+v5 (2026-11-26, A2-ref r10): (1) the ROG label spelling 'Refresh Rate (max)' is read like 'Refresh Rate (Max)' (it was skipped, so those
+           pages had no refresh_max). (2) fetch also stores the model's overview page (hints.pdp, the ProductURL without techspec/ or spec/)
+           under ref '<KEY>#overview' (same store; discovery never lists it, so the importer never parses it as a model). (3)
+           res.refresh_native = the 'Refresh Rate (Max)' figure when it is a plain 'N Hz' cell and the maker states no overclock for the
+           model (plain_native): single-model page; the overview page is stored (none = nothing) and neither it nor the techspec page has
+           an overclock word or 'OC' anywhere outside ASUS site boilerplate (OC_BOILER: motherboard / overclockers / 'fully overclocked GPU
+           and CPU'); techspec title and spec rows carry no 'Dual Mode'/'Triple Mode'; no Hz figure above N in the spec rows (Digital Signal
+           Frequency included, Analog excluded). Why both pages: the techspec page omits the OC note (TUF VG279QM techspec: 'Refresh Rate
+           (Max) : 280Hz', no OC anywhere; its overview: 'Overclockable 280Hz'). Same meaning as aoc_monitors@1 'Max Refresh rate'. The v4
+           explicit 'native N Hz' rule runs first and wins. Parse caches key on the techspec snapshot: after refetching overviews, import
+           with --reparse. Every other claim byte-identical to v4.
 """
 import gzip, html, json, re, sys, time
 from pathlib import Path
@@ -30,7 +41,7 @@ import _run
 import _monports as MP
 import _monusb as MU
 
-ID, VERSION, SOURCE = "asus_monitors", 4, "asus-us-monitors"
+ID, VERSION, SOURCE = "asus_monitors", 5, "asus-us-monitors"
 CATEGORIES = {"monitors"}
 API = ("https://odinapi.asus.com/recent-data/apiv2/SeriesFilterResult?SystemCode=asus&WebsiteCode=us&ProductLevel1Code=displays-desktops"
        "&ProductLevel2Code=monitors&PageSize=300&PageIndex={}&CategoryName=&SeparateType=1&LocalFlag=0")
@@ -40,6 +51,11 @@ LB = 0.45359237
 T_ENUM = {"ips": "IPS", "fast ips": "Fast IPS", "ips black": "IPS Black", "fast ips black": "Fast IPS Black", "nano ips": "Nano IPS", "va": "VA",
           "fast va": "Fast VA", "tn": "TN", "wled": None, "qd-oled": "QD-OLED", "woled": "WOLED"}
 NATIVE = re.compile(r"(?i)\bnative\s+(\d{2,3})\s?Hz\b")
+OC_WORD = re.compile(r"(?i)over-?clock|\bO/?C\b")
+OC_BOILER = re.compile(r"(?i)motherboards?\b|overclockers\b|overclocked GPU and CPU")    # ASUS site-wide footer / mega-menu copy
+MULTI = re.compile(r"(?i)dual[- ]mode|triple[- ]mode")
+OVERVIEW = "#overview"
+HZ = re.compile(r"(?i)(?<![\d.])(\d{2,3})\s?Hz\b")
 TXT = lambda s: re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", s))).strip()
 
 
@@ -93,6 +109,35 @@ def kv(lines):
     return d, bare
 
 
+def oc_stated(page):
+    """v5: True when the page names an overclock anywhere outside the site boilerplate (each hit judged in a 60-char window)."""
+    page = html.unescape(page)
+    for m in OC_WORD.finditer(page):
+        if not OC_BOILER.search(page[max(0, m.start() - 60): m.end() + 60]):
+            return True
+    return False
+
+
+def plain_native(page, overview, F, title, ncodes):
+    """v5: the 'Refresh Rate (Max)' figure as native when neither the techspec nor the overview page states an overclock
+    -> (N, quote) or (None, reason)."""
+    rr = F.get("Refresh Rate (Max)")
+    if ncodes != 1 or not rr or not (m := re.fullmatch(r"\s*(\d{2,3})\s?Hz\s*", rr)):
+        return None, "shape"
+    if overview is None:
+        return None, "no overview page stored"
+    n = int(m[1])
+    if oc_stated(page) or oc_stated(overview):
+        return None, "overclock stated"
+    spec = " ".join([title or ""] + [f"{k} {v}" for k, v in F.items() if not k.startswith("Analog")])
+    if MULTI.search(spec) or "Dual Mode" in F or "Triple Mode" in F:
+        return None, "multi-mode"
+    if any(int(x) > n for x in HZ.findall(spec)):
+        return None, "higher Hz in spec"
+    dsf = F.get("Digital Signal Frequency")
+    return n, f"Refresh Rate (Max): {rr}" + (f" | Digital Signal Frequency: {dsf}" if dsf else "") + " | no overclock stated on the spec or overview page"
+
+
 class AsusMonitors:
     id, version, source_id, categories = ID, VERSION, SOURCE, CATEGORIES
 
@@ -133,14 +178,40 @@ class AsusMonitors:
             self.store.append(s, ADAPTER, ".html.gz"); return s
         sha = self.store.put(gzip.compress(r.content, 6, mtime=0), ".html.gz")
         s = C.Snapshot(sha, ref, 200, now, r.url, {})
-        self.store.append(s, ADAPTER, ".html.gz"); return s
+        self.store.append(s, ADAPTER, ".html.gz")
+        self.fetch_overview(ref, net)      # v5
+        return s
+
+    def fetch_overview(self, ref, net):
+        """v5: the model's overview page (hints.pdp) -> stored under ref '<KEY>#overview' (gzip). Same politeness as fetch()."""
+        u = (ref.hints or {}).get("pdp")
+        if not u:
+            return None
+        oref = Ref(SOURCE, ref.key + OVERVIEW, u, {})
+        r = net.get(u, DELAY)
+        now = time.strftime("%FT%TZ", time.gmtime())
+        if r is None or isinstance(r, str) or r.status_code != 200:
+            st = r if (r is None or isinstance(r, str)) else r.status_code
+            s = C.Snapshot("sha256:", oref, st or "breaker", now, u, {})
+        else:
+            s = C.Snapshot(self.store.put(gzip.compress(r.content, 6, mtime=0), ".html.gz"), oref, 200, now, r.url, {})
+        self.store.append(s, ADAPTER, ".html.gz")
+        return s
 
     def parse(self, snap, blobs, profile):
         t = gzip.decompress(blobs.read(snap.snapshot, ".html.gz")).decode("utf-8", "replace")
-        return parse_html(snap, t)
+        return parse_html(snap, t, overview_of(blobs, snap.ref.key))
 
 
-def parse_html(snap, t):
+def overview_of(blobs, key):
+    """v5: (text, snapshot id, url) of the latest stored 200 overview page of this ref, or None (fail closed)."""
+    rec = blobs.latest().get(key + OVERVIEW) if hasattr(blobs, "latest") else None
+    if not rec:
+        return None
+    return gzip.decompress(blobs.read_rec(rec)).decode("utf-8", "replace"), rec["snapshot"], rec["url"]
+
+
+def parse_html(snap, t, overview=None):
     pr, obs, h = ParseResult(), snap.fetched_at, snap.ref.hints
     rog = bool(h.get("rog")) or "rog.asus.com" in snap.ref.url
     if rog:
@@ -180,7 +251,7 @@ def parse_html(snap, t):
             cell = cells[ci] if len(cells) == len(codes) and len(codes) > 1 else cells[0] if cells else []
             d, b = kv(cell)
             for k, v in d.items():
-                F.setdefault(k, v)
+                F.setdefault("Refresh Rate (Max)" if k == "Refresh Rate (max)" else k, v)      # v5: ROG spelling
             if sec.lower().startswith("i/o"):
                 bare += [l for l in cell if " : " not in l]
         used = set()
@@ -223,6 +294,10 @@ def parse_html(snap, t):
                 (n, q), = nat.items()
                 pr.claims.append(claim(code, "res.refresh_native", n, "Hz", q, "s1", ADAPTER, "spec_html", obs,
                                        {"label": "maker copy 'native N Hz'", "model_code": code}, q))      # v4
+            elif (pn := plain_native(t, overview[0] if overview else None, F, h.get("title"), len(codes)))[0]:
+                pr.claims.append(claim(code, "res.refresh_native", pn[0], "Hz", pn[1], "s1", ADAPTER, "spec_html", obs,
+                                       {"label": "Refresh Rate (Max)", "model_code": code, "rule": "no overclock stated on the spec or overview page",
+                                        "overview_url": overview[2], "overview_snapshot": overview[1]}, pn[1]))   # v5
         hd = g("HDR (High Dynamic Range) Support") or g("HDR Support") or ""
         if (m := re.search(r"DisplayHDR\s*(True Black\s*)?(\d{3,4})", hd, re.I)):
             add("hdr.vesa_tier", f"DisplayHDR {'True Black ' if m[1] else ''}{m[2]}", None, "HDR (High Dynamic Range) Support" if g("HDR (High Dynamic Range) Support") else "HDR Support")
@@ -274,7 +349,7 @@ def parse_html(snap, t):
         if kv_ is not None:
             pr.claims.append(claim(code, "usb.kvm", kv_, None, kraw, "s1", ADAPTER, "spec_html", obs, {"label": kraw.split(":")[0], "model_code": code}, kraw))
         unmapped[code] = {k: v for k, v in F.items() if k not in used}
-    pr.fingerprints = {"raw": snap.snapshot, "rog": rog, "models": codes, "columns": ncols, "sections": list(secs), "unmapped": unmapped}
+    pr.fingerprints = {"raw": snap.snapshot, "overview": overview[1] if overview else None, "rog": rog, "models": codes, "columns": ncols, "sections": list(secs), "unmapped": unmapped}
     return pr
 
 

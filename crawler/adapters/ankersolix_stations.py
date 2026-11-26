@@ -20,7 +20,7 @@ import _powerbank as P
 import _powerstation as PS
 import _run
 
-ID, VERSION, SOURCE = "ankersolix_stations", 8, "ankersolix-us-stations"     # v8 (A3-fix review-9 P1-3): shared _powerstation validates the qualification around each UPS figure (trailing bounds, between-ranges, lower bounds, approx -> unresolved); v7 (A3-fix review-8): shared _powerstation UPS bounds/ranges/exact prose identity; v6 (A2-dell r6): shared _powerstation labelled UPS bound -> up to N; v5 (A2-mon r5b): shared _powerstation capacity label widened, no Anker change; v4 (A2-mon r5): LiFePO\u2084 chemistry; ups.switchover_ms from description prose (coordinator ruling r5); r7: shared _powerbank changed (energy_basis pairs, case-insensitive Wh); v2: r6 shared _powerbank changed; station rules unchanged
+ID, VERSION, SOURCE = "ankersolix_stations", 9, "ankersolix-us-stations"     # v9 (A3-fix review-10 P1-3): shared _powerstation alternatives after the figure / trailing lower bounds never exact; v8 (A3-fix review-9 P1-3): shared _powerstation validates the qualification around each UPS figure (trailing bounds, between-ranges, lower bounds, approx -> unresolved); v7 (A3-fix review-8): shared _powerstation UPS bounds/ranges/exact prose identity; v6 (A2-dell r6): shared _powerstation labelled UPS bound -> up to N; v5 (A2-mon r5b): shared _powerstation capacity label widened, no Anker change; v4 (A2-mon r5): LiFePO\u2084 chemistry; ups.switchover_ms from description prose (coordinator ruling r5); r7: shared _powerbank changed (energy_basis pairs, case-insensitive Wh); v2: r6 shared _powerbank changed; station rules unchanged
 CATEGORIES = {"power-stations"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.ankersolix.com"

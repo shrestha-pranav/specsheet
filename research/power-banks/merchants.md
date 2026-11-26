@@ -34,3 +34,12 @@ Retail listings are aliases only (team rule). Nothing below was scraped.
 | mophie | never (pages and 37 hub manuals, A3 r6) | 0 |
 | Baseus | no adapter (specs are images; www.baseus.com listed crawl agent) | not built |
 | Samsung | www.samsung.com is crawl human_only (2026-11-25.6) | never fetched |
+
+## r10 PPS sweep (A2-pb, 2026-11-26): 0 HTTP requests (stored pages + stored documents only)
+| maker | finding | used |
+|---|---|---|
+| Anker / UGREEN / INIU / CUKTECH / EcoFlow / SHARGE / KUXIU | stored pages of the 52 in-scope rows without pd.pps: no own-product PPS statement. Anker hits are the cross-sell A2692 charger block; SHARGE X6 PPS text is a customer review; INIU B62 SFC 2.0 only in image alt text (also recharge context); INIU B43 manual linked from P62/P63 pages names another model | 0 |
+| Belkin | NEW document type: regulatory leaflets INS_*.pdf ('Download Regulatory and sustainability information', www.belkin.com Demandware file path). They print Model No + full Output PDO list incl. '(PPS) 5-16V' / '3.3-21V'. Never parsed before: documents.py classified the 'Sites-master-product-catalog-blk' path as marketing. All 23 already on disk (adopted, no GET) | +2 (BPB029, BPB040), pending document-power-pdo@5 |
+| Belkin | BPB027 / BPB028 pages link V2 leaflets (Model No BPB027V2 / BPB028V2, PPS 5-11V): identity rule needs an exact own model, so nothing attaches. BBA019 page links the BPB039 leaflet (another model): nothing | open (A1/coordinator) |
+| Belkin | 10 in-scope rows have a leaflet with a complete Output list and no PPS (BBA010, BBA018, BBC010/BPD004, BPD006, BPD007, BPD008, BPD011, BPD015, BPD022): pd.pps false NOT written (complete-enumeration rule needs an A1 ruling) | logged |
+| mophie | hub manuals (A3 r6): unchanged, no PPS | 0 |

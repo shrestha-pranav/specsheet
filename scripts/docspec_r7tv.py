@@ -18,6 +18,8 @@ nothing. Keys: hdmi.ports_4k120 and hdmi.has_4k120 only. Affirmative only; text 
   - the guide must quote the entity's own full identifier (a series/base token such as 'QM7K' alone does not bind a size);
   - a guide that also names any other same-brand catalogued model is shared: nothing for anyone. @1 exempted models observed on the
     guide's linking pages, which transferred one model's per-port rates to every linked size; that exemption is gone.
+@3 (A3-fix, Codex review-10 P1-1): the supporting hdmi.count must be trusted (accepted by an approved policy or a ledger line), never an
+  unreviewed candidate: see inventory(). import.py passes trusted=import.trusted_probe(...); without it nothing is emitted.
 """
 import hashlib, json, sys
 from collections import Counter
@@ -30,7 +32,7 @@ import _docspec_tvports as TP  # noqa: E402
 import docattach as DA  # noqa: E402
 import docspec_attach as DS  # noqa: E402
 
-TRANSFORM = "docspec-attach-tvports@2"
+TRANSFORM = "docspec-attach-tvports@3"
 SOURCE_ID = DA.SOURCE_ID
 CAT = "tvs"
 KEYS = {"hdmi.ports_4k120", "hdmi.has_4k120"}
@@ -64,16 +66,22 @@ def parsed(d, sha, fp):
     return res
 
 
-def inventory(e):
-    """-> the one independent hdmi.count of this entity (official, known, not from a document), else None."""
-    vals = set()
+def inventory(e, trusted=None):
+    """-> the one independent hdmi.count of this entity (official, known, not from a document), else None.
+    @3 (review-10 P1-1): the count must itself be TRUSTED: trusted(CAT, e, claim, ob) is true only when the claim would be accepted by a
+    recorded decision (an approved policy or a ledger line; import.trusted_probe). A count that is a candidate (pending / half-approved
+    policy, no policy) proves nothing, and any disagreeing official count, trusted or not, voids the inventory. trusted=None -> nothing."""
+    vals, ok = set(), set()
     for c, ob in e.claims:
         if c.get("key") == "hdmi.count" and c.get("status") == "known" and c.get("kind") == "official" and ob[0] != SOURCE_ID:
             try:
-                vals.add(int(float(c.get("value"))))
+                v = int(float(c.get("value")))
             except (TypeError, ValueError):
                 return None
-    return next(iter(vals)) if len(vals) == 1 else None
+            vals.add(v)
+            if trusted is not None and trusted(CAT, e, c, ob):
+                ok.add(v)
+    return next(iter(ok)) if len(vals) == 1 and len(ok) == 1 else None
 
 
 def claim(f, dkind, url, ident, exact):
@@ -84,7 +92,7 @@ def claim(f, dkind, url, ident, exact):
             "method": {"stage": "pdf_text", "extractor": EXTRACTOR}, "review": {"state": "candidate"}}
 
 
-def apply(worlds, events, stats, root=None):
+def apply(worlds, events, stats, root=None, trusted=None):
     if CAT not in worlds:
         return Counter()
     docs, latest, d = DA._load_docs(root)
@@ -120,7 +128,7 @@ def apply(worlds, events, stats, root=None):
                 st["r7ports_proposal_multi_model"] += 1
                 continue
             facts = [x for x in res["facts"] if x["key"] in KEYS]
-            inv = inventory(e)
+            inv = inventory(e, trusted)
             if inv is None or any(x.get("n_ports") != inv for x in facts):
                 st["r7ports_no_complete_inventory"] += 1
                 continue

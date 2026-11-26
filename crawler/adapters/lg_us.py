@@ -23,6 +23,11 @@ v4 (2026-11-25, A2-mon r5): (1) flk.pwm 'none' also from a feature badge list: t
            (2) usb.kvm from the maker's own spec row 'KVM: Yes' (True) / 'KVM: No' (False); never from prose, nav or absence.
            (3) res.refresh_native only from a 'Refresh Rate' row that is one plain 'NHz' and a page with no 'Dual Mode Refresh Rate' row;
            'O/C', 'up to', 'Max', several figures, H/V-frequency cells -> nothing.
+v5 (2026-11-26, A2-ref r10): (1) res.refresh_native also from a Refresh Rate row that states the native rate and the overclock rate
+           separately: exactly 'NHz (MHz O/C)' or '[Refresh Rate ]NHz (O/C MHz)' with M > N -> N (no Dual Mode row, as v4). 'NHz (O/C)'
+           (which rate is OC is unsaid), 'up to N w/ OverClock' and every other form still write nothing. (2) res.refresh_max fix: the
+           highest Hz figure in the row (it was the FIRST number, so '144Hz (160Hz O/C)' published 144; the key means max incl OC),
+           and a lower-case 'hz' row ('60hz') now also gives refresh_max (it gave native only).
 """
 import gzip, json, re, sys
 from pathlib import Path
@@ -32,12 +37,26 @@ from _contract import Ref, Discovery, ParseResult, claim  # noqa
 import _run
 import _monports as MP
 
-ID, VERSION, SOURCE = "lg_us", 4, "lg-us"
+ID, VERSION, SOURCE = "lg_us", 5, "lg-us"
 CATEGORIES = {"monitors"}
 SITEMAP = "https://www.lg.com/us/sitemap.xml"
 ADAPTER = f"{ID}@{VERSION}"
 DELAY = 1.0
 LB = 0.45359237
+
+
+def lg_refresh(v, dual):
+    """Refresh Rate row -> (res.refresh_max, res.refresh_native). max = highest Hz figure (v5); native = one plain 'NHz' (v4) or
+    'NHz (MHz O/C)' / '[Refresh Rate ]NHz (O/C MHz)' with M > N (v5); never on a page with a Dual Mode row."""
+    if not v or not re.search(r"(?i)\d\s*Hz", v):
+        return None, None
+    rmax = max(int(x) for x in re.findall(r"(?i)(?<![\d.])(\d{2,4})\s*Hz", v))
+    if dual:
+        return rmax, None
+    if (m := re.fullmatch(r"\s*(\d{2,4})\s*hz\s*", v, re.I)):
+        return rmax, int(m[1])
+    m = re.fullmatch(r"\s*(?:Refresh Rate\s+)?(\d{2,4})\s*Hz\s*\(\s*(?:(\d{2,4})\s*Hz\s*O/C|O/C\s*(\d{2,4})\s*Hz)\s*\)\s*", v, re.I)
+    return rmax, (int(m[1]) if m and int(m[2] or m[3]) > int(m[1]) else None)
 
 
 def num(s):
@@ -137,10 +156,12 @@ def parse_html(snap, html):
             add("gen.size_class", MP.size_class(d[1]), "in", t)
             pr.claims[-1]["kind"] = "derived"
             pr.claims[-1]["locator"]["derivation"] = MP.DERIVATION
-    if (v := g("Refresh Rate")) and re.search(r"\d\s*Hz", v):
-        add("res.refresh_max", num(v), "Hz", "Refresh Rate")
-    if (v := g("Refresh Rate")) and (m := re.fullmatch(r"\s*(\d{2,4})\s*hz\s*", v, re.I)) and not any(re.search(r"dual mode", t, re.I) for t in T):
-        add("res.refresh_native", int(m[1]), "Hz", "Refresh Rate")          # v4: one plain rate only
+    v = g("Refresh Rate")
+    rmax, rnat = lg_refresh(v, any(re.search(r"dual mode", t, re.I) for t in T))
+    if rmax is not None:
+        add("res.refresh_max", rmax, "Hz", "Refresh Rate")                    # v5: highest figure
+    if rnat is not None:
+        add("res.refresh_native", rnat, "Hz", "Refresh Rate")                 # v4 plain rate / v5 native beside the separate O/C rate
     if (v := g("KVM")) is not None and re.fullmatch(r"\s*(yes|no)\s*", v, re.I):
         add("usb.kvm", v.strip().lower() == "yes", None, "KVM")               # v4: the maker's own spec row
     if (v := g("Response Time (GTG)")) and num(v) is not None:

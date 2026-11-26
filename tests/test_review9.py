@@ -21,6 +21,9 @@ SNAP = C.Snapshot("sha256:x", C.Ref("x", "r", "https://x", {}), 200, "2026-11-26
 FOUR = "HDMI ports 1 & 2: Supports up to 4K/144Hz\nHDMI ports 3 & 4: Supports up to 4K/60Hz"
 
 
+TRUST_ALL = lambda cat, e, c, ob: True       # review-10: the inventory must be trusted; these fixtures exercise the @2 rules with every count trusted
+
+
 def tdoc(text):
     return {"pages": [{"n": 3, "text": text, "blocks": [], "method": "text_layer"}]}
 
@@ -76,31 +79,31 @@ class TvPortsTransform(unittest.TestCase):
 
     def test_complete_inventory_emits(self):
         w, ents = self.world(["85QM7K"], {"85QM7K": [4]})
-        R7TV.apply({"tvs": w}, [], {}, root=self.store(tdoc("85QM7K\n" + FOUR), ["85qm7k"]))
+        R7TV.apply({"tvs": w}, [], {}, trusted=TRUST_ALL, root=self.store(tdoc("85QM7K\n" + FOUR), ["85qm7k"]))
         self.assertEqual(self.got(ents["85QM7K"]), {"hdmi.ports_4k120": 2, "hdmi.has_4k120": True})
 
     def test_partial_prefix_emits_nothing_not_even_zero(self):
         prefix = "85QM7K\nHDMI ports 1 & 2: Supports up to 4K/60Hz"           # 2 of the model's 4 ports
         for counts in ({"85QM7K": [4]}, {}, {"85QM7K": [4, 3]}):              # inventory 4, none, conflicting
             w, ents = self.world(["85QM7K"], counts)
-            st = R7TV.apply({"tvs": w}, [], {}, root=self.store(tdoc(prefix + "\nHDMI port 3: Supports up to 4K/60Hz"), ["85qm7k"]))
+            st = R7TV.apply({"tvs": w}, [], {}, trusted=TRUST_ALL, root=self.store(tdoc(prefix + "\nHDMI port 3: Supports up to 4K/60Hz"), ["85qm7k"]))
             self.assertEqual(self.got(ents["85QM7K"]), {}, counts)
             self.assertEqual(st["r7ports_no_complete_inventory"], 1)
         w, ents = self.world(["85QM7K"], {})                                   # complete-looking list, no independent inventory
-        R7TV.apply({"tvs": w}, [], {}, root=self.store(tdoc("85QM7K\n" + FOUR), ["85qm7k"]))
+        R7TV.apply({"tvs": w}, [], {}, trusted=TRUST_ALL, root=self.store(tdoc("85QM7K\n" + FOUR), ["85qm7k"]))
         self.assertEqual(self.got(ents["85QM7K"]), {})
 
     def test_shared_guide_never_transfers(self):
         # one guide linked from both sizes' pages and naming both: @1 exempted linked models; @2 gives nothing to either
         w, ents = self.world(["85QM7K", "98QM7K"], {"85QM7K": [4], "98QM7K": [4]})
         ev = []
-        st = R7TV.apply({"tvs": w}, ev, {}, root=self.store(tdoc("85QM7K 98QM7K\n" + FOUR), ["85qm7k", "98qm7k"]))
+        st = R7TV.apply({"tvs": w}, ev, {}, trusted=TRUST_ALL, root=self.store(tdoc("85QM7K 98QM7K\n" + FOUR), ["85qm7k", "98qm7k"]))
         self.assertEqual((self.got(ents["85QM7K"]), self.got(ents["98QM7K"])), ({}, {}))
         self.assertEqual(st["r7ports_proposal_multi_model"], 2)
 
     def test_series_token_does_not_bind_a_size(self):
         w, ents = self.world(["85QM7K"], {"85QM7K": [4]})
-        R7TV.apply({"tvs": w}, [], {}, root=self.store(tdoc("QM7K Series\n" + FOUR), ["85qm7k"]))
+        R7TV.apply({"tvs": w}, [], {}, trusted=TRUST_ALL, root=self.store(tdoc("QM7K Series\n" + FOUR), ["85qm7k"]))
         self.assertEqual(self.got(ents["85QM7K"]), {})
 
 

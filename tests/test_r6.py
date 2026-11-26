@@ -89,8 +89,8 @@ class Policies(unittest.TestCase):
         for i in ("claim/mfr-power-banks-structured@4", "claim/mfr-power-stations-structured@1", "claim/mfr-power-banks-structured@5", "claim/mfr-power-stations-structured@2"):   # r7: @5/@2 superseded by @6/@3
             self.assertFalse(set(pol[i]["match"]["extractors"]) & cur, f"{i} still matches a live extractor")
         st = {registry.parser_info(s)["parser"] for s, m in registry.SOURCES.items() if m["category"] == "power-stations"}
-        self.assertEqual(set(pol["claim/mfr-power-stations-structured@9"]["match"]["extractors"]), st)
-        self.assertEqual(pol["claim/mfr-power-stations-structured@9"]["match"]["keys"], pol["claim/mfr-power-stations-structured@1"]["match"]["keys"])
+        self.assertEqual(set(pol["claim/mfr-power-stations-structured@10"]["match"]["extractors"]), st)
+        self.assertEqual(pol["claim/mfr-power-stations-structured@10"]["match"]["keys"], pol["claim/mfr-power-stations-structured@1"]["match"]["keys"])
         self.assertEqual(pol["claim/mfr-power-banks-structured@6"]["match"]["keys"], pol["claim/mfr-power-banks-structured@4"]["match"]["keys"])
         self.assertEqual({t for r in pol["rel/bundle-contents@1"]["rules"] for t in r["types"]}, {"contains"})
 

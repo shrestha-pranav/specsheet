@@ -1,0 +1,15 @@
+1. **P1 — Approval can be bypassed through dependencies.** [scripts/import.py:1254](/home/pranavsh/projects/specsheet/scripts/import.py:1254) allows PSREF-derived claims when the parent is `(candidate, None)`—also the result for an unapproved policy, not just failed normalization. Separately, [scripts/docspec_r7tv.py:71](/home/pranavsh/projects/specsheet/scripts/docspec_r7tv.py:71) uses unreviewed `hdmi.count` claims as proof of complete inventory.
+   **Exit:** distinguish normalization failure from approval withholding; require approved supporting inventory. Test pending and incomplete parent approvals while derivative policies remain approved; dependent values must stay out of trusted docs, packs, alternatives, preset counts and MCP results.
+
+2. **P1 — SFC-derived PPS still accepts negation and foreign models.** Read-only probes confirm `sfc2("It cannot support Samsung Super Fast Charging 2.0.", "P73")` returns evidence. So does `"The P730 supports Samsung Super Fast Charging 2.0."` for P73: [crawler/adapters/pb_pps_r7.py:88](/home/pranavsh/projects/specsheet/crawler/adapters/pb_pps_r7.py:88) misses “cannot”; line 91 permits substring model matches.
+   **Exit:** both examples emit no claim; use exact normalized model identity or explicit aliases, and cover negative modal/contraction forms.
+
+3. **P1 — UPS alternatives and trailing lower bounds still become exact values.** Read-only probes return `10` for `"10 ms or 20 ms"` and `20` for `"20 ms or over"`. [crawler/adapters/_powerstation.py:77](/home/pranavsh/projects/specsheet/crawler/adapters/_powerstation.py:77) examines only the first figure for rows; trailing qualification detection misses “or over.”
+   **Exit:** repeated-unit alternatives/ranges and lower bounds never emit exact values in rows or prose; retain separately labelled mode handling and explicit upper-bound qualification.
+
+Other scope conclusions:
+- Direct policy acceptance checks `approved` plus nonempty `by`/`at`; ledger decisions remain an independent authorization path. No additional direct bypass identified in relations, corrections, imgattach or hubattach.
+- TV enumeration now rejects gaps and unread port statements; shared-guide rejection depends on other models being catalogued. The unapproved-inventory dependency above prevents sign-off.
+- No literal `www.aoc.com` remains in inspected `docs/api` or `api-worker/pack`. Remaining AOC records include regulatory sources; brand presence alone is not leakage. **Zero trace across images and all derived artifacts remains unverified.**
+- [scripts/v1_publish.py:330](/home/pranavsh/projects/specsheet/scripts/v1_publish.py:330) removes spec-key iteration nondeterminism from inherited SID allocation. Full byte stability was not rebuild-tested.
+- Read-only review and parser probes only; no files changed or write-producing suites run.

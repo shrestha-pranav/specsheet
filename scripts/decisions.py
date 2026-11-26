@@ -159,8 +159,9 @@ class Decisions:
         return {p["id"]: ("approved-incomplete" if st(p) == "approved" and not self._approved(p) else st(p)) for p in self.active()}   # needs by + at
 
     # ------------------------------------------------------------------ claims
-    def claim_state(self, cid, ctx):
-        """ctx: source_id, extractor (name@ver), key, spec_type, kind, tier, status, normalized (bool). -> (state, decision id)."""
+    def claim_state(self, cid, ctx, record=True):
+        """ctx: source_id, extractor (name@ver), key, spec_type, kind, tier, status, normalized (bool). -> (state, decision id).
+        record=False: a side-effect-free probe (nothing counted as held / withheld, nothing printed), for dependency checks (review-10 P1-1)."""
         d = self.claims.get(cid)
         if d and d["action"] == "accept_claim" and str(cid).startswith("c_corr_"):
             if self._corr_digests is None:
@@ -168,22 +169,31 @@ class Decisions:
                 self._corr_digests = CR.current_digests(self.dir.parent)
             cur = self._corr_digests.get(cid)
             if not d.get("digest") or d["digest"] != cur:
-                if cid not in self.withheld:
+                if record and cid not in self.withheld:
                     self.withheld.append(cid)
                     print(f"decisions: {cid} withheld: the claim changed since {d['id']} approved it (digest {'missing' if not d.get('digest') else 'stale'}); "
                           "a fresh decision is needed", file=sys.stderr)
                 return "candidate", None
         if d:
             return ("accepted" if d["action"] == "accept_claim" else "rejected"), d["id"]
+        pid, pending = self.policy_state(ctx)
+        if pid:
+            return "accepted", pid
+        if record:
+            for p in pending:
+                self._hold(p, "claims", cid)
+        return "candidate", None
+
+    def policy_state(self, ctx):
+        """-> (id of the first APPROVED claim policy matching ctx or None, [ids of matching pending / incompletely approved policies]).
+        Pure. A pending policy never auto-accepts: its claims stay candidates (preview only)."""
         pending = []
         for p in self.claim_policies:
             if self._match(p, ctx):
                 if self._approved(p):
-                    return "accepted", p["id"]
-                pending.append(p["id"])                # a pending policy never auto-accepts: its claims stay candidates (preview only)
-        for pid in pending:
-            self._hold(pid, "claims", cid)
-        return "candidate", None
+                    return p["id"], pending
+                pending.append(p["id"])
+        return None, pending
 
     @staticmethod
     def _approved(p):

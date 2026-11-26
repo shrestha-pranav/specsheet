@@ -1,0 +1,8 @@
+# Brief: review-10 fixes. Owner: A3-fix. Read common.md and reviews/2026-11-26-astra-review-10.md first.
+Fix the 3 P1s; each exit criterion in the review is mandatory, with tests:
+1. Approval bypass via dependencies: scripts/import.py:~1254 must distinguish "parent withheld by approval" from "normalization failed" (withheld parent => dependent claims withheld too). scripts/docspec_r7tv.py:~71: completeness proof may only use trusted (approved) hdmi.count. Tests: pending parent + approved derivative => dependent value absent from trusted docs, R2 pack, alternatives, preset counts, MCP.
+2. crawler/adapters/pb_pps_r7.py: negation (cannot/can't/does not/doesn't/not/no/without/unsupported + questions) and exact normalized model identity (no substring: P730 != P73). Both review probes emit nothing.
+3. crawler/adapters/_powerstation.py: "10 ms or 20 ms", ranges, "20 ms or over/above/more", ">=": never exact; rows and prose.
+4. Add a zero-trace check (script or test) for free:false hosts across docs/api, api-worker/pack, search index, alternatives, images: no URL, label, or value citing them.
+Changed adapters/parsers => reissue pending @N+1, retire old verbatim, re-pin. Report how many live values change (expected removals). Another agent (A2-ref, monitor adapters) works in the tree: no git stash/checkout/reset; builds under flock /tmp/specsheet-release.lock; never release.sh; never fill approval fields.
+Finish: strict import + build rc 0, all tests/test_*.py pass (except A2-ref's in-flight monitor tests — name them). Report team/reports/2026-11-26-a3-review10-fixes.md (<=30 lines).

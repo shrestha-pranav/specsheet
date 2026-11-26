@@ -23,7 +23,7 @@ import _powerbank as P
 import _run
 import pb_pps_r7 as R7   # v6: sfc2() (Samsung SFC 2.0 rule, shared with INIU/CUKTECH)
 
-ID, VERSION, SOURCE = "anker_powerbanks", 7, "anker-us-powerbanks"     # v7 (A3-fix review-9 P1-2): pb_pps_r7.sfc2 needs an affirmative own-product output sentence (model passed); v6 (r7 PPS, A2-pb): own prose naming Samsung Super Fast Charging 2.0 / "45W ... for Samsung" -> pd.pps true kind derived (basis derived), only when no output-row PPS; v5 (A2 preset fill): a protocol row named PPS in the output section ('PPS: 65W', '[USB-C]-PPS: 3V-11V') = pd.pps true; r7: shared _powerbank changed (energy_basis pairs, case-insensitive Wh); v3: r6 shared _powerbank (repeated port row = one port); v2: review 3
+ID, VERSION, SOURCE = "anker_powerbanks", 8, "anker-us-powerbanks"     # v8 (A3-fix review-10 P1-2): pb_pps_r7@8 sfc2 reads modal/contraction negation and needs exact normalised model identity; v7 (A3-fix review-9 P1-2): pb_pps_r7.sfc2 needs an affirmative own-product output sentence (model passed); v6 (r7 PPS, A2-pb): own prose naming Samsung Super Fast Charging 2.0 / "45W ... for Samsung" -> pd.pps true kind derived (basis derived), only when no output-row PPS; v5 (A2 preset fill): a protocol row named PPS in the output section ('PPS: 65W', '[USB-C]-PPS: 3V-11V') = pd.pps true; r7: shared _powerbank changed (energy_basis pairs, case-insensitive Wh); v3: r6 shared _powerbank (repeated port row = one port); v2: review 3
 CATEGORIES = {"power-banks"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.anker.com"

@@ -21,8 +21,12 @@ Traps    : the spec block is syndicated-style and sometimes contradicts itself (
            usb.kvm True only from 'KVM Switch' in the 'Built-in Devices' row or a 'KVM Switch: Yes' row; never False from absence.
            v2 (same round, after @1 was locked by the round's first import): usb.usbc_inputs 0 (basis complete_enumeration) only when the port-details list is cross-checked complete: its USB-C lines add up
            to 'Total Number of USB Type-C Ports', or (no USB-C/Thunderbolt row or line anywhere) its USB lines add up to 'Number of USB Ports'.
+v3 (2026-11-26, A2-ref r10): flk.pwm 'none' also from the page's own JSON-LD 'footnotes' PropertyValue when it certifies flicker-free
+           ('TÜV Rheinland certified – Low Blue Light Hardware solution and Flicker Free.'; the TÜV Flicker Free mark, same declaration
+           meaning as BenQ 'TUV Certificate: Flicker-free'), only when the page has no 'Flicker Free' row (a 'Flicker Free: No' row wins)
+           and v1 wrote nothing. Marketing prose ('less flicker', 'flicker-free screen') never maps. Every other claim byte-identical to v2.
 """
-import gzip, html, re, sys, time
+import gzip, html, json, re, sys, time
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 import _contract as C
@@ -30,7 +34,7 @@ import _run
 import _monports as MP
 import _monusb as MU
 
-ID, VERSION, SOURCE = "dell_monitors", 2, "dell-us-monitors"
+ID, VERSION, SOURCE = "dell_monitors", 3, "dell-us-monitors"
 CATEGORIES = {"monitors"}
 ADAPTER = f"{ID}@{VERSION}"
 LISTING = "https://www.dell.com/en-us/shop/computer-monitors/ar/all-monitors"
@@ -38,6 +42,7 @@ MAX_PAGES = 15
 DELAY = 1.0
 TILE = re.compile(r'href="(https://www\.dell\.com/en-us/shop/(?:monitors|computer-monitors)/apd/([a-z0-9-]+)/([a-z0-9_]+)/-)"')
 ITEM = re.compile(r'<div class="?spec__child__heading"?>(.*?)</div>|<div class="?spec__item"?>\s*<div class="?spec__item__title"?>(.*?)</div>(.*?)</div>', re.S)
+FOOTNOTE_FF = re.compile(r'"value":"(T(?:Ü|U|\\u00dc|&Uuml;)V Rheinland certified\s*(?:–|-|\\u2013)[^"]{0,120}?\bFlicker[- ]Free\b[^"]{0,60})","name":"footnotes"', re.I)
 INCH = re.compile(r'\s*(\d{2}(?:\.\d{1,2})?)\s*(?:"|inch(?:es)?|in\.?)\s*', re.I)
 
 
@@ -200,6 +205,10 @@ def parse_html(snap, h):
         add("flk.pwm", "none", "Flicker Free", quote=f"Flicker Free: {ff}")
     elif ff is None and any(re.fullmatch(r"(?i)flicker[- ]free", x) for x in feats):
         add("flk.pwm", "none", "Features", quote="Features: Flicker-free")
+    elif ff is None and (fm := FOOTNOTE_FF.search(h)):                                                    # v3
+        q = "footnotes: " + html.unescape(json.loads(f'"{fm[1]}"'))
+        pr.claims.append(C.claim(model, "flk.pwm", "none", None, q, "s1", ADAPTER, "adapter", snap.fetched_at,
+                                 locator={"model_code": model, "label": "JSON-LD footnotes"}, quote=q))
     # ---- ports -----------------------------------------------------------------------------------------------------------------------
     lines = port_lines(by.get("Interface/Port Details"))
     yes = lambda *ls: any(re.fullmatch(r"(?i)yes", get(l) or "") for l in ls)

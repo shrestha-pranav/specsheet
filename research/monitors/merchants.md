@@ -94,3 +94,13 @@ Role: retailer data = aliases, MPN candidates, prices, availability; never prima
 - **ViewSonic (www.viewsonic.com): human_only (robots).** robots.txt `User-agent: Claude*` / `anthropic*` `Disallow: /`. Nothing else fetched.
 - **Acer (www.acer.com): blocked.** robots.txt: HTTP/2 stream reset, no response (r2: timeouts). Not retried, no other fetcher.
 - **GIGABYTE (www.gigabyte.com): blocked.** robots.txt 403 Akamai Access Denied. Not retried, no other fetcher.
+
+## r10 (2026-11-26, A2-ref): refresh native
+- **ASUS (www.asus.com, rog.asus.com): crawl agent, robots read in full 2026-11-26** (`User-agent: *`, only search/filter query paths
+  disallowed). New: the model overview page (discovery `pdp`, ProductURL without techspec/ or spec/) is stored as ref `<KEY>#overview`,
+  because the techspec page omits the overclock note (TUF VG279QM techspec 'Refresh Rate (Max) : 280Hz', overview 'Overclockable 280Hz').
+  Fetched 2026-11-26 at 1 req/s, own UA: 317 overviews stored (226 in the final pass), 23 pdp URLs answered 404 (VA249QGSE, BE249CGN,
+  VA27AQSE, ...): no overview = no plain-native claim. No 403/WAF seen.
+- **BenQ (www.benq.com): robots read in full 2026-11-26** (only /en/, /demo/, search paths disallowed for `*`). 4 overview pages sampled
+  (EX270QM, EX2710Q, EX2710U, EX3210U): no overclock wording; no BenQ adapter fetch added.
+- MSI: not in data/source-policy.yaml (no crawl disposition), so not fetched this round.

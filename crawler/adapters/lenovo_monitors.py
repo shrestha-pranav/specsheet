@@ -23,6 +23,9 @@ v5 (2026-11-25, A2-keys): usb.usbc_alt_dp from the one USB-C video-input port li
 v6 (2026-11-25, A2-keys add-on): res.refresh_native from the Refresh Rate cell (refresh_native): a single 'NHz' cell, or the base rate of
   'NHz (Overclock to MHz)' / 'NHz | MHz (Overlock)' (the maker separates native from OC). Ranges (VRR windows), per-input cells
   ('75Hz (HDMI only)', 'DP: ...'), dual-mode, 'Typical'/'Max' wording and any other form -> nothing; never a copy of an OC rate.
+v7 (2026-11-26, A2-ref r10): res.refresh_max fix only: the highest Hz figure in the Refresh Rate cell (it was the FIRST number, so
+  '48Hz - 120Hz' published 48 and '165Hz (Overclock to 180Hz)' published 165; the key means max incl OC). res.refresh_native unchanged
+  from v6 (a bare range stays a VRR window and writes nothing; r10 open question to the coordinator).
 """
 import gzip, html, json, re, sys
 from pathlib import Path
@@ -33,7 +36,7 @@ import lenovo_psref as LP
 import _monports as MP
 import _monusb as MU
 
-ID, VERSION, SOURCE = "lenovo_monitors", 6, "lenovo-psref-monitors"
+ID, VERSION, SOURCE = "lenovo_monitors", 7, "lenovo-psref-monitors"
 TUV5 = re.compile(r"T[ÜU]V Rheinland\W{0,3}\s*Eye Comfort Certification\s*\(5-star\)", re.I)
 TUV_RULE = "tuv-eye-comfort-5star@1"
 TUV_REF = "https://www.certipedia.com/quality_marks/0217009904?locale=en"
@@ -93,6 +96,7 @@ def after(vals, label):
 
 
 RN_SINGLE = re.compile(r"^\s*(\d{2,3})\s*Hz\s*$", re.I)
+HZ_ALL = re.compile(r"(?i)(?<![\d.])(\d{2,3})\s*Hz\b")
 RN_OC = re.compile(r"^\s*(\d{2,3})\s*Hz\s*(?:\(\s*Over(?:c)?lock(?:ing)?\s+to\s+(\d{2,3})\s*Hz\s*\)|\|\s*(\d{2,3})\s*Hz\s*\(\s*Over(?:c)?lock\s*\))\s*$", re.I)
 
 
@@ -179,8 +183,8 @@ class LenovoMonitors(LP.LenovoPsref):
             add("res.aspect", txt("Aspect Ratio"), None, "Aspect Ratio")
         if "Dot / Pixel Per Inch" in F and num(txt("Dot / Pixel Per Inch")):
             add("res.ppi", num(txt("Dot / Pixel Per Inch")), "ppi", "Dot / Pixel Per Inch")
-        if "Refresh Rate" in F and re.search(r"\d\s*Hz", txt("Refresh Rate"), re.I):
-            add("res.refresh_max", num(txt("Refresh Rate")), "Hz", "Refresh Rate")
+        if "Refresh Rate" in F and (hz := HZ_ALL.findall(txt("Refresh Rate"))):
+            add("res.refresh_max", max(int(x) for x in hz), "Hz", "Refresh Rate")          # v7: highest figure
             if len(F["Refresh Rate"]) == 1 and (rn := refresh_native(F["Refresh Rate"][0])):
                 add("res.refresh_native", rn, "Hz", "Refresh Rate")
         if "Brightness" in F and num(txt("Brightness")):

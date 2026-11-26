@@ -148,7 +148,7 @@ class OcrDocument(unittest.TestCase):
 
     def test_ocr_is_not_auto_accepted(self):
         doc = yaml.safe_load((CODE / "data/decisions/policies.yaml").read_text())
-        pol = next(p for p in doc["claim_policies"] if p["id"] == "claim/document-power-pdo@4")
+        pol = next(p for p in doc["claim_policies"] if p["id"] == "claim/document-power-pdo@5")   # r10 re-pin (_docparse safety-class lines)
         self.assertEqual(pol["match"]["extractors"], [DA.EXTRACTOR])
         self.assertNotIn(DA.EXTRACTOR_OCR, pol["match"]["extractors"]); self.assertNotIn(DA.EXTRACTOR_REVIEW, pol["match"]["extractors"])
         self.assertEqual(pol["approval"]["state"] in ("pending", "approved"), True)
@@ -157,6 +157,7 @@ class OcrDocument(unittest.TestCase):
         self.assertEqual(spec["audit"]["parsers"][DS.TRANSFORM], DS.fingerprint())
         retired = {p["id"]: p for p in doc["retired_policies"]}
         self.assertEqual(retired["claim/document-power-pdo@3"]["retired"]["superseded_by"], "claim/document-power-pdo@4")
+        self.assertEqual(retired["claim/document-power-pdo@4"]["retired"]["superseded_by"], "claim/document-power-pdo@5")
         self.assertEqual(retired["claim/document-spec-r2@1"]["retired"]["superseded_by"], "claim/document-spec-r2@2")
         self.assertFalse({"claim/document-power-pdo@3", "claim/document-spec-r2@1"} & {p["id"] for p in doc["claim_policies"]})
 

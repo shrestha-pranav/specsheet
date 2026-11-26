@@ -1,0 +1,8 @@
+# Brief r11: new-category research r2. Owner: A5 (PM/research). Read common.md, research/category-survey.md (2026-11-22 r1), research/data-licensing.md, data/source-policy.yaml (what we learned: which maker sites block, which terms bar automated collection).
+Owner direction 2026-11-26: build datasets first, licensing later. So rank by data obtainable via crawl:agent-compatible sources + demand; licensing is a column, not a filter.
+Candidates (unbuilt from r1, plus any you find): tires, microSD/flash/memory cards, headphones/earbuds, water filters, CPUs/GPUs, USB-C cables, smart-home (Zigbee/Matter), printers, major appliances, flashlights/batteries, smartphones.
+For each top candidate verify (robots.txt + terms read in full, own UA; WebSearch standard for discovery; no Bright Data; no alternate fetchers for blocked sites):
+- Structured public datasets: regulator/certifier DBs (e.g. NHTSA UTQG/tire data, EU EPREL label DB, ENERGY STAR APIs, NSF/WQA listings, USB-IF certified products, CSA/Matter certified product DB, Bluetooth SIG qualification listings, FCC ID) — format, bulk download, terms, identity key, record count.
+- Maker sites: 3 biggest makers each — crawlability (robots/terms/WAF) and whether spec pages are structured.
+- Identity: stable maker model numbers? Killer queries (hidden specs buyers can't filter elsewhere).
+Output: research/category-survey-r2.md — ranked table (records obtainable, sources, crawl status, licensing column, identity, killer queries), top 3 with a concrete pilot plan (adapters to build, expected records, spec keys). Recommend ONE to start next round. Do not write code or edit data/. <=150 lines. Report team/reports/2026-11-26-a5-categories-r2.md (<=25 lines).

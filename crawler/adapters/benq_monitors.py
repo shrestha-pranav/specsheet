@@ -19,6 +19,11 @@ v3 (2026-11-25, a2 r5): flk.pwm 'none' also from the page's own 'TUV Certificate
   star levels, Low Blue Light and silence never map.
 v4 (2026-11-25, A2-mon r5): usb.kvm from the page's own 'KVM Switch' spec row: 'Yes' -> True, 'No' -> False; any other value, prose
   ('KVM' in feature copy / nav) and silence write nothing.
+v5 (2026-11-26, A2-ref r10): (1) res.native 'WxH' from 'Resolution (max.)' / 'Resolution' when the cell is exactly one WxH figure (the
+  same cell already gives res.width_px / res.height_px; a fixed-pixel panel's maximum resolution is its native one). (2) res.refresh_native
+  from 'Refresh Rate (Hz)' / 'Refresh Rate' only when the cell is ONE plain figure ('165', '165Hz') and the page has no overclock word,
+  'OC' or dual/triple-mode text anywhere. BenQ states no overclocked rates: 0 of 136 stored spec pages (and 0 of 4 sampled overview pages)
+  contain one, so the stated rate is the native rate. Per-input cells ('165 (DP), 144 (HDMI)', 'DP:165/ HDMI:144') write nothing.
 """
 import gzip, html, re, sys, time
 from pathlib import Path
@@ -27,7 +32,7 @@ import _contract as C
 import _run
 import _monports as MP
 
-ID, VERSION, SOURCE = "benq_monitors", 4, "benq-us-monitors"
+ID, VERSION, SOURCE = "benq_monitors", 5, "benq-us-monitors"
 CATEGORIES = {"monitors"}
 ADAPTER = f"{ID}@{VERSION}"
 SITEMAP = "https://www.benq.com/en-us/sitemap.xml"
@@ -35,6 +40,7 @@ DELAY = 1.0
 LOC = re.compile(r"<loc>(https://www\.benq\.com/en-us/monitor/([a-z0-9-]+)/([a-z0-9-]+)/spec\.html)</loc>")
 SKIP_LINES = {"accessory", "software"}
 CONT = re.compile(r'<div class="spec-container">(.*?)(?=<div class="spec-container">|<div class="g6-|\Z)', re.S)
+OC_OR_MODES = re.compile(r"(?i)over-?clock|\bO/?C\b|dual[- ]mode|triple[- ]mode")
 ITEM = re.compile(r'<li class="item">\s*<div class="name">(.*?)</div>\s*<div class="detail">(.*?)</div>', re.S)
 
 
@@ -138,10 +144,14 @@ def parse_html(snap, h):
         nums = [int(x) for x in re.findall(r"(?<![\d.])(\d{2,3})(?![\d.])", rr)]
         if nums:
             add("res.refresh_max", max(nums), "Refresh Rate (Hz)" if get("Refresh Rate (Hz)") else "Refresh Rate")
+        if (m := re.fullmatch(r"\s*(\d{2,3})\s*(?:Hz)?\s*", rr, re.I)) and not OC_OR_MODES.search(txt(h)):
+            add("res.refresh_native", int(m[1]), "Refresh Rate (Hz)" if get("Refresh Rate (Hz)") else "Refresh Rate")      # v5
     res = get("Resolution (max.)") or get("Resolution")
     if res and (m := re.fullmatch(r"\s*(\d{3,4})\s*[x×]\s*(\d{3,4})\b.*", res)):
         lab = "Resolution (max.)" if get("Resolution (max.)") else "Resolution"
         add("res.width_px", int(m[1]), lab); add("res.height_px", int(m[2]), lab)
+        if re.fullmatch(r"\s*\d{3,4}\s*[x×]\s*\d{3,4}\s*", res):
+            add("res.native", f"{m[1]}x{m[2]}", lab)                                                         # v5
     sz = get("Screen Size")
     if sz and (m := re.fullmatch(r"\s*(\d{2}(?:\.\d)?)\s*(?:inch|\")\s*", sz)):
         if "." in m[1] and not m[1].endswith(".0"):

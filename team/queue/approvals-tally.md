@@ -1,0 +1,20 @@
+# Coordinator approvals tally (owner review later)
+Delegation: owner 2026-11-26 "Consider all policies approved, just keep a running tally so I can review them later."
+Approvals under delegation carry `by: coordinator-delegated`. Grep policies.yaml for that string to list them all.
+Still held (licensing-driven, not a data gap): claim/mfr-monitor-aoc@3 (www.aoc.com free:false, storage clause) — parked owner decision (b).
+
+| date | policy | what it publishes | source agent / report |
+|---|---|---|---|
+| 2026-11-26 | claim/mfr-monitor-structured@12 | ASUS native refresh (overview-gated), LG O/C split, Lenovo max fix | A2-ref r10 |
+| 2026-11-26 | claim/mfr-monitor-benq@5 | BenQ res.native + refresh_native | A2-ref r10 |
+| 2026-11-26 | claim/mfr-monitor-dell@3 | Dell flk.pwm none from TÜV Flicker Free footnote | A2-ref r10 |
+| 2026-11-26 | claim/derive-tuv-eye-comfort-5star@6 | re-pin only (lenovo_monitors@7) | A2-ref r10 |
+| 2026-11-26 | rel/source-stated-hierarchy@17 | re-pin only | A2-ref r10 |
+| 2026-11-26 | claim/document-power-pdo@5 | PDO from documents; IEC PS-class lines skipped; Belkin leaflets | A2-pb r10 |
+| 2026-11-26 | claim/spec-image-power-pdo@3 | re-pin (docparse) | A2-pb r10 |
+| 2026-11-26 | claim/hub-document-power-pdo@3 | re-pin (docparse) | A2-pb r10 |
+| 2026-11-26 | claim/mfr-power-banks-structured@10 | pb_pps_r7@8 negation + exact model | A3-fix review-10 |
+| 2026-11-26 | claim/derive-samsung-sfc2-pps@3 | SFC 2.0 => pd.pps, negation-safe | A3-fix review-10 |
+| 2026-11-26 | claim/mfr-power-stations-structured@10 | UPS alternatives/lower bounds never exact | A3-fix review-10 |
+| 2026-11-26 | claim/document-tv-ports@3 | TV port inventory only from trusted hdmi.count | A3-fix review-10 |
+| 2026-11-26 | rel/bundle-contents@10 | re-pin (pb parsers) | A3-fix review-10 |

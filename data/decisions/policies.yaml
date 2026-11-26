@@ -77,21 +77,18 @@ claim_policies:
     keys:
       asus-us: [cpu.base_clock, cpu.boost_clock, cpu.cache, cpu.cores, cpu.cores_threads, cpu.model, cpu.threads]
       lenovo-psref: [cpu.base_clock, cpu.boost_clock, cpu.cache, cpu.cores, cpu.cores_threads, cpu.model, cpu.threads]
-- id: claim/mfr-monitor-structured@10
+- id: claim/mfr-monitor-structured@12
   since: '2026-11-26'
-  supersedes: claim/mfr-monitor-structured@9
-  rationale: 'Same meaning as @8 for every key it already accepted (lenovo_monitors@6 unchanged), re-issued for lg_us@3 -> @4 and asus_monitors@3 -> @4 (A2-mon r5). WIDENING: usb.kvm and res.refresh_native added to the lg-us allowlist, res.refresh_native to the asus-us-monitors allowlist. lg_us@4: usb.kvm from the maker''s own spec row ''KVM: Yes'' (True) / ''KVM: No'' (False), never prose or absence; res.refresh_native only from a ''Refresh Rate'' row that is one plain ''NHz'' on a page with no ''Dual Mode Refresh Rate'' row (''O/C'', ''up to'', several figures, H/V frequency -> nothing); flk.pwm none (already allowed) also from a feature-badge alt text line exactly ''Flicker-Free'' on a CMS image asset whose SKU metaproperty is exactly the page''s model (the UL Verified badge set ''Flicker-Free / Discomfort Glare Free / Low Blue Light Platinum''), only when the v3 footnote/copy rule found nothing. asus_monitors@4: res.refresh_native only where the single-model page''s own copy says ''native N Hz'' explicitly (one distinct N, N <= Refresh Rate (Max)); ''Refresh Rate (Max)'' alone never maps. Every other claim byte-identical. r9: fingerprint pin only (lenovo_monitors imports lenovo_psref@5).'
+  supersedes: claim/mfr-monitor-structured@11
+  rationale: 'Same meaning as @10 for every key it already accepted, re-issued for lenovo_monitors@6 -> @7 (refresh_max only), lg_us@4 -> @5, asus_monitors@4 -> @5 (A2-ref r10). No key widening (res.refresh_native, res.refresh_max already allowed for all three sources). res.refresh_native means the maker-stated rate without overclock; it is never inferred from the panel model. lenovo_monitors@7: res.refresh_native unchanged from @6 (a bare ''A Hz - B Hz'' range stays a VRR window and writes nothing); res.refresh_max is now the highest Hz figure in the ''Refresh Rate'' row (was the first: ''48Hz - 120Hz'' wrote 48, OC and UHD/FHD dual-mode rows wrote the lower figure). lg_us@5: also ''N Hz (M Hz O/C)'' / ''N Hz (O/C M Hz)'' with M > N = N (the rate stated beside the OC rate); ''144Hz (O/C)'', ''up to'', ''w/ OverClock'' and Dual Mode pages write nothing; Hz matching is case-insensitive; res.refresh_max is the highest Hz figure in the row (was the first: kHz/H-frequency rows wrote 2 or 88). asus_monitors@5: also = N when ''Refresh Rate (Max)'' (or ROG ''Refresh Rate (max)'') is one plain ''N Hz'' on a single-model page, no figure above N appears anywhere in the spec text (title, rows, Digital Signal Frequency; Analog ignored), no Dual / Triple Mode row or wording, AND neither the spec page nor the model''s own overview page (stored as ref <KEY>#overview, fetched under robots from the discovery pdp URL) says overclock / overclockable / OC (site boilerplate about motherboards and overclockers excepted); with no stored overview the rule fails closed. The v4 ''native N Hz'' copy rule still runs first. Every other claim byte-identical. @11 was locked by the round''s first import with a Lenovo bare-range native rule that contradicted the v6 ruling in tests/test_zero_keys_ports.py; withdrawn, never approved.'
   audit:
-    by: A2-lap2 r9
+    by: A2-ref r10
     at: '2026-11-26'
-    evidence: 'team/reports/2026-11-26-a2-r9-chargeport.md; lenovo_monitors@6 old vs new fingerprint (lenovo_monitors imports lenovo_psref, which moved to @5 for r9; _lports charge_port only): fingerprint pin, no extractor or claim change (monitor claims never read Standard Ports charge_port).'
-    parsers:
-      lenovo_monitors@6: 'sha256:562ebc6804d7630f3f55'
-      lg_us@4: 'sha256:f85d547907ba2f4cd231'
-      asus_monitors@4: 'sha256:a03b47b4af0f4a10c940'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26c}
+    evidence: 'team/reports/2026-11-26-a2-r10-refresh.md; tests/test_a2_r10_refresh.py; in-memory claim diff old vs new parser over every stored snapshot; old vs new parser over every stored snapshot: asus +155 res.refresh_native, +20 res.refresh_max (ROG lowercase label), 0 removed; lenovo 0 res.refresh_native change, 65 res.refresh_max values corrected (65 removed / 65 added); lg +16 res.refresh_native, +59 / -21 res.refresh_max; no other key changed. 226 ASUS overview pages fetched 2026-11-26 (23 pdp 404s, no overview stored, rule fails closed).'
+    parsers: {lenovo_monitors@7: 'sha256:bc0b113ba07be6e8e47d', lg_us@5: 'sha256:7fd184a80af9e064d815', asus_monitors@5: 'sha256:1f9346148562026564f6'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
   match:
-    extractors: [lenovo_monitors@6, lg_us@4, asus_monitors@4]
+    extractors: [lenovo_monitors@7, lg_us@5, asus_monitors@5]
     source_ids: [lenovo-psref-monitors, lg-us, asus-us-monitors]
     kinds: [official, derived]
     tiers: [manufacturer]
@@ -107,19 +104,18 @@ claim_policies:
       asus-us-monitors: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.size_class, gen.viewable_diag, hdr.contrast_static,
         hdr.marketed_label, hdr.peak_marketed, hdr.sdr_typ, motion.gtg_marketed, panel.surface, panel.technology, pwr.typical, res.aspect, res.height_px, res.native,
         res.refresh_max, res.refresh_native, res.vrr_types, res.width_px, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
-- id: claim/derive-tuv-eye-comfort-5star@4
+- id: claim/derive-tuv-eye-comfort-5star@6
   since: '2026-11-26'
-  supersedes: claim/derive-tuv-eye-comfort-5star@3
-  rationale: 'Re-issue of @2 for the parser pin lenovo_monitors@5 -> @6 only (same rule, kinds, keys as @1/@2; the TÜV derivation code is byte-identical). r9: fingerprint pin only (lenovo_monitors imports lenovo_psref@5).'
+  supersedes: claim/derive-tuv-eye-comfort-5star@5
+  rationale: 'Re-issue of @4 for the parser pin lenovo_monitors@6 -> @7 only (A2-ref r10). Same rule, kinds and keys; the TUV derivation code is byte-identical (lenovo_monitors@7 changes res.refresh_max only). @5 was locked by the first r10 import at an intermediate lenovo_monitors@7 fingerprint; never approved.'
   audit:
-    by: A2-lap2 r9
+    by: A2-ref r10
     at: '2026-11-26'
-    evidence: 'team/reports/2026-11-26-a2-r9-chargeport.md; lenovo_monitors@6 old vs new fingerprint (lenovo_monitors imports lenovo_psref, which moved to @5 for r9; _lports charge_port only): fingerprint pin, no extractor or claim change (monitor claims never read Standard Ports charge_port).'
-    parsers:
-      lenovo_monitors@6: 'sha256:562ebc6804d7630f3f55'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26c}
+    evidence: 'team/reports/2026-11-26-a2-r10-refresh.md; tests/test_a2_r10_refresh.py; in-memory claim diff old vs new parser over every stored snapshot; lenovo_monitors@6 vs @7: 0 flk.pwm claims added, removed or changed.'
+    parsers: {lenovo_monitors@7: 'sha256:bc0b113ba07be6e8e47d'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
   match:
-    extractors: [lenovo_monitors@6]
+    extractors: [lenovo_monitors@7]
     source_ids: [lenovo-psref-monitors]
     kinds: [derived]
     tiers: [manufacturer]
@@ -457,9 +453,9 @@ claim_policies:
       csa-dcl-robovac:
       - smart.matter
     require_normalized: true
-- id: claim/mfr-power-banks-structured@9
+- id: claim/mfr-power-banks-structured@10
   since: '2026-11-26'
-  supersedes: claim/mfr-power-banks-structured@8
+  supersedes: claim/mfr-power-banks-structured@9
   rationale: 'Same sources, kinds (official only), tiers, statuses and normalisation as @7, re-issued for the r7 PPS bump (A2-pb, brief coord-2026-11-26-r7-powerbanks).
     New stated pd.pps true sources, all on the SKU''s own maker page and only when the page wrote no pd.pps: (1) iniu_powerbanks@6 (crawler/adapters/pb_pps_r7.py,
     subclass of the unchanged shopify_powerbanks INIU adapter): the per-port ''Supported Protocol'' block that the label splitter cut at ''Input'' (''Output
@@ -472,18 +468,15 @@ claim_policies:
     derived SFC 2.0 rule only (its derived claims need claim/derive-samsung-sfc2-pps@1; this policy accepts official only). ugreen_powerbanks@5 and belkin_powerbanks@5
     unchanged (fingerprints identical); sharge/kuxiu/mophie @6 = shared-module bump, 0 claim changes. shopify_powerbanks.py is byte-identical, so the power-station
     pins do not move. review-9 (A3-fix, 2026-11-26): parser bumps anker_powerbanks@6 -> @7, iniu_powerbanks@6 -> @7, cuktech_powerbanks@6 -> @7 for the
-    shared pb_pps_r7.sfc2 rule only (P1-2: affirmative own-product output sentence). Official claims of these parsers are byte-identical; no key widening.'
+    shared pb_pps_r7.sfc2 rule only (P1-2: affirmative own-product output sentence). Official claims of these parsers are byte-identical; no key widening. review-10 (A3-fix, Codex review-10 P1-2, 2026-11-26): parser bumps anker/iniu/cuktech_powerbanks @7 -> @8 for the shared pb_pps_r7.sfc2 rule only (modal / contraction negation, exact normalised model identity). Official claims of these parsers are byte-identical; no key widening.'
   audit:
-    by: A3-fix review-9
+    by: A3-fix review-10
     at: '2026-11-26'
-    evidence: 'reviews/2026-11-26-astra-review-9.md P1-2; team/reports/2026-11-26-a3-review9-fixes.md; full scratch import (new code) vs the published store:
-      0 power-bank claim groups changed. tests/test_review9.py Sfc2Pps'
-    parsers: {anker_powerbanks@7: 'sha256:22d4aec6765bdb1ece5c', belkin_powerbanks@5: 'sha256:abb5bf59fadce0dc1ae3', cuktech_powerbanks@7: 'sha256:92e8b43f12f2b000bc48',
-      iniu_powerbanks@7: 'sha256:92e8b43f12f2b000bc48', ugreen_powerbanks@5: 'sha256:a95b2d2a86119ba7adc7', ecoflow_powerbanks@6: 'sha256:2110a3bc5cb01aaf418d',
-      sharge_powerbanks@6: 'sha256:2110a3bc5cb01aaf418d', kuxiu_powerbanks@6: 'sha256:2110a3bc5cb01aaf418d', mophie_powerbanks@6: 'sha256:2110a3bc5cb01aaf418d'}
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26d (review-9 fixes)}
+    evidence: 'reviews/2026-11-26-astra-review-10.md P1-2; team/reports/2026-11-26-a3-review10-fixes.md; in-memory claim diff HEAD vs new parsers over every stored snapshot of the iniu / cuktech / anker power-bank sources: 0 claims added, removed or changed (31 pd.pps claims identical). tests/test_review10.py Sfc2Identity, tests/test_review9.py Sfc2Pps'
+    parsers: {'anker_powerbanks@8': 'sha256:4edc2e6660c8ecd3b355', 'belkin_powerbanks@5': 'sha256:abb5bf59fadce0dc1ae3', 'cuktech_powerbanks@8': 'sha256:16c436a875f72fb01eea', 'iniu_powerbanks@8': 'sha256:16c436a875f72fb01eea', 'ugreen_powerbanks@5': 'sha256:a95b2d2a86119ba7adc7', 'ecoflow_powerbanks@6': 'sha256:2110a3bc5cb01aaf418d', 'sharge_powerbanks@6': 'sha256:2110a3bc5cb01aaf418d', 'kuxiu_powerbanks@6': 'sha256:2110a3bc5cb01aaf418d', 'mophie_powerbanks@6': 'sha256:2110a3bc5cb01aaf418d'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
   match:
-    extractors: [anker_powerbanks@7, belkin_powerbanks@5, cuktech_powerbanks@7, iniu_powerbanks@7, ugreen_powerbanks@5, ecoflow_powerbanks@6, sharge_powerbanks@6,
+    extractors: [anker_powerbanks@8, belkin_powerbanks@5, cuktech_powerbanks@8, iniu_powerbanks@8, ugreen_powerbanks@5, ecoflow_powerbanks@6, sharge_powerbanks@6,
       kuxiu_powerbanks@6, mophie_powerbanks@6]
     source_ids: [anker-us-powerbanks, belkin-us-powerbanks, cuktech-us-powerbanks, iniu-us-powerbanks, ugreen-us-powerbanks, ecoflow-us-powerbanks, sharge-us-powerbanks,
       kuxiu-us-powerbanks, mophie-us-powerbanks]
@@ -507,9 +500,9 @@ claim_policies:
         out.ports, out.simultaneous, pd.max_fixed_voltage, phys.dimensions, phys.weight]
       mophie-us-powerbanks: [cap.cell_mah, out.max_output_w, out.max_single_port_w, phys.dimensions, phys.weight]
     require_normalized: true
-- id: claim/derive-samsung-sfc2-pps@2
+- id: claim/derive-samsung-sfc2-pps@3
   since: '2026-11-26'
-  supersedes: claim/derive-samsung-sfc2-pps@1
+  supersedes: claim/derive-samsung-sfc2-pps@2
   rationale: 'Coordinator ruling r7 (brief coord-2026-11-26-r7-powerbanks): Samsung Super Fast Charging 2.0 is PPS by definition. When the maker''s own
     page for the SKU names ''Samsung Super Fast Charging 2.0'' or ''45W (max) (output) for Samsung'' (not negated) and the page wrote no stated pd.pps claim,
     the adapter writes pd.pps true, kind derived, condition basis=derived (research/power-banks/spec-profile.yaml), quote ''rule r7-sfc2 ...''. Never false,
@@ -519,16 +512,15 @@ claim_policies:
     affirmative own-product OUTPUT sentence: the whole sentence naming SFC 2.0 / 45W for Samsung must carry an output verb (supports / delivers / outputs
     / provides / compatible) and no negation anywhere, no question (trailing ?, leading does/can/is.., FAQ Q:), no input / recharge / adapter / charger
     context, no other-product wording (other / another / previous / unlike / vs) and no model token other than the page model (target phones Galaxy/iPhone/Pixel
-    N excepted). Still kind derived, basis derived, never a PPS range.'
+    N excepted). Still kind derived, basis derived, never a PPS range. @3 (A3-fix, Codex review-10 P1-2): negation also covers modal and contraction forms (cannot, can''t, won''t, isn''t, unable, incompatible, never, lacks; any apostrophe), and every model token in the sentence must EQUAL one of the page''s own identities after normalisation (mfr_model, mfr_sku and the model tokens printed inside them): no substring match, so ''The P730 supports ...'' is foreign for P73. Still kind derived, basis derived, never a PPS range.'
   audit:
-    by: A3-fix review-9
+    by: A3-fix review-10
     at: '2026-11-26'
-    evidence: 'reviews/2026-11-26-astra-review-9.md P1-2; team/reports/2026-11-26-a3-review9-fixes.md; full scratch import: the 1 published derived claim
-      (Anker A1638) is unchanged, 0 added. tests/test_review9.py Sfc2Pps (the review''s 4 counterexamples + 3 more emit nothing)'
-    parsers: {anker_powerbanks@7: 'sha256:22d4aec6765bdb1ece5c', cuktech_powerbanks@7: 'sha256:92e8b43f12f2b000bc48', iniu_powerbanks@7: 'sha256:92e8b43f12f2b000bc48'}
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26d (review-9 fixes)}
+    evidence: 'reviews/2026-11-26-astra-review-10.md P1-2 (both read-only probes now emit nothing); team/reports/2026-11-26-a3-review10-fixes.md; in-memory claim diff HEAD vs new parsers over every stored snapshot: 0 derived pd.pps claims added or removed (Anker A1638 unchanged). tests/test_review10.py Sfc2Identity'
+    parsers: {'anker_powerbanks@8': 'sha256:4edc2e6660c8ecd3b355', 'cuktech_powerbanks@8': 'sha256:16c436a875f72fb01eea', 'iniu_powerbanks@8': 'sha256:16c436a875f72fb01eea'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
   match:
-    extractors: [anker_powerbanks@7, cuktech_powerbanks@7, iniu_powerbanks@7]
+    extractors: [anker_powerbanks@8, cuktech_powerbanks@8, iniu_powerbanks@8]
     source_ids: [anker-us-powerbanks, cuktech-us-powerbanks, iniu-us-powerbanks]
     kinds: [derived]
     tiers: [manufacturer]
@@ -565,9 +557,9 @@ claim_policies:
     require_normalized: true
     keys:
       belkin: [type.ul1449_listed, surge.joules, surge.clamping_v, outlets.count]
-- id: claim/mfr-power-stations-structured@9
+- id: claim/mfr-power-stations-structured@10
   since: '2026-11-26'
-  supersedes: claim/mfr-power-stations-structured@8
+  supersedes: claim/mfr-power-stations-structured@9
   rationale: 'Every @7 rule unchanged, re-issued for shopify_powerstations@6 -> @7 and ankersolix_stations@6 -> @7 (A3-fix, Codex review-8 P1-3, shared
     crawler/adapters/_powerstation.py). CHANGED (labelled UPS rows and the r5 UPS-prose ruling alike, one reader ms_figure()): (1) ''up to N ms'', ''<=
     N'', ''max. N'', ''no more than N'', ''at most N'' are upper bounds too -> ''up to N'' (normalize qualifier up_to), never the bare figure; (2) a range
@@ -578,17 +570,15 @@ claim_policies:
     station parsers @7 -> @8 for _powerstation.ms_figure only. The qualification around each N ms figure is validated: trailing upper bounds (N ms maximum
     / max / or less / or below / at most) -> up to N; between N and M / from N to M / N/M / N or M -> unresolved (rows) / nothing (prose); lower bounds
     (>=, >, at least, over, min., N ms or more, N ms+, N ms minimum) and unsupported qualifiers (~, approx., about, around, typical, +-) -> unresolved /
-    nothing, never an exact value.'
+    nothing, never an exact value. review-10 (A3-fix, Codex review-10 P1-3): station parsers @8 -> @9 for _powerstation._qualify only. An alternative after the figure (''10 ms or 20 ms'', ''10 ms / 20 ms'', ''10 ms, 20 ms'', ''10 ms and 20 ms'') is several figures in labelled rows too (rows read the first figure, which previously ignored what followed it) -> unresolved; trailing lower bounds ''N ms or over / or above / or beyond / and higher / or longer'' and leading ''=>'', ''&gt;='', ''&ge;'', ''\u2267'' -> unresolved (rows) / nothing (prose), never exact. A separately labelled mode (''Backup UPS: <20ms, Online UPS: 0ms'' -> up to 20) and explicit upper bounds (''up to'', ''or less'', ''max'') are unchanged.'
   audit:
-    by: A3-fix review-9
+    by: A3-fix review-10
     at: '2026-11-26'
-    evidence: 'reviews/2026-11-26-astra-review-9.md P1-3; team/reports/2026-11-26-a3-review9-fixes.md; full scratch import vs the published store: 25 ups.switchover_ms
-      entity groups, 0 changed / removed / added; no other station claim changed. tests/test_review9.py UpsQualifiers (rows + prose), tests/test_review8.py'
-    parsers: {ankersolix_stations@8: 'sha256:81a28e7ef0adbad35430', bluetti_stations@8: 'sha256:51657016b4e675d89263', ecoflow_stations@8: 'sha256:51657016b4e675d89263',
-      goalzero_stations@8: 'sha256:51657016b4e675d89263', jackery_stations@8: 'sha256:51657016b4e675d89263'}
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26d (review-9 fixes)}
+    evidence: 'reviews/2026-11-26-astra-review-10.md P1-3 (both read-only probes now unresolved); team/reports/2026-11-26-a3-review10-fixes.md; in-memory claim diff HEAD vs new parsers over every stored snapshot of the 5 station sources: 0 claims added, removed or changed (36 ups.switchover_ms claims identical). tests/test_review10.py UpsAlternativesAndLowerBounds, tests/test_review9.py, tests/test_review8.py'
+    parsers: {'ankersolix_stations@9': 'sha256:f886e47d4add8d75ba7a', 'bluetti_stations@9': 'sha256:700e176d2a6d99b255ad', 'ecoflow_stations@9': 'sha256:700e176d2a6d99b255ad', 'goalzero_stations@9': 'sha256:700e176d2a6d99b255ad', 'jackery_stations@9': 'sha256:700e176d2a6d99b255ad'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
   match:
-    extractors: [ankersolix_stations@8, bluetti_stations@8, ecoflow_stations@8, goalzero_stations@8, jackery_stations@8]
+    extractors: [ankersolix_stations@9, bluetti_stations@9, ecoflow_stations@9, goalzero_stations@9, jackery_stations@9]
     source_ids: [ecoflow-us-stations, bluetti-us-stations, jackery-us-stations, goalzero-us-stations, ankersolix-us-stations]
     kinds: [official]
     tiers: [manufacturer]
@@ -920,39 +910,37 @@ claim_policies:
       glinet-us-routers: [gen.device_type, hw.cpu_cores, hw.cpu_ghz, hw.flash_mb, hw.ram_mb, hw.soc_model, hw.soc_vendor, phys.dimensions, phys.weight,
         port.lan_count, port.lan_max_mbps, port.multigig_count, port.usb_count, port.usb_standard, port.wan_lan_configurable, port.wan_speed_mbps,
         wifi.band_count, wifi.generation, wifi.has_6ghz, wifi.rate_24_mbps, wifi.rate_5_mbps, wifi.rate_6_mbps]
-- id: claim/mfr-monitor-benq@4
-  since: '2026-11-25'
-  supersedes: claim/mfr-monitor-benq@3
-  rationale: 'Every @3 rule unchanged, re-issued for benq_monitors@3 -> @4 (A2-mon r5). WIDENING: usb.kvm added. benq_monitors@4 writes usb.kvm from the page''s own ''KVM Switch'' spec row only: ''Yes'' -> True, ''No'' -> False; any other value, feature copy, navigation text and silence write nothing.'
+- id: claim/mfr-monitor-benq@5
+  since: '2026-11-26'
+  supersedes: claim/mfr-monitor-benq@4
+  rationale: 'Every @4 rule unchanged, re-issued for benq_monitors@4 -> @5 (A2-ref r10). WIDENING: res.native and res.refresh_native added. benq_monitors@5: res.refresh_native = N only when the spec row ''Refresh Rate (Hz)'' (else ''Refresh Rate'') is exactly one plain figure ''N'' / ''N Hz'' AND the stored page nowhere says overclock / O/C / dual mode / triple mode (per-input lists such as ''165 (DP), 144 (HDMI)'' and any OC wording write nothing); res.native = ''WxH'' only when ''Resolution (max.)'' is exactly one ''W x H'' figure. Every other claim byte-identical.'
   audit:
-    by: A2-mon r5
-    at: '2026-11-25'
-    evidence: 'team/reports/2026-11-25-a2-r5-monitors-stations.md; in-memory claim diff benq_monitors@3 vs @4 over all 136 stored snapshots: +39 usb.kvm True (''Professional > KVM Switch: Yes''), 0 removed, 0 changed; tests/test_a2_mon_r5.py'
-    parsers:
-      benq_monitors@4: 'sha256:d86aa63564a295b57800'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25c}
+    by: A2-ref r10
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r10-refresh.md; tests/test_a2_r10_refresh.py; in-memory claim diff old vs new parser over every stored snapshot; benq_monitors@4 vs @5 over all stored snapshots: +126 res.refresh_native, +133 res.native, 0 removed, 0 changed.'
+    parsers: {benq_monitors@5: 'sha256:8e2dc75a577718180a01'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
   match:
-    extractors: [benq_monitors@4]
+    extractors: [benq_monitors@5]
     source_ids: [benq-us-monitors]
     kinds: [official, derived]
     tiers: [manufacturer]
     statuses: [known]
     require_normalized: true
     keys:
-      benq-us-monitors: [ergo.vesa, flk.cert, flk.pwm, gen.size_class, panel.technology, pwr.max, res.height_px, res.refresh_max, res.width_px, usb.kvm, usb.usbc_inputs, usb.usbc_pd_w]
-- id: claim/mfr-monitor-dell@2
-  since: '2026-11-25'
-  supersedes: claim/mfr-monitor-dell@1
-  rationale: 'Same-round re-issue of @1 for dell_monitors@1 -> @2 (@1 was locked by the round''s first import, never approved). ADDED vs @1: usb.usbc_inputs 0 (basis complete_enumeration) also when the Interface/Port Details list is cross-checked complete because its USB-C lines add up to Total Number of USB Type-C Ports (Dell''s ''2 HDMI ports'' count style is now read as a video input, so this check fires), or, with no USB-C/Thunderbolt row or line anywhere on the page, its USB lines add up to Number of USB Ports (+18 zeros: Alienware/P/E models whose only USB-C ports are downstream or that have none). Everything else as @1: new source dell-us-monitors (crawler/adapters/dell_monitors.py, A2-dell r6 brief item 1): the Tech Specs block of www.dell.com /en-us/shop/.../apd/<slug>/<code>/- pages (www.dell.com is already in data/source-policy.yaml, maker, categories laptops + monitors; robots allows the /apd/ pages and the /ar/ listing used for discovery). One page = one model: mfr_model = the Product Model row, which must equal the URL code (a ''<model> WOST'' page is the same model sold without stand); the Dell part number is an x_dell_part_number alias. Rules: flk.pwm none ONLY from the explicit ''Flicker Free: Yes'' row or a ''Flicker-free'' Features item (''Flicker Free: No'', ComfortView, Eye Comfort stars and silence write nothing); res.refresh_native only when ''Standard Refresh Rate'' equals the highest ''Maximum Preset Resolution'' rate at the native resolution and no row says overclock (AW2524HF prints Standard 500 Hz vs a 480 Hz preset: native not written); res.refresh_max = the higher of the two; usb.usbc_inputs from the Interface/Port Details list via _monports (an ambiguous USB-C line writes nothing), 0 only from the maker''s ''USB Type-C: No'' row with no Thunderbolt/USB-C elsewhere, or as complete_enumeration when every USB-C port the ''Total Number of USB Type-C Ports'' row counts is listed and none takes video; usb.usbc_pd_w only from an upstream-side Power Delivery row (or, with no such row, the USB-C video input line) with one W figure, Downstream rows never; usb.kvm True only from ''KVM Switch'' in Built-in Devices; vin.hdmi_count / vin.dp_count only when the count row agrees with the port-details list (and dp_count never on a page with DisplayPort Output: Yes); size class as stated (whole inch).'
+      benq-us-monitors: [ergo.vesa, flk.cert, flk.pwm, gen.size_class, panel.technology, pwr.max, res.height_px, res.native, res.refresh_max, res.refresh_native, res.width_px, usb.kvm, usb.usbc_inputs, usb.usbc_pd_w]
+- id: claim/mfr-monitor-dell@3
+  since: '2026-11-26'
+  supersedes: claim/mfr-monitor-dell@2
+  rationale: 'Every @2 rule unchanged, re-issued for dell_monitors@2 -> @3 (A2-ref r10). No key widening. ADDED vs @2: flk.pwm none also from the page''s JSON-LD ''footnotes'' property whose value is exactly the maker''s certification line ''TUV Rheinland certified - ... Flicker Free ...'' (with umlaut / dash encodings), only when the v2 ''Flicker Free'' row / Features item found nothing. Prose (''flicker-free screen'', ''less flicker''), a TUV line without ''Flicker Free'', ComfortView and Eye Comfort stars still write nothing. Every other claim byte-identical.'
   audit:
-    by: A2-dell r6
-    at: '2026-11-25'
-    evidence: 'team/reports/2026-11-25-a2-r6-dell.md; @1 vs @2 over all 89 stored pages: +18 usb.usbc_inputs 0 (complete_enumeration), nothing else changed; 89 pages fetched 2026-11-25 (9 listing pages, all 200), 89 models parsed, 0 absences; per-key counts in the report; tests/test_a2_r6_dell.py'
-    parsers:
-      dell_monitors@2: 'sha256:fc0d41a25a9fdc3ddd0f'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25d}
+    by: A2-ref r10
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r10-refresh.md; tests/test_a2_r10_refresh.py; in-memory claim diff old vs new parser over every stored snapshot; dell_monitors@2 vs @3: +6 flk.pwm none (e2225hm, se2225hm, e2425hm, e2425hsm, e2225hsm, p1425), nothing else added, removed or changed.'
+    parsers: {dell_monitors@3: 'sha256:01947cb3122bff2170dd'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
   match:
-    extractors: [dell_monitors@2]
+    extractors: [dell_monitors@3]
     source_ids: [dell-us-monitors]
     kinds: [official, derived]
     tiers: [manufacturer]
@@ -1002,32 +990,21 @@ claim_policies:
     statuses: [known]
     require_normalized: true
     keys: [hw.dram_type, hw.nand_type]
-- id: claim/document-power-pdo@4
-  since: '2026-11-25'
-  supersedes: claim/document-power-pdo@3
-  rationale: 'Review 6 (reviews/2026-11-24-astra-review-6-docs.md) reissue of @3 for transform docattach@2 / extractor docparse@2. Same source,
-    keys, kinds and tiers; acceptance only narrows. (1) Identity: a claim is accepted only when its own row scope (the block, else the page, else
-    the whole document when the document names no other model) names this entity and no sibling; siblings include UNCATALOGUED models (same
-    identifier shape, or any token after a model label) and catalogued same-brand entities outside the entity''s own lineage; a block or page
-    naming two models scopes nothing. Identity evidence must be text layer: OCR identity, even with text-layer rows, makes the claim
-    OCR-dependent (docparse-ocr@2, never accepted), and an OCR mention counts only when its own words have token confidence >= 60 (the page
-    mean never vouches). A model-level match with another SKU of the same base model, a foreign region token in the file name, or an identifier
-    shared with an unrelated entity is variant-unestablished (docparse-review@2, never accepted) unless the scope names an own SKU. Conditions
-    carry identity, identity_scope, identity_variant (provenance only). (2) Combination context (multi-port headings, "C1 + C2" prefixes) is
-    document scope across block and page boundaries; per-port rows and device maxima never come from inside it. Port rows map only onto the
-    out.ports claim of the linking observation itself; when the entity''s pages disagree on the port layout only explicit single-port rows are
-    attributed. (3) One source entry, claim (locator.linked_from) and documents[] entry per verified linking edge; the source policy inherits
-    only along that edge.'
+- id: claim/document-power-pdo@5
+  since: '2026-11-26'
+  supersedes: claim/document-power-pdo@4
+  rationale: 'r10 re-pin (A2-pb, brief coord-2026-11-26-r10-pb-a2): crawler/adapters/_docparse.py (shared by docattach@2 / hubattach@1 / imgattach@1)
+    now skips an IEC/EN/UL 62368-1 power-source class sentence ("USB-C port (20V/5A, 21V/4.75A, 28V/5A) are classified as PS3 in IEC/EN/UL 62368-1":
+    regex PS1-3 or 62368) and closes any open row: it is family safety boilerplate, not the product PDO list (Belkin BPB029, a 45 W bank, prints the
+    28 V PS3 sentence of its 240 W sibling and docparse read pd.max_fixed_voltage 28). Stricter only; extractor name, keys, kinds, tiers and every
+    other rule unchanged from the superseded version. Superseded version: claim/document-power-pdo@4 (see retired_policies for its full rationale).'
   audit:
-    by: A3-impl review 6
-    at: '2026-11-25'
-    evidence: 'team/reports/2026-11-25-doc-review6-fixes.md; tests/test_documents.py (review-6 exit fixtures: unknown sibling, two models in one
-      block, base-model / shared-SKU regional variants, low-confidence OCR identity with text-layer PDOs, high page mean with an uncertain digit,
-      split-block and page-spanning combination tables, conflicting port layouts, allowed + withheld linking pages, identical bytes at two URLs,
-      Salsify / CDN-to-CDN and document-URL edges through apply() and the source-policy gate); replay over every stored document.'
+    by: A2-pb r10
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r10-pb.md; old vs new _docparse.power_output over all 544 stored document texts: 3 documents change (Belkin INS_BPB029 / INS_BPB040 / INS_BPB039 regulatory leaflets), device rows from PS3 class sentences only, 0 port rows, 0 PPS-named lines; 0 of 281 spec-image OCR texts carry such a line. tests/test_r10_pb_docparse.py'
     parsers:
-      docattach@2: 'sha256:912157c3225060b94487'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+      docattach@2: 'sha256:9416d43f6de6b3a46636'
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
   match:
     extractors: [docparse@2]
     source_ids: [documents]
@@ -1036,28 +1013,21 @@ claim_policies:
     statuses: [known]
     require_normalized: true
     keys: [pd.pps, pd.pps_max_voltage, pd.pps_max_current_a, pd.max_fixed_voltage, pd.epr, out.ports]
-- id: claim/spec-image-power-pdo@2
+- id: claim/spec-image-power-pdo@3
   since: '2026-11-26'
-  supersedes: claim/spec-image-power-pdo@1
-  rationale: 'Re-pin of @1 for the review-8 P1 fix (A3-fix 2026-11-26): the conflicting-identity vetoes now run BEFORE both binding branches, so single-SKU inheritance (and every exact binding) is refused when the image text or file name shows another SKU of an own base model, a foreign region token or an identifier another entity shares, including images with empty file_models (A2667111 page + A2667113 image -> no exact claim). Stricter only; otherwise as @1: New transform imgattach@1 (scripts/imgattach.py, extractor specimg@1; OCR input crawler/specimages.py imgocr@1 = grayscale + 2x
-    upscale + tesseract). Maker gallery spec images (cdn.shopify.com, a document_host inheriting the linking page) found on a REGISTERED maker
-    page the entity is observed on (edge verified as docattach@2). Identity: inherited only when the linking page is single-SKU (exactly one
-    non-bundle variant SKU and it is an own SKU of the entity), every model token in the image file name is an own identifier, and the OCR text
-    names no other model; otherwise the image must name an own model/SKU with every word of the mention at token confidence >= 60 and no
-    sibling, and is variant-exact only when that mention is an own SKU with no other SKU of the base, region token or shared identifier in play
-    (else specimg-review@1, never accepted). Values: docparse@2 grammar and port attribution unchanged; an electrical value line is read only
-    when the mean confidence of its digit-bearing words is >= 70 (and every row >= 60 via docparse@2) and no value token is ambiguous (split
-    digits "3.3-1 1V", letter/digit confusions "1JOOW", dangling decimals); a rejected line closes any open row. Same keys as
-    document-power-pdo@4 minus pd.epr (no image source of it). Affirmative only.'
+  supersedes: claim/spec-image-power-pdo@2
+  rationale: 'r10 re-pin (A2-pb, brief coord-2026-11-26-r10-pb-a2): crawler/adapters/_docparse.py (shared by docattach@2 / hubattach@1 / imgattach@1)
+    now skips an IEC/EN/UL 62368-1 power-source class sentence ("USB-C port (20V/5A, 21V/4.75A, 28V/5A) are classified as PS3 in IEC/EN/UL 62368-1":
+    regex PS1-3 or 62368) and closes any open row: it is family safety boilerplate, not the product PDO list (Belkin BPB029, a 45 W bank, prints the
+    28 V PS3 sentence of its 240 W sibling and docparse read pd.max_fixed_voltage 28). Stricter only; extractor name, keys, kinds, tiers and every
+    other rule unchanged from the superseded version. Superseded version: claim/spec-image-power-pdo@2 (see retired_policies for its full rationale).'
   audit:
-    by: A3-fix review-8
+    by: A2-pb r10
     at: '2026-11-26'
-    evidence: 'reviews/2026-11-26-astra-review-8.md P1-2; team/reports/2026-11-26-a3-review8-fixes.md; tests/test_imgattach.py (new: OCR variant, OCR variant without model mention, foreign region, shared identifier: none exact). @1 evidence: team/reports/2026-11-25-a3-ocr-mophie.md; tests/test_imgattach.py (A2667 card corroborates the manual, multi-SKU page without OCR
-      model does not attach, low-confidence model token, file-name other-SKU veto, other model in the image, mean < 70 image drops, ambiguous
-      voltage); replay over all 281 bound Anker spec images (0 claims today).'
+    evidence: 'team/reports/2026-11-26-a2-r10-pb.md; old vs new _docparse.power_output over all 544 stored document texts: 3 documents change (Belkin INS_BPB029 / INS_BPB040 / INS_BPB039 regulatory leaflets), device rows from PS3 class sentences only, 0 port rows, 0 PPS-named lines; 0 of 281 spec-image OCR texts carry such a line. tests/test_r10_pb_docparse.py'
     parsers:
-      imgattach@1: 'sha256:3d13fce9d336e7c70163'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26a}
+      imgattach@1: 'sha256:2cd83a4a92f1febb678f'
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
   match:
     extractors: [specimg@1]
     source_ids: [documents]
@@ -1066,27 +1036,22 @@ claim_policies:
     statuses: [known]
     require_normalized: true
     keys: [pd.pps, pd.pps_max_voltage, pd.pps_max_current_a, pd.max_fixed_voltage, out.ports]
-- id: claim/hub-document-power-pdo@2
-  since: '2026-11-25'
-  supersedes: claim/hub-document-power-pdo@1
-  rationale: 'Reissue of @1 (locked by a dry run before a docstring-only change to scripts/hubattach.py moved its fingerprint; meaning identical). Coordinator ruling 2026-11-25 (mophie hub). New transform hubattach@1 (scripts/hubattach.py, extractor hubdoc@1), separate from
-    docattach@2 so claim/document-power-pdo@4 stays pinned. A kind: hub page (data/document-hubs.yaml: www.mophie.com/pages/user-manuals) is
-    never an entity source. A hub -> document edge binds only through the document text: the document must quote the entity''s own mfr_model /
-    mfr_sku (docattach identity, bounded mention, OCR mention only at >= 60 per word); a shared identifier, another SKU of the same base or a
-    foreign region token = no bind; rows are scoped by docattach@2 scope_of (with a sibling named, only the row''s own block / page naming this
-    entity alone binds; shared rows of a multi-SKU manual bind to nobody); a document quoting no catalogued entity attaches nothing. Text-layer
-    rows with text-layer, variant-exact identity only (OCR-dependent or variant-unestablished = hubdoc-review@1, never accepted). Locator records
-    linked_from = hub URL, link_role hub, identity_basis document_quote; the document is on the maker''s own host (www.mophie.com, kind maker).
-    Same keys as document-power-pdo@4. Affirmative only.'
+- id: claim/hub-document-power-pdo@3
+  since: '2026-11-26'
+  supersedes: claim/hub-document-power-pdo@2
+  rationale: 'r10 re-pin (A2-pb, brief coord-2026-11-26-r10-pb-a2): crawler/adapters/_docparse.py (shared by docattach@2 / hubattach@1 / imgattach@1)
+    now skips an IEC/EN/UL 62368-1 power-source class sentence ("USB-C port (20V/5A, 21V/4.75A, 28V/5A) are classified as PS3 in IEC/EN/UL 62368-1":
+    regex PS1-3 or 62368) and closes any open row: it is family safety boilerplate, not the product PDO list (Belkin BPB029, a 45 W bank, prints the
+    28 V PS3 sentence of its 240 W sibling and docparse read pd.max_fixed_voltage 28). Stricter only; extractor name, keys, kinds, tiers and every
+    other rule unchanged from the superseded version. Superseded version: claim/hub-document-power-pdo@2 (see retired_policies for its full
+    rationale).'
   audit:
-    by: A3 OCR + mophie addendum
-    at: '2026-11-25'
-    evidence: 'team/reports/2026-11-25-a3-ocr-mophie.md (addendum); tests/test_hubattach.py (positive quote bind, multi-SKU shared rows do not
-      bind, uncarried SKU does not attach, shared identifier ambiguous, unregistered hub ignored, docattach ignores hub edges); replay over the
-      37 mophie hub manuals.'
+    by: A2-pb r10
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r10-pb.md; old vs new _docparse.power_output over all 544 stored document texts: 3 documents change (Belkin INS_BPB029 / INS_BPB040 / INS_BPB039 regulatory leaflets), device rows from PS3 class sentences only, 0 port rows, 0 PPS-named lines; 0 of 281 spec-image OCR texts carry such a line. tests/test_r10_pb_docparse.py'
     parsers:
-      hubattach@1: 'sha256:ee5821197077e20d3d99'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+      hubattach@1: 'sha256:b1a723fdf8881634c3f0'
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
   match:
     extractors: [hubdoc@1]
     source_ids: [documents]
@@ -1229,9 +1194,9 @@ claim_policies:
     keys: [hdmi.count, hdmi.earc, hdmi.has_4k120, hdmi.ports_4k120, refresh.native_hz, panel.backlight, panel.lcd_type, vrr.supported,
       wifi.generation, wifi.band_count, wifi.has_6ghz, port.lan_count, port.wan_speed_mbps, port.lan_max_mbps, hw.cpu_cores, hw.cpu_ghz,
       hw.soc_vendor, mem.soldered, mem.slots, mem.max, pwr.max_pd_in]
-- id: claim/document-tv-ports@2
+- id: claim/document-tv-ports@3
   since: '2026-11-26'
-  supersedes: claim/document-tv-ports@1
+  supersedes: claim/document-tv-ports@2
   rationale: 'New transform docspec-attach-tvports@1 (scripts/docspec_r7tv.py) + extractor docspec-tv-ports@1 (crawler/adapters/_docspec_tvports.py), A2-st
     r7, brief coord-2026-11-26-r7-ssd-tv. Maker quick start guides linked from a registered maker TV page (TCL us.tcl.com guides on cdn.shopify.com, inherit
     linking_page). Reads only the per-port connection lines "HDMI port 1: Supports up to 4K/144Hz | HDMI port 2: Supports up to 4K/120Hz | HDMI ports 3
@@ -1241,14 +1206,13 @@ claim_policies:
     the text layer, no unlinked same-brand catalogued model named). Text layer only. @2 (A3-fix, Codex review-9 P1-1): docspec-tv-ports@2 voids the list
     when any HDMI port(s) N: statement is not read by the rate pattern; docspec-attach-tvports@2 emits only when the entity has exactly one independent
     (non-document, official) hdmi.count equal to the highest stated port, so a partial prefix emits nothing (also not 0); the guide must quote the full
-    identifier (no series token) and a guide naming any other same-brand catalogued model is shared and binds nobody (the @1 linked-model exemption is removed).'
+    identifier (no series token) and a guide naming any other same-brand catalogued model is shared and binds nobody (the @1 linked-model exemption is removed). @3 (A3-fix, Codex review-10 P1-1): transform docspec-attach-tvports@3 (extractor docspec-tv-ports@2 unchanged): the supporting hdmi.count must itself be TRUSTED, i.e. accepted by an APPROVED policy or a ledger line (import.trusted_probe, the same key mapping / normalisation / policy context as the write loop, probed without side effects); a candidate count (pending or half-approved policy, no policy) proves nothing, and any disagreeing official count, trusted or not, voids the inventory.'
   audit:
-    by: A3-fix review-9
+    by: A3-fix review-10
     at: '2026-11-26'
-    evidence: 'reviews/2026-11-26-astra-review-9.md P1-1; team/reports/2026-11-26-a3-review9-fixes.md; full scratch import vs published: 34 -> 28 claims
-      (115QM891G: no independent hdmi.count; 85X11K / 98X11K: shared X11K guide names both). tests/test_review9.py TvPorts*'
-    parsers: {docspec-attach-tvports@2: 'sha256:a44433d0293f692778de'}
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26d (review-9 fixes)}
+    evidence: 'reviews/2026-11-26-astra-review-10.md P1-1; team/reports/2026-11-26-a3-review10-fixes.md (live claim counts); tests/test_review10.py TrustedInventory (approved count emits; pending / half-approved / absent probe emits nothing; disagreeing untrusted count voids), tests/test_review9.py TvPorts*'
+    parsers: {'docspec-attach-tvports@3': 'sha256:091b78caeb184fb71a48'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
   match:
     extractors: [docspec-tv-ports@2]
     source_ids: [documents]
@@ -1331,35 +1295,32 @@ claim_policies:
       aoc-us-monitors: [ergo.vesa, flk.pwm, gen.size_class, gen.viewable_diag, panel.technology, pwr.max, res.height_px, res.native, res.refresh_max, res.refresh_native,
         res.width_px, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.hdmi_version]
 relation_policies:
-- id: rel/bundle-contents@9
+- id: rel/bundle-contents@10
   since: '2026-11-26'
-  supersedes: rel/bundle-contents@8
+  supersedes: rel/bundle-contents@9
   rationale: 'Same rules and transform (bundles@2) as @7. Re-pin only for the station parser bumps ankersolix_stations@6 -> @7 and bluetti/ecoflow/jackery_stations
     @6 -> @7 (A3-fix review-8: UPS switchover reader in _powerstation.py, claim/mfr-power-stations-structured@8); no bundle code changed. review-9 re-pin
     only: station parsers @7 -> @8 (A3-fix, UPS qualifiers in _powerstation.ms_figure). Identifiers, aliases and package structure come from unchanged code;
-    bundles@2 untouched.'
+    bundles@2 untouched. review-10 re-pin only: station parsers @8 -> @9 (A3-fix, UPS alternatives / trailing lower bounds in _powerstation._qualify); bundles@2 untouched.'
   audit:
-    by: A3-fix review-9
+    by: A3-fix review-10
     at: '2026-11-26'
-    evidence: 'team/reports/2026-11-26-a3-review9-fixes.md; full scratch import: 0 relation / package changes (only ups.switchover_ms parsing touched, 0
-      claim changes).'
-    parsers: {ankersolix_stations@8: 'sha256:81a28e7ef0adbad35430', bluetti_stations@8: 'sha256:51657016b4e675d89263', ecoflow_stations@8: 'sha256:51657016b4e675d89263',
-      jackery_stations@8: 'sha256:51657016b4e675d89263', dreame_robovac@2: 'sha256:82418fe203d439831b23', narwal_robovac@2: 'sha256:2f212aa7076aff13a250',
-      bundles@2: 'sha256:673c815897604268136d'}
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26d (review-9 fixes)}
+    evidence: 'team/reports/2026-11-26-a3-review10-fixes.md; re-pin only: the station parser change touches ups.switchover_ms parsing only (0 claim changes in the in-memory diff); bundles@2 untouched.'
+    parsers: {'ankersolix_stations@9': 'sha256:f886e47d4add8d75ba7a', 'bluetti_stations@9': 'sha256:700e176d2a6d99b255ad', 'ecoflow_stations@9': 'sha256:700e176d2a6d99b255ad', 'jackery_stations@9': 'sha256:700e176d2a6d99b255ad', 'dreame_robovac@2': 'sha256:82418fe203d439831b23', 'narwal_robovac@2': 'sha256:2f212aa7076aff13a250', 'bundles@2': 'sha256:673c815897604268136d'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
   rules:
   - method: bundle:ankersolix-us-stations
     types: [contains]
-    parsers: [ankersolix_stations@8+bundles@2]
+    parsers: [ankersolix_stations@9+bundles@2]
   - method: bundle:bluetti-us-stations
     types: [contains]
-    parsers: [bluetti_stations@8+bundles@2]
+    parsers: [bluetti_stations@9+bundles@2]
   - method: bundle:ecoflow-us-stations
     types: [contains]
-    parsers: [ecoflow_stations@8+bundles@2]
+    parsers: [ecoflow_stations@9+bundles@2]
   - method: bundle:jackery-us-stations
     types: [contains]
-    parsers: [jackery_stations@8+bundles@2]
+    parsers: [jackery_stations@9+bundles@2]
   - method: bundle:dreame-us-robovac
     types: [contains]
     parsers: [dreame_robovac@2+bundles@2]
@@ -1442,23 +1403,19 @@ relation_policies:
   - method: crosswalk:reviewed
     types: [same_model]
     parsers: [xwalk@1]
-- id: rel/source-stated-hierarchy@15
+- id: rel/source-stated-hierarchy@17
   since: '2026-11-26'
-  supersedes: rel/source-stated-hierarchy@14
-  rationale: 'Same rules, methods and types as @11; parser pins move: asus@2 -> @3, dell@1 -> @2, surface@1 -> @2 (A2-lap r8: per-port port claims only),
-    sandisk_ssd@6 -> @7, samsung_ssd@3 -> @4 (alias sku binding only). Identifier and relation code unchanged. No new method. r9 pins: lenovo_psref@5, asus@4,
-    dell@3, surface@3 (port.charge_port only). @14 also re-pins lenovo_monitors@6 (fingerprint moved because it imports lenovo_psref); @13 was locked by
-    the first r9 import before that drift was found, never approved. review-9 re-pin only: dell@3 -> @4 (port claims only: connector-unknown USB entry keeps
-    the literal list). Dell identity, hierarchy and links come from unchanged code.'
+  supersedes: rel/source-stated-hierarchy@16
+  rationale: 'Same rules, methods and types as @15; one parser pin moves: lenovo_monitors@6 -> @7 (A2-ref r10: res.refresh_max only). Package identity and package_of relation code unchanged. @16 was locked by the first r10 import at an intermediate lenovo_monitors@7 fingerprint; never approved.'
   audit:
-    by: A3-fix review-9
+    by: A2-ref r10
     at: '2026-11-26'
-    evidence: 'team/reports/2026-11-26-a3-review9-fixes.md; full scratch import: 0 Dell entity / relation changes (port claims only).'
+    evidence: 'team/reports/2026-11-26-a2-r10-refresh.md; tests/test_a2_r10_refresh.py; in-memory claim diff old vs new parser over every stored snapshot; lenovo_monitors@6 vs @7: 0 entity / relation changes (refresh_max claims only).'
     parsers: {lenovo_psref@5: 'sha256:e5ba2db22c514b340e50', asus@4: 'sha256:d7207c7067ec94343149', dell@4: 'sha256:45e2304acec9f5149909', surface@3: 'sha256:64272f1d131c238f62cb',
-      razer@1: 'sha256:8752d0e2f07ae8b46ff2', samsung@1: 'sha256:d0e9cabff53a15285159', lenovo_monitors@6: 'sha256:562ebc6804d7630f3f55', samsung_ssd@4: 'sha256:b1bfbfe652623ee2630c',
+      razer@1: 'sha256:8752d0e2f07ae8b46ff2', samsung@1: 'sha256:d0e9cabff53a15285159', lenovo_monitors@7: 'sha256:bc0b113ba07be6e8e47d', samsung_ssd@4: 'sha256:b1bfbfe652623ee2630c',
       sandisk_ssd@7: 'sha256:f436dae10cc11e468138', teamgroup_ssd@6: 'sha256:75bc6577801ceac73b22', kingston_ssd@4: 'sha256:c93ab26938d6300a1494', tplink_routers@3: 'sha256:19f0ca2101fbc63e219c',
       crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'}
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26d (review-9 fixes)}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
   rules:
   - method: adapter:lenovo-psref
     types: [member_of_family, configuration_of]
@@ -1480,7 +1437,7 @@ relation_policies:
     parsers: [samsung@1]
   - method: adapter:lenovo-psref-monitors
     types: [package_of]
-    parsers: [lenovo_monitors@6]
+    parsers: [lenovo_monitors@7]
   - method: adapter:samsung-us-ssd
     types: [member_of_family, configuration_of]
     parsers: [samsung_ssd@4]
@@ -1506,6 +1463,297 @@ relation_policies:
     types: [configuration_of]
     parsers: [crawlpy-strips@1]
 retired_policies:
+- id: claim/mfr-power-banks-structured@9
+  since: '2026-11-26'
+  supersedes: claim/mfr-power-banks-structured@8
+  rationale: 'Same sources, kinds (official only), tiers, statuses and normalisation as @7, re-issued for the r7 PPS bump (A2-pb, brief coord-2026-11-26-r7-powerbanks).
+    New stated pd.pps true sources, all on the SKU''s own maker page and only when the page wrote no pd.pps: (1) iniu_powerbanks@6 (crawler/adapters/pb_pps_r7.py,
+    subclass of the unchanged shopify_powerbanks INIU adapter): the per-port ''Supported Protocol'' block that the label splitter cut at ''Input'' (''Output
+    port: USB-C / USB-C Cable : UFCS ... / PPS / ...''), true only when an Output port segment names USB-C ports only and lists PPS as an item; (2) cuktech_powerbanks@6
+    (same module): one maker feature bullet listing the bank''s fast-charging protocols with PPS (''Compatible with a wide range of fast-charging protocols,
+    including PD, PPS, ...''), affirmative, no question / negation / input or recharge wording; (3) ecoflow_powerbanks@6: the product page''s own FAQ answer,
+    only on pages that passed the EcoFlow spec-name gate, and a FAQ naming a product line (''RAPID Pro'') must be contained in the page title; true from
+    an ''Output supports ... PPS'' clause or the generic ''What are the protocols that support fast charging? BC1.2/.../PD3.0/PPS'' list; never an Input
+    clause. WIDENING: pd.pps added to the ecoflow-us-powerbanks allowlist. Never false, never a PPS range. anker_powerbanks@6 is a version bump for the
+    derived SFC 2.0 rule only (its derived claims need claim/derive-samsung-sfc2-pps@1; this policy accepts official only). ugreen_powerbanks@5 and belkin_powerbanks@5
+    unchanged (fingerprints identical); sharge/kuxiu/mophie @6 = shared-module bump, 0 claim changes. shopify_powerbanks.py is byte-identical, so the power-station
+    pins do not move. review-9 (A3-fix, 2026-11-26): parser bumps anker_powerbanks@6 -> @7, iniu_powerbanks@6 -> @7, cuktech_powerbanks@6 -> @7 for the
+    shared pb_pps_r7.sfc2 rule only (P1-2: affirmative own-product output sentence). Official claims of these parsers are byte-identical; no key widening.'
+  audit:
+    by: A3-fix review-9
+    at: '2026-11-26'
+    evidence: 'reviews/2026-11-26-astra-review-9.md P1-2; team/reports/2026-11-26-a3-review9-fixes.md; full scratch import (new code) vs the published store:
+      0 power-bank claim groups changed. tests/test_review9.py Sfc2Pps'
+    parsers: {anker_powerbanks@7: 'sha256:22d4aec6765bdb1ece5c', belkin_powerbanks@5: 'sha256:abb5bf59fadce0dc1ae3', cuktech_powerbanks@7: 'sha256:92e8b43f12f2b000bc48',
+      iniu_powerbanks@7: 'sha256:92e8b43f12f2b000bc48', ugreen_powerbanks@5: 'sha256:a95b2d2a86119ba7adc7', ecoflow_powerbanks@6: 'sha256:2110a3bc5cb01aaf418d',
+      sharge_powerbanks@6: 'sha256:2110a3bc5cb01aaf418d', kuxiu_powerbanks@6: 'sha256:2110a3bc5cb01aaf418d', mophie_powerbanks@6: 'sha256:2110a3bc5cb01aaf418d'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26d (review-9 fixes)}
+  match:
+    extractors: [anker_powerbanks@7, belkin_powerbanks@5, cuktech_powerbanks@7, iniu_powerbanks@7, ugreen_powerbanks@5, ecoflow_powerbanks@6, sharge_powerbanks@6,
+      kuxiu_powerbanks@6, mophie_powerbanks@6]
+    source_ids: [anker-us-powerbanks, belkin-us-powerbanks, cuktech-us-powerbanks, iniu-us-powerbanks, ugreen-us-powerbanks, ecoflow-us-powerbanks, sharge-us-powerbanks,
+      kuxiu-us-powerbanks, mophie-us-powerbanks]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys:
+      anker-us-powerbanks: [cap.cell_mah, cap.cell_voltage, cap.energy_wh, gen.color, in.max_w, in.pdos, out.builtin_cable, out.max_single_port_w, out.max_total_w,
+        out.ports, out.usb_a_count, out.usb_c_count, pd.max_fixed_voltage, pd.pps, phys.dimensions, phys.weight]
+      belkin-us-powerbanks: [cap.class_mah, out.cable_note, out.max_output_w, out.max_single_port_w, out.usb_a_count, out.usb_c_count, phys.dimensions]
+      iniu-us-powerbanks: [bat.chemistry, cap.cell_mah, cap.cell_voltage, cap.energy_wh, cap.rated_basis, cap.rated_mah, gen.color, in.max_w, in.pdos, out.max_single_port_w,
+        out.max_total_w, out.ports, out.simultaneous, pd.max_fixed_voltage, pd.pps, pd.protocols, phys.dimensions, phys.weight]
+      cuktech-us-powerbanks: [bat.chemistry, cap.cell_mah, cap.cell_voltage, cap.energy_wh, cap.rated_basis, cap.rated_mah, gen.color, in.max_w, in.pdos,
+        out.max_single_port_w, out.max_total_w, out.ports, out.simultaneous, pd.max_fixed_voltage, pd.pps, pd.protocols, phys.dimensions, phys.weight]
+      ugreen-us-powerbanks: [bat.chemistry, cap.cell_mah, cap.cell_voltage, cap.energy_wh, cap.rated_basis, cap.rated_mah, gen.color, in.max_w, in.pdos,
+        out.max_single_port_w, out.max_total_w, out.ports, out.simultaneous, pd.max_fixed_voltage, pd.pps, pd.protocols, phys.dimensions, phys.weight]
+      ecoflow-us-powerbanks: [cap.cell_mah, cap.energy_wh, in.max_w, out.max_single_port_w, out.max_total_w, pd.pps, phys.dimensions, phys.weight]
+      sharge-us-powerbanks: [cap.cell_mah, cap.cell_voltage, cap.energy_wh, cap.rated_basis, cap.rated_mah, in.max_w, in.pdos, out.max_single_port_w, out.max_total_w,
+        out.ports, out.simultaneous, pd.max_fixed_voltage, pd.pps, pd.protocols, phys.dimensions, phys.weight]
+      kuxiu-us-powerbanks: [bat.chemistry, cap.cell_mah, cap.cell_voltage, cap.energy_wh, cap.rated_basis, cap.rated_mah, in.max_w, in.pdos, out.max_single_port_w,
+        out.ports, out.simultaneous, pd.max_fixed_voltage, phys.dimensions, phys.weight]
+      mophie-us-powerbanks: [cap.cell_mah, out.max_output_w, out.max_single_port_w, phys.dimensions, phys.weight]
+    require_normalized: true
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-power-banks-structured@10, reason: 'review-10 parser bumps anker/iniu/cuktech_powerbanks @7 -> @8 (pb_pps_r7@8 sfc2); @9 meaning frozen as locked'}
+- id: claim/derive-samsung-sfc2-pps@2
+  since: '2026-11-26'
+  supersedes: claim/derive-samsung-sfc2-pps@1
+  rationale: 'Coordinator ruling r7 (brief coord-2026-11-26-r7-powerbanks): Samsung Super Fast Charging 2.0 is PPS by definition. When the maker''s own
+    page for the SKU names ''Samsung Super Fast Charging 2.0'' or ''45W (max) (output) for Samsung'' (not negated) and the page wrote no stated pd.pps claim,
+    the adapter writes pd.pps true, kind derived, condition basis=derived (research/power-banks/spec-profile.yaml), quote ''rule r7-sfc2 ...''. Never false,
+    never a PPS voltage/current range. Rule code: crawler/adapters/pb_pps_r7.py sfc2()/add_derived(), called by anker_powerbanks@6 (product prose + the
+    page''s own htmlContainer notes) and by iniu_powerbanks@6 / cuktech_powerbanks@6 (page text). Plain ''Samsung Super Fast Charging'' without 2.0 (Anker
+    A1657) writes nothing. An official claim on the same product wins (resolve.py kind order). @2 (A3-fix, Codex review-9 P1-2): the derivation needs an
+    affirmative own-product OUTPUT sentence: the whole sentence naming SFC 2.0 / 45W for Samsung must carry an output verb (supports / delivers / outputs
+    / provides / compatible) and no negation anywhere, no question (trailing ?, leading does/can/is.., FAQ Q:), no input / recharge / adapter / charger
+    context, no other-product wording (other / another / previous / unlike / vs) and no model token other than the page model (target phones Galaxy/iPhone/Pixel
+    N excepted). Still kind derived, basis derived, never a PPS range.'
+  audit:
+    by: A3-fix review-9
+    at: '2026-11-26'
+    evidence: 'reviews/2026-11-26-astra-review-9.md P1-2; team/reports/2026-11-26-a3-review9-fixes.md; full scratch import: the 1 published derived claim
+      (Anker A1638) is unchanged, 0 added. tests/test_review9.py Sfc2Pps (the review''s 4 counterexamples + 3 more emit nothing)'
+    parsers: {anker_powerbanks@7: 'sha256:22d4aec6765bdb1ece5c', cuktech_powerbanks@7: 'sha256:92e8b43f12f2b000bc48', iniu_powerbanks@7: 'sha256:92e8b43f12f2b000bc48'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26d (review-9 fixes)}
+  match:
+    extractors: [anker_powerbanks@7, cuktech_powerbanks@7, iniu_powerbanks@7]
+    source_ids: [anker-us-powerbanks, cuktech-us-powerbanks, iniu-us-powerbanks]
+    kinds: [derived]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      anker-us-powerbanks: [pd.pps]
+      cuktech-us-powerbanks: [pd.pps]
+      iniu-us-powerbanks: [pd.pps]
+  retired: {at: '2026-11-26', superseded_by: claim/derive-samsung-sfc2-pps@3, reason: 'review-10 P1-2: sfc2 modal negation + exact model identity, parsers @7 -> @8; @2 meaning frozen as locked'}
+- id: claim/mfr-power-stations-structured@9
+  since: '2026-11-26'
+  supersedes: claim/mfr-power-stations-structured@8
+  rationale: 'Every @7 rule unchanged, re-issued for shopify_powerstations@6 -> @7 and ankersolix_stations@6 -> @7 (A3-fix, Codex review-8 P1-3, shared
+    crawler/adapters/_powerstation.py). CHANGED (labelled UPS rows and the r5 UPS-prose ruling alike, one reader ms_figure()): (1) ''up to N ms'', ''<=
+    N'', ''max. N'', ''no more than N'', ''at most N'' are upper bounds too -> ''up to N'' (normalize qualifier up_to), never the bare figure; (2) a range
+    (''10-20 ms'', ''10–20ms'', ''10 ms ~ 20 ms'', ''10 to 20 ms'') never becomes an endpoint: a labelled row writes an unresolved (status unknown) claim,
+    prose writes nothing; (3) prose model identity is exact: model tokens keep suffix words (Plus/Pro/Max/Ultra/Mini/Air/Lite/SE/vN/Gen N) and must equal
+    an own token, so ''Explorer 1000 Plus'' copy writes nothing for Explorer 1000 (was substring containment). A labelled row keeps its first figure as
+    before (''Backup UPS: <20ms, Online UPS: 0ms'' -> up to 20). Same sources, kinds, tiers and key allowlists as @7. review-9 (A3-fix, Codex review-9 P1-3):
+    station parsers @7 -> @8 for _powerstation.ms_figure only. The qualification around each N ms figure is validated: trailing upper bounds (N ms maximum
+    / max / or less / or below / at most) -> up to N; between N and M / from N to M / N/M / N or M -> unresolved (rows) / nothing (prose); lower bounds
+    (>=, >, at least, over, min., N ms or more, N ms+, N ms minimum) and unsupported qualifiers (~, approx., about, around, typical, +-) -> unresolved /
+    nothing, never an exact value.'
+  audit:
+    by: A3-fix review-9
+    at: '2026-11-26'
+    evidence: 'reviews/2026-11-26-astra-review-9.md P1-3; team/reports/2026-11-26-a3-review9-fixes.md; full scratch import vs the published store: 25 ups.switchover_ms
+      entity groups, 0 changed / removed / added; no other station claim changed. tests/test_review9.py UpsQualifiers (rows + prose), tests/test_review8.py'
+    parsers: {ankersolix_stations@8: 'sha256:81a28e7ef0adbad35430', bluetti_stations@8: 'sha256:51657016b4e675d89263', ecoflow_stations@8: 'sha256:51657016b4e675d89263',
+      goalzero_stations@8: 'sha256:51657016b4e675d89263', jackery_stations@8: 'sha256:51657016b4e675d89263'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26d (review-9 fixes)}
+  match:
+    extractors: [ankersolix_stations@8, bluetti_stations@8, ecoflow_stations@8, goalzero_stations@8, jackery_stations@8]
+    source_ids: [ecoflow-us-stations, bluetti-us-stations, jackery-us-stations, goalzero-us-stations, ankersolix-us-stations]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys:
+      ecoflow-us-stations: [bat.chemistry, bat.cycle_life, cap.energy_wh, cap.pack_ah, cap.pack_voltage_v, conn.wireless, exp.expandable, exp.max_batteries,
+        exp.max_wh, gen.warranty_years, in.ac_w, in.car_w, in.solar_port_w, in.solar_ports, in.solar_voltage, in.solar_w, out.ac_boost_w, out.ac_continuous_w,
+        out.ac_outlets, out.ac_surge_w, out.ac_voltage, out.car_w, out.ports, out.usb_a_count, out.usb_c_count, out.usb_c_max_w, phys.dimensions, phys.weight,
+        ups.supported, ups.switchover_ms]
+      bluetti-us-stations: [bat.chemistry, bat.cycle_life, cap.energy_wh, cap.pack_ah, cap.pack_voltage_v, cert.marks, cert.ul2743, conn.wireless, exp.expandable,
+        gen.warranty_years, in.ac_w, in.max_w, in.passthrough, in.solar_voltage, in.solar_w, out.ac_boost_w, out.ac_continuous_w, out.ac_outlets, out.ac_surge_w,
+        out.ac_voltage, out.ac_waveform, out.car_w, out.ports, out.usb_a_count, out.usb_c_count, out.usb_c_max_w, out.wireless_w, phys.dimensions, phys.weight,
+        ups.supported, ups.switchover_ms]
+      jackery-us-stations: [bat.chemistry, bat.cycle_life, cap.energy_wh, cap.pack_ah, cap.pack_voltage_v, gen.warranty_years, in.solar_voltage, in.solar_w,
+        out.ac_continuous_w, out.ac_outlets, out.ac_surge_w, out.ac_voltage, out.ports, out.usb_a_count, out.usb_c_count, out.usb_c_max_w, phys.dimensions,
+        phys.weight, ups.supported, ups.switchover_ms]
+      goalzero-us-stations: [bat.chemistry, bat.cycle_life, cap.energy_wh, cap.pack_ah, cap.pack_voltage_v, cert.marks, exp.expandable, gen.warranty_years,
+        in.ac_w, in.recharge_ac_h, in.recharge_solar_h, in.solar_voltage, in.solar_w, out.ac_continuous_w, out.ac_outlets, out.ac_surge_w, out.ac_voltage,
+        out.ac_waveform, out.car_w, out.ports, out.usb_a_count, out.usb_c_count, out.usb_c_max_w, phys.dimensions, phys.weight, ups.supported, ups.switchover_ms]
+      ankersolix-us-stations: [bat.chemistry, bat.cycle_life, cap.energy_wh, conn.wireless, exp.expandable, exp.max_batteries, exp.max_wh, gen.warranty_years,
+        in.ac_w, in.solar_voltage, in.solar_w, out.ac_continuous_w, out.ac_outlets, out.ac_surge_w, out.ac_voltage, out.car_w, out.ports, out.usb_a_count,
+        out.usb_c_count, out.usb_c_max_w, phys.dimensions, phys.weight, ups.supported, ups.switchover_ms]
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-power-stations-structured@10, reason: 'review-10 P1-3 station parsers @8 -> @9 (UPS alternatives / trailing lower bounds); @9 meaning frozen as locked'}
+- id: claim/document-tv-ports@2
+  since: '2026-11-26'
+  supersedes: claim/document-tv-ports@1
+  rationale: 'New transform docspec-attach-tvports@1 (scripts/docspec_r7tv.py) + extractor docspec-tv-ports@1 (crawler/adapters/_docspec_tvports.py), A2-st
+    r7, brief coord-2026-11-26-r7-ssd-tv. Maker quick start guides linked from a registered maker TV page (TCL us.tcl.com guides on cdn.shopify.com, inherit
+    linking_page). Reads only the per-port connection lines "HDMI port 1: Supports up to 4K/144Hz | HDMI port 2: Supports up to 4K/120Hz | HDMI ports 3
+    & 4: Supports up to 4K/60Hz": hdmi.ports_4k120 = ports stated at >= 120 Hz (0 when every stated port is below 120), hdmi.has_4k120 true when >= 1 (never
+    false). Needs every port 1..N stated, >= 2 statements, one rate per port, and no size-qualified rate footnote in the document; generic HDMI 2.1 / "supports
+    4K 120Hz" prose and the input-format table are not read. Identity = docspec-attach-r3@2 TV rule unchanged (verified linking edge, own model quoted in
+    the text layer, no unlinked same-brand catalogued model named). Text layer only. @2 (A3-fix, Codex review-9 P1-1): docspec-tv-ports@2 voids the list
+    when any HDMI port(s) N: statement is not read by the rate pattern; docspec-attach-tvports@2 emits only when the entity has exactly one independent
+    (non-document, official) hdmi.count equal to the highest stated port, so a partial prefix emits nothing (also not 0); the guide must quote the full
+    identifier (no series token) and a guide naming any other same-brand catalogued model is shared and binds nobody (the @1 linked-model exemption is removed).'
+  audit:
+    by: A3-fix review-9
+    at: '2026-11-26'
+    evidence: 'reviews/2026-11-26-astra-review-9.md P1-1; team/reports/2026-11-26-a3-review9-fixes.md; full scratch import vs published: 34 -> 28 claims
+      (115QM891G: no independent hdmi.count; 85X11K / 98X11K: shared X11K guide names both). tests/test_review9.py TvPorts*'
+    parsers: {docspec-attach-tvports@2: 'sha256:a44433d0293f692778de'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26d (review-9 fixes)}
+  match:
+    extractors: [docspec-tv-ports@2]
+    source_ids: [documents]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys: [hdmi.ports_4k120, hdmi.has_4k120]
+  retired: {at: '2026-11-26', superseded_by: claim/document-tv-ports@3, reason: 'review-10 P1-1: completeness proof only from a trusted hdmi.count, transform docspec-attach-tvports@2 -> @3; @2 meaning frozen as locked'}
+- id: rel/bundle-contents@9
+  since: '2026-11-26'
+  supersedes: rel/bundle-contents@8
+  rationale: 'Same rules and transform (bundles@2) as @7. Re-pin only for the station parser bumps ankersolix_stations@6 -> @7 and bluetti/ecoflow/jackery_stations
+    @6 -> @7 (A3-fix review-8: UPS switchover reader in _powerstation.py, claim/mfr-power-stations-structured@8); no bundle code changed. review-9 re-pin
+    only: station parsers @7 -> @8 (A3-fix, UPS qualifiers in _powerstation.ms_figure). Identifiers, aliases and package structure come from unchanged code;
+    bundles@2 untouched.'
+  audit:
+    by: A3-fix review-9
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a3-review9-fixes.md; full scratch import: 0 relation / package changes (only ups.switchover_ms parsing touched, 0
+      claim changes).'
+    parsers: {ankersolix_stations@8: 'sha256:81a28e7ef0adbad35430', bluetti_stations@8: 'sha256:51657016b4e675d89263', ecoflow_stations@8: 'sha256:51657016b4e675d89263',
+      jackery_stations@8: 'sha256:51657016b4e675d89263', dreame_robovac@2: 'sha256:82418fe203d439831b23', narwal_robovac@2: 'sha256:2f212aa7076aff13a250',
+      bundles@2: 'sha256:673c815897604268136d'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26d (review-9 fixes)}
+  rules:
+  - method: bundle:ankersolix-us-stations
+    types: [contains]
+    parsers: [ankersolix_stations@8+bundles@2]
+  - method: bundle:bluetti-us-stations
+    types: [contains]
+    parsers: [bluetti_stations@8+bundles@2]
+  - method: bundle:ecoflow-us-stations
+    types: [contains]
+    parsers: [ecoflow_stations@8+bundles@2]
+  - method: bundle:jackery-us-stations
+    types: [contains]
+    parsers: [jackery_stations@8+bundles@2]
+  - method: bundle:dreame-us-robovac
+    types: [contains]
+    parsers: [dreame_robovac@2+bundles@2]
+  - method: bundle:narwal-us-robovac
+    types: [contains]
+    parsers: [narwal_robovac@2+bundles@2]
+  retired: {at: '2026-11-26', superseded_by: rel/bundle-contents@10, reason: 'review-10 re-pin station parsers @8 -> @9; @9 meaning frozen as locked'}
+- id: claim/document-power-pdo@4
+  since: '2026-11-25'
+  supersedes: claim/document-power-pdo@3
+  rationale: 'Review 6 (reviews/2026-11-24-astra-review-6-docs.md) reissue of @3 for transform docattach@2 / extractor docparse@2. Same source,
+    keys, kinds and tiers; acceptance only narrows. (1) Identity: a claim is accepted only when its own row scope (the block, else the page, else
+    the whole document when the document names no other model) names this entity and no sibling; siblings include UNCATALOGUED models (same
+    identifier shape, or any token after a model label) and catalogued same-brand entities outside the entity''s own lineage; a block or page
+    naming two models scopes nothing. Identity evidence must be text layer: OCR identity, even with text-layer rows, makes the claim
+    OCR-dependent (docparse-ocr@2, never accepted), and an OCR mention counts only when its own words have token confidence >= 60 (the page
+    mean never vouches). A model-level match with another SKU of the same base model, a foreign region token in the file name, or an identifier
+    shared with an unrelated entity is variant-unestablished (docparse-review@2, never accepted) unless the scope names an own SKU. Conditions
+    carry identity, identity_scope, identity_variant (provenance only). (2) Combination context (multi-port headings, "C1 + C2" prefixes) is
+    document scope across block and page boundaries; per-port rows and device maxima never come from inside it. Port rows map only onto the
+    out.ports claim of the linking observation itself; when the entity''s pages disagree on the port layout only explicit single-port rows are
+    attributed. (3) One source entry, claim (locator.linked_from) and documents[] entry per verified linking edge; the source policy inherits
+    only along that edge.'
+  audit:
+    by: A3-impl review 6
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-doc-review6-fixes.md; tests/test_documents.py (review-6 exit fixtures: unknown sibling, two models in one
+      block, base-model / shared-SKU regional variants, low-confidence OCR identity with text-layer PDOs, high page mean with an uncertain digit,
+      split-block and page-spanning combination tables, conflicting port layouts, allowed + withheld linking pages, identical bytes at two URLs,
+      Salsify / CDN-to-CDN and document-URL edges through apply() and the source-policy gate); replay over every stored document.'
+    parsers:
+      docattach@2: 'sha256:912157c3225060b94487'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors: [docparse@2]
+    source_ids: [documents]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys: [pd.pps, pd.pps_max_voltage, pd.pps_max_current_a, pd.max_fixed_voltage, pd.epr, out.ports]
+  retired: {at: '2026-11-26', superseded_by: claim/document-power-pdo@5, reason: 'r10 A2-pb: _docparse.py PS1-3 / IEC 62368 safety-class lines are never PDO evidence (docattach@2 fingerprint moved); document-power-pdo@4 meaning frozen as locked'}
+- id: claim/hub-document-power-pdo@2
+  since: '2026-11-25'
+  supersedes: claim/hub-document-power-pdo@1
+  rationale: 'Reissue of @1 (locked by a dry run before a docstring-only change to scripts/hubattach.py moved its fingerprint; meaning identical). Coordinator ruling 2026-11-25 (mophie hub). New transform hubattach@1 (scripts/hubattach.py, extractor hubdoc@1), separate from
+    docattach@2 so claim/document-power-pdo@4 stays pinned. A kind: hub page (data/document-hubs.yaml: www.mophie.com/pages/user-manuals) is
+    never an entity source. A hub -> document edge binds only through the document text: the document must quote the entity''s own mfr_model /
+    mfr_sku (docattach identity, bounded mention, OCR mention only at >= 60 per word); a shared identifier, another SKU of the same base or a
+    foreign region token = no bind; rows are scoped by docattach@2 scope_of (with a sibling named, only the row''s own block / page naming this
+    entity alone binds; shared rows of a multi-SKU manual bind to nobody); a document quoting no catalogued entity attaches nothing. Text-layer
+    rows with text-layer, variant-exact identity only (OCR-dependent or variant-unestablished = hubdoc-review@1, never accepted). Locator records
+    linked_from = hub URL, link_role hub, identity_basis document_quote; the document is on the maker''s own host (www.mophie.com, kind maker).
+    Same keys as document-power-pdo@4. Affirmative only.'
+  audit:
+    by: A3 OCR + mophie addendum
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a3-ocr-mophie.md (addendum); tests/test_hubattach.py (positive quote bind, multi-SKU shared rows do not
+      bind, uncarried SKU does not attach, shared identifier ambiguous, unregistered hub ignored, docattach ignores hub edges); replay over the
+      37 mophie hub manuals.'
+    parsers:
+      hubattach@1: 'sha256:ee5821197077e20d3d99'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+  match:
+    extractors: [hubdoc@1]
+    source_ids: [documents]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys: [pd.pps, pd.pps_max_voltage, pd.pps_max_current_a, pd.max_fixed_voltage, pd.epr, out.ports]
+  retired: {at: '2026-11-26', superseded_by: claim/hub-document-power-pdo@3, reason: 'r10 A2-pb: _docparse.py PS1-3 / IEC 62368 safety-class lines are never PDO evidence (hubattach@1 fingerprint moved); hub-document-power-pdo@2 meaning frozen as locked'}
+- id: claim/spec-image-power-pdo@2
+  since: '2026-11-26'
+  supersedes: claim/spec-image-power-pdo@1
+  rationale: 'Re-pin of @1 for the review-8 P1 fix (A3-fix 2026-11-26): the conflicting-identity vetoes now run BEFORE both binding branches, so single-SKU inheritance (and every exact binding) is refused when the image text or file name shows another SKU of an own base model, a foreign region token or an identifier another entity shares, including images with empty file_models (A2667111 page + A2667113 image -> no exact claim). Stricter only; otherwise as @1: New transform imgattach@1 (scripts/imgattach.py, extractor specimg@1; OCR input crawler/specimages.py imgocr@1 = grayscale + 2x
+    upscale + tesseract). Maker gallery spec images (cdn.shopify.com, a document_host inheriting the linking page) found on a REGISTERED maker
+    page the entity is observed on (edge verified as docattach@2). Identity: inherited only when the linking page is single-SKU (exactly one
+    non-bundle variant SKU and it is an own SKU of the entity), every model token in the image file name is an own identifier, and the OCR text
+    names no other model; otherwise the image must name an own model/SKU with every word of the mention at token confidence >= 60 and no
+    sibling, and is variant-exact only when that mention is an own SKU with no other SKU of the base, region token or shared identifier in play
+    (else specimg-review@1, never accepted). Values: docparse@2 grammar and port attribution unchanged; an electrical value line is read only
+    when the mean confidence of its digit-bearing words is >= 70 (and every row >= 60 via docparse@2) and no value token is ambiguous (split
+    digits "3.3-1 1V", letter/digit confusions "1JOOW", dangling decimals); a rejected line closes any open row. Same keys as
+    document-power-pdo@4 minus pd.epr (no image source of it). Affirmative only.'
+  audit:
+    by: A3-fix review-8
+    at: '2026-11-26'
+    evidence: 'reviews/2026-11-26-astra-review-8.md P1-2; team/reports/2026-11-26-a3-review8-fixes.md; tests/test_imgattach.py (new: OCR variant, OCR variant without model mention, foreign region, shared identifier: none exact). @1 evidence: team/reports/2026-11-25-a3-ocr-mophie.md; tests/test_imgattach.py (A2667 card corroborates the manual, multi-SKU page without OCR
+      model does not attach, low-confidence model token, file-name other-SKU veto, other model in the image, mean < 70 image drops, ambiguous
+      voltage); replay over all 281 bound Anker spec images (0 claims today).'
+    parsers:
+      imgattach@1: 'sha256:3d13fce9d336e7c70163'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26a}
+  match:
+    extractors: [specimg@1]
+    source_ids: [documents]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys: [pd.pps, pd.pps_max_voltage, pd.pps_max_current_a, pd.max_fixed_voltage, out.ports]
+  retired: {at: '2026-11-26', superseded_by: claim/spec-image-power-pdo@3, reason: 'r10 A2-pb: _docparse.py PS1-3 / IEC 62368 safety-class lines are never PDO evidence (imgattach@1 fingerprint moved); spec-image-power-pdo@2 meaning frozen as locked'}
 - id: claim/mfr-power-banks-structured@8
   since: '2026-11-26'
   supersedes: claim/mfr-power-banks-structured@7
@@ -7890,3 +8138,269 @@ retired_policies:
     types: [contains]
     parsers: [narwal_robovac@2+bundles@2]
   retired: {at: '2026-11-26', superseded_by: rel/bundle-contents@8, reason: 're-pin for station parser bumps @6 -> @7 (A3-fix review-8); @7 meaning frozen as locked'}
+- id: claim/mfr-monitor-structured@10
+  since: '2026-11-26'
+  supersedes: claim/mfr-monitor-structured@9
+  rationale: 'Same meaning as @8 for every key it already accepted (lenovo_monitors@6 unchanged), re-issued for lg_us@3 -> @4 and asus_monitors@3 -> @4 (A2-mon r5). WIDENING: usb.kvm and res.refresh_native added to the lg-us allowlist, res.refresh_native to the asus-us-monitors allowlist. lg_us@4: usb.kvm from the maker''s own spec row ''KVM: Yes'' (True) / ''KVM: No'' (False), never prose or absence; res.refresh_native only from a ''Refresh Rate'' row that is one plain ''NHz'' on a page with no ''Dual Mode Refresh Rate'' row (''O/C'', ''up to'', several figures, H/V frequency -> nothing); flk.pwm none (already allowed) also from a feature-badge alt text line exactly ''Flicker-Free'' on a CMS image asset whose SKU metaproperty is exactly the page''s model (the UL Verified badge set ''Flicker-Free / Discomfort Glare Free / Low Blue Light Platinum''), only when the v3 footnote/copy rule found nothing. asus_monitors@4: res.refresh_native only where the single-model page''s own copy says ''native N Hz'' explicitly (one distinct N, N <= Refresh Rate (Max)); ''Refresh Rate (Max)'' alone never maps. Every other claim byte-identical. r9: fingerprint pin only (lenovo_monitors imports lenovo_psref@5).'
+  audit:
+    by: A2-lap2 r9
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r9-chargeport.md; lenovo_monitors@6 old vs new fingerprint (lenovo_monitors imports lenovo_psref, which moved to @5 for r9; _lports charge_port only): fingerprint pin, no extractor or claim change (monitor claims never read Standard Ports charge_port).'
+    parsers:
+      lenovo_monitors@6: 'sha256:562ebc6804d7630f3f55'
+      lg_us@4: 'sha256:f85d547907ba2f4cd231'
+      asus_monitors@4: 'sha256:a03b47b4af0f4a10c940'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26c}
+  match:
+    extractors: [lenovo_monitors@6, lg_us@4, asus_monitors@4]
+    source_ids: [lenovo-psref-monitors, lg-us, asus-us-monitors]
+    kinds: [official, derived]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    require_normalized: true
+    keys:
+      lenovo-psref-monitors: [color.dci_p3, color.srgb, ergo.vesa, ergo.weight, ergo.weight_panel, gen.color, gen.curvature, gen.size_class, hdr.contrast_static,
+        hdr.marketed_label, hdr.sdr_typ, panel.bit_depth, panel.surface, panel.technology, pwr.max, pwr.typical, res.aspect, res.height_px, res.native,
+        res.ppi, res.refresh_max, res.refresh_native, res.vrr_types, res.width_px, sup.warranty_years, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
+      lg-us: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, flk.pwm, gen.size_class, gen.viewable_diag, hdr.contrast_static, hdr.sdr_typ,
+        motion.gtg_marketed, panel.surface, panel.technology, pwr.external_adapter, pwr.max, pwr.typical, res.aspect, res.height_px, res.native, res.refresh_max,
+        res.refresh_native, res.vrr_types, res.width_px, sup.warranty_years, usb.kvm, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count]
+      asus-us-monitors: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.size_class, gen.viewable_diag, hdr.contrast_static,
+        hdr.marketed_label, hdr.peak_marketed, hdr.sdr_typ, motion.gtg_marketed, panel.surface, panel.technology, pwr.typical, res.aspect, res.height_px, res.native,
+        res.refresh_max, res.refresh_native, res.vrr_types, res.width_px, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-monitor-structured@11, reason: 'r10 lenovo_monitors@6 -> @7, lg_us@4 -> @5, asus_monitors@4 -> @5 (refresh rules); @10 meaning frozen as locked'}
+- id: claim/derive-tuv-eye-comfort-5star@4
+  since: '2026-11-26'
+  supersedes: claim/derive-tuv-eye-comfort-5star@3
+  rationale: 'Re-issue of @2 for the parser pin lenovo_monitors@5 -> @6 only (same rule, kinds, keys as @1/@2; the TÜV derivation code is byte-identical). r9: fingerprint pin only (lenovo_monitors imports lenovo_psref@5).'
+  audit:
+    by: A2-lap2 r9
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r9-chargeport.md; lenovo_monitors@6 old vs new fingerprint (lenovo_monitors imports lenovo_psref, which moved to @5 for r9; _lports charge_port only): fingerprint pin, no extractor or claim change (monitor claims never read Standard Ports charge_port).'
+    parsers:
+      lenovo_monitors@6: 'sha256:562ebc6804d7630f3f55'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26c}
+  match:
+    extractors: [lenovo_monitors@6]
+    source_ids: [lenovo-psref-monitors]
+    kinds: [derived]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      lenovo-psref-monitors: [flk.pwm]
+  retired: {at: '2026-11-26', superseded_by: claim/derive-tuv-eye-comfort-5star@5, reason: 'r10 re-pin lenovo_monitors@6 -> @7 (refresh rules only); @4 meaning frozen as locked'}
+- id: claim/mfr-monitor-benq@4
+  since: '2026-11-25'
+  supersedes: claim/mfr-monitor-benq@3
+  rationale: 'Every @3 rule unchanged, re-issued for benq_monitors@3 -> @4 (A2-mon r5). WIDENING: usb.kvm added. benq_monitors@4 writes usb.kvm from the page''s own ''KVM Switch'' spec row only: ''Yes'' -> True, ''No'' -> False; any other value, feature copy, navigation text and silence write nothing.'
+  audit:
+    by: A2-mon r5
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a2-r5-monitors-stations.md; in-memory claim diff benq_monitors@3 vs @4 over all 136 stored snapshots: +39 usb.kvm True (''Professional > KVM Switch: Yes''), 0 removed, 0 changed; tests/test_a2_mon_r5.py'
+    parsers:
+      benq_monitors@4: 'sha256:d86aa63564a295b57800'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25c}
+  match:
+    extractors: [benq_monitors@4]
+    source_ids: [benq-us-monitors]
+    kinds: [official, derived]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      benq-us-monitors: [ergo.vesa, flk.cert, flk.pwm, gen.size_class, panel.technology, pwr.max, res.height_px, res.refresh_max, res.width_px, usb.kvm, usb.usbc_inputs, usb.usbc_pd_w]
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-monitor-benq@5, reason: 'r10 benq_monitors@4 -> @5 (res.native + res.refresh_native widening); @4 meaning frozen as locked'}
+- id: claim/mfr-monitor-dell@2
+  since: '2026-11-25'
+  supersedes: claim/mfr-monitor-dell@1
+  rationale: 'Same-round re-issue of @1 for dell_monitors@1 -> @2 (@1 was locked by the round''s first import, never approved). ADDED vs @1: usb.usbc_inputs 0 (basis complete_enumeration) also when the Interface/Port Details list is cross-checked complete because its USB-C lines add up to Total Number of USB Type-C Ports (Dell''s ''2 HDMI ports'' count style is now read as a video input, so this check fires), or, with no USB-C/Thunderbolt row or line anywhere on the page, its USB lines add up to Number of USB Ports (+18 zeros: Alienware/P/E models whose only USB-C ports are downstream or that have none). Everything else as @1: new source dell-us-monitors (crawler/adapters/dell_monitors.py, A2-dell r6 brief item 1): the Tech Specs block of www.dell.com /en-us/shop/.../apd/<slug>/<code>/- pages (www.dell.com is already in data/source-policy.yaml, maker, categories laptops + monitors; robots allows the /apd/ pages and the /ar/ listing used for discovery). One page = one model: mfr_model = the Product Model row, which must equal the URL code (a ''<model> WOST'' page is the same model sold without stand); the Dell part number is an x_dell_part_number alias. Rules: flk.pwm none ONLY from the explicit ''Flicker Free: Yes'' row or a ''Flicker-free'' Features item (''Flicker Free: No'', ComfortView, Eye Comfort stars and silence write nothing); res.refresh_native only when ''Standard Refresh Rate'' equals the highest ''Maximum Preset Resolution'' rate at the native resolution and no row says overclock (AW2524HF prints Standard 500 Hz vs a 480 Hz preset: native not written); res.refresh_max = the higher of the two; usb.usbc_inputs from the Interface/Port Details list via _monports (an ambiguous USB-C line writes nothing), 0 only from the maker''s ''USB Type-C: No'' row with no Thunderbolt/USB-C elsewhere, or as complete_enumeration when every USB-C port the ''Total Number of USB Type-C Ports'' row counts is listed and none takes video; usb.usbc_pd_w only from an upstream-side Power Delivery row (or, with no such row, the USB-C video input line) with one W figure, Downstream rows never; usb.kvm True only from ''KVM Switch'' in Built-in Devices; vin.hdmi_count / vin.dp_count only when the count row agrees with the port-details list (and dp_count never on a page with DisplayPort Output: Yes); size class as stated (whole inch).'
+  audit:
+    by: A2-dell r6
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a2-r6-dell.md; @1 vs @2 over all 89 stored pages: +18 usb.usbc_inputs 0 (complete_enumeration), nothing else changed; 89 pages fetched 2026-11-25 (9 listing pages, all 200), 89 models parsed, 0 absences; per-key counts in the report; tests/test_a2_r6_dell.py'
+    parsers:
+      dell_monitors@2: 'sha256:fc0d41a25a9fdc3ddd0f'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25d}
+  match:
+    extractors: [dell_monitors@2]
+    source_ids: [dell-us-monitors]
+    kinds: [official, derived]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      dell-us-monitors: [ergo.vesa, flk.pwm, gen.size_class, gen.viewable_diag, panel.technology, pwr.max, res.height_px, res.native, res.refresh_max, res.refresh_native, res.width_px, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.hdmi_version]
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-monitor-dell@3, reason: 'r10 dell_monitors@2 -> @3 (TUV flicker-free footnote); @2 meaning frozen as locked'}
+- id: rel/source-stated-hierarchy@15
+  since: '2026-11-26'
+  supersedes: rel/source-stated-hierarchy@14
+  rationale: 'Same rules, methods and types as @11; parser pins move: asus@2 -> @3, dell@1 -> @2, surface@1 -> @2 (A2-lap r8: per-port port claims only),
+    sandisk_ssd@6 -> @7, samsung_ssd@3 -> @4 (alias sku binding only). Identifier and relation code unchanged. No new method. r9 pins: lenovo_psref@5, asus@4,
+    dell@3, surface@3 (port.charge_port only). @14 also re-pins lenovo_monitors@6 (fingerprint moved because it imports lenovo_psref); @13 was locked by
+    the first r9 import before that drift was found, never approved. review-9 re-pin only: dell@3 -> @4 (port claims only: connector-unknown USB entry keeps
+    the literal list). Dell identity, hierarchy and links come from unchanged code.'
+  audit:
+    by: A3-fix review-9
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a3-review9-fixes.md; full scratch import: 0 Dell entity / relation changes (port claims only).'
+    parsers: {lenovo_psref@5: 'sha256:e5ba2db22c514b340e50', asus@4: 'sha256:d7207c7067ec94343149', dell@4: 'sha256:45e2304acec9f5149909', surface@3: 'sha256:64272f1d131c238f62cb',
+      razer@1: 'sha256:8752d0e2f07ae8b46ff2', samsung@1: 'sha256:d0e9cabff53a15285159', lenovo_monitors@6: 'sha256:562ebc6804d7630f3f55', samsung_ssd@4: 'sha256:b1bfbfe652623ee2630c',
+      sandisk_ssd@7: 'sha256:f436dae10cc11e468138', teamgroup_ssd@6: 'sha256:75bc6577801ceac73b22', kingston_ssd@4: 'sha256:c93ab26938d6300a1494', tplink_routers@3: 'sha256:19f0ca2101fbc63e219c',
+      crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26d (review-9 fixes)}
+  rules:
+  - method: adapter:lenovo-psref
+    types: [member_of_family, configuration_of]
+    parsers: [lenovo_psref@5]
+  - method: adapter:asus-us
+    types: [member_of_family]
+    parsers: [asus@4]
+  - method: adapter:dell-us
+    types: [member_of_family]
+    parsers: [dell@4]
+  - method: adapter:microsoft-surface
+    types: [member_of_family, configuration_of]
+    parsers: [surface@3]
+  - method: adapter:razer-us
+    types: [member_of_family, configuration_of]
+    parsers: [razer@1]
+  - method: adapter:samsung-us
+    types: [member_of_family, configuration_of]
+    parsers: [samsung@1]
+  - method: adapter:lenovo-psref-monitors
+    types: [package_of]
+    parsers: [lenovo_monitors@6]
+  - method: adapter:samsung-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [samsung_ssd@4]
+  - method: adapter:sandisk-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [sandisk_ssd@7]
+  - method: adapter:teamgroup-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [teamgroup_ssd@6]
+  - method: adapter:kingston-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [kingston_ssd@4]
+  - method: adapter:tplink-us-routers
+    types: [variant_of]
+    parsers: [tplink_routers@3]
+  - method: page-variants:anker
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:baseus
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:belkin
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  retired: {at: '2026-11-26', superseded_by: rel/source-stated-hierarchy@16, reason: 'r10 re-pin lenovo_monitors@6 -> @7 (refresh claims only); @15 meaning frozen as locked'}
+- id: claim/mfr-monitor-structured@11
+  since: '2026-11-26'
+  supersedes: claim/mfr-monitor-structured@10
+  rationale: 'Same meaning as @10 for every key it already accepted, re-issued for lenovo_monitors@6 -> @7, lg_us@4 -> @5, asus_monitors@4 -> @5 (A2-ref r10). No key widening (res.refresh_native, res.refresh_max already allowed for all three sources). res.refresh_native means the maker-stated rate without overclock; it is never inferred from the panel model. lenovo_monitors@7: also from a bare ''Refresh Rate'' range ''A Hz - B Hz'' (A < B, one range, no per-input labels) = B, only when no PSREF row on the page says overclock / O/C; res.refresh_max is now the highest Hz figure in the row (was the first: ''48Hz - 120Hz'' wrote 48, OC and UHD/FHD dual-mode rows wrote the lower figure). lg_us@5: also ''N Hz (M Hz O/C)'' / ''N Hz (O/C M Hz)'' with M > N = N (the rate stated beside the OC rate); ''144Hz (O/C)'', ''up to'', ''w/ OverClock'' and Dual Mode pages write nothing; Hz matching is case-insensitive; res.refresh_max is the highest Hz figure in the row (was the first: kHz/H-frequency rows wrote 2 or 88). asus_monitors@5: also = N when ''Refresh Rate (Max)'' (or ROG ''Refresh Rate (max)'') is one plain ''N Hz'' on a single-model page, no figure above N appears anywhere in the spec text (title, rows, Digital Signal Frequency; Analog ignored), no Dual / Triple Mode row or wording, AND neither the spec page nor the model''s own overview page (stored as ref <KEY>#overview, fetched under robots from the discovery pdp URL) says overclock / overclockable / OC (site boilerplate about motherboards and overclockers excepted); with no stored overview the rule fails closed. The v4 ''native N Hz'' copy rule still runs first. Every other claim byte-identical.'
+  audit:
+    by: A2-ref r10
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r10-refresh.md; tests/test_a2_r10_refresh.py; in-memory claim diff old vs new parser over every stored snapshot; old vs new parser over every stored snapshot: asus +155 res.refresh_native, +20 res.refresh_max (ROG lowercase label), 0 removed; lenovo +41 res.refresh_native, 65 res.refresh_max values corrected (65 removed / 65 added); lg +16 res.refresh_native, +59 / -21 res.refresh_max; no other key changed. 226 ASUS overview pages fetched 2026-11-26 (23 pdp 404s, no overview stored, rule fails closed).'
+    parsers: {lenovo_monitors@7: 'sha256:c1f98eaf76e21797fde7', lg_us@5: 'sha256:7fd184a80af9e064d815', asus_monitors@5: 'sha256:1f9346148562026564f6'}
+  approval: {state: pending}
+  match:
+    extractors: [lenovo_monitors@7, lg_us@5, asus_monitors@5]
+    source_ids: [lenovo-psref-monitors, lg-us, asus-us-monitors]
+    kinds: [official, derived]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    require_normalized: true
+    keys:
+      lenovo-psref-monitors: [color.dci_p3, color.srgb, ergo.vesa, ergo.weight, ergo.weight_panel, gen.color, gen.curvature, gen.size_class, hdr.contrast_static,
+        hdr.marketed_label, hdr.sdr_typ, panel.bit_depth, panel.surface, panel.technology, pwr.max, pwr.typical, res.aspect, res.height_px, res.native,
+        res.ppi, res.refresh_max, res.refresh_native, res.vrr_types, res.width_px, sup.warranty_years, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
+      lg-us: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, flk.pwm, gen.size_class, gen.viewable_diag, hdr.contrast_static, hdr.sdr_typ,
+        motion.gtg_marketed, panel.surface, panel.technology, pwr.external_adapter, pwr.max, pwr.typical, res.aspect, res.height_px, res.native, res.refresh_max,
+        res.refresh_native, res.vrr_types, res.width_px, sup.warranty_years, usb.kvm, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count]
+      asus-us-monitors: [color.dci_p3, color.srgb, ergo.adjust, ergo.vesa, ergo.weight, ergo.weight_panel, gen.size_class, gen.viewable_diag, hdr.contrast_static,
+        hdr.marketed_label, hdr.peak_marketed, hdr.sdr_typ, motion.gtg_marketed, panel.surface, panel.technology, pwr.typical, res.aspect, res.height_px, res.native,
+        res.refresh_max, res.refresh_native, res.vrr_types, res.width_px, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.ports]
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-monitor-structured@12, reason: 'locked by the first r10 import with the Lenovo bare-range native rule (withdrawn: contradicts the v6 VRR-window ruling); never approved'}
+- id: claim/derive-tuv-eye-comfort-5star@5
+  since: '2026-11-26'
+  supersedes: claim/derive-tuv-eye-comfort-5star@4
+  rationale: 'Re-issue of @4 for the parser pin lenovo_monitors@6 -> @7 only (A2-ref r10). Same rule, kinds and keys; the TUV derivation code is byte-identical (lenovo_monitors@7 changes res.refresh_native / res.refresh_max only).'
+  audit:
+    by: A2-ref r10
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r10-refresh.md; tests/test_a2_r10_refresh.py; in-memory claim diff old vs new parser over every stored snapshot; lenovo_monitors@6 vs @7: 0 flk.pwm claims added, removed or changed.'
+    parsers: {lenovo_monitors@7: 'sha256:c1f98eaf76e21797fde7'}
+  approval: {state: pending}
+  match:
+    extractors: [lenovo_monitors@7]
+    source_ids: [lenovo-psref-monitors]
+    kinds: [derived]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      lenovo-psref-monitors: [flk.pwm]
+  retired: {at: '2026-11-26', superseded_by: claim/derive-tuv-eye-comfort-5star@6, reason: 'fingerprint pin of an intermediate lenovo_monitors@7 (bare-range rule withdrawn); never approved'}
+- id: rel/source-stated-hierarchy@16
+  since: '2026-11-26'
+  supersedes: rel/source-stated-hierarchy@15
+  rationale: 'Same rules, methods and types as @15; one parser pin moves: lenovo_monitors@6 -> @7 (A2-ref r10: res.refresh_native / res.refresh_max only). Package identity and package_of relation code unchanged.'
+  audit:
+    by: A2-ref r10
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r10-refresh.md; tests/test_a2_r10_refresh.py; in-memory claim diff old vs new parser over every stored snapshot; lenovo_monitors@6 vs @7: 0 entity / relation changes (refresh claims only).'
+    parsers: {lenovo_psref@5: 'sha256:e5ba2db22c514b340e50', asus@4: 'sha256:d7207c7067ec94343149', dell@4: 'sha256:45e2304acec9f5149909', surface@3: 'sha256:64272f1d131c238f62cb',
+      razer@1: 'sha256:8752d0e2f07ae8b46ff2', samsung@1: 'sha256:d0e9cabff53a15285159', lenovo_monitors@7: 'sha256:c1f98eaf76e21797fde7', samsung_ssd@4: 'sha256:b1bfbfe652623ee2630c',
+      sandisk_ssd@7: 'sha256:f436dae10cc11e468138', teamgroup_ssd@6: 'sha256:75bc6577801ceac73b22', kingston_ssd@4: 'sha256:c93ab26938d6300a1494', tplink_routers@3: 'sha256:19f0ca2101fbc63e219c',
+      crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'}
+  approval: {state: pending}
+  rules:
+  - method: adapter:lenovo-psref
+    types: [member_of_family, configuration_of]
+    parsers: [lenovo_psref@5]
+  - method: adapter:asus-us
+    types: [member_of_family]
+    parsers: [asus@4]
+  - method: adapter:dell-us
+    types: [member_of_family]
+    parsers: [dell@4]
+  - method: adapter:microsoft-surface
+    types: [member_of_family, configuration_of]
+    parsers: [surface@3]
+  - method: adapter:razer-us
+    types: [member_of_family, configuration_of]
+    parsers: [razer@1]
+  - method: adapter:samsung-us
+    types: [member_of_family, configuration_of]
+    parsers: [samsung@1]
+  - method: adapter:lenovo-psref-monitors
+    types: [package_of]
+    parsers: [lenovo_monitors@7]
+  - method: adapter:samsung-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [samsung_ssd@4]
+  - method: adapter:sandisk-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [sandisk_ssd@7]
+  - method: adapter:teamgroup-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [teamgroup_ssd@6]
+  - method: adapter:kingston-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [kingston_ssd@4]
+  - method: adapter:tplink-us-routers
+    types: [variant_of]
+    parsers: [tplink_routers@3]
+  - method: page-variants:anker
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:baseus
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:belkin
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  retired: {at: '2026-11-26', superseded_by: rel/source-stated-hierarchy@17, reason: 'fingerprint pin of an intermediate lenovo_monitors@7 (bare-range rule withdrawn); never approved'}

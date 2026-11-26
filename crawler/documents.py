@@ -46,9 +46,10 @@ HREF = re.compile(r"""<a\b[^>]*?href\s*=\s*["']([^"']+?\.pdf[^"']*)["'][^>]*>(.*
 TAG = re.compile(r"<style\b.*?</style>|<script\b.*?</script>|<[^>]+>", re.S | re.I)
 
 # ---------------------------------------------------------------------------------------------------------------- classification
-KIND_RULES = [   # first match wins; tested against "<url path> | <link text>" lowercased
+KIND_RULES = [   # first match wins; tested against "<url path> | <link text>" lowercased. "master-product-catalog" is a Demandware path segment
+                 # (Belkin "Sites-master-product-catalog-blk"), not a catalogue document (r10 A2-pb)
     ("other", r"warrant|terms|guarantee|\bmsa[_ ]statement|irs\.gov|/irs-pdf/|privacy|return[_ -]policy|\bform \d|recycl|battery[_ -]?disposal|w-?9\b"),
-    ("marketing", r"brochure|catalog(?:ue)?\b|comparison|sales[_ -]?sheet|line[_ -]?card|flyer|lookbook|compatibility[_ -]?chart|buyers?[_ -]?guide"),
+    ("marketing", r"brochure|(?<!master-product-)catalog(?:ue)?\b|comparison|sales[_ -]?sheet|line[_ -]?card|flyer|lookbook|compatibility[_ -]?chart|buyers?[_ -]?guide"),
     ("certificate", r"regulatory|rc[_ -]?statement|declaration|\bdoc\b|\bce[_ -]doc|certificat|compliance|fcc|rohs|reach|\bweee\b|sustainab|"
                     r"/ins_|\bins_|[_-]ftc[_.-]|energy[_ -]?guide|safety[_ -]?(?:information|instructions|sheet)|\bsds\b|\bmsds\b|un38\.3|test[_ -]?report"),
     ("datasheet", r"data[_ -]?sheet|datasheet|\bds\b|[_-]ds[_.-]|product[_ -]data"),

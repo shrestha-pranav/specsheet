@@ -22,6 +22,7 @@ python3 -I scripts/import.py --strict-parsers > /tmp/specsheet-import.json
 python3 -I scripts/build.py > /tmp/specsheet-build.log
 node scripts/smoke.mjs
 node scripts/frontend-smoke.mjs
+python3 -I scripts/zero_trace.py > /tmp/specsheet-zero-trace.log || { tail -20 /tmp/specsheet-zero-trace.log; echo "release: free:false host trace in published artifacts" >&2; exit 3; }
 for t in tests/test_*.py; do python3 -I "$t" > /dev/null; done
 if ! python3 -I scripts/release_manifest.py measure > /tmp/specsheet-measure.json; then
   cat /tmp/specsheet-measure.json; echo "release: size budget FAILED (data/release-budget.json)" >&2; exit 2

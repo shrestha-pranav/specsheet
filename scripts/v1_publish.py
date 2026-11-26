@@ -327,7 +327,8 @@ def publish(api: Path, build_stats: dict, gate_out: dict | None = None):
             out = [dict({"id": s["sid"], "url": s["url"], "label": s["label"] or s["url"], "tier": s["tier"], "retrieved_at": s["retrieved_at"]},
                         **src_extra(s)) for s in srcs[eid]]
             n, remap = len(out), {}
-            for k, r in specs.items():
+            for k in sorted(specs):                                  # sorted: inherited sid numbering byte-stable across builds
+                r = specs[k]
                 own = r.get("inherited_from")
                 if not own:
                     continue

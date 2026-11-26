@@ -40,9 +40,13 @@ UPS_RANGE = re.compile(r"(?<![\d.])\d+(?:\.\d+)?\s*(?:-?\s*ms\s*)?(?:-|\u2013|\u
 #   nothing, never an exact value; any other qualifier ('~20 ms', 'approx.', 'about', 'around', 'typical', 'average', '\u00b1') -> the same.
 UPS_RANGE_WORDS = re.compile(r"(?i)\b(?:between|from)\s+\d+(?:\.\d+)?\s*(?:-?\s*ms\s*)?(?:and|to|&|-|\u2013|\u2014)\s*\d+(?:\.\d+)?\s*-?\s*ms\b")
 UPS_UPPER_AFTER = re.compile(r"(?i)^\s*\(?\s*(?:max(?:imum)?\b\.?|or\s+(?:less|below|under|lower|faster|shorter)\b|and\s+(?:below|under|less)\b|at\s+most\b)")
-UPS_LOWER_BEFORE = re.compile(r"(?i)(?:>=|>|\uff1e|\u2265|&gt;|\bat\s+least|\bmore\s+than|\bover|\babove|\bgreater\s+than|\bexceed\w*|\bmin(?:imum)?\.?:?|"
+UPS_LOWER_BEFORE = re.compile(r"(?i)(?:>=|=>|>|\uff1e|\u2265|\u2267|&gt;=?|&ge;|\bat\s+least|\bmore\s+than|\bover|\babove|\bgreater\s+than|\bexceed\w*|\bmin(?:imum)?\.?:?|"
                               r"\bnot\s+less\s+than|\bno\s+(?:less|shorter)\s+than)\s*$")
-UPS_LOWER_AFTER = re.compile(r"(?i)^\s*(?:\+|\(?\s*min(?:imum)?\b|or\s+(?:more|above|greater|longer|higher|slower)\b|and\s+(?:above|up|over|more)\b|at\s+least\b)")
+UPS_LOWER_AFTER = re.compile(r"(?i)^\s*(?:\+|\(?\s*min(?:imum)?\b|(?:or|and)\s+(?:more|above|over|beyond|greater|longer|higher|slower|upwards?|up)\b|"
+                             r"at\s+least\b|(?:and|or)\s+(?:not\s+)?(?:less|lower|shorter)\s+than\b)")
+# review-10 (A3-fix, Codex review-10 P1-3): an alternative AFTER the figure ('10 ms or 20 ms', '10 ms / 20 ms', '10 ms, 20 ms', '10 ms and 20 ms') is
+# several figures too, in rows (which read only the first figure) as in prose. A separately labelled mode ('<20ms, Online UPS: 0ms') is not.
+UPS_LIST_AFTER = re.compile(r"(?i)^\s*(?:and|or|/|,|&|\|)\s*(?:(?:" + UPS_BOUND + r")\s*)?\d+(?:\.\d+)?\s*-?\s*(?:ms\b|$|[;,)]|or\b|and\b)")
 UPS_OTHER_BEFORE = re.compile(r"(?i)(?:~|\u223c|\u2248|\uff5e|\u00b1|\bapprox(?:\.|imately)?|\babout|\baround|\broughly|\btypical(?:ly)?|\baverage|\bavg\.?|"
                               r"\bnominal(?:ly)?|\bca\.|\bestimated|\bas\s+(?:low|fast|little)\s+as)\s*$")
 UPS_OTHER_AFTER = re.compile(r"(?i)^\s*(?:\u00b1|\(?\s*(?:typ(?:ical)?|approx(?:imately)?|avg|average|nominal)\b)")
@@ -53,7 +57,7 @@ def _qualify(text, m):
     """One 'N ms' match -> 'up to N', the number, or U(reason) when its qualification is a lower bound / unsupported / part of a list."""
     b, n = m.group(1), m.group(2)
     pre, post = text[max(0, m.start() - 30):m.start()], text[m.end():m.end() + 25]
-    if not b and UPS_LIST_BEFORE.search(pre):
+    if (not b and UPS_LIST_BEFORE.search(pre)) or UPS_LIST_AFTER.search(post):
         return U("switchover printed as several figures: no single figure")
     if UPS_LOWER_BEFORE.search(pre) or UPS_LOWER_AFTER.search(post):
         return U("switchover printed as a lower bound: never an exact value")

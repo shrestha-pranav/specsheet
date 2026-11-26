@@ -44,6 +44,9 @@ INPUT_H = re.compile(r"(?i)^\s*(?:input|eingang|entr[ée]e|entrada|ingresso)\b|\
 OUTPUT_H = re.compile(r"(?i)^\s*(?:output|outputs)\b|\boutput\s*[:：]|\boutput\s*interface")
 PPS_NAMED = re.compile(r"(?i)\bsupports?\s*PPS\b|\bPPS\s*(?:support(?:ed)?|compatible)\b|(?:PD\s*3\.[01]|QC\s*\d(?:\.\d)?)[^.\n]{0,40}[,/]\s*PPS\b|\bPPS\s*[,/]\s*(?:PD|QC|AFC|SCP|FCP)")
 EFFICIENCY = re.compile(r"\d\s*%|efficien", re.I)
+# r10 (A2-pb): an IEC/EN/UL 62368-1 power-source class sentence ("USB-C port (20V/5A, 28V/5A) are classified as PS3 in IEC/EN/UL 62368-1")
+# is safety boilerplate, often shared across a product family, never the product's PDO list: the line is skipped and closes any open row.
+SAFETY_CLASS = re.compile(r"\bPS\s?[123]\b|62368")
 MODEL_TOKEN = re.compile(r"(?<![A-Z0-9])([A-Z]{1,3}\d{3,5}[A-Z0-9]{0,4})(?![A-Z0-9])")
 
 
@@ -94,6 +97,9 @@ def power_output(doc):
             for raw, tconf in blines:
                 ln = _clean(raw)
                 if not ln:
+                    continue
+                if SAFETY_CLASS.search(ln):
+                    cur = None
                     continue
                 pg = dict(page, _tc=tconf)
                 if PPS_NAMED.search(ln) and direction != "in":

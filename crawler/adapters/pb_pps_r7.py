@@ -15,6 +15,8 @@ adapters (discover / fetch / identity unchanged) and add pd.pps claims to the un
            basis=derived, quote names the rule. Only when no stated pd.pps claim exists; never a PPS voltage/current range.
            @7 (review-9 P1-2): only an affirmative own-product OUTPUT sentence (see sfc2()); negation, questions, input / recharge /
            adapter context and other-model mentions emit nothing.
+           @8 (review-10 P1-2): modal / contraction negation ('cannot', "can't", "won't") and exact normalised model identity (own
+           mfr_model / mfr_sku and the model tokens inside them; 'P730' is not 'P73').
 """
 import re, sys
 from pathlib import Path
@@ -22,9 +24,12 @@ sys.path.insert(0, str(Path(__file__).parent))
 import _powerbank as P
 import shopify_powerbanks as S
 
-VERSION = 7
+VERSION = 8
 SFC2 = re.compile(r"Samsung Super Fast Charg\w* 2\.0|\b45\s*W (?:max(?:imum)? )?(?:output )?for Samsung\b", re.I)
-NEG = re.compile(r"(?i)\b(?:not|no|doesn.t|does not|without|unsupported|except)\b|\?")
+# @8 (review-10 P1-2): modal / contraction negation too ('cannot', "can't", "won't", "isn't", 'unable', 'incompatible', 'never', 'lacks'); the
+# apostrophe is any character (straight or curly quote).
+NEG = re.compile(r"(?i)\b(?:not|no|nor|never|none|cannot|can.t|won.t|wouldn.t|isn.t|aren.t|wasn.t|doesn.t|don.t|didn.t|does not|without|"
+                 r"unsupported|incompatible|unable|lacks?|lacking|except|excluding)\b|\?")
 RULE_QUOTE = ("rule r7-sfc2: maker names Samsung Super Fast Charging 2.0 / 45W for Samsung; SFC 2.0 requires USB PD PPS. "
               "No PPS range implied.")
 
@@ -74,21 +79,35 @@ def _norm(v):
     return re.sub(r"[^A-Z0-9]", "", (v or "").upper())
 
 
-def sfc2(text, model=None):
+def own_tokens(model, aliases=()):
+    """-> the normalised identities that name THIS product: each own identifier (model, explicit aliases such as mfr_sku) and the model tokens
+    printed inside it ('INIU B61' -> INIUB61, B61). Exact equality only (review-10 P1-2: 'P730' never names 'P73', nor 'P73' 'P730')."""
+    out = set()
+    for v in (model, *aliases):
+        if v:
+            out.add(_norm(v))
+            out |= {_norm(t) for t in MODEL_TOK.findall(v)}
+    return out - {""}
+
+
+def sfc2(text, model=None, aliases=()):
     """-> the maker sentence naming Samsung SFC 2.0 / '45W for Samsung' as THIS product's output, or None.
 
     @7 (A3-fix, Codex review-9 P1-2): the whole sentence must be an affirmative own-product output statement. Nothing when the sentence
     is negated anywhere ('... is not supported'), is a question ('Does it support ...?', FAQ 'Q:'), is about input / recharging / an adapter
     ('Recharge using a Samsung SFC 2.0 adapter'), refers to another product ('Our other model P99 supports ...') or names a model token
-    that is not this page's model, or has no output verb (support / deliver / output / provide / compatible ...)."""
+    that is not this page's model, or has no output verb (support / deliver / output / provide / compatible ...).
+    @8 (A3-fix, Codex review-10 P1-2): negation includes modal / contraction forms ('It cannot support ...', "can't", "won't"), and a model
+    token in the sentence must EQUAL one of own_tokens(model, aliases) after normalisation (no substring: 'The P730 supports ...' is foreign
+    for P73)."""
     text = text or ""
-    own = _norm(model)
+    own = own_tokens(model, aliases)
     for m in SFC2.finditer(text):
         sent, end = _sentence(text, m)
         if end == "?" or QUESTION.search(sent) or NEG.search(sent) or INPUT_CTX.search(sent) or OTHER_CTX.search(sent):
             continue
         devices = re.sub(r"(?i)\b(?:Galaxy|iPhone|iPad|Pixel|Note|Tab)\s+(?:[A-Z]{0,3}\d{1,3}\w*\s*)+", " ", sent)   # target phones, not products
-        if any(_norm(t) != own and not (own and (_norm(t) in own or own in _norm(t))) for t in MODEL_TOK.findall(devices)):
+        if any(_norm(t) not in own for t in MODEL_TOK.findall(devices)):
             continue
         if not AFFIRM.search(sent):
             continue
@@ -108,6 +127,7 @@ class _R7:
     def parse(self, snap, blobs, profile):
         pr = super().parse(snap, blobs, profile)
         model = next((i["value"] for i in pr.identifiers if i.get("scheme") == "mfr_model"), None)
+        aliases = [i["value"] for i in pr.identifiers if i.get("scheme") in ("mfr_model", "mfr_sku") and i.get("value")]
         if not model or any(c["key"] == "pd.pps" for c in pr.claims):
             return pr
         import gzip, json
@@ -117,7 +137,7 @@ class _R7:
         hit = self.stated(text, blk)
         if hit:
             P.emit(pr, self.adapter, snap, "pd.pps", True, hit[0], hit[1], model, None, hit[2])
-        elif (sf := sfc2(text, model)):
+        elif (sf := sfc2(text, model, aliases)):
             add_derived(pr, self.adapter, snap, model, sf)
         return pr
 

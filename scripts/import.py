@@ -944,6 +944,47 @@ def cpu_split(c, cid, keys):
     return out
 
 
+def parent_supports(dec, parent):
+    """review-10 P1-1: may a derived claim accepted by a policy publish, given its parent literal's (state, decision, ctx)?
+    Yes when the parent is accepted, or when the parent is a candidate with no decision SOLELY because its multi-target literal does not
+    normalise: probed as if normalised (Decisions.policy_state, no side effects), it is accepted by an APPROVED policy, or no policy at all
+    covers the literal's key (Memory Slots -> mem.slots: claim/psref-split@1 itself is then the approval, as its rationale states).
+    No when the probe matches any pending or half-approved policy (approval withholding: the dependent is withheld with its parent), when
+    the parent normalised and is still a candidate (withheld, not a normalisation failure), when it is rejected, or was never seen."""
+    if parent is None:
+        return False
+    ps, pd, pctx = parent
+    if ps == "accepted":
+        return True
+    if ps != "candidate" or pd is not None or pctx is None or pctx.get("normalized") or pctx.get("status") != "known":
+        return False
+    approved, pending = dec.policy_state(dict(pctx, normalized=True))
+    return approved is not None or not pending
+
+
+def trusted_probe(dec, profiles, unitsets, psref):
+    """-> trusted(cat, e, c, ob): would claim c (on entity e, observation ob) be ACCEPTED by a recorded decision? Same key mapping, cid,
+    normalisation and policy context as the write loop, probed without side effects (Decisions.claim_state record=False). Used by
+    transforms whose output depends on another claim (docspec_r7tv: complete HDMI inventory, review-10 P1-1)."""
+    def trusted(cat, e, c, ob):
+        _, keys, al = profiles[cat]
+        single = psref[cat][0]
+        sid, ref, snap = ob
+        k = c["key"]; mk = k if k in keys else al.get(k)
+        col = (c.get("locator") or {}).get("column")
+        if col in single:
+            mk = single[col]
+        if mk is None or c.get("status") is None:
+            return False
+        spec = keys.get(mk)
+        ok = N.normalise(spec, c, unitsets[cat])[0] if spec else False
+        cid = c.get("_cid") or stable_cid(sid, ref, c, mk)
+        ctx = {"source_id": sid, "extractor": (c.get("method") or {}).get("extractor") or "unknown@0", "key": mk, "spec_type": (spec or {}).get("type"),
+               "kind": c.get("kind") or "official", "tier": (e.srcs.get(snap) or {}).get("tier", "manufacturer"), "status": c["status"], "normalized": ok}
+        return dec.claim_state(cid, ctx, record=False)[0] == "accepted"
+    return trusted
+
+
 PSPLIT = "import.py+psref-split@1"
 PSPLIT_COLS = {"Display": (_lcell.display, {"panel_type": "disp.panel_type", "nits_sdr": "disp.nits_sdr", "refresh": "disp.refresh",
                                             "resolution": "disp.resolution"}),
@@ -1060,7 +1101,7 @@ def main():
     doc_stats = DA.apply(worlds, events, {})        # document pipeline: linked manuals/datasheets -> claims on the linking page's entity (scripts/docattach.py)
     DS.apply(worlds, events, doc_stats)            # r2: SSD datasheet rows (scripts/docspec_attach.py, separate transform: docattach@1 stays pinned)
     DS3.apply(worlds, events, doc_stats)           # r3: TV / router / laptop spec-sheet rows (scripts/docspec_r3.py; docspec-attach@2 stays pinned)
-    DS7.apply(worlds, events, doc_stats)           # r7: TV per-port HDMI rates from quick start guides (scripts/docspec_r7tv.py; r3@2 stays pinned)
+    DS7.apply(worlds, events, doc_stats, trusted=trusted_probe(dec, profiles, unitsets, psref))   # r7: TV per-port HDMI rates from quick start guides (scripts/docspec_r7tv.py; r3@2 stays pinned)
     IA.apply(worlds, events, doc_stats)            # maker spec images (OCR) -> claims on the linking page's entity (scripts/imgattach.py)
     HA.apply(worlds, events, doc_stats)            # kind: hub pages (data/document-hubs.yaml) -> bound only by the document's own text (scripts/hubattach.py)
     ignored_rows = []
@@ -1252,9 +1293,8 @@ def main():
                     if parent_state != "accepted":
                         state, did = "candidate", None
                 if doc["method"]["extractor"] == PSPLIT and state == "accepted" and did and did.startswith("claim/"):
-                    # parent accepted, or a parent that is a candidate only because the multi-target literal cannot normalise (no human decision on it)
-                    ps, pd = pdid.get((c.get("derived_from") or [None])[0], ("rejected", None))
-                    if not (ps == "accepted" or (ps == "candidate" and pd is None)):
+                    # parent accepted, or a parent that is a candidate ONLY because the multi-target literal cannot normalise (review-10 P1-1)
+                    if not parent_supports(dec, pdid.get((c.get("derived_from") or [None])[0])):
                         state, did = "candidate", None
                 doc["review"] = {"state": state, "by": did}
                 errs = list(CLAIM_VALIDATOR.iter_errors(doc))
@@ -1262,7 +1302,7 @@ def main():
                     msg = errs[0].message[:120]
                     invalid[(cat, sid, mk or k, msg)] += 1; invalid_ex.setdefault((cat, sid, mk or k, msg), canon(doc)[:200])
                     continue
-                states[cid] = state; pdid[cid] = (state, did)
+                states[cid] = state; pdid[cid] = (state, did, ctx)
                 review_counts[cat][state] += 1
                 rows.append((cid, e.id, k, mk, c["status"], doc["kind"], canon(doc.get("conditions") or {}), (c.get("measurement") or {}).get("mode"),
                              json.dumps(c.get("value")), int(ok), json.dumps(nv) if ok else None, canon(nx) if nx else None, doc.get("unit"), c.get("raw"), doc["source"],
