@@ -48,7 +48,8 @@ class Cells(unittest.TestCase):
                                           "WAN Port        1x 10 Gigabit Ethernet", "LAN Ports        4 x 2.5G Ethernet"))),
                          {"wifi.generation": "wifi7", "wifi.band_count": 3, "wifi.has_6ghz": True, "port.wan_speed_mbps": 10000, "port.lan_count": 4})
         self.assertEqual(RT.router(doc("WiFi Standard      802.11ax 2.4/5/6 GHz")), [{"key": "wifi.has_6ghz", "value": True, "raw": "802.11ax 2.4/5/6 GHz",
-                                                                                 "quote": "WiFi Standard 802.11ax 2.4/5/6 GHz", "page": 1, "ocr": False, "ocr_conf": None}])
+                                                                                 "quote": "WiFi Standard 802.11ax 2.4/5/6 GHz", "page": 1, "ocr": False, "ocr_conf": None,
+                                                                                 "row": "WiFi Standard 802.11ax 2.4/5/6 GHz"}])   # @2: + row
         self.assertEqual(RT.router(doc("WAN Port      2.5G and 10G")), [])
         self.assertEqual(RT.router(doc("Experience blazing WiFi 7 speeds across your whole home.")), [])
 

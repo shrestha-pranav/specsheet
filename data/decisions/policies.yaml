@@ -642,28 +642,28 @@ claim_policies:
       - phys.dimensions
       - phys.weight
     require_normalized: true
-- id: claim/mfr-power-stations-structured@6
+- id: claim/mfr-power-stations-structured@7
   since: '2026-11-25'
-  supersedes: claim/mfr-power-stations-structured@5
-  rationale: 'Everything in @5 (LiFePO₄ chemistry, coordinator UPS-prose ruling r5), re-issued for shopify_powerstations@4 -> @5 and ankersolix_stations@4 -> @5 (A2-mon r5b; @5 was locked by the round''s first import). ADDED: the shared _powerstation capacity row also matches a ''Battery Pack Capacity'' label (Goal Zero Yeti 300/500/700/PRO 4000: ''296.96 Wh (25.6 V, 11.6 Ah)''), with the same rules as ''Battery Capacity'' (one Wh figure -> cap.energy_wh; the printed V and Ah -> cap.pack_voltage_v / cap.pack_ah; Wh never computed). Same sources, kinds and key allowlists as @4/@5.'
+  supersedes: claim/mfr-power-stations-structured@6
+  rationale: 'Every @6 rule unchanged (LiFePO₄ chemistry, Battery Pack Capacity, coordinator UPS-prose ruling r5), re-issued for shopify_powerstations@5 -> @6 and ankersolix_stations@5 -> @6 (A2-dell r6, brief item 2). CHANGED: a labelled UPS/EPS/switchover row whose ms figure is preceded by a bound (''<'', full-width ''＜'', ''≤'', ''&lt;'', ''under'', ''within'', ''less than'', ''sub-'') now publishes ''up to N'' (normalize qualifier up_to), consistent with the r5 prose ruling; before, it published the bare figure as exact. A bare figure stays exact. The prose regex also reads the full-width ''＜''. Same sources, kinds, tiers and key allowlists as @6.'
   audit:
-    by: A2-mon r5
+    by: A2-dell r6
     at: '2026-11-25'
-    evidence: 'team/reports/2026-11-25-a2-r5-monitors-stations.md; in-memory claim diff of the round-start parsers vs @5 parsers over every stored snapshot: bluetti (40) +1 bat.chemistry lfp (PR100V2) +9 ups.switchover_ms; goalzero (22) +4 bat.chemistry lfp, +4 cap.energy_wh/cap.pack_ah/cap.pack_voltage_v (36900, 37000, 37100, 37500); jackery (44) +2 ups.switchover_ms up to 20; ankersolix (33) +1 ups.switchover_ms 10; ecoflow (18) 0; 0 removed, identifiers/aliases identical. tests/test_a2_mon_r5.py'
+    evidence: 'team/reports/2026-11-25-a2-r6-dell.md; in-memory claim diff of HEAD parsers (@5) vs @6 over every stored station snapshot (1623 entity/key groups): 17 ups.switchover_ms changed from N to up to N (bluetti ac50b, ac50p, handsfree 1/2 up to 20, premium 100 v2 up to 10; ecoflow delta 3 / 3 plus / 3 max / 3 max plus / 3 ultra / 3 ultra plus up to 10; goalzero yeti 1000/1500 up to 15 (aps); jackery explorer 5000 plus x4 up to 20); 0 added, 0 removed, nothing else changed. tests/test_a2_r6_dell.py'
     parsers:
-      ankersolix_stations@5: 'sha256:09f29f3d47de0a158711'
-      bluetti_stations@5: 'sha256:87e1811fd9d680181bb0'
-      ecoflow_stations@5: 'sha256:87e1811fd9d680181bb0'
-      goalzero_stations@5: 'sha256:87e1811fd9d680181bb0'
-      jackery_stations@5: 'sha256:87e1811fd9d680181bb0'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25c}
+      ankersolix_stations@6: 'sha256:446437087bdebe31d502'
+      bluetti_stations@6: 'sha256:9196ffe3c7c38a949ff0'
+      ecoflow_stations@6: 'sha256:9196ffe3c7c38a949ff0'
+      goalzero_stations@6: 'sha256:9196ffe3c7c38a949ff0'
+      jackery_stations@6: 'sha256:9196ffe3c7c38a949ff0'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25d}
   match:
     extractors:
-    - ankersolix_stations@5
-    - bluetti_stations@5
-    - ecoflow_stations@5
-    - goalzero_stations@5
-    - jackery_stations@5
+    - ankersolix_stations@6
+    - bluetti_stations@6
+    - ecoflow_stations@6
+    - goalzero_stations@6
+    - jackery_stations@6
     source_ids:
     - ecoflow-us-stations
     - bluetti-us-stations
@@ -1143,6 +1143,26 @@ claim_policies:
     require_normalized: true
     keys:
       benq-us-monitors: [ergo.vesa, flk.cert, flk.pwm, gen.size_class, panel.technology, pwr.max, res.height_px, res.refresh_max, res.width_px, usb.kvm, usb.usbc_inputs, usb.usbc_pd_w]
+- id: claim/mfr-monitor-dell@2
+  since: '2026-11-25'
+  supersedes: claim/mfr-monitor-dell@1
+  rationale: 'Same-round re-issue of @1 for dell_monitors@1 -> @2 (@1 was locked by the round''s first import, never approved). ADDED vs @1: usb.usbc_inputs 0 (basis complete_enumeration) also when the Interface/Port Details list is cross-checked complete because its USB-C lines add up to Total Number of USB Type-C Ports (Dell''s ''2 HDMI ports'' count style is now read as a video input, so this check fires), or, with no USB-C/Thunderbolt row or line anywhere on the page, its USB lines add up to Number of USB Ports (+18 zeros: Alienware/P/E models whose only USB-C ports are downstream or that have none). Everything else as @1: new source dell-us-monitors (crawler/adapters/dell_monitors.py, A2-dell r6 brief item 1): the Tech Specs block of www.dell.com /en-us/shop/.../apd/<slug>/<code>/- pages (www.dell.com is already in data/source-policy.yaml, maker, categories laptops + monitors; robots allows the /apd/ pages and the /ar/ listing used for discovery). One page = one model: mfr_model = the Product Model row, which must equal the URL code (a ''<model> WOST'' page is the same model sold without stand); the Dell part number is an x_dell_part_number alias. Rules: flk.pwm none ONLY from the explicit ''Flicker Free: Yes'' row or a ''Flicker-free'' Features item (''Flicker Free: No'', ComfortView, Eye Comfort stars and silence write nothing); res.refresh_native only when ''Standard Refresh Rate'' equals the highest ''Maximum Preset Resolution'' rate at the native resolution and no row says overclock (AW2524HF prints Standard 500 Hz vs a 480 Hz preset: native not written); res.refresh_max = the higher of the two; usb.usbc_inputs from the Interface/Port Details list via _monports (an ambiguous USB-C line writes nothing), 0 only from the maker''s ''USB Type-C: No'' row with no Thunderbolt/USB-C elsewhere, or as complete_enumeration when every USB-C port the ''Total Number of USB Type-C Ports'' row counts is listed and none takes video; usb.usbc_pd_w only from an upstream-side Power Delivery row (or, with no such row, the USB-C video input line) with one W figure, Downstream rows never; usb.kvm True only from ''KVM Switch'' in Built-in Devices; vin.hdmi_count / vin.dp_count only when the count row agrees with the port-details list (and dp_count never on a page with DisplayPort Output: Yes); size class as stated (whole inch).'
+  audit:
+    by: A2-dell r6
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a2-r6-dell.md; @1 vs @2 over all 89 stored pages: +18 usb.usbc_inputs 0 (complete_enumeration), nothing else changed; 89 pages fetched 2026-11-25 (9 listing pages, all 200), 89 models parsed, 0 absences; per-key counts in the report; tests/test_a2_r6_dell.py'
+    parsers:
+      dell_monitors@2: 'sha256:fc0d41a25a9fdc3ddd0f'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25d}
+  match:
+    extractors: [dell_monitors@2]
+    source_ids: [dell-us-monitors]
+    kinds: [official, derived]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      dell-us-monitors: [ergo.vesa, flk.pwm, gen.size_class, gen.viewable_diag, panel.technology, pwr.max, res.height_px, res.native, res.refresh_max, res.refresh_native, res.width_px, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.hdmi_version]
 - id: claim/mfr-ssd-sandisk-datasheet@2
   since: '2026-11-25'
   supersedes: claim/mfr-ssd-sandisk-datasheet@1
@@ -1383,65 +1403,73 @@ claim_policies:
     keys:
       kingston-us-ssd: [end.mtbf, end.tbw, end.warranty_years, gen.capacity, gen.device_class, gen.form_factor, hw.controller, hw.controller_vendor,
         hw.dram_type, hw.nand_type, if.pcie_gen, if.pcie_lanes, if.protocol, if.usb_standard, perf.seq_read, perf.seq_write, therm.temp_operating]
-- id: claim/document-spec-r3@1
+- id: claim/document-spec-r3@2
   since: '2026-11-25'
-  rationale: 'New transform docspec-attach-r3@1 (scripts/docspec_r3.py; extractors docspec-tv@1, docspec-router@1, docspec-laptop@1 in
-    crawler/adapters/_docspec_{tv,router,laptop}.py). Maker spec sheets linked from a registered maker page the entity is observed on (edge
-    verified as docattach@2). Identity = docspec-attach@2 rule unchanged: the text quotes an own mfr_model / mfr_sku (or its 6+ char base SKU),
-    and no same-brand catalogued model outside the linking pages is named (multi_model_other_page); quoted identifiers ride on
-    locator.identifiers. Cells: adjacent (label, value) segments of a pdftotext -layout line; a value repeated in the next column (per-size
-    table) or a size-qualified cell is never read; one key with two values in a document reads nothing. Affirmative only: hdmi.has_4k120 needs
-    HDMI 2.1 AND a 4K>=120Hz figure in the same cell; ports_4k120 only from "<N>x HDMI 2.1 (4K@...)" with no other HDMI version; refresh.native_hz
-    only from a native/panel refresh label (or LG "TruMotion N (Refresh Rate 60Hz)"), never TruMotion/MCI numbers; lcd_type never from brand
-    panel names (HVA/WHVA); mem.soldered needs a slot statement (ASUS trap); no false/zero from silence. Text layer only.'
+  supersedes: claim/document-spec-r3@1
+  rationale: 'r6 router reissue. Transform docspec-attach-r3@2 (scripts/docspec_r3.py) + extractor docspec-router@2 (crawler/adapters/_docspec_router.py);
+    docspec-tv@1 and docspec-laptop@1 unchanged, TV / laptop binding unchanged. Router @2 reads, besides the @1 cells: NETGEAR Technical
+    Specifications bullet prose (column-aware items; only items opening with a key phrase: "WiFi 7 BE9300 Router Tri-band WiFi", "Tri-band with
+    N streams", "- 6 GHz (2x2)" / "Radio N: IEEE 802.11.. 6GHz" radio rows, "(1) 2.5 Gbps internet port", "(N) ... LAN ports" summed per
+    port group, "(5) ... ports" + "1 WAN & 4 LAN", "Powerful quad-core 2.0 GHz processor"; items under a Satellite(s) / (each) parent never
+    read; a port group with an unreadable port line reads no LAN facts), GL.iNet in-cell sub-labels ("WAN Port: 1 x 2.5G Port", band rows
+    "5GHz: 802.11a/n/ac/ax/be", "Ethernet Port 1 x 2.5G WAN, 1 x 2.5G LAN", CPU "Qualcomm Quad-core @1.1GHz"), Ubiquiti cells with
+    continuation lines (Networking interface LAN/WAN rows, WiFi standards, Processor, MIMO/TX/throughput 6 GHz sub-rows) and the NETGEAR page
+    heading ("Whole Home Tri-band Mesh WiFi 7 System"). New router keys: port.lan_max_mbps, hw.cpu_cores, hw.cpu_ghz, hw.soc_vendor. Binding
+    (routers): datasheet / spec_sheet documents only; multi-model sheets (another catalogued same-brand entity named, even one linked from the
+    same page) bind row-scoped: the fact''s own row must quote this entity and no sibling (identity_scope=row). Per-group facts; a key whose
+    groups disagree reads nothing (UDM-Pro RJ45 WAN 1G vs SFP+ WAN 10G). Affirmative only; 802.11ax + 6 GHz never promoted to 6E; AX class
+    code alone sets nothing; no false / zero from silence. Identity otherwise = r3@1 (verified edge, own identifier quoted, no unlinked
+    same-brand model named).'
   audit:
-    by: A3-docs-2 r3
+    by: A3-docs r6
     at: '2026-11-25'
-    evidence: 'team/reports/2026-11-25-a3-docparsers-r3.md; tests/test_docspec_r3.py (per category: corroborating claim, new fill, wrong-model
-      document linked from its page attaches nothing; unlinked same-brand model blocks); replay over every stored TV / router / laptop document.'
+    evidence: 'team/reports/2026-11-25-a3-r6-router-docs.md; tests/test_docspec_r3.py (NETGEAR bullet sheet, GL.iNet in-cell, Ubiquiti cells,
+      multi-model sheet that must not cross-bind, kit satellite block, @1 cell cases); replay over every stored router datasheet / spec sheet
+      (66) with per-document fact review; TV / laptop facts unchanged vs @1.'
     parsers:
-      docspec-attach-r3@1: 'sha256:861d49c06bfd094f72c2'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+      docspec-attach-r3@2: 'sha256:b87c21c80003125b3123'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25d}
   match:
-    extractors: [docspec-tv@1, docspec-router@1, docspec-laptop@1]
+    extractors: [docspec-tv@1, docspec-router@2, docspec-laptop@1]
     source_ids: [documents]
     kinds: [official]
     tiers: [manufacturer]
     statuses: [known]
     require_normalized: true
     keys: [hdmi.count, hdmi.earc, hdmi.has_4k120, hdmi.ports_4k120, refresh.native_hz, panel.backlight, panel.lcd_type, vrr.supported,
-      wifi.generation, wifi.band_count, wifi.has_6ghz, port.lan_count, port.wan_speed_mbps, mem.soldered, mem.slots, mem.max, pwr.max_pd_in]
+      wifi.generation, wifi.band_count, wifi.has_6ghz, port.lan_count, port.wan_speed_mbps, port.lan_max_mbps, hw.cpu_cores, hw.cpu_ghz,
+      hw.soc_vendor, mem.soldered, mem.slots, mem.max, pwr.max_pd_in]
 relation_policies:
-- id: rel/bundle-contents@6
+- id: rel/bundle-contents@7
   since: '2026-11-25'
-  supersedes: rel/bundle-contents@5
-  rationale: 'Same rules and transform (bundles@2) as @4/@5. Re-pin only for the station parser bumps ankersolix_stations@4 -> @5 and bluetti/ecoflow/jackery_stations @4 -> @5 (A2-mon r5b, claim/mfr-power-stations-structured@6); no bundle code changed.'
+  supersedes: rel/bundle-contents@6
+  rationale: 'Same rules and transform (bundles@2) as @6. Re-pin only for the station parser bumps ankersolix_stations@5 -> @6 and bluetti/ecoflow/jackery_stations @5 -> @6 (A2-dell r6, labelled UPS bound -> up to N, claim/mfr-power-stations-structured@7); no bundle code changed.'
   audit:
-    by: A2-mon r5
+    by: A2-dell r6
     at: '2026-11-25'
-    evidence: 'identifiers, aliases and package/bundle structure byte-identical round-start vs @5 parsers over every stored station snapshot; bundles@2 untouched.'
+    evidence: 'identifiers, aliases and package/bundle structure identical HEAD vs @6 station parsers over every stored station snapshot (only 17 ups.switchover_ms claims changed); bundles@2 untouched.'
     parsers:
-      ankersolix_stations@5: 'sha256:09f29f3d47de0a158711'
-      bluetti_stations@5: 'sha256:87e1811fd9d680181bb0'
-      ecoflow_stations@5: 'sha256:87e1811fd9d680181bb0'
-      jackery_stations@5: 'sha256:87e1811fd9d680181bb0'
+      ankersolix_stations@6: 'sha256:446437087bdebe31d502'
+      bluetti_stations@6: 'sha256:9196ffe3c7c38a949ff0'
+      ecoflow_stations@6: 'sha256:9196ffe3c7c38a949ff0'
+      jackery_stations@6: 'sha256:9196ffe3c7c38a949ff0'
       dreame_robovac@2: 'sha256:82418fe203d439831b23'
       narwal_robovac@2: 'sha256:2f212aa7076aff13a250'
       bundles@2: 'sha256:673c815897604268136d'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25c}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25d}
   rules:
   - method: bundle:ankersolix-us-stations
     types: [contains]
-    parsers: [ankersolix_stations@5+bundles@2]
+    parsers: [ankersolix_stations@6+bundles@2]
   - method: bundle:bluetti-us-stations
     types: [contains]
-    parsers: [bluetti_stations@5+bundles@2]
+    parsers: [bluetti_stations@6+bundles@2]
   - method: bundle:ecoflow-us-stations
     types: [contains]
-    parsers: [ecoflow_stations@5+bundles@2]
+    parsers: [ecoflow_stations@6+bundles@2]
   - method: bundle:jackery-us-stations
     types: [contains]
-    parsers: [jackery_stations@5+bundles@2]
+    parsers: [jackery_stations@6+bundles@2]
   - method: bundle:dreame-us-robovac
     types: [contains]
     parsers: [dreame_robovac@2+bundles@2]
@@ -1594,6 +1622,35 @@ relation_policies:
     types: [configuration_of]
     parsers: [crawlpy-strips@1]
 retired_policies:
+- id: claim/document-spec-r3@1
+  since: '2026-11-25'
+  rationale: 'New transform docspec-attach-r3@1 (scripts/docspec_r3.py; extractors docspec-tv@1, docspec-router@1, docspec-laptop@1 in
+    crawler/adapters/_docspec_{tv,router,laptop}.py). Maker spec sheets linked from a registered maker page the entity is observed on (edge
+    verified as docattach@2). Identity = docspec-attach@2 rule unchanged: the text quotes an own mfr_model / mfr_sku (or its 6+ char base SKU),
+    and no same-brand catalogued model outside the linking pages is named (multi_model_other_page); quoted identifiers ride on
+    locator.identifiers. Cells: adjacent (label, value) segments of a pdftotext -layout line; a value repeated in the next column (per-size
+    table) or a size-qualified cell is never read; one key with two values in a document reads nothing. Affirmative only: hdmi.has_4k120 needs
+    HDMI 2.1 AND a 4K>=120Hz figure in the same cell; ports_4k120 only from "<N>x HDMI 2.1 (4K@...)" with no other HDMI version; refresh.native_hz
+    only from a native/panel refresh label (or LG "TruMotion N (Refresh Rate 60Hz)"), never TruMotion/MCI numbers; lcd_type never from brand
+    panel names (HVA/WHVA); mem.soldered needs a slot statement (ASUS trap); no false/zero from silence. Text layer only.'
+  audit:
+    by: A3-docs-2 r3
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a3-docparsers-r3.md; tests/test_docspec_r3.py (per category: corroborating claim, new fill, wrong-model
+      document linked from its page attaches nothing; unlinked same-brand model blocks); replay over every stored TV / router / laptop document.'
+    parsers:
+      docspec-attach-r3@1: 'sha256:861d49c06bfd094f72c2'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+  match:
+    extractors: [docspec-tv@1, docspec-router@1, docspec-laptop@1]
+    source_ids: [documents]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys: [hdmi.count, hdmi.earc, hdmi.has_4k120, hdmi.ports_4k120, refresh.native_hz, panel.backlight, panel.lcd_type, vrr.supported,
+      wifi.generation, wifi.band_count, wifi.has_6ghz, port.lan_count, port.wan_speed_mbps, mem.soldered, mem.slots, mem.max, pwr.max_pd_in]
+  retired: {at: '2026-11-25', superseded_by: claim/document-spec-r3@2, reason: 'r6 router reissue: docspec-router@1 -> @2 and transform docspec-attach-r3@1 -> @2 (row-scoped multi-model binding); @1 meaning frozen as locked'}
 - id: rel/bundle-contents@5
   since: '2026-11-25'
   supersedes: rel/bundle-contents@4
@@ -6024,3 +6081,233 @@ retired_policies:
     require_normalized: true
     keys: [pd.pps, pd.pps_max_voltage, pd.pps_max_current_a, pd.max_fixed_voltage, pd.epr, out.ports]
   retired: {at: '2026-11-25', superseded_by: claim/hub-document-power-pdo@2, reason: 'docstring-only edit of scripts/hubattach.py (test_source_policy f16) moved the pinned fingerprint after the lock; meaning frozen as locked'}
+- id: claim/mfr-power-stations-structured@6
+  since: '2026-11-25'
+  supersedes: claim/mfr-power-stations-structured@5
+  rationale: 'Everything in @5 (LiFePO₄ chemistry, coordinator UPS-prose ruling r5), re-issued for shopify_powerstations@4 -> @5 and ankersolix_stations@4 -> @5 (A2-mon r5b; @5 was locked by the round''s first import). ADDED: the shared _powerstation capacity row also matches a ''Battery Pack Capacity'' label (Goal Zero Yeti 300/500/700/PRO 4000: ''296.96 Wh (25.6 V, 11.6 Ah)''), with the same rules as ''Battery Capacity'' (one Wh figure -> cap.energy_wh; the printed V and Ah -> cap.pack_voltage_v / cap.pack_ah; Wh never computed). Same sources, kinds and key allowlists as @4/@5.'
+  audit:
+    by: A2-mon r5
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a2-r5-monitors-stations.md; in-memory claim diff of the round-start parsers vs @5 parsers over every stored snapshot: bluetti (40) +1 bat.chemistry lfp (PR100V2) +9 ups.switchover_ms; goalzero (22) +4 bat.chemistry lfp, +4 cap.energy_wh/cap.pack_ah/cap.pack_voltage_v (36900, 37000, 37100, 37500); jackery (44) +2 ups.switchover_ms up to 20; ankersolix (33) +1 ups.switchover_ms 10; ecoflow (18) 0; 0 removed, identifiers/aliases identical. tests/test_a2_mon_r5.py'
+    parsers:
+      ankersolix_stations@5: 'sha256:09f29f3d47de0a158711'
+      bluetti_stations@5: 'sha256:87e1811fd9d680181bb0'
+      ecoflow_stations@5: 'sha256:87e1811fd9d680181bb0'
+      goalzero_stations@5: 'sha256:87e1811fd9d680181bb0'
+      jackery_stations@5: 'sha256:87e1811fd9d680181bb0'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25c}
+  match:
+    extractors:
+    - ankersolix_stations@5
+    - bluetti_stations@5
+    - ecoflow_stations@5
+    - goalzero_stations@5
+    - jackery_stations@5
+    source_ids:
+    - ecoflow-us-stations
+    - bluetti-us-stations
+    - jackery-us-stations
+    - goalzero-us-stations
+    - ankersolix-us-stations
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    keys:
+      ecoflow-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - conn.wireless
+      - exp.expandable
+      - exp.max_batteries
+      - exp.max_wh
+      - gen.warranty_years
+      - in.ac_w
+      - in.car_w
+      - in.solar_port_w
+      - in.solar_ports
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_boost_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      bluetti-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - cert.marks
+      - cert.ul2743
+      - conn.wireless
+      - exp.expandable
+      - gen.warranty_years
+      - in.ac_w
+      - in.max_w
+      - in.passthrough
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_boost_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ac_waveform
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - out.wireless_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      jackery-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - gen.warranty_years
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      goalzero-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - cert.marks
+      - exp.expandable
+      - gen.warranty_years
+      - in.ac_w
+      - in.recharge_ac_h
+      - in.recharge_solar_h
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ac_waveform
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      ankersolix-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - conn.wireless
+      - exp.expandable
+      - exp.max_batteries
+      - exp.max_wh
+      - gen.warranty_years
+      - in.ac_w
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+  retired: {at: '2026-11-25', superseded_by: claim/mfr-power-stations-structured@7, reason: 'superseded by @7 (A2-dell r6): labelled UPS row bounds publish up to N; @6 meaning frozen as locked'}
+- id: rel/bundle-contents@6
+  since: '2026-11-25'
+  supersedes: rel/bundle-contents@5
+  rationale: 'Same rules and transform (bundles@2) as @4/@5. Re-pin only for the station parser bumps ankersolix_stations@4 -> @5 and bluetti/ecoflow/jackery_stations @4 -> @5 (A2-mon r5b, claim/mfr-power-stations-structured@6); no bundle code changed.'
+  audit:
+    by: A2-mon r5
+    at: '2026-11-25'
+    evidence: 'identifiers, aliases and package/bundle structure byte-identical round-start vs @5 parsers over every stored station snapshot; bundles@2 untouched.'
+    parsers:
+      ankersolix_stations@5: 'sha256:09f29f3d47de0a158711'
+      bluetti_stations@5: 'sha256:87e1811fd9d680181bb0'
+      ecoflow_stations@5: 'sha256:87e1811fd9d680181bb0'
+      jackery_stations@5: 'sha256:87e1811fd9d680181bb0'
+      dreame_robovac@2: 'sha256:82418fe203d439831b23'
+      narwal_robovac@2: 'sha256:2f212aa7076aff13a250'
+      bundles@2: 'sha256:673c815897604268136d'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25c}
+  rules:
+  - method: bundle:ankersolix-us-stations
+    types: [contains]
+    parsers: [ankersolix_stations@5+bundles@2]
+  - method: bundle:bluetti-us-stations
+    types: [contains]
+    parsers: [bluetti_stations@5+bundles@2]
+  - method: bundle:ecoflow-us-stations
+    types: [contains]
+    parsers: [ecoflow_stations@5+bundles@2]
+  - method: bundle:jackery-us-stations
+    types: [contains]
+    parsers: [jackery_stations@5+bundles@2]
+  - method: bundle:dreame-us-robovac
+    types: [contains]
+    parsers: [dreame_robovac@2+bundles@2]
+  - method: bundle:narwal-us-robovac
+    types: [contains]
+    parsers: [narwal_robovac@2+bundles@2]
+  retired: {at: '2026-11-25', superseded_by: rel/bundle-contents@7, reason: 're-pin for station parser bumps @5 -> @6 (A2-dell r6); @6 meaning frozen as locked'}
+- id: claim/mfr-monitor-dell@1
+  since: '2026-11-25'
+  rationale: 'New source dell-us-monitors (crawler/adapters/dell_monitors.py, A2-dell r6 brief item 1): the Tech Specs block of www.dell.com /en-us/shop/.../apd/<slug>/<code>/- pages (www.dell.com is already in data/source-policy.yaml, maker, categories laptops + monitors; robots allows the /apd/ pages and the /ar/ listing used for discovery). One page = one model: mfr_model = the Product Model row, which must equal the URL code (a ''<model> WOST'' page is the same model sold without stand); the Dell part number is an x_dell_part_number alias. Rules: flk.pwm none ONLY from the explicit ''Flicker Free: Yes'' row or a ''Flicker-free'' Features item (''Flicker Free: No'', ComfortView, Eye Comfort stars and silence write nothing); res.refresh_native only when ''Standard Refresh Rate'' equals the highest ''Maximum Preset Resolution'' rate at the native resolution and no row says overclock (AW2524HF prints Standard 500 Hz vs a 480 Hz preset: native not written); res.refresh_max = the higher of the two; usb.usbc_inputs from the Interface/Port Details list via _monports (an ambiguous USB-C line writes nothing), 0 only from the maker''s ''USB Type-C: No'' row with no Thunderbolt/USB-C elsewhere, or as complete_enumeration when every USB-C port the ''Total Number of USB Type-C Ports'' row counts is listed and none takes video; usb.usbc_pd_w only from an upstream-side Power Delivery row (or, with no such row, the USB-C video input line) with one W figure, Downstream rows never; usb.kvm True only from ''KVM Switch'' in Built-in Devices; vin.hdmi_count / vin.dp_count only when the count row agrees with the port-details list (and dp_count never on a page with DisplayPort Output: Yes); size class as stated (whole inch).'
+  audit:
+    by: A2-dell r6
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a2-r6-dell.md; 89 pages fetched 2026-11-25 (9 listing pages, all 200), 89 models parsed, 0 absences; per-key counts in the report; tests/test_a2_r6_dell.py'
+    parsers:
+      dell_monitors@1: 'sha256:68855e33bd6a5f74439e'
+  approval: {state: pending}
+  match:
+    extractors: [dell_monitors@1]
+    source_ids: [dell-us-monitors]
+    kinds: [official, derived]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      dell-us-monitors: [ergo.vesa, flk.pwm, gen.size_class, gen.viewable_diag, panel.technology, pwr.max, res.height_px, res.native, res.refresh_max, res.refresh_native, res.width_px, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.hdmi_version]
+  retired: {at: '2026-11-25', superseded_by: claim/mfr-monitor-dell@2, reason: 'same-round re-issue: complete-enumeration zero widened after @1 was locked (dell_monitors@1 -> @2); @1 meaning frozen as locked, never approved'}

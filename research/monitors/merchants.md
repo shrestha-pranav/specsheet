@@ -49,3 +49,13 @@ Role: retailer data = aliases, MPN candidates, prices, availability; never prima
   Ports 2'), plus a hero key-spec strip ('Resolution / Refresh Rate: 1920 x 1080 at 144Hz') and schema.org PropertyValue feature copy.
 - Flicker: SE2726H prints no flicker row (only 'TÜV-certified eye comfort' / '3-star eye comfort' copy), so flk.pwm will come only from an explicit
   row where one exists. Next round: dell_monitors adapter (model = the URL's model code, e.g. se2726h), keys flk.pwm/usb.*/res.*, new pending policy.
+
+## Dell US monitors, A2-dell r6 (2026-11-25; crawler UA, 1 req/s, ~105 GETs, 0 non-200): adapter dell_monitors@2 (dell-us-monitors)
+- Discovery: `/en-us/shop/computer-monitors/ar/all-monitors?page=1..9` (server-rendered, 12 tiles/page, 89 models; `?page=` is not disallowed,
+  only comma-combined appliedRefinements are). Tile links end in `/<code>/-`: the bare `/<code>` URL serves a generic accessories page (3.7 MB,
+  no spec block), which is what r2/r3 saw. Codes carry suffixes (`s2725qs_monitor`, `p2426h_wost` = without stand, `u2724de_withstnd_mon`).
+- Spec block `#accessoriesTechSpecs` (two markups: minified unquoted and pretty-printed quoted). Content is syndicated-style and self-contradicts at
+  times (U5226KW 'Number of DisplayPorts 0' vs port details '2 DisplayPort 1.4'; P2226H 'Total USB-C 1' vs '2 USB-C downstream'), so counts are
+  cross-checked against 'Interface/Port Details'. 'Standard Refresh Rate' can be the overclock rate (AW2524HF 500 Hz vs 480 Hz preset).
+- Flicker: 43 of 89 pages print 'Flicker Free: Yes' or a 'Flicker-free' Features item; AW2726DL prints 'Flicker Free: No' (not read as PWM);
+  the rest are silent (S/SE/U lines mostly). Dell datasheets/user guides (www.delltechnologies.com, crawl agent) are the next flicker source.

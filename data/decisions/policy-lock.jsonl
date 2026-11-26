@@ -119,3 +119,8 @@
 {"at": "2026-11-25T23:01:09Z", "id": "rel/bundle-contents@5", "sha256": "sha256:257f691eaa7d8d35c8d4dd40d4e39dcb2b2b1b07d74f2a721c83a206d16c957f"}
 {"at": "2026-11-25T23:08:11Z", "id": "claim/mfr-power-stations-structured@6", "sha256": "sha256:606f4d6fadc718e5007719afab768b223e9071f0760ffab96c8841aaf079fec5"}
 {"at": "2026-11-25T23:08:11Z", "id": "rel/bundle-contents@6", "sha256": "sha256:7a4b63d78f03edb1e5baf9c9e1c478158324c9047722b8472c9b7cb8e5b04ede"}
+{"at": "2026-11-25T23:38:18Z", "id": "claim/mfr-power-stations-structured@7", "sha256": "sha256:9092a901edef912dca3c2d5ffd2bd400aea84c9e2883af77a98fd623153ff77c"}
+{"at": "2026-11-25T23:38:18Z", "id": "claim/mfr-monitor-dell@1", "sha256": "sha256:457225bc81845d2f7828bb69b8627d65011e90993381be4c45ea86bd301360d8"}
+{"at": "2026-11-25T23:38:18Z", "id": "claim/document-spec-r3@2", "sha256": "sha256:b5364de5c490236ca3628d648fee3aacb611f62a5197ac4525cd7c179f1fdde1"}
+{"at": "2026-11-25T23:38:18Z", "id": "rel/bundle-contents@7", "sha256": "sha256:a654485487a891765756b30761fe32bed7d326c55d503c6059709c6b6cab9c6f"}
+{"at": "2026-11-25T23:45:49Z", "id": "claim/mfr-monitor-dell@2", "sha256": "sha256:6927efc6435ed77f15486426c51ee1594d960e844ce8c08cca16600120e80546"}

@@ -20,7 +20,7 @@ import _powerbank as P
 import _powerstation as PS
 import _run
 
-ID, VERSION, SOURCE = "ankersolix_stations", 5, "ankersolix-us-stations"     # v5 (A2-mon r5b): shared _powerstation capacity label widened, no Anker change; v4 (A2-mon r5): LiFePO\u2084 chemistry; ups.switchover_ms from description prose (coordinator ruling r5); r7: shared _powerbank changed (energy_basis pairs, case-insensitive Wh); v2: r6 shared _powerbank changed; station rules unchanged
+ID, VERSION, SOURCE = "ankersolix_stations", 6, "ankersolix-us-stations"     # v6 (A2-dell r6): shared _powerstation labelled UPS bound -> up to N; v5 (A2-mon r5b): shared _powerstation capacity label widened, no Anker change; v4 (A2-mon r5): LiFePO\u2084 chemistry; ups.switchover_ms from description prose (coordinator ruling r5); r7: shared _powerbank changed (energy_basis pairs, case-insensitive Wh); v2: r6 shared _powerbank changed; station rules unchanged
 CATEGORIES = {"power-stations"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.ankersolix.com"

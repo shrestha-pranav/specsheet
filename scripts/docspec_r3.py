@@ -1,5 +1,5 @@
-"""Document claims r3 (2026-11-25): TV / router / laptop spec-sheet rows -> entities. Transform `docspec-attach-r3@1`, extractors
-`docspec-tv@1`, `docspec-router@1`, `docspec-laptop@1` (crawler/adapters/_docspec_{tv,router,laptop}.py). Called by scripts/import.py right
+"""Document claims r3 (2026-11-25): TV / router / laptop spec-sheet rows -> entities. Transform `docspec-attach-r3@2` (r6: router@2), extractors
+`docspec-tv@1`, `docspec-router@2`, `docspec-laptop@1` (crawler/adapters/_docspec_{tv,router,laptop}.py). Called by scripts/import.py right
 after docspec_attach.apply (same inputs: raw/_documents/discovery.json, snapshots.jsonl, text/<sha>.json; nothing from the network).
 
 Why a separate transform and not a hook inside docspec_attach.py: docspec-attach@2 is fingerprint-pinned by the approved
@@ -13,6 +13,12 @@ linking pages (multi_model_other_page; no sibling bypass). The quoted identifier
 (text_layer, document scope, exact or model_only when only the base SKU is printed). Facts are
 single spanning cells (per-size / per-column cells are never read, see _docspec_tv), so they hold for every model the document names.
 Affirmative only; text layer only.
+
+r6 (docspec-attach-r3@2, router documents only; TV / laptop binding unchanged):
+  - only datasheet / spec_sheet documents are read for routers (user manuals and QSGs cover model families and are skipped);
+  - multi-model sheets bind row-scoped: when the document also names another catalogued same-brand entity (even one linked from the same
+    page, which @1 let through at document scope), a fact attaches only if its own row (docspec-router@2 `row`: the bullet item / cell
+    group it was read from) quotes this entity's identifier and no sibling's. Such claims carry identity_scope=row.
 """
 import hashlib, json, sys
 from collections import Counter
@@ -27,15 +33,18 @@ import _docspec_laptop as LP  # noqa: E402
 import docattach as DA  # noqa: E402
 import docspec_attach as DS  # noqa: E402
 
-TRANSFORM = "docspec-attach-r3@1"
+TRANSFORM = "docspec-attach-r3@2"
 SOURCE_ID = DA.SOURCE_ID
 KEYS = {
     "tvs": {"hdmi.count", "hdmi.earc", "hdmi.has_4k120", "hdmi.ports_4k120", "refresh.native_hz", "panel.backlight", "panel.lcd_type",
             "vrr.supported"},
-    "routers": {"wifi.generation", "wifi.band_count", "wifi.has_6ghz", "port.lan_count", "port.wan_speed_mbps"},
+    "routers": {"wifi.generation", "wifi.band_count", "wifi.has_6ghz", "port.lan_count", "port.wan_speed_mbps", "port.lan_max_mbps",
+                "hw.cpu_cores", "hw.cpu_ghz", "hw.soc_vendor"},
     "laptops": {"mem.soldered", "mem.slots", "mem.max", "pwr.max_pd_in"},
 }
 PARSERS = {"tvs": (TV, TV.tv), "routers": (RT, RT.router), "laptops": (LP, LP.laptop)}
+KINDS = {"routers": {"datasheet", "spec_sheet"}}          # r6: categories whose documents are read only for these kinds
+ROW_SCOPED = {"routers"}                                  # r6: multi-model sheets bind row-scoped
 
 
 def extractor(cat):
@@ -71,9 +80,9 @@ def parsed(d, sha, cat, fp):
     return res
 
 
-def claim(f, cat, dkind, url, ident, exact):
+def claim(f, cat, dkind, url, ident, exact, scope="document"):
     return {"key": f["key"], "status": "known", "kind": "official", "value": f["value"], "unit": None, "raw": f["raw"], "quote": f["quote"],
-            "conditions": {"document_kind": dkind, "identity": "text_layer", "identity_scope": "document",
+            "conditions": {"document_kind": dkind, "identity": "text_layer", "identity_scope": scope,
                            "identity_variant": "exact" if exact else "model_only"},
             "locator": {"pdf_page": f["page"], "document": url, "identifiers": ident},
             "method": {"stage": "pdf_text", "extractor": extractor(cat)}, "review": {"state": "candidate"}}
@@ -98,6 +107,9 @@ def apply(worlds, events, stats, root=None):
             st["r3_docs_not_fetched"] += 1
             continue
         for cat in cats:
+            if cat in KINDS and doc.get("kind") not in KINDS[cat]:
+                st[f"r3_kind_skipped:{cat}"] += 1
+                continue
             res = parsed(d, rec["snapshot"], cat, fp)
             if res is None:
                 st["r3_docs_not_extracted"] += 1
@@ -121,6 +133,19 @@ def apply(worlds, events, stats, root=None):
                     st["r3_proposal_multi_model"] += 1
                     continue
                 facts = [x for x in res["facts"] if x["key"] in KEYS[cat]]
+                scope = "document"
+                if cat in ROW_SCOPED:
+                    sibs = [o for o in w.ents if o is not e and o.brand == e.brand
+                            and any(not any(v in m or m in v for m in mine) for v in DS.named(o, text))]
+                    if sibs:                       # multi-model sheet: a fact binds only through its own row
+                        scope = "row"
+                        keep = []
+                        for x in facts:
+                            row = x.get("row") or x["quote"]
+                            if DS.named(e, row) and not any(v for o in sibs for v in DS.named(o, row) if not any(v in m or m in v for m in mine)):
+                                keep.append(x)
+                        st["r3_row_scoped_dropped"] += len(facts) - len(keep)
+                        facts = keep
                 if not facts:
                     continue
                 edges = 0
@@ -131,7 +156,7 @@ def apply(worlds, events, stats, root=None):
                     edges += 1
                     DA.add_document(e, doc, f["page_url"])
                     for x in facts:
-                        c = claim(x, cat, doc["kind"], doc["url"], mine, bool(set(mine) & set(DA.ident_values(e))))
+                        c = claim(x, cat, doc["kind"], doc["url"], mine, bool(set(mine) & set(DA.ident_values(e))), scope)
                         snap = DA.edge_source(e, doc, rec, c["locator"]["pdf_page"], f["page_url"])
                         c["locator"]["linked_from"] = f["page_url"]
                         c["observed_at"] = rec.get("fetched_at") or "1970-01-01T00:00:00Z"

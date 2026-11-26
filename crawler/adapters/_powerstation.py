@@ -11,6 +11,7 @@ claims and returns the rows it did not map (fingerprints.unmapped). Review-3 rul
   and Ah are distinct keys; Wh is never computed from Ah x V; two different Wh figures in one cell are unresolved;
 - every basis stays on the claim: cycle life carries retention_pct (none printed -> unresolved), recharge time charge_to_pct (none printed ->
   unresolved) and charger_w, UPS switchover backup_mode, solar voltage window voltage_basis, AC input ac_charge_mode.
+r6 (A2-dell 2026-11-25): a labelled UPS row with a bound ('\uff1c20ms', '\u226410ms', '<10ms', 'within 10 ms') publishes 'up to N', as prose does.
 r5 (A2-mon 2026-11-25): chemistry() reads 'LiFePO\u2084' (subscript 4); ups_prose() = the coordinator's UPS-prose ruling (see its docstring),
   the one exception to 'no UPS from prose'.
 """
@@ -21,6 +22,9 @@ import _powerbank as P  # noqa: E402
 
 U = P.Unresolved
 WRX = re.compile(r"(?<![\d.,])(\d{1,2},\d{3}(?:\.\d+)?|\d+(?:\.\d+)?)\s*(k?)W\b(?!h)", re.I)
+# r6 (A2-dell 2026-11-25): labelled UPS rows read the same bounds as the prose ruling: '<' / '\uff1c' (full-width) / '\u2264' / '&lt;' / 'under' /
+# 'within' / 'less than' / 'sub-' directly before the first 'N ms' -> 'up to N' (normalize.py qualifier up_to). A bare figure stays exact.
+UPS_ROW_MS = re.compile(r"(?:(<|\uff1c|\u2264|&lt;|\bsub-?|\bunder\s+|\bwithin\s+|\bless than\s+|\bin under\s+)\s*)?(?<![\d.])(\d+(?:\.\d+)?)\s*-?\s*ms\b", re.I)
 NEG = re.compile(r"\b(not|no|non|without|pending|in progress|applying|n/a)\b", re.I)
 
 
@@ -320,12 +324,12 @@ def emit_rows(pr, adapter, snap, model, rows, block):
                   {"retention_pct": int(ret[1])} if ret else None)
             continue
         if re.search(r"\bups\b|\beps\b|\baps\b|switch(over|ing)? time|power switching", l):
-            m = re.search(r"(\d+(?:\.\d+)?)\s*ms\b", v)
+            m = UPS_ROW_MS.search(v)
             both = l + " " + v
             mode = "eps" if re.search(r"\beps\b", both, re.I) and not re.search(r"\bups\b", both, re.I) else \
                 "aps" if re.search(r"\baps\b|automatic power switching", both, re.I) else "ups"
-            if m:
-                E("ups.switchover_ms", P.fnum(m[1]), v, lab, {"backup_mode": mode})
+            if m:     # r6: a bound before the figure ('<', '\uff1c', '\u2264', 'under', 'within', 'less than') = upper bound -> 'up to N'
+                E("ups.switchover_ms", f"up to {m[2]}" if m[1] else P.fnum(m[2]), v, lab, {"backup_mode": mode})
             if (m or re.fullmatch(r"(?i)yes\.?", v)) and not NEG.search(v):
                 E("ups.supported", True, v, lab, {"backup_mode": mode})
             continue
@@ -426,7 +430,7 @@ def emit_rows(pr, adapter, snap, model, rows, block):
 # 'within' / 'less than' -> the value is an upper bound: published as 'up to N' (normalize.py qualifier up_to). EPS-only sentences, 'auto-switch'
 # without UPS, 'power transition' and sentences with two different ms figures -> nothing.
 UPS_WORD = re.compile(r"\bUPS\b|switch-?over|switch(?:ing)? time", re.I)
-UPS_MS = re.compile(r"(?:(<|\u2264|&lt;|\bsub-?|\bunder\s+|\bwithin\s+|\bless than\s+|\bin under\s+)\s*)?(?<![\d.])(\d+(?:\.\d+)?)\s*-?\s*ms\b", re.I)
+UPS_MS = re.compile(r"(?:(<|\uff1c|\u2264|&lt;|\bsub-?|\bunder\s+|\bwithin\s+|\bless than\s+|\bin under\s+)\s*)?(?<![\d.])(\d+(?:\.\d+)?)\s*-?\s*ms\b", re.I)
 MODEL_TOKEN = re.compile(r"\b(?:[A-Z]{1,4}\d{2,5}[A-Z]{0,3}|(?:Explorer|HomePower|Elite|Premium|Yeti|DELTA|RIVER)\s\d{2,5}[A-Za-z]*)\b")
 
 
