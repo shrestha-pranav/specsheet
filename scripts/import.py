@@ -44,6 +44,7 @@ import xwalk as XW  # noqa: E402
 import docattach as DA  # noqa: E402
 import docspec_attach as DS  # noqa: E402
 import docspec_r3 as DS3  # noqa: E402
+import docspec_r7tv as DS7  # noqa: E402
 import imgattach as IA  # noqa: E402
 import hubattach as HA  # noqa: E402
 import corrections as CR  # noqa: E402
@@ -354,19 +355,61 @@ def do_apple(world, meta, sid, rec, pr, extra, stats):
 _CAPTOK = re.compile(r"(\d+(?:\.\d+)?)\s*(TB|GB)\b", re.I)
 
 
+def _own_cap(pr, sku):
+    return next((c.get("value") for c in pr["claims"] if c.get("key") == "gen.capacity" and (c.get("locator") or {}).get("sku") == sku
+                 and isinstance(c.get("value"), (int, float)) and c["value"] > 0), None)
+
+
+def _caps(text):
+    return {float(v) * (1000 if u.upper() == "TB" else 1) for v, u in _CAPTOK.findall(text)}
+
+
+def _skus_on_page(pr):
+    return {(c.get("locator") or {}).get("sku") for c in pr["claims"] if c.get("key") == "gen.capacity"} - {None} | \
+        {i["value"] for i in pr.get("identifiers") or [] if i.get("package_level") == "configuration" and i.get("scheme") == "mfr_sku"}
+
+
+def _names_sku(text, sku):
+    t, v = re.sub(r"[^A-Z0-9]", "", text.upper()), re.sub(r"[^A-Z0-9]", "", str(sku).upper())
+    return len(v) >= 5 and v in t
+
+
 def own_alias(pr, sku):
     """a2 r5: a configuration is named from its OWN marketing alias, never the model's first one (team-tm8fgq512g0c129 was '... 4TB').
-    Aliases carry no sku, so bind by the configuration's own gen.capacity claim: the first marketing_name stating exactly one GB/TB
-    capacity equal to it (+-3%). No capacity claim, or no alias stating it -> None (the caller keeps the model's name, as before)."""
-    cap = next((c.get("value") for c in pr["claims"] if c.get("key") == "gen.capacity" and (c.get("locator") or {}).get("sku") == sku
-                and isinstance(c.get("value"), (int, float)) and c["value"] > 0), None)
+    review-8: the alias must be identity-bound. (1) An alias naming this SKU (or carrying sku = it) binds; one naming another SKU of the page
+    never does. (2) Otherwise bind by the configuration's own gen.capacity claim (the first marketing_name stating exactly one GB/TB capacity
+    equal to it, +-3%) ONLY when no other configuration of the page has that capacity: equal-capacity siblings (heatsink / colour variants)
+    are indistinguishable by capacity, so they get None. No capacity claim, or no alias stating it -> None (caller: neutral_name())."""
+    others = _skus_on_page(pr) - {sku}
+    mk = [a for a in pr["aliases"] if a["kind"] == "marketing_name"]
+    for a in mk:
+        if (a.get("sku") or (a.get("locator") or {}).get("sku")) == sku or _names_sku(a["text"], sku) and not any(_names_sku(a["text"], o) for o in others):
+            return a["text"]
+    cap = _own_cap(pr, sku)
     if cap is None:
         return None
-    for a in pr["aliases"]:
-        toks = {float(v) * (1000 if u.upper() == "TB" else 1) for v, u in _CAPTOK.findall(a["text"])} if a["kind"] == "marketing_name" else ()
+    if any((oc := _own_cap(pr, o)) is not None and abs(oc - cap) / cap <= 0.03 for o in others):
+        return None                                     # equal-capacity sibling on the page: capacity does not identify this configuration
+    for a in mk:
+        if a.get("sku") or (a.get("locator") or {}).get("sku") or any(_names_sku(a["text"], o) for o in others):
+            continue                                    # bound to (or naming) another configuration
+        toks = _caps(a["text"])
         if len(toks) == 1 and abs(next(iter(toks)) - cap) / cap <= 0.03:
             return a["text"]
     return None
+
+
+def neutral_name(name, pr, sku):
+    """review-8: the fallback name (the parent model's / page title) of a configuration on a page with capacity claims must not state another
+    capacity: kept when every GB/TB figure in it equals the configuration's own gen.capacity (+-3%), else those figures are removed."""
+    if not name or not any(c.get("key") == "gen.capacity" for c in pr["claims"]):
+        return name
+    toks, cap = _caps(name), _own_cap(pr, sku)
+    if not toks or (cap is not None and all(abs(t - cap) / cap <= 0.03 for t in toks)):
+        return name
+    out = re.sub(r"\s*[-,/|(]?\s*\b\d+(?:\.\d+)?\s*(?:TB|GB)\b\s*\)?", " ", name, flags=re.I)
+    out = re.sub(r"\s{2,}", " ", out).strip(" -,/|")
+    return out or name
 
 
 def do_generic(world, meta, sid, rec, pr, extra, stats):
@@ -402,7 +445,7 @@ def do_generic(world, meta, sid, rec, pr, extra, stats):
                 last = None
                 continue
             par = models.get(i.get("parent")) or (next(iter(models.values())) if len(models) == 1 else None)
-            e.idhint = e.idhint or f"{brand}-{slug(i['value'])}"; e.name = e.name or own_alias(pr, i["value"]) or (par.name if par else title); e.lifecycle = "current"
+            e.idhint = e.idhint or f"{brand}-{slug(i['value'])}"; e.name = e.name or own_alias(pr, i["value"]) or neutral_name(par.name if par else title, pr, i["value"]); e.lifecycle = "current"
             link(e, "configuration_of", par, f"adapter:{sid}"); e.family = e.family or (par.family if par else None)
             add_ident(e, i, role="key", level="configuration"); add_src(e, pr, rec)
             configs[i["value"]] = last = e
@@ -914,7 +957,8 @@ def main():
     locked_new, policy_lock_digest = dec.check_lock(write=not (bool(a.source) or a.no_mint))
     parsers = {sid: registry.parser_info(sid) for sid, m in registry.SOURCES.items()}
     current_fp = {v["parser"]: v["fingerprint"] for v in parsers.values() if v["parser"]}
-    current_fp.update({B.TRANSFORM: B.fingerprint(), TC.TRANSFORM: TC.fingerprint(), XW.TRANSFORM: XW.fingerprint(), DA.TRANSFORM: DA.fingerprint(), DS.TRANSFORM: DS.fingerprint(), DS3.TRANSFORM: DS3.fingerprint(), IA.TRANSFORM: IA.fingerprint(), HA.TRANSFORM: HA.fingerprint()})     # r7: shared transforms are pinned like parsers
+    current_fp.update({B.TRANSFORM: B.fingerprint(), TC.TRANSFORM: TC.fingerprint(), XW.TRANSFORM: XW.fingerprint(), DA.TRANSFORM: DA.fingerprint(), DS.TRANSFORM: DS.fingerprint(), DS3.TRANSFORM: DS3.fingerprint(), DS7.TRANSFORM: DS7.fingerprint(), IA.TRANSFORM: IA.fingerprint(), HA.TRANSFORM: HA.fingerprint()})     # r7: shared transforms are pinned like parsers
+    current_fp.update(registry.supplement_parsers())       # r7: legacy-store supplement extractors (crawlpy_strips_belkin) pinned like parsers
     current_fp[PSPLIT] = "sha256:" + hashlib.sha256(Path(_lcell.__file__).read_bytes()).hexdigest()[:20]       # psref-split cell parser, pinned like a parser
     drift = dec.parser_drift(current_fp)
     for pid, ex, old, new in drift:
@@ -978,6 +1022,7 @@ def main():
     doc_stats = DA.apply(worlds, events, {})        # document pipeline: linked manuals/datasheets -> claims on the linking page's entity (scripts/docattach.py)
     DS.apply(worlds, events, doc_stats)            # r2: SSD datasheet rows (scripts/docspec_attach.py, separate transform: docattach@1 stays pinned)
     DS3.apply(worlds, events, doc_stats)           # r3: TV / router / laptop spec-sheet rows (scripts/docspec_r3.py; docspec-attach@2 stays pinned)
+    DS7.apply(worlds, events, doc_stats)           # r7: TV per-port HDMI rates from quick start guides (scripts/docspec_r7tv.py; r3@2 stays pinned)
     IA.apply(worlds, events, doc_stats)            # maker spec images (OCR) -> claims on the linking page's entity (scripts/imgattach.py)
     HA.apply(worlds, events, doc_stats)            # kind: hub pages (data/document-hubs.yaml) -> bound only by the document's own text (scripts/hubattach.py)
     ignored_rows = []

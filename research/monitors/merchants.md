@@ -59,3 +59,25 @@ Role: retailer data = aliases, MPN candidates, prices, availability; never prima
   cross-checked against 'Interface/Port Details'. 'Standard Refresh Rate' can be the overclock rate (AW2524HF 500 Hz vs 480 Hz preset).
 - Flicker: 43 of 89 pages print 'Flicker Free: Yes' or a 'Flicker-free' Features item; AW2726DL prints 'Flicker Free: No' (not read as PWM);
   the rest are silent (S/SE/U lines mostly). Dell datasheets/user guides (www.delltechnologies.com, crawl agent) are the next flicker source.
+
+## Dell monitor documents, A3-docs r7 (2026-11-25; crawler UA, 1 req/s, 7 GETs): no usable source, nothing fetched into raw/
+- Stored dell-us-monitors pages (89) link exactly one product PDF (U3824DW, www.delltechnologies.com/asset/.../technical-support/...pdf).
+- **www.delltechnologies.com: blocked** (403 to the crawler UA on that /asset/ PDF; robots allows /asset/). Not retried, not worked around.
+- **www.dell.com/support/... : blocked** (403 on /support/home/.../product-support/product/<slug>/docs and /support/product-details/.../resources/manuals).
+- **dl.dell.com** (Dell manual CDN, not in source-policy): robots = `Allow: /manuals`, `Allow: /topicspdf`, `Disallow: /`. Current user guides live
+  under /content/manualNNN-... (disallowed). The allowed /manuals/.../esuprt_electronics_accessories_monitors/ index (7603 links) has only
+  legacy models: of the 41 Dell rows without flk.pwm only P1917S appears, and its guide is a 5-model family guide (P1917S/P2017H/P2217...) whose
+  only flicker line is shared prose ("flicker-free screen and ComfortView"): binds nobody under row scope. source-policy not edited.
+- **i.dell.com**: search finds only JP datasheets of older models and catalogs (marketing, skipped). No current US monitor datasheets.
+- Third-party mirrors (gzhls.at, manualslib, manua.ls) are not maker sources: not used.
+
+## TÜV Rheinland Certipedia, A2-tuv r7 (2026-11-26; crawler UA, >=10 s apart, 4 GETs): blocked, nothing fetched into raw/
+- **www.certipedia.com: blocked to the crawler.** robots.txt and /quality_marks/1111269412 both return `503 Service Unavailable`
+  ("No server is available to handle this request") to the honest crawler UA from roxy, 4 times over ~6 min (00:22-00:28).
+  In the same window a third-party fetcher reached the site, so this is a refusal of our client (UA or IP), not an outage. Not worked around.
+- robots (read via that fetcher): `Crawl-delay: 10`; disallows /search (with and without query strings), product/system/person search
+  results and /fs-products/certificates/getProdAppCategories/. /quality_marks/<ID> pages are allowed. Terms: the footer links only
+  tuv.com imprint + privacy pages, which render no readable text; nothing found that bars or allows automated access.
+- Discovery works without /search: web search returns /quality_marks/<10-digit ID> pages per model (e.g. 1111269412 = DELL "Display Unit
+  U2724D, U2724Db", Flicker Free mark; 1111276213 = Eye Comfort 3.0 U2724D/U2724Dt). /keywords/1830 is the "Flicker Free" mark definition.
+  These were seen as search snippets only: not verified, not stored, not used.

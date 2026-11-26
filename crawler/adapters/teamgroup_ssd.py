@@ -17,6 +17,11 @@ v3 (2026-11-24): NAND type, controller (vendor) and HMB from explicit page-prose
            the table is silent; 'DRAM Cache: NO' + a stated HMB = dramless_hmb.
 v4 (coverage r3): version bump for _ssdprose.py: a bare 'DRAM-less' sentence about the drive (no HMB in it) = hw.dram_type `dramless`
            (HMB unstated, hw.hmb_support left unknown). Nothing else changed.
+v6 (A2-st r7, 2026-11-26): hw.nand_type from an intro paragraph (div.prIntro) read on its own, only when the whole-page prose pass found
+           no NAND statement and no NAND conflict. The page pass misses it when the paragraph runs on from the nav text with no sentence
+           break (a > 600-char 'sentence' is skipped): CARDEA Z44Q 'adopts QLC Flash', Z44A7Q 'The product adopts 3D QLC NAND'. The same
+           _ssdprose rules apply per paragraph (hedges, comparisons, two models = nothing); two different values across paragraphs = nothing.
+           Only hw.nand_type is taken from this pass; every other claim is byte-identical to v5.
 """
 import gzip, re, sys, time
 from pathlib import Path
@@ -27,7 +32,8 @@ import _lt as L
 import _ssdprose as SP
 import _run
 
-ID, VERSION, SOURCE = "teamgroup_ssd", 5, "teamgroup-us-ssd"
+INTRO = re.compile(r'<div class="prIntro">(.*?)</div>', re.S)
+ID, VERSION, SOURCE = "teamgroup_ssd", 6, "teamgroup-us-ssd"
 CATEGORIES = {"ssds"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.teamgroupinc.com"
@@ -110,6 +116,19 @@ def parse_html(snap, h):
     series = snap.ref.key
     unmapped = {}
     prose = SP.extract(h)
+    if "hw.nand_type" not in prose["claims"] and "hw.nand_type" not in prose["conflicts"]:       # v6: per intro paragraph
+        got = {}
+        for block in INTRO.findall(h):
+            r = SP.extract(block)
+            if "hw.nand_type" in r["conflicts"]:
+                got = {"conflict": None, "x": None}
+                break
+            if "hw.nand_type" in r["claims"]:
+                v, q = r["claims"]["hw.nand_type"]
+                got.setdefault(v, q)
+        if len(got) == 1:
+            (v, q), = got.items()
+            prose["claims"]["hw.nand_type"] = (v, q)
     for cells in rows:
         R = dict(zip(heads, cells))
         part = R.get("TEAM P/N") or R.get("P/N") or ""

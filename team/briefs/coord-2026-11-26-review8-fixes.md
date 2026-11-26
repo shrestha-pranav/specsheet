@@ -1,0 +1,8 @@
+# Brief: Codex review-8 fixes. Owner: A3-fix. Read common.md and reviews/2026-11-26-astra-review-8.md (all findings, with exit criteria). Fix all, each with the review's exit-criteria fixtures:
+1. P1 build_r2.py:110 alternatives from ungated index -> derive alt only from policy-gated records; restricted-only alternative must not appear or change free membership/counts/statuses. Check static docs/api index 'x'/alt path too (scripts/build.py, v1_publish) for the same leak.
+2. P1 imgattach.py:102 single-SKU inheritance must apply variant/region/shared vetoes first (re-pin claim/spec-image-power-pdo -> @2 pending).
+3. P1 _powerstation.py:450/454 UPS: "up to N" keeps up_to, ranges never become an endpoint (emit nothing or a range if schema supports), exact-model identity for prose (no "Explorer 1000 Plus" for "Explorer 1000"). Reissue station policies @N+1; report changed claims.
+4. verdict.ts null endpoints + key-order parity fixtures (match Python).
+5. import.py:365/405 naming: identity-bound alias selection or capacity-neutral fallback; report names changed.
+Files: scripts/build_r2.py, scripts/build.py/v1_publish only if leak found, scripts/imgattach.py, crawler/adapters/_powerstation.py + station adapters' versions, api-worker/src/verdict.ts + tests, scripts/import.py naming functions, policies.yaml. Parallel agents: A2-pb (surge adapters, source-policy.yaml), A2-st (SSD/TV adapters). Avoid their files.
+Do not run release.sh; finish with bare import.py --strict-parsers + build.py under flock rc 0, api-worker npm test. Report team/reports/2026-11-26-a3-review8-fixes.md (<=35 lines).

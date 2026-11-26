@@ -51,6 +51,23 @@ def known_values(rec):
     return out
 
 
+def gated_alts(rec):
+    """D10 disagreeing alternatives {key: [values]} of a policy-GATED record (review-8 P1): same selection as v1_publish row_of x[k].alt
+    (known headline; alternative of another kind with a different value), but taken from rec["specs"][k]["alternatives"] after
+    pol.gate() dropped every alternative whose sources the tier disallows. The docs index x[*].alt is never read: a restricted-only
+    alternative must not reach the pack, where it would flip Worker verdicts (disagree vs no) and leak through counts/statuses."""
+    out, kv = {}, known_values(rec)   # only keys the row's v carries (the Worker reads a[k] beside v[k])
+    for key in kv:
+        sp = rec["specs"][key]
+        pk = sp.get("kind") or "official"
+        hv = json.dumps(sp["value"], sort_keys=True)
+        vs = [a["value"] for a in sp.get("alternatives") or [] if a.get("sources") and a.get("kind") != pk
+              and json.dumps(a.get("value"), sort_keys=True) != hv]
+        if vs:
+            out[key] = vs
+    return out
+
+
 def crowd_keys(rec):
     """D9.2: values that came through the corrections flow (a crowd source, or a page cited by a correction issue) -> {key: {kind, tier:
     crowd, source_tier}}, so /v1/changes marks every crowd-sourced change with its kind."""
@@ -107,7 +124,7 @@ def build_category(cat, docs, pol, tier, out, shard_hex=2):
         st = {k: sp["status"] for k, sp in rec["specs"].items() if sp.get("status") in ROW_STATUSES}
         if st:
             rows[-1]["s"] = st  # Worker per-filter status (conflicted / not_applicable); absent key = unknown
-        alts = {k: [a["v"] for a in x["alt"]] for k, x in (b.get("x") or {}).items() if (x or {}).get("alt")}
+        alts = gated_alts(rec)  # review-8 P1: from the policy-gated record only, never the docs index x[*].alt
         if alts:
             rows[-1]["a"] = alts  # D10 disagreeing alternatives: the Worker reports "disagree" when they fall on the other side of a filter
     schema_meta = write_schema(cat, docs, rows, out)

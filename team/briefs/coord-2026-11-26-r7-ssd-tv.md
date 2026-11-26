@@ -1,0 +1,5 @@
+# Brief: r7 SSD NAND type + TV 4K120 port counts. Owner: A2-st. Read common.md, product/demand-r6.md, research/ssds/, research/tvs/.
+1. SSD hw.nand_type (TLC/QLC/MLC) fill ~40%: maker pages/datasheets already stored (Samsung datasheets, SanDisk/WD datasheets, Kingston datasheets, TEAMGROUP pages, Crucial if stored). Explicit "TLC"/"QLC"/"3D NAND TLC" for that SKU or family-listed configs only. "3D NAND" alone => nothing. Never infer from controller or series.
+2. TV hdmi.ports_4k120 (72% -> gate 80% for future tv-4-hdmi-4k120 >= 4 gate): maker spec rows naming HDMI 2.1 / 4K120 per port (e.g. "HDMI 2.1 x4", "4K 120Hz on HDMI 3/4"). Count only ports stated; "HDMI 2.1 features" without port count => nothing.
+Use stored raw first; new fetches only on listed crawl: agent domains. Do not edit data/source-policy.yaml (A2-pb may request; none this round). New/reissued extractors pending @N, retire old verbatim, re-pin moved fingerprints. Do not run release.sh; finish with bare import.py --strict-parsers + build.py under flock rc 0.
+Report: team/reports/2026-11-26-a2-r7-ssd-tv.md (<=35 lines), fill before/after.

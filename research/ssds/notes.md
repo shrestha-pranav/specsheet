@@ -84,3 +84,13 @@ label date code, NAND part). Official sources rarely carry these; reviewers/tear
 - Kingston: the NV3 product page / press release say "DRAM-less ... Host Memory Buffer", but www.kingston.com HTML returns 403 (Cloudflare) to
   the crawler (press article 74018 checked once). Datasheets (reachable) print no DRAM row. Route: human-cited E2 maker URL via corrections.
 - TEAMGROUP M200 / PD40 / Thunderbolt 3: the DRAM Cache column prints "N/A" = no statement.
+
+## SSD NAND type from maker publications (A2-st r7, 2026-11-26; brief coord-2026-11-26-r7-ssd-tv)
+- No new fetches: stored datasheets and pages only. Explicit TLC / QLC / MLC for the SKU's own table only; "3D NAND" / "V-NAND" alone = nothing.
+- samsung_datasheets@2: "NAND Flash Memory" row, one spanning cell ("V-NAND TLC", "3bit MLC" = tlc, "4bit MLC" = qlc, "2bit MLC" = mlc).
+- sandisk_datasheets@2: NAND / NAND TYPE row bound per table to its own MODEL NUMBERS (SN3000: QLC 1-2 TB, TLC 500 GB table). SN5000 prints
+  TLC | QLC per capacity column (nothing); PC SN5000S / SN5100S / SN8000S / SN7100S / SN850X sheets print no MODEL NUMBERS row (nothing binds).
+- teamgroup_ssd@6: intro paragraph read alone when the page pass found nothing (Z44Q, Z44A7Q). Lead not used: VULCAN Z QLC (SATA) says QLC
+  only in its product name and meta description; the body prose never states it.
+- Still silent anywhere we may fetch: TEAMGROUP G50 / G70 / MP33 / MP44 / GE PRO / NV5000 / NV10000 etc., Kingston NV1/NV2/NV3 ("3D"),
+  WD SN700 / SN350 / SN810 / SN850P, SanDisk SSD Plus NVMe, Samsung 990 (MZ-V9V, no datasheet), portables.

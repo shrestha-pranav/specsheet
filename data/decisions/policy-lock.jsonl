@@ -124,3 +124,14 @@
 {"at": "2026-11-25T23:38:18Z", "id": "claim/document-spec-r3@2", "sha256": "sha256:b5364de5c490236ca3628d648fee3aacb611f62a5197ac4525cd7c179f1fdde1"}
 {"at": "2026-11-25T23:38:18Z", "id": "rel/bundle-contents@7", "sha256": "sha256:a654485487a891765756b30761fe32bed7d326c55d503c6059709c6b6cab9c6f"}
 {"at": "2026-11-25T23:45:49Z", "id": "claim/mfr-monitor-dell@2", "sha256": "sha256:6927efc6435ed77f15486426c51ee1594d960e844ce8c08cca16600120e80546"}
+{"at": "2026-11-26T08:35:28Z", "id": "claim/mfr-power-banks-structured@8", "sha256": "sha256:4b37268895d26515d529cca1404e3b95e86cb1e4ced6b09789582641b0cd6d01"}
+{"at": "2026-11-26T08:35:28Z", "id": "claim/derive-samsung-sfc2-pps@1", "sha256": "sha256:76ee292f64f3a3a76a30ba34a2bc24d02b771c7c88550812b8c7fa4c945a768b"}
+{"at": "2026-11-26T08:48:29Z", "id": "claim/mfr-ssd-structured@7", "sha256": "sha256:4e918e9f2360113759f81d4878ccdff0678303179404a42d0183a9fa805aae9f"}
+{"at": "2026-11-26T08:48:29Z", "id": "claim/mfr-strips-belkin-printed@1", "sha256": "sha256:c021e231c04a51d3030cd222a47883a8db76b51fbbb38cf0208a4a3a9ef284ca"}
+{"at": "2026-11-26T08:48:29Z", "id": "claim/mfr-ssd-sandisk-datasheet@3", "sha256": "sha256:71da547608e13c0b6c8a74f72b873a4f6e116af15011672dd88adbc7c9555f26"}
+{"at": "2026-11-26T08:48:29Z", "id": "claim/mfr-ssd-samsung-datasheet@2", "sha256": "sha256:696d3336c1cfb4e1fcaa710dbdb7945bd0e49ba625352bbb48a366d59316b8aa"}
+{"at": "2026-11-26T08:48:29Z", "id": "claim/document-tv-ports@1", "sha256": "sha256:513e014d3834b0dc5cc908606f8bcfd27e3f5f35e942f0596c800268af4ce04c"}
+{"at": "2026-11-26T08:48:29Z", "id": "rel/source-stated-hierarchy@11", "sha256": "sha256:0f2771be7b244d51235fed42f24ccf6903d2316beb3b16db22bd76fb61037e20"}
+{"at": "2026-11-26T08:51:11Z", "id": "claim/mfr-power-stations-structured@8", "sha256": "sha256:2475e9f790f51ef3ebae3446a01a9f3b8d2ad2fdcb10fb9008af36e75ba87288"}
+{"at": "2026-11-26T08:51:11Z", "id": "claim/spec-image-power-pdo@2", "sha256": "sha256:f395ecc79040ccfbeb1c5843dc81ff287e4b9325f4f2ec948d0705bf35a76f8e"}
+{"at": "2026-11-26T08:51:11Z", "id": "rel/bundle-contents@8", "sha256": "sha256:9eb5907b4649740d120f868e321409776694fce05170d3223e4f6b3b1fbeaac2"}

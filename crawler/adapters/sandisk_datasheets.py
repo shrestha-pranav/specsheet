@@ -16,6 +16,12 @@ parse    : pure over `pdftotext -layout`. The PRODUCT SPECIFICATIONS table: 'MOD
            Model Number or orderable SKU (equal, or one is the other plus a '-suffix'); no match or two matches = nothing.
 Traps    : a datasheet without a DRAM row (SN850X, SN770M, SN5100, SN3000) is silence, never DRAM-less. Only hw.dram_type is read here; NAND,
            speeds and the rest stay with the line page (one source per fact, no double counting).
+v2 (A2-st r7, 2026-11-26): + hw.nand_type. A 'NAND' / 'NAND TYPE' row whose value is ONE cell spanning every column (no 3+ space gap)
+           and names exactly one cell type (TLC / QLC / MLC; 'SANDISK® BiCS6 QLC 3D NAND' = qlc, 'TLC 3D CBA NAND' = tlc). Bound per table:
+           the row applies only to the model numbers of the MODEL NUMBERS row above it in the same table (a datasheet with two tables,
+           WD Green SN3000 QLC 1-2 TB vs TLC 500 GB, binds each table to its own models); a table with two NAND rows reads nothing.
+           '3D NAND' alone ('SANDISK® 3D NAND', WD Green SATA, SSD Plus), per-capacity cells (WD Blue SN5000 TLC | QLC) and prose
+           ('NAND type may vary by model') write nothing. Never from the series, the controller or the line page. DRAM unchanged from v1.
 """
 import gzip, json, re, subprocess, sys, time
 from pathlib import Path
@@ -26,7 +32,7 @@ import _ssd as S
 import _lt as L
 import _run
 
-ID, VERSION, SOURCE = "sandisk_datasheets", 1, "sandisk-us-ssd-datasheets"
+ID, VERSION, SOURCE = "sandisk_datasheets", 2, "sandisk-us-ssd-datasheets"
 CATEGORIES = {"ssds"}
 ADAPTER = f"{ID}@{VERSION}"
 PAGES = "sandisk-us-ssd"
@@ -55,6 +61,34 @@ def spec_table(txt):
         if m and cell is None:
             cell = m[1] if not re.search(r"\S\s{3,}\S", m[1]) else ""     # several values across columns = per-capacity: not read
     return list(dict.fromkeys(mns)), cell
+
+
+NAND_ROW = re.compile(r"^\s*NAND(?:\s+TYPE)?\d*\s{2,}(\S.*?)\s*$", re.I)
+MN_ROW = re.compile(r"^\s*MODEL NUMBERS?\b", re.I)
+TYPES = re.compile(r"\b(?:TLC|QLC|SLC|MLC)\b", re.I)
+
+
+def nand_value(cell):
+    if not cell or re.search(r"\S\s{3,}\S", cell):          # several values across columns = per-capacity: not read
+        return None
+    kinds = {t.upper() for t in TYPES.findall(cell)}
+    return S.nand_type(cell) if len(kinds) == 1 and kinds != {"SLC"} else None
+
+
+def nand_tables(txt):
+    """-> [(model numbers, NAND row literal, hw.nand_type)] per spec table: each MODEL NUMBERS row opens a table that runs to the next one."""
+    lines, out, cur = txt.splitlines(), [], None
+    for i, ln in enumerate(lines):
+        if MN_ROW.match(ln):
+            mns = MN.findall(ln)
+            for nxt in lines[i + 1:i + 3]:            # wrapped model-number row (same continuation rule as spec_table)
+                if nxt.strip() and not re.match(r"^\s*[A-Z][A-Za-z ]{3,}\s{2,}", nxt) and MN.search(nxt):
+                    mns += MN.findall(nxt)
+            cur = {"mns": list(dict.fromkeys(mns)), "rows": []}
+            out.append(cur)
+        elif cur is not None and (m := NAND_ROW.match(ln)):
+            cur["rows"].append((ln.strip(), m[1]))
+    return [(t["mns"], t["rows"][0][0], nand_value(t["rows"][0][1])) for t in out if len(t["rows"]) == 1]
 
 
 def dram_value(cell):
@@ -96,7 +130,16 @@ def parse_text(snap, txt):
         pr.identifiers.append(L.ident("mfr_sku", part, "configuration", "western digital"))
         if v:
             S.add(pr, ADAPTER, snap, "hw.dram_type", v, f"MODEL NUMBERS: {' '.join(mns)} | DRAM: {cell}", "sku", part, "DRAM (datasheet spec table)")
-    pr.fingerprints = {"raw": snap.snapshot, "line": line, "model_numbers": mns, "dram_cell": cell, "unmatched": unmatched}
+    nand_rows = []
+    for tmns, nraw, nv in nand_tables(txt):
+        nand_rows.append(nraw)
+        if not nv:
+            continue
+        for mn in tmns:
+            hit = match(mn, configs)
+            if hit and tied.get(hit[0]) == mn:
+                S.add(pr, ADAPTER, snap, "hw.nand_type", nv, f"MODEL NUMBERS: {' '.join(tmns)} | {nraw}", "sku", hit[0], "NAND (datasheet spec table)")
+    pr.fingerprints = {"raw": snap.snapshot, "line": line, "model_numbers": mns, "dram_cell": cell, "unmatched": unmatched, "nand_rows": nand_rows}
     return pr
 
 

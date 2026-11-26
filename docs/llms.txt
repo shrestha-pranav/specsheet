@@ -19,7 +19,7 @@
 - monitors: Monitors (4306 products)
 - power-banks: Power banks (168 products)
 - power-stations: Portable power stations (75 products)
-- power-strips: Power strips & surge protectors (538 products)
+- power-strips: Power strips & surge protectors (591 products)
 - robot-vacuums: Robot vacuums & mops (144 products)
 - routers: Wi-Fi routers & mesh (334 products)
 - ssds: SSDs (586 products)

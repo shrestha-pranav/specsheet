@@ -107,6 +107,44 @@ class Binding(_Img, unittest.TestCase):
         self.assertFalse(self.got(ents["A2667"]))
         self.assertEqual(st["image_unbound:names_other_model"], 1)
 
+    # review-8 P1: conflicting-identity vetoes apply BEFORE single-SKU inheritance (no exact claim from another configuration's image)
+    def _no_exact(self, ents, m="A2667"):
+        for c in self.got(ents[m]).values():
+            self.assertNotEqual(c["conditions"]["identity_variant"], "exact", c["key"])
+            self.assertEqual(c["method"]["extractor"], IA.EXTRACTOR_REVIEW, c["key"])
+
+    def test_ocr_variant_vetoes_single_sku_inheritance(self):
+        w, ents = self.world([("A2667", "a2667", {"skus": ["A2667111"]})])
+        card = [l.replace("A2667 Specs", "A2667113 Specs") for l in CARD]      # the image names another SKU of the base; empty file_models
+        self.images([("TD09_V1.jpg", ocr(card), [("a2667", ["A2667111"])])])
+        st, _ = self.run_img(w)
+        self.assertEqual(st["image_bound:single_sku_page"], 0)
+        self._no_exact(ents)
+
+    def test_ocr_variant_no_model_mention_stays_unbound(self):
+        w, ents = self.world([("A2667", "a2667", {"skus": ["A2667111"]})])
+        card = [l.replace("A2667 Specs", "Specs") for l in CARD] + ["Model A2667113"]
+        self.images([("TD09_V1.jpg", ocr(card), [("a2667", ["A2667111"])])])
+        st, _ = self.run_img(w)
+        self.assertEqual(st["image_bound:single_sku_page"], 0)
+        self._no_exact(ents)
+
+    def test_foreign_region_vetoes_single_sku_inheritance(self):
+        w, ents = self.world([("A2667", "a2667", {"skus": ["A2667111"]})])
+        card = [l.replace("A2667 Specs", "Specs") for l in CARD]
+        self.images([("TD09_UK_V1.jpg", ocr(card), [("a2667", ["A2667111"])])])
+        st, _ = self.run_img(w)
+        self.assertFalse(self.got(ents["A2667"]))
+        self.assertEqual(st["image_unbound:conflicting_variant_region_shared"], 1)
+
+    def test_shared_identifier_vetoes_exact(self):
+        w, ents = self.world([("A2667", "a2667", {"skus": ["A2667111"]}), ("A2668", "a2668", {"skus": ["A2667111"]})])
+        card = [l.replace("A2667 Specs", "A2667111 Specs") for l in CARD]
+        self.images([("TD09_V1.jpg", ocr(card), [("a2667", ["A2667111"])])])
+        st, _ = self.run_img(w)
+        self.assertEqual(st["image_bound:single_sku_page"], 0)
+        self._no_exact(ents)
+
 
 class ValueGate(_Img, unittest.TestCase):
     def test_low_conf_image_drops(self):
@@ -136,7 +174,7 @@ class ValueGate(_Img, unittest.TestCase):
 class Policy(unittest.TestCase):
     def test_pending_policy_allowlists(self):
         pol = yaml.safe_load((CODE / "data" / "decisions" / "policies.yaml").read_text())
-        p = next(x for x in pol["claim_policies"] if x["id"] == "claim/spec-image-power-pdo@1")
+        p = next(x for x in pol["claim_policies"] if x["id"] == "claim/spec-image-power-pdo@2")   # review-8 re-pin
         a = p["approval"]; self.assertIn(a["state"], ("pending", "approved")); self.assertTrue(a["state"] == "pending" or (a.get("by") and a.get("at")))
         self.assertEqual(p["match"]["extractors"], [IA.EXTRACTOR])
         self.assertEqual(p["match"]["source_ids"], [IA.SOURCE_ID])

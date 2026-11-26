@@ -38,3 +38,4 @@ Never run git stash/checkout/reset/restore in the shared working tree: parallel 
 Builds: run bare import.py/build.py as `flock /tmp/specsheet-release.lock <cmd>`. release.sh takes that lock itself, so NEVER wrap release.sh in flock (deadlock).
 Approvals: agents never fill approval.by/at. New policies land pending; the coordinator approves on the owner's standing authority (granted 2026-11-24) after review. Superseded versions move to retired_policies verbatim with a retired: {at, superseded_by, reason} line.
 Fixtures that look like secrets (tokens, keys) must carry an inline '# gitleaks:allow' comment; CI runs gitleaks on every push.
+When a site refuses our crawler (403/503/WAF), it is blocked for this round: do not reach it through any other fetcher (WebFetch, search-engine cache, third-party readers) — not even for robots.txt or terms.

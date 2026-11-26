@@ -99,11 +99,13 @@ conditions:
 - id: basis
   label: Value basis
   type: enum
-  enum: [complete_enumeration]
+  enum: [complete_enumeration, derived]
   description: 'A1 ruling 1 (coordinator, 2026-11-24): a negative (pd.pps false) is written ONLY when the maker''s own structured spec section
     prints a complete list for the unit (every output port with its protocol list) and none names the feature. The claim carries
     basis=complete_enumeration and keeps that list as raw. Prose, marketing bullets, partial tables, ''etc.'' lists, PDO-only lists and missing
-    rows never produce a negative.'
+    rows never produce a negative.
+    derived (r7 coordinator ruling, 2026-11-26): pd.pps true, kind derived, when the maker names Samsung Super Fast Charging 2.0 or
+    ''45W for Samsung'' for that SKU (SFC 2.0 is PPS by definition); never a PPS range (claim/derive-samsung-sfc2-pps@1).'
 groups:
 - id: general
   label: General & identity

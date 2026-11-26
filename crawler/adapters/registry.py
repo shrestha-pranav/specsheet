@@ -51,8 +51,8 @@ SOURCES = {
     "anker-us-powerbanks": {"brand": "anker", "brand_name": "Anker", "category": "power-banks", "module": "anker_powerbanks", "importer": "model"},
     "belkin-us-powerbanks": {"brand": "belkin", "brand_name": "Belkin", "category": "power-banks", "module": "belkin_powerbanks", "importer": "model"},
     "belkin-us-support": {"brand": "belkin", "brand_name": "Belkin", "category": "power-banks", "module": "belkin_support", "importer": "model"},
-    "iniu-us-powerbanks": {"brand": "iniu", "brand_name": "INIU", "category": "power-banks", "module": "shopify_powerbanks", "importer": "model"},
-    "cuktech-us-powerbanks": {"brand": "cuktech", "brand_name": "CUKTECH", "category": "power-banks", "module": "shopify_powerbanks", "importer": "model"},
+    "iniu-us-powerbanks": {"brand": "iniu", "brand_name": "INIU", "category": "power-banks", "module": "pb_pps_r7", "importer": "model"},
+    "cuktech-us-powerbanks": {"brand": "cuktech", "brand_name": "CUKTECH", "category": "power-banks", "module": "pb_pps_r7", "importer": "model"},
     "ugreen-us-powerbanks": {"brand": "ugreen", "brand_name": "UGREEN", "category": "power-banks", "module": "shopify_powerbanks", "importer": "model"},
     "ecoflow-us-powerbanks": {"brand": "ecoflow", "brand_name": "EcoFlow", "category": "power-banks", "module": "shopify_powerbanks2", "importer": "model"},
     "sharge-us-powerbanks": {"brand": "sharge", "brand_name": "SHARGE", "category": "power-banks", "module": "shopify_powerbanks2", "importer": "model"},
@@ -100,6 +100,19 @@ SOURCES = {
        for slug, name in (("anker", "Anker"), ("belkin", "Belkin"), ("ugreen", "UGREEN"), ("baseus", "Baseus"),
                           ("byjasco", "Jasco (GE / Philips)"), ("furman", "Furman"), ("austere", "Austere"))},
 }
+# r7 (A2-pb): legacy sources whose crawlpy_strips output is extended by a supplement module emitting claims under its own extractor tag.
+# crawlpy_strips itself stays byte-identical (its fingerprint is pinned by rel/source-stated-hierarchy@10); the supplement is pinned on its own.
+SOURCES["belkin"]["supplement"] = "crawlpy_strips_belkin"
+
+
+def supplement_parsers():
+    """-> {"id@ver": fingerprint} for every legacy supplement module (import.py adds these to the drift check)."""
+    out = {}
+    for meta in SOURCES.values():
+        if meta.get("supplement"):
+            mod = importlib.import_module(meta["supplement"])
+            out[f"{mod.ID}@{mod.VERSION}"] = parser_fingerprint(meta["supplement"])
+    return out
 
 # importer = which scripts/import.py handler reads the source: lenovo-psref | asus | apple | generic (model->configuration pages) | strip | model
 # (one page = one model, optional MTM packages, claims on the model). A new category adds its sources here (or, in fixture tests, in
@@ -237,7 +250,7 @@ def iter_observations(source_id, reparse=False, stats=None):
     meta = SOURCES[source_id]
     stats = stats if stats is not None else {}
     if meta.get("legacy"):
-        yield from importlib.import_module("crawlpy_strips").iter_legacy(source_id)
+        yield from importlib.import_module(meta.get("supplement") or "crawlpy_strips").iter_legacy(source_id)
         return
     store = C.BlobStore(source_id)
     try:

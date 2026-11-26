@@ -8,7 +8,7 @@
 // Enum keys compare exactly (enum values are canonical slugs, as in presets.py); text keys and top-level fields case-insensitively.
 // Unknown/conflicted/disagree reveal no licensed value, so they are reported on every tier.
 import { TOP, type Filter } from "./filters.ts";
-// Rows carry JSON-serialisable values only (index rows), so JSON equality is value equality (presets.py _same).
+// Rows carry JSON-serialisable values only (index rows), so canonical (sorted-key) JSON equality is value equality (presets.py _same).
 
 export type Verdict = "match" | "no" | "unknown" | "conflicted" | "disagree";
 export interface VRow { id: string; v: Record<string, unknown>; s?: Record<string, string>; a?: Record<string, unknown[]>; [k: string]: unknown }
@@ -23,9 +23,10 @@ function cmp1(actual: unknown, f: Filter, field?: FieldMeta): boolean {
   if (actual === null || actual === undefined) return false;
   if (typeof actual === "object") {
     // range values {min,max} (presets.py: min filter tests lo, max filter tests hi)
+    // presets.py float()s both endpoints: a null/absent/blank endpoint is "no" (Number(null) would be 0), never an open bound
     const o = actual as { min?: unknown; max?: unknown };
-    const lo = Number(o.min), hi = Number(o.max);
-    if (f.num === null || Number.isNaN(lo) || Number.isNaN(hi)) return false;
+    const lo = pyFloat(o.min), hi = pyFloat(o.max);
+    if (f.num === null || lo === null || hi === null) return false;
     switch (f.op) { case ">=": return lo >= f.num; case ">": return lo > f.num; case "<=": return hi <= f.num; case "<": return hi < f.num; default: return false; }
   }
   if (typeof actual === "boolean") {
@@ -51,7 +52,24 @@ function cmp1(actual: unknown, f: Filter, field?: FieldMeta): boolean {
   }
 }
 
-const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
+/** Python float(x) for a range endpoint: numbers, bools and numeric strings; null/undefined/blank/objects -> null (TypeError/ValueError). */
+function pyFloat(x: unknown): number | null {
+  if (typeof x === "number") return Number.isNaN(x) ? null : x;
+  if (typeof x === "boolean") return x ? 1 : 0;
+  if (typeof x === "string" && x.trim() !== "") { const n = Number(x.trim()); return Number.isNaN(n) ? null : n; }
+  return null;
+}
+
+/** json.dumps(x, sort_keys=True) equivalent: object key order is not significant (presets.py _same). */
+function canon(x: unknown): string {
+  if (Array.isArray(x)) return "[" + x.map(canon).join(",") + "]";
+  if (x !== null && typeof x === "object") {
+    const o = x as Record<string, unknown>;
+    return "{" + Object.keys(o).sort().map((k) => JSON.stringify(k) + ":" + canon(o[k])).join(",") + "}";
+  }
+  return JSON.stringify(x) ?? "null";
+}
+const same = (a: unknown, b: unknown) => canon(a) === canon(b);
 
 /** Verdict of one filter on one index row. Top-level fields (brand, name, ...) are always known: match or no. D10 alternatives (index `a`):
  *  headline matches and an alternative fails or differs -> disagree; headline fails and an alternative matches -> disagree; no headline:

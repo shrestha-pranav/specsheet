@@ -12,6 +12,8 @@ claims and returns the rows it did not map (fingerprints.unmapped). Review-3 rul
 - every basis stays on the claim: cycle life carries retention_pct (none printed -> unresolved), recharge time charge_to_pct (none printed ->
   unresolved) and charger_w, UPS switchover backup_mode, solar voltage window voltage_basis, AC input ac_charge_mode.
 r6 (A2-dell 2026-11-25): a labelled UPS row with a bound ('\uff1c20ms', '\u226410ms', '<10ms', 'within 10 ms') publishes 'up to N', as prose does.
+review-8 (A3-fix 2026-11-26): 'up to N ms' keeps up_to; a range or two different figures is unresolved (rows) / nothing (prose), never an
+  endpoint; prose model identity is exact (suffixed sibling 'Explorer 1000 Plus' copy writes nothing for 'Explorer 1000').
 r5 (A2-mon 2026-11-25): chemistry() reads 'LiFePO\u2084' (subscript 4); ups_prose() = the coordinator's UPS-prose ruling (see its docstring),
   the one exception to 'no UPS from prose'.
 """
@@ -24,7 +26,26 @@ U = P.Unresolved
 WRX = re.compile(r"(?<![\d.,])(\d{1,2},\d{3}(?:\.\d+)?|\d+(?:\.\d+)?)\s*(k?)W\b(?!h)", re.I)
 # r6 (A2-dell 2026-11-25): labelled UPS rows read the same bounds as the prose ruling: '<' / '\uff1c' (full-width) / '\u2264' / '&lt;' / 'under' /
 # 'within' / 'less than' / 'sub-' directly before the first 'N ms' -> 'up to N' (normalize.py qualifier up_to). A bare figure stays exact.
-UPS_ROW_MS = re.compile(r"(?:(<|\uff1c|\u2264|&lt;|\bsub-?|\bunder\s+|\bwithin\s+|\bless than\s+|\bin under\s+)\s*)?(?<![\d.])(\d+(?:\.\d+)?)\s*-?\s*ms\b", re.I)
+# review-8 (A3-fix 2026-11-26): 'up to' / '<=' / 'max' / 'no more than' / 'at most' are bounds too, and a range ('10-20 ms', '10 ms ~ 20 ms',
+# '10 to 20ms') never becomes an endpoint: ms_figure() is the one reader for rows and prose.
+UPS_BOUND = r"<=|<|\uff1c|\u2264|&lt;|\bsub-?|\bunder\s+|\bwithin\s+|\bless than\s+|\bin under\s+|\bup\s+to\s+|\bno (?:more|longer) than\s+|\bat most\s+|\bmax(?:imum)?\.?:?\s*"
+UPS_ROW_MS = re.compile(r"(?:(" + UPS_BOUND + r")\s*)?(?<![\d.])(\d+(?:\.\d+)?)\s*-?\s*ms\b", re.I)
+UPS_RANGE = re.compile(r"(?<![\d.])\d+(?:\.\d+)?\s*(?:-?\s*ms\s*)?(?:-|\u2013|\u2014|~|\uff5e|\bto\b)\s*\d+(?:\.\d+)?\s*-?\s*ms\b", re.I)
+
+
+def ms_figure(text, first=True):
+    """-> None (no 'N ms'), U(reason) (a range: never an endpoint), or the value: a number (stated exactly) or 'up to N' (an explicit upper
+    bound, normalize.py qualifier up_to). first=True (labelled rows, unchanged since r6): the row's first figure is the labelled mode's one
+    ('Backup UPS: <20ms, Online UPS: 0ms' -> up to 20); first=False (prose ruling r5): several different figures -> U."""
+    if UPS_RANGE.search(text):
+        return U("switchover printed as a range: no single figure (never an endpoint)")
+    ms = UPS_ROW_MS.findall(text)
+    if not ms:
+        return None
+    if not first and (len({P.fnum(n) for _, n in ms}) != 1 or len({bool(b) for b, _ in ms}) != 1):
+        return U("several different switchover figures printed")
+    b, n = ms[0]
+    return f"up to {n}" if b else P.fnum(n)
 NEG = re.compile(r"\b(not|no|non|without|pending|in progress|applying|n/a)\b", re.I)
 
 
@@ -324,13 +345,13 @@ def emit_rows(pr, adapter, snap, model, rows, block):
                   {"retention_pct": int(ret[1])} if ret else None)
             continue
         if re.search(r"\bups\b|\beps\b|\baps\b|switch(over|ing)? time|power switching", l):
-            m = UPS_ROW_MS.search(v)
+            m = ms_figure(v)
             both = l + " " + v
             mode = "eps" if re.search(r"\beps\b", both, re.I) and not re.search(r"\bups\b", both, re.I) else \
                 "aps" if re.search(r"\baps\b|automatic power switching", both, re.I) else "ups"
-            if m:     # r6: a bound before the figure ('<', '\uff1c', '\u2264', 'under', 'within', 'less than') = upper bound -> 'up to N'
-                E("ups.switchover_ms", f"up to {m[2]}" if m[1] else P.fnum(m[2]), v, lab, {"backup_mode": mode})
-            if (m or re.fullmatch(r"(?i)yes\.?", v)) and not NEG.search(v):
+            if m is not None:     # r6 + review-8: bound -> 'up to N'; a range -> unresolved, never an endpoint
+                E("ups.switchover_ms", m, v, lab, {"backup_mode": mode})
+            if (m is not None or re.fullmatch(r"(?i)yes\.?", v)) and not NEG.search(v):
                 E("ups.supported", True, v, lab, {"backup_mode": mode})
             continue
         if re.search(r"pass-?through", l):
@@ -430,8 +451,15 @@ def emit_rows(pr, adapter, snap, model, rows, block):
 # 'within' / 'less than' -> the value is an upper bound: published as 'up to N' (normalize.py qualifier up_to). EPS-only sentences, 'auto-switch'
 # without UPS, 'power transition' and sentences with two different ms figures -> nothing.
 UPS_WORD = re.compile(r"\bUPS\b|switch-?over|switch(?:ing)? time", re.I)
-UPS_MS = re.compile(r"(?:(<|\uff1c|\u2264|&lt;|\bsub-?|\bunder\s+|\bwithin\s+|\bless than\s+|\bin under\s+)\s*)?(?<![\d.])(\d+(?:\.\d+)?)\s*-?\s*ms\b", re.I)
-MODEL_TOKEN = re.compile(r"\b(?:[A-Z]{1,4}\d{2,5}[A-Z]{0,3}|(?:Explorer|HomePower|Elite|Premium|Yeti|DELTA|RIVER)\s\d{2,5}[A-Za-z]*)\b")
+UPS_MS = UPS_ROW_MS
+# review-8: a model token keeps its suffix words ('Explorer 1000 Plus', 'DELTA 3 Max', 'HomePower 3600 Pro', 'C1000X Gen 2'), so a sibling's
+# suffixed name is never read as the own base model; identity is exact token equality, never substring containment.
+MODEL_SUFFIX = r"(?:\s+(?i:plus|pro|max|ultra|mini|air|lite|elite|se|v\d+|gen\s?\d+))*"
+MODEL_TOKEN = re.compile(r"\b(?:[A-Z]{1,4}\d{2,5}[A-Z]{0,3}|(?:Explorer|HomePower|Elite|Premium|Yeti|DELTA|RIVER)\s\d{1,5}[A-Za-z]*)" + MODEL_SUFFIX + r"\b")
+
+
+def _ntok(t):
+    return re.sub(r"[^a-z0-9]", "", t.lower())
 
 
 def ups_prose(body_html, own_names=()):
@@ -441,21 +469,18 @@ def ups_prose(body_html, own_names=()):
     t = re.sub(r"(?is)<table.*?</table>|<script.*?</script>|<style.*?</style>", " ", body_html)
     t = re.sub(r"(?i)<br\s*/?>|</(?:p|li|h\d|div|ul)>|<li[^>]*>", "\n", t)
     t = html.unescape(re.sub(r"<[^>]+>", " ", t)).replace("\xa0", " ")
-    own = {re.sub(r"[^a-z0-9]", "", n.lower()) for n in own_names if n}
+    own = {_ntok(n) for n in own_names if n} | {_ntok(m) for n in own_names if n for m in MODEL_TOKEN.findall(n)}
     hits = {}
     for sent in (x for blk in t.split("\n") for x in re.split(r"(?<=[.!?])\s+(?=[A-Z])|\s*\u2022\s*", re.sub(r"\s+", " ", blk))):
         sent = sent.strip()
         if not sent or not UPS_WORD.search(sent) or re.search(r"\bEPS\b", sent) and not re.search(r"\bUPS\b", sent):
             continue
-        ms = UPS_MS.findall(sent)
-        if len({x[1] for x in ms}) != 1:
-            continue
-        others = {re.sub(r"[^a-z0-9]", "", m.lower()) for m in MODEL_TOKEN.findall(sent)} - own
-        if others and not any(o in n or n in o for o in others for n in own):
-            continue                                    # the sentence names another model: comparison copy, not this SKU's statement
-        bound, n = ms[0]
-        v = P.fnum(n)
-        hits.setdefault(f"up to {n}" if bound else v, sent[:300])
+        v = ms_figure(sent, first=False)
+        if v is None or isinstance(v, U):
+            continue                                    # no figure, a range or two figures: nothing (review-8: never an endpoint)
+        if {_ntok(m) for m in MODEL_TOKEN.findall(sent)} - own:
+            continue                                    # names another (or a suffixed sibling) model: comparison copy, not this SKU's statement
+        hits.setdefault(v, sent[:300])
     if len(hits) != 1:
         return None, None
     (v, sent), = hits.items()

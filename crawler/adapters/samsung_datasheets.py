@@ -16,6 +16,11 @@ parse    : pure over `pdftotext -layout`. ONE key, hw.dram_type. The '(DRAM) Cac
            dramless_hmb), so no column alignment is assumed. It applies to every model code printed in the document (MZ-xxxx, incl. /AM) whose
            normalised form equals a samsung-us-ssd configuration key; anything else writes nothing.
 Traps    : cells that differ (one HMB, one LPDDR4) = per-capacity, nothing read. No row = silence. Never inferred from the controller.
+v2 (A2-st r7, 2026-11-26): + hw.nand_type from the 'NAND Flash Memory' row, only when its value is ONE cell spanning the table (no 3+ space
+           gap inside it: per-capacity cells are never read) that names exactly one cell type: 'V-NAND TLC' / '3bit MLC' = tlc, '4bit MLC' / QLC
+           = qlc, '2bit MLC' / bare 'MLC' = mlc (_ssd.nand_type; the raw literal is kept). 'V-NAND' alone = nothing (bits per cell unstated);
+           a cell naming two types = nothing. Never from the series name, the controller or prose. Same model-code binding as DRAM; DRAM
+           claims byte-identical to v1.
 """
 import json, re, subprocess, sys, time
 from pathlib import Path
@@ -26,7 +31,7 @@ import _ssd as S
 import _lt as L
 import _run
 
-ID, VERSION, SOURCE = "samsung_datasheets", 1, "samsung-ssd-datasheets"
+ID, VERSION, SOURCE = "samsung_datasheets", 2, "samsung-ssd-datasheets"
 CATEGORIES = {"ssds"}
 ADAPTER = f"{ID}@{VERSION}"
 PAGES = "samsung-us-ssd"
@@ -37,6 +42,25 @@ INTERNAL = re.compile(r"nvme|ssd_8[5-7]0|ssd_9[56]0|ssd_750", re.I)
 SKIP = re.compile(r"portable|warranty|micro ?sd|sd_card|ufd|express", re.I)
 CODE = re.compile(r"\bMZ-[A-Z0-9]{6,}(?:/[A-Z]{2})?")
 ROW = re.compile(r"^\s*(?:(?:Hardware\s+)?Information\s{2,})?(?:DRAM\s+)?Cache\s+Memory\s{2,}(\S.*?)\s*$|^\s*DRAM\s{2,}(\S.*?)\s*$", re.I)
+
+
+NAND_ROW = re.compile(r"^\s*(?:Hardware(?:\s+Information)?\s{2,}|Information\s{2,})?NAND\s+Flash(?:\s+Memory)?\s{2,}(\S.*?)\s*$", re.I)
+TYPES = re.compile(r"\b(?:TLC|QLC|SLC|MLC)\b|\b[234][- ]?bit\b", re.I)
+
+
+def nand_cell(txt):
+    """-> (row literal, hw.nand_type or None) of the first 'NAND Flash Memory' row. One spanning cell, exactly one cell type named."""
+    for ln in txt.splitlines():
+        m = NAND_ROW.match(ln)
+        if m:
+            cell = m[1]
+            if re.search(r"\S\s{3,}\S", cell):              # several cells across columns = per-capacity: not read
+                return ln.strip(), None
+            kinds = {S.nand_type(t) for t in TYPES.findall(cell)}
+            if re.search(r"\b[234][- ]?bit\s+MLC\b", cell, re.I):     # Samsung 'N-bit MLC' is ONE statement (bits per cell), not 'MLC' + N
+                kinds = {S.nand_type(cell)}
+            return ln.strip(), (kinds.pop() if len(kinds) == 1 and None not in kinds else None)
+    return None, None
 
 
 def norm(s):
@@ -68,15 +92,18 @@ def parse_text(snap, txt):
     known = set((snap.ref.hints or {}).get("configs") or [])
     raw, cells = dram_cells(txt)
     v = dram_value(cells)
+    nraw, nv = nand_cell(txt)
     codes = list(dict.fromkeys(CODE.findall(txt)))
     tied = [c for c in codes if norm(c) in known]
     for code in tied:
         pr.identifiers.append(L.ident("mfr_sku", code, "configuration", "samsung"))
         if v:
             S.add(pr, ADAPTER, snap, "hw.dram_type", v, raw, "sku", code, "DRAM cache (datasheet spec table)")
+        if nv:
+            S.add(pr, ADAPTER, snap, "hw.nand_type", nv, nraw, "sku", code, "NAND flash memory (datasheet spec table)")
     if not tied:
         pr.absences.append({"key": "*", "reason": "no model code tied to a samsung-us-ssd configuration", "source": "s1"})
-    pr.fingerprints = {"raw": snap.snapshot, "row": raw, "cells": cells, "codes": codes, "tied": tied}
+    pr.fingerprints = {"raw": snap.snapshot, "row": raw, "cells": cells, "codes": codes, "tied": tied, "nand_row": nraw}
     return pr
 
 

@@ -270,7 +270,8 @@ def stamp_build():
     html = _re.sub(r'href="styles\.css(\?v=[0-9a-f]+)?"', f'href="styles.css?v={build}"', html)
     html = _re.sub(r'src="app\.js(\?v=[0-9a-f]+)?"', f'src="app.js?v={build}"', html)
     html = _re.sub(r'src="pages\.js(\?v=[0-9a-f]+)?"', f'src="pages.js?v={build}"', html)
-    html = _re.sub(r'<meta name="specsheet-build" content="[0-9a-f]*">\n?', '', html)
+    html = _re.sub(r'\n?[ \t]*<meta name="specsheet-build" content="[0-9a-f]*">', '', html)  # take the line's indent too (it grew 2 spaces per build)
+    html = _re.sub(r'\n[ \t]+(<meta name="viewport")', r'\n  \1', html)
     html = html.replace('<meta charset="utf-8">', f'<meta charset="utf-8">\n  <meta name="specsheet-build" content="{build}">', 1)
     idx.write_text(html)
     return build

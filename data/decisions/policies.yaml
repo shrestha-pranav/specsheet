@@ -168,20 +168,24 @@ claim_policies:
     keys: [hdr.vesa_tier]
     statuses: [known]
     require_normalized: true
-- id: claim/mfr-ssd-structured@6
-  since: '2026-11-25'
-  supersedes: claim/mfr-ssd-structured@5
-  rationale: 'Same keys, sources, kinds and rules as @5 for everything it already accepted (teamgroup_ssd@5 unchanged), re-issued for sandisk_ssd@5 -> @6 (A2-keys). WIDENING: therm.heatsink and therm.heatsink_height added. sandisk_ssd@6 reads only the SKU''s own data-sku-title: ''without Heatsink'' -> therm.heatsink none (the maker''s explicit statement); ''with Heatsink'' -> therm.heatsink_height = H of the same SKU''s ''Dimensions (L x W x H)'' row (inches x 25.4 -> mm, raw keeps the literal), never below 5 mm (Optimus GX PRO 8100 heatsink SKUs print the bare drive''s 0.09 in row: nothing). No therm.heatsink enum value for a with-heatsink SKU: low-profile vs full sink is not stated (A1 open question). The page title, other SKUs and silence never count. Every other claim byte-identical.'
+- id: claim/mfr-ssd-structured@7
+  since: '2026-11-26'
+  supersedes: claim/mfr-ssd-structured@6
+  rationale: 'Same keys, sources, kinds and rules as @6 (sandisk_ssd@6 unchanged), re-issued for teamgroup_ssd@5 -> @6 (A2-st r7). The one change:
+    when the whole-page prose pass (_ssdprose, unchanged) finds no NAND statement and no NAND conflict, each intro paragraph (div.prIntro) is read
+    on its own with the same _ssdprose rules, for hw.nand_type only (the page pass skips a > 600-char run-on sentence that starts in the nav text).
+    Two different values across paragraphs = nothing. Every other claim byte-identical.'
   audit:
-    by: A2-keys
-    at: '2026-11-25'
-    evidence: 'team/reports/2026-11-25-a2-zero-keys.md; in-memory claim diff sandisk_ssd@5 vs @6 over all 74 stored sandisk-us-ssd pages: +12 therm.heatsink none, +12 therm.heatsink_height (8.89 x4, 9.65 x3, 10.41 x4, 11.18 x1), 0 removed, 0 changed, identifiers/aliases identical. tests/test_zero_keys_ports.py'
+    by: A2-st r7
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r7-ssd-tv.md; in-memory claim diff teamgroup_ssd@5 (git worktree HEAD) vs @6 over all 64 stored teamgroup-us-ssd
+      pages: +6 hw.nand_type qlc (CARDEA Z44Q 3 "adopts QLC Flash", Z44A7Q 3 "The product adopts 3D QLC NAND"), 0 removed, 0 changed. tests/test_r7_ssd_tv.py'
     parsers:
       sandisk_ssd@6: 'sha256:8b6fc546e998d3f71a4c'
-      teamgroup_ssd@5: 'sha256:88817563932faa004f57'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+      teamgroup_ssd@6: 'sha256:75bc6577801ceac73b22'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26a}
   match:
-    extractors: [sandisk_ssd@6, teamgroup_ssd@5]
+    extractors: [sandisk_ssd@6, teamgroup_ssd@6]
     source_ids: [sandisk-us-ssd, teamgroup-us-ssd]
     kinds: [official]
     tiers: [manufacturer]
@@ -456,46 +460,51 @@ claim_policies:
       csa-dcl-robovac:
       - smart.matter
     require_normalized: true
-- id: claim/mfr-power-banks-structured@7
-  since: '2026-11-24'
-  supersedes: claim/mfr-power-banks-structured@6
-  rationale: 'Same sources, kinds, tiers and normalisation as @6, re-issued for the A2 preset-fill bump of all nine extractors (@4 -> @5). Changes:
-    (1) pd.pps false is now possible, ONLY by complete enumeration (A1 ruling 1, coordinator 2026-11-24): UGREEN (ugreen_powerbanks@5) writes false
-    when its spec block prints the port inventory (''Ports USB-A*1 USB-C*2''), every inventory output port has its own protocol list in the
-    ''Support Protocol'' block, no list is open-ended (''etc.'') and none names PPS; the claim carries the basis condition basis=complete_enumeration
-    (research/power-banks/spec-profile.yaml condition + pd.pps basis_conditions) and keeps the list as raw. (2) pd.pps true also from a per-port
-    protocol list naming PPS (UGREEN) and from an Anker output protocol row named PPS (''PPS: 65W'', ''[USB-C]-PPS: ...''); never from a USB-A row.
-    (3) UGREEN per-port ''USB-C1 Output: ... USB-C2 Output: ...'' rows are read as the port list (out.ports, out.max_single_port_w, pd.max_fixed_voltage).
-    (4) WIDENING: out.max_single_port_w added to the belkin-us-powerbanks and mophie-us-powerbanks allowlists. Belkin only from a figure the maker
-    labels single-port (''140W Single 158W Shared'', ''Maximum single USB-C output: Up to 100W'', At a Glance ''up to 65W from a single USB-C port'');
-    mophie only as the max of an Output row whose every entry names exactly one port (''1 USB-C Port - 100W1 USB-C Port - 45W...''); ''2 USB-C Ports
-    - 45W'', ''Cable and Port: 20W'' and bare wattages write nothing. INIU, CUKTECH, EcoFlow, SHARGE and KUXIU: version bump only (shared module), 0 claim changes.'
+- id: claim/mfr-power-banks-structured@8
+  since: '2026-11-26'
+  supersedes: claim/mfr-power-banks-structured@7
+  rationale: 'Same sources, kinds (official only), tiers, statuses and normalisation as @7, re-issued for the r7 PPS bump (A2-pb, brief
+    coord-2026-11-26-r7-powerbanks). New stated pd.pps true sources, all on the SKU''s own maker page and only when the page wrote no pd.pps:
+    (1) iniu_powerbanks@6 (crawler/adapters/pb_pps_r7.py, subclass of the unchanged shopify_powerbanks INIU adapter): the per-port
+    ''Supported Protocol'' block that the label splitter cut at ''Input'' (''Output port: USB-C / USB-C Cable : UFCS ... / PPS / ...''), true only
+    when an Output port segment names USB-C ports only and lists PPS as an item; (2) cuktech_powerbanks@6 (same module): one maker feature bullet
+    listing the bank''s fast-charging protocols with PPS (''Compatible with a wide range of fast-charging protocols, including PD, PPS, ...''),
+    affirmative, no question / negation / input or recharge wording; (3) ecoflow_powerbanks@6: the product page''s own FAQ answer, only on pages
+    that passed the EcoFlow spec-name gate, and a FAQ naming a product line (''RAPID Pro'') must be contained in the page title; true from an
+    ''Output supports ... PPS'' clause or the generic ''What are the protocols that support fast charging? BC1.2/.../PD3.0/PPS'' list; never
+    an Input clause. WIDENING: pd.pps added to the ecoflow-us-powerbanks allowlist. Never false, never a PPS range. anker_powerbanks@6 is a
+    version bump for the derived SFC 2.0 rule only (its derived claims need claim/derive-samsung-sfc2-pps@1; this policy accepts official only).
+    ugreen_powerbanks@5 and belkin_powerbanks@5 unchanged (fingerprints identical); sharge/kuxiu/mophie @6 = shared-module bump, 0 claim changes.
+    shopify_powerbanks.py is byte-identical, so the power-station pins do not move.'
   audit:
-    by: A2 preset fill
-    at: '2026-11-24'
-    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; claim diff base (copy of crawler/ before this round) vs new parsers over every stored snapshot of the nine sources: +2 anker pd.pps true (A1259, A1339), +6 belkin out.max_single_port_w (BBA009 15, BBA019 140, BBA024 100, BPB020 65, BPB040 140, BPD010 15), +7 mophie out.max_single_port_w, ugreen +2 out.max_single_port_w / +2 out.ports / +2 pd.max_fixed_voltage (35524, two handles), +5 pd.pps true, +2 pd.pps false basis=complete_enumeration (25208, 90597A); 1 ugreen pd.pps true re-raw (65958: now the protocol list); 0 removals; INIU/CUKTECH/EcoFlow/SHARGE/KUXIU 0 changes. Fixtures tests/test_preset_fill_powerbanks.py.'
+    by: A2-pb r7
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r7-powerbanks.md; claim diff HEAD parsers (git worktree) vs new over every stored snapshot of the
+      nine power-bank sources + ecoflow-us-stations (1879 -> 1891 entity/key groups): +12 pd.pps true, 0 changed, 0 removed: INIU P73-E1, P771,
+      P781, SnapGo 10K 25W, SnapGo P71-E1; CUKTECH PB100P, PB200U; EcoFlow RAPID 25K 100W, RAPID Pro 20K, RAPID Pro 27K, RAPID Pro X; Anker A1638
+      (derived, other policy). Stations 0 changes. Fixtures tests/test_r7_powerbank_pps.py.'
     parsers:
-      anker_powerbanks@5: 'sha256:c133eb53d9980d795941'
+      anker_powerbanks@6: 'sha256:74937d5a200d3eb5b1bc'
       belkin_powerbanks@5: 'sha256:abb5bf59fadce0dc1ae3'
-      cuktech_powerbanks@5: 'sha256:a95b2d2a86119ba7adc7'
-      iniu_powerbanks@5: 'sha256:a95b2d2a86119ba7adc7'
+      cuktech_powerbanks@6: 'sha256:818a4bd33dd0d9b4d2dc'
+      iniu_powerbanks@6: 'sha256:818a4bd33dd0d9b4d2dc'
       ugreen_powerbanks@5: 'sha256:a95b2d2a86119ba7adc7'
-      ecoflow_powerbanks@5: 'sha256:ba2e0f46dd314701b79d'
-      sharge_powerbanks@5: 'sha256:ba2e0f46dd314701b79d'
-      kuxiu_powerbanks@5: 'sha256:ba2e0f46dd314701b79d'
-      mophie_powerbanks@5: 'sha256:ba2e0f46dd314701b79d'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+      ecoflow_powerbanks@6: 'sha256:2110a3bc5cb01aaf418d'
+      sharge_powerbanks@6: 'sha256:2110a3bc5cb01aaf418d'
+      kuxiu_powerbanks@6: 'sha256:2110a3bc5cb01aaf418d'
+      mophie_powerbanks@6: 'sha256:2110a3bc5cb01aaf418d'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26a}
   match:
     extractors:
-    - anker_powerbanks@5
+    - anker_powerbanks@6
     - belkin_powerbanks@5
-    - cuktech_powerbanks@5
-    - iniu_powerbanks@5
+    - cuktech_powerbanks@6
+    - iniu_powerbanks@6
     - ugreen_powerbanks@5
-    - ecoflow_powerbanks@5
-    - sharge_powerbanks@5
-    - kuxiu_powerbanks@5
-    - mophie_powerbanks@5
+    - ecoflow_powerbanks@6
+    - sharge_powerbanks@6
+    - kuxiu_powerbanks@6
+    - mophie_powerbanks@6
     source_ids:
     - anker-us-powerbanks
     - belkin-us-powerbanks
@@ -601,6 +610,7 @@ claim_policies:
       - in.max_w
       - out.max_single_port_w
       - out.max_total_w
+      - pd.pps
       - phys.dimensions
       - phys.weight
       sharge-us-powerbanks:
@@ -642,28 +652,86 @@ claim_policies:
       - phys.dimensions
       - phys.weight
     require_normalized: true
-- id: claim/mfr-power-stations-structured@7
-  since: '2026-11-25'
-  supersedes: claim/mfr-power-stations-structured@6
-  rationale: 'Every @6 rule unchanged (LiFePO₄ chemistry, Battery Pack Capacity, coordinator UPS-prose ruling r5), re-issued for shopify_powerstations@5 -> @6 and ankersolix_stations@5 -> @6 (A2-dell r6, brief item 2). CHANGED: a labelled UPS/EPS/switchover row whose ms figure is preceded by a bound (''<'', full-width ''＜'', ''≤'', ''&lt;'', ''under'', ''within'', ''less than'', ''sub-'') now publishes ''up to N'' (normalize qualifier up_to), consistent with the r5 prose ruling; before, it published the bare figure as exact. A bare figure stays exact. The prose regex also reads the full-width ''＜''. Same sources, kinds, tiers and key allowlists as @6.'
+- id: claim/derive-samsung-sfc2-pps@1
+  since: '2026-11-26'
+  rationale: 'Coordinator ruling r7 (brief coord-2026-11-26-r7-powerbanks): Samsung Super Fast Charging 2.0 is PPS by definition. When the
+    maker''s own page for the SKU names ''Samsung Super Fast Charging 2.0'' or ''45W (max) (output) for Samsung'' (not negated) and the page wrote no
+    stated pd.pps claim, the adapter writes pd.pps true, kind derived, condition basis=derived (research/power-banks/spec-profile.yaml), quote
+    ''rule r7-sfc2 ...''. Never false, never a PPS voltage/current range. Rule code: crawler/adapters/pb_pps_r7.py sfc2()/add_derived(),
+    called by anker_powerbanks@6 (product prose + the page''s own htmlContainer notes) and by iniu_powerbanks@6 / cuktech_powerbanks@6
+    (page text). Plain ''Samsung Super Fast Charging'' without 2.0 (Anker A1657) writes nothing. An official claim on the same product wins
+    (resolve.py kind order).'
   audit:
-    by: A2-dell r6
-    at: '2026-11-25'
-    evidence: 'team/reports/2026-11-25-a2-r6-dell.md; in-memory claim diff of HEAD parsers (@5) vs @6 over every stored station snapshot (1623 entity/key groups): 17 ups.switchover_ms changed from N to up to N (bluetti ac50b, ac50p, handsfree 1/2 up to 20, premium 100 v2 up to 10; ecoflow delta 3 / 3 plus / 3 max / 3 max plus / 3 ultra / 3 ultra plus up to 10; goalzero yeti 1000/1500 up to 15 (aps); jackery explorer 5000 plus x4 up to 20); 0 added, 0 removed, nothing else changed. tests/test_a2_r6_dell.py'
+    by: A2-pb r7
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r7-powerbanks.md; over every stored snapshot: 1 derived claim (Anker A1638 ''Only the USB-C port / cable
+      supports 40W max output for iPhone 17 Series and 45W max for Samsung''); INIU/CUKTECH pages naming SFC 2.0 already carry a stated pd.pps.
+      tests/test_r7_powerbank_pps.py'
     parsers:
-      ankersolix_stations@6: 'sha256:446437087bdebe31d502'
-      bluetti_stations@6: 'sha256:9196ffe3c7c38a949ff0'
-      ecoflow_stations@6: 'sha256:9196ffe3c7c38a949ff0'
-      goalzero_stations@6: 'sha256:9196ffe3c7c38a949ff0'
-      jackery_stations@6: 'sha256:9196ffe3c7c38a949ff0'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25d}
+      anker_powerbanks@6: 'sha256:74937d5a200d3eb5b1bc'
+      cuktech_powerbanks@6: 'sha256:818a4bd33dd0d9b4d2dc'
+      iniu_powerbanks@6: 'sha256:818a4bd33dd0d9b4d2dc'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26a}
+  match:
+    extractors: [anker_powerbanks@6, cuktech_powerbanks@6, iniu_powerbanks@6]
+    source_ids: [anker-us-powerbanks, cuktech-us-powerbanks, iniu-us-powerbanks]
+    kinds: [derived]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      anker-us-powerbanks: [pd.pps]
+      cuktech-us-powerbanks: [pd.pps]
+      iniu-us-powerbanks: [pd.pps]
+- id: claim/mfr-strips-belkin-printed@1
+  since: '2026-11-26'
+  rationale: 'Coordinator ruling r7 (2026-11-26, "Belkin surge: publish; coverage beats the preset score"). Belkin storefront pages
+    (www.belkin.com, crawl.py v0 legacy store, source-policy maker disposition) publish only keys the page prints explicitly: type.ul1449_listed
+    (''UL 1449'' in the product copy), surge.joules, outlets.count (crawlpy-strips@1, unchanged code) and surge.clamping_v (crawlpy-strips-belkin@1:
+    the Technical Specifications ''Clamping Voltage NNNV'' cell, as printed; mode split L-N/L-G/N-G -> highest mode, raw keeps all; a value at a
+    stated test current ''340V(@50A)'' and comparison-chart cells write nothing). A bare clamping voltage is NOT the UL 1449 VPR: no surge.vpr_*
+    key is allowlisted (crawlpy-strips@1 still writes vpr_* from a Belkin L-N/L-G/N-G cell on 2 pages; those stay proposed). No other Belkin key.'
+  audit:
+    by: A2-pb r7
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r7-powerbanks.md (addendum); over the 54 kept Belkin strip pages: 54 joules, 53 outlet counts, 9 UL 1449,
+      17 clamping voltages (330V x13, 400V x2, mode split 400/500/500 x2); 2 at a test current and 1 ''UL1449 1.2 KV'' skipped.
+      tests/test_r7_belkin_clamping.py'
+    parsers:
+      crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'
+      crawlpy-strips-belkin@1: 'sha256:c00beb403991817fa2af'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26a}
+  match:
+    extractors: [crawlpy-strips@1, crawlpy-strips-belkin@1]
+    source_ids: [belkin]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      belkin: [type.ul1449_listed, surge.joules, surge.clamping_v, outlets.count]
+- id: claim/mfr-power-stations-structured@8
+  since: '2026-11-26'
+  supersedes: claim/mfr-power-stations-structured@7
+  rationale: 'Every @7 rule unchanged, re-issued for shopify_powerstations@6 -> @7 and ankersolix_stations@6 -> @7 (A3-fix, Codex review-8 P1-3, shared crawler/adapters/_powerstation.py). CHANGED (labelled UPS rows and the r5 UPS-prose ruling alike, one reader ms_figure()): (1) ''up to N ms'', ''<= N'', ''max. N'', ''no more than N'', ''at most N'' are upper bounds too -> ''up to N'' (normalize qualifier up_to), never the bare figure; (2) a range (''10-20 ms'', ''10–20ms'', ''10 ms ~ 20 ms'', ''10 to 20 ms'') never becomes an endpoint: a labelled row writes an unresolved (status unknown) claim, prose writes nothing; (3) prose model identity is exact: model tokens keep suffix words (Plus/Pro/Max/Ultra/Mini/Air/Lite/SE/vN/Gen N) and must equal an own token, so ''Explorer 1000 Plus'' copy writes nothing for Explorer 1000 (was substring containment). A labelled row keeps its first figure as before (''Backup UPS: <20ms, Online UPS: 0ms'' -> up to 20). Same sources, kinds, tiers and key allowlists as @7.'
+  audit:
+    by: A3-fix review-8
+    at: '2026-11-26'
+    evidence: 'reviews/2026-11-26-astra-review-8.md P1-3; team/reports/2026-11-26-a3-review8-fixes.md; in-memory claim diff of the @6 parsers (copy of crawler/ before the change) vs @7 over every stored snapshot of the five station sources (1665 page/key/condition groups): 0 added, 0 changed, 0 removed. tests/test_review8.py (rows + prose: up_to kept, ranges never endpoints, suffixed siblings).'
+    parsers:
+      ankersolix_stations@7: 'sha256:f615a4e09566f3db4af8'
+      bluetti_stations@7: 'sha256:1ffe373b11251e5eadfe'
+      ecoflow_stations@7: 'sha256:1ffe373b11251e5eadfe'
+      goalzero_stations@7: 'sha256:1ffe373b11251e5eadfe'
+      jackery_stations@7: 'sha256:1ffe373b11251e5eadfe'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26a}
   match:
     extractors:
-    - ankersolix_stations@6
-    - bluetti_stations@6
-    - ecoflow_stations@6
-    - goalzero_stations@6
-    - jackery_stations@6
+    - ankersolix_stations@7
+    - bluetti_stations@7
+    - ecoflow_stations@7
+    - goalzero_stations@7
+    - jackery_stations@7
     source_ids:
     - ecoflow-us-stations
     - bluetti-us-stations
@@ -1163,56 +1231,53 @@ claim_policies:
     require_normalized: true
     keys:
       dell-us-monitors: [ergo.vesa, flk.pwm, gen.size_class, gen.viewable_diag, panel.technology, pwr.max, res.height_px, res.native, res.refresh_max, res.refresh_native, res.width_px, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.hdmi_version]
-- id: claim/mfr-ssd-sandisk-datasheet@2
-  since: '2026-11-25'
-  supersedes: claim/mfr-ssd-sandisk-datasheet@1
-  rationale: 'Re-issue of @1 for a fingerprint pin only (same extractor sandisk_datasheets@1, sources, kinds, keys): sandisk_datasheets.discover imports sandisk_ssd, bumped to @6 by A2-keys (therm.heatsink); parse() code is byte-identical. @1 text follows. New source sandisk-us-ssd-datasheets (crawler/adapters/sandisk_datasheets.py): the SanDisk / WD datasheet PDFs the sandisk.com
-    internal-SSD line pages link (documents.sandisk.com, in data/source-policy.yaml). Coordinator ruling 3 (2026-11-24 r2). ONE key: hw.dram_type,
-    from the PRODUCT SPECIFICATIONS table only, when its DRAM / DRAM CACHE row is one value spanning every capacity column and the MODEL NUMBERS
-    row ties each column to exactly one configuration of the linking line page: Yes = dram; Host Memory Buffer = dramless_hmb; No / DRAM-less /
-    None = _ssd.dram (ruling 5: dramless). A datasheet without the row (SN850X, SN770M, SN5000, SN5100, SN3000, SN7100) writes nothing. The
-    datasheet attaches by configuration mfr_sku only (no model identifier, no relation).'
+- id: claim/mfr-ssd-sandisk-datasheet@3
+  since: '2026-11-26'
+  supersedes: claim/mfr-ssd-sandisk-datasheet@2
+  rationale: 'Re-issue of @2 for sandisk_datasheets@1 -> @2 (A2-st r7, brief coord-2026-11-26-r7-ssd-tv). DRAM rule byte-identical. WIDENING: hw.nand_type
+    from a NAND / NAND TYPE row of the PRODUCT SPECIFICATIONS table, only when its value is one cell spanning every column (no 3+ space gap) naming
+    exactly one cell type (TLC / QLC / MLC). Bound per table: the row ties only to the MODEL NUMBERS of its own table (WD Green SN3000 prints a QLC
+    1-2 TB table and a TLC 500 GB table), a table with two NAND rows reads nothing. "3D NAND" alone, per-capacity cells (WD Blue SN5000) and prose
+    ("NAND type may vary by model") write nothing; never from the series name or the controller.'
   audit:
-    by: A2-keys
-    at: '2026-11-25'
-    evidence: 'git diff: sandisk_datasheets.py unchanged; the fingerprint moves only through the sandisk_ssd import used by discover() (team/reports/2026-11-25-a2-zero-keys.md).'
+    by: A2-st r7
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r7-ssd-tv.md; in-memory claim diff sandisk_datasheets@1 (git worktree HEAD) vs @2 over all 35 stored datasheets: +68
+      hw.nand_type (tlc 58, qlc 10), 0 removed, 0 changed (DRAM claims identical). tests/test_r7_ssd_tv.py'
     parsers:
-      sandisk_datasheets@1: 'sha256:7b852a248cd6ec1c89d1'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+      sandisk_datasheets@2: 'sha256:b93e3429ec21f5949b8a'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26a}
   match:
-    extractors: [sandisk_datasheets@1]
+    extractors: [sandisk_datasheets@2]
     source_ids: [sandisk-us-ssd-datasheets]
     kinds: [official]
     tiers: [manufacturer]
     statuses: [known]
     require_normalized: true
-    keys: [hw.dram_type]
-- id: claim/mfr-ssd-samsung-datasheet@1
-  since: '2026-11-25'
-  rationale: 'New source samsung-ssd-datasheets (crawler/adapters/samsung_datasheets.py): Samsung''s own consumer internal-SSD datasheet PDFs
-    linked from https://semiconductor.samsung.com/consumer-storage/support/documents/ (semiconductor.samsung.com and download.semiconductor.samsung.com,
-    maker, crawl agent, data/source-policy.yaml 2026-11-25.3). Brief coord-2026-11-25-ssd-dram-sources. ONE key: hw.dram_type, from the spec
-    table''s (DRAM) Cache Memory / DRAM row only, and only when EVERY cell of that row gives the same _ssd.dram() value (every cell names an
-    LPDDR size = dram; HMB = dramless_hmb), so no capacity-column alignment is assumed. It binds to every model code the document prints whose
-    normalised form equals a samsung-us-ssd configuration key (configuration mfr_sku only: no model identifier, no relation). Cells that
-    differ, a dash, or no row write nothing; never inferred from the controller.'
+    keys: [hw.dram_type, hw.nand_type]
+- id: claim/mfr-ssd-samsung-datasheet@2
+  since: '2026-11-26'
+  supersedes: claim/mfr-ssd-samsung-datasheet@1
+  rationale: 'Re-issue of @1 for samsung_datasheets@1 -> @2 (A2-st r7, brief coord-2026-11-26-r7-ssd-tv). DRAM rule byte-identical. WIDENING: hw.nand_type
+    from the spec table''s "NAND Flash (Memory)" row, only when its value is one spanning cell (no 3+ space gap) naming exactly one cell type:
+    "V-NAND TLC" / "3bit MLC" = tlc, "4bit MLC" / QLC = qlc, "2bit MLC" / bare MLC = mlc (_ssd.nand_type, raw literal kept). "V-NAND" / "V-NAND
+    Flash" alone (850 EVO M.2 / mSATA, 950 PRO, 960 PRO, 750 EVO) writes nothing. Same model-code binding as DRAM (configuration mfr_sku only).'
   audit:
-    by: A2-ssd
-    at: '2026-11-25'
-    evidence: 'team/reports/2026-11-25-a2-ssd-dram.md; 27 datasheets fetched (1 req/s, honest UA, all 200); 28 claims: dram 23 (9100 PRO 4 + heatsink 4,
-      990 PRO 3 + heatsink 5, 980 PRO 2, 870 EVO 5), dramless_hmb 5 (990 EVO 2, 990 EVO Plus 3). 27 agree with the samsung.com page value, 0 disagree;
-      1 new (980 PRO 1TB MZ-V8P1T0B/AM). Fixtures tests/test_samsung_datasheets.py.'
+    by: A2-st r7
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r7-ssd-tv.md; in-memory claim diff samsung_datasheets@1 (git worktree HEAD) vs @2 over all 27 stored datasheets: +28
+      hw.nand_type tlc, 0 removed, 0 changed (DRAM claims identical). tests/test_r7_ssd_tv.py'
     parsers:
-      samsung_datasheets@1: 'sha256:eaf9a973e439c259c184'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+      samsung_datasheets@2: 'sha256:7470f6e626e76b257eda'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26a}
   match:
-    extractors: [samsung_datasheets@1]
+    extractors: [samsung_datasheets@2]
     source_ids: [samsung-ssd-datasheets]
     kinds: [official]
     tiers: [manufacturer]
     statuses: [known]
     require_normalized: true
-    keys: [hw.dram_type]
+    keys: [hw.dram_type, hw.nand_type]
 - id: claim/document-power-pdo@4
   since: '2026-11-25'
   supersedes: claim/document-power-pdo@3
@@ -1247,9 +1312,10 @@ claim_policies:
     statuses: [known]
     require_normalized: true
     keys: [pd.pps, pd.pps_max_voltage, pd.pps_max_current_a, pd.max_fixed_voltage, pd.epr, out.ports]
-- id: claim/spec-image-power-pdo@1
-  since: '2026-11-25'
-  rationale: 'New transform imgattach@1 (scripts/imgattach.py, extractor specimg@1; OCR input crawler/specimages.py imgocr@1 = grayscale + 2x
+- id: claim/spec-image-power-pdo@2
+  since: '2026-11-26'
+  supersedes: claim/spec-image-power-pdo@1
+  rationale: 'Re-pin of @1 for the review-8 P1 fix (A3-fix 2026-11-26): the conflicting-identity vetoes now run BEFORE both binding branches, so single-SKU inheritance (and every exact binding) is refused when the image text or file name shows another SKU of an own base model, a foreign region token or an identifier another entity shares, including images with empty file_models (A2667111 page + A2667113 image -> no exact claim). Stricter only; otherwise as @1: New transform imgattach@1 (scripts/imgattach.py, extractor specimg@1; OCR input crawler/specimages.py imgocr@1 = grayscale + 2x
     upscale + tesseract). Maker gallery spec images (cdn.shopify.com, a document_host inheriting the linking page) found on a REGISTERED maker
     page the entity is observed on (edge verified as docattach@2). Identity: inherited only when the linking page is single-SKU (exactly one
     non-bundle variant SKU and it is an own SKU of the entity), every model token in the image file name is an own identifier, and the OCR text
@@ -1260,14 +1326,14 @@ claim_policies:
     digits "3.3-1 1V", letter/digit confusions "1JOOW", dangling decimals); a rejected line closes any open row. Same keys as
     document-power-pdo@4 minus pd.epr (no image source of it). Affirmative only.'
   audit:
-    by: A3 OCR + mophie
-    at: '2026-11-25'
-    evidence: 'team/reports/2026-11-25-a3-ocr-mophie.md; tests/test_imgattach.py (A2667 card corroborates the manual, multi-SKU page without OCR
+    by: A3-fix review-8
+    at: '2026-11-26'
+    evidence: 'reviews/2026-11-26-astra-review-8.md P1-2; team/reports/2026-11-26-a3-review8-fixes.md; tests/test_imgattach.py (new: OCR variant, OCR variant without model mention, foreign region, shared identifier: none exact). @1 evidence: team/reports/2026-11-25-a3-ocr-mophie.md; tests/test_imgattach.py (A2667 card corroborates the manual, multi-SKU page without OCR
       model does not attach, low-confidence model token, file-name other-SKU veto, other model in the image, mean < 70 image drops, ambiguous
       voltage); replay over all 281 bound Anker spec images (0 claims today).'
     parsers:
-      imgattach@1: 'sha256:5bed2ab2b49ef89d9931'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+      imgattach@1: 'sha256:3d13fce9d336e7c70163'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26a}
   match:
     extractors: [specimg@1]
     source_ids: [documents]
@@ -1439,37 +1505,62 @@ claim_policies:
     keys: [hdmi.count, hdmi.earc, hdmi.has_4k120, hdmi.ports_4k120, refresh.native_hz, panel.backlight, panel.lcd_type, vrr.supported,
       wifi.generation, wifi.band_count, wifi.has_6ghz, port.lan_count, port.wan_speed_mbps, port.lan_max_mbps, hw.cpu_cores, hw.cpu_ghz,
       hw.soc_vendor, mem.soldered, mem.slots, mem.max, pwr.max_pd_in]
-relation_policies:
-- id: rel/bundle-contents@7
-  since: '2026-11-25'
-  supersedes: rel/bundle-contents@6
-  rationale: 'Same rules and transform (bundles@2) as @6. Re-pin only for the station parser bumps ankersolix_stations@5 -> @6 and bluetti/ecoflow/jackery_stations @5 -> @6 (A2-dell r6, labelled UPS bound -> up to N, claim/mfr-power-stations-structured@7); no bundle code changed.'
+- id: claim/document-tv-ports@1
+  since: '2026-11-26'
+  rationale: 'New transform docspec-attach-tvports@1 (scripts/docspec_r7tv.py) + extractor docspec-tv-ports@1 (crawler/adapters/_docspec_tvports.py), A2-st r7,
+    brief coord-2026-11-26-r7-ssd-tv. Maker quick start guides linked from a registered maker TV page (TCL us.tcl.com guides on cdn.shopify.com,
+    inherit linking_page). Reads only the per-port connection lines "HDMI port 1: Supports up to 4K/144Hz | HDMI port 2: Supports up to 4K/120Hz |
+    HDMI ports 3 & 4: Supports up to 4K/60Hz": hdmi.ports_4k120 = ports stated at >= 120 Hz (0 when every stated port is below 120), hdmi.has_4k120
+    true when >= 1 (never false). Needs every port 1..N stated, >= 2 statements, one rate per port, and no size-qualified rate footnote in the
+    document; generic HDMI 2.1 / "supports 4K 120Hz" prose and the input-format table are not read. Identity = docspec-attach-r3@2 TV rule
+    unchanged (verified linking edge, own model quoted in the text layer, no unlinked same-brand catalogued model named). Text layer only.'
   audit:
-    by: A2-dell r6
-    at: '2026-11-25'
-    evidence: 'identifiers, aliases and package/bundle structure identical HEAD vs @6 station parsers over every stored station snapshot (only 17 ups.switchover_ms claims changed); bundles@2 untouched.'
+    by: A2-st r7
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r7-ssd-tv.md; replay over every stored TV document: 13 TCL guides carry the lines (all 2 of 4 ports, matching
+      research/tvs/notes.md QM6K/QM7K 2 of 4); only guides whose text names the model bind. tests/test_r7_ssd_tv.py'
     parsers:
-      ankersolix_stations@6: 'sha256:446437087bdebe31d502'
-      bluetti_stations@6: 'sha256:9196ffe3c7c38a949ff0'
-      ecoflow_stations@6: 'sha256:9196ffe3c7c38a949ff0'
-      jackery_stations@6: 'sha256:9196ffe3c7c38a949ff0'
+      docspec-attach-tvports@1: 'sha256:41e1bda89fbfa33a4fad'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26a}
+  match:
+    extractors: [docspec-tv-ports@1]
+    source_ids: [documents]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys: [hdmi.ports_4k120, hdmi.has_4k120]
+relation_policies:
+- id: rel/bundle-contents@8
+  since: '2026-11-26'
+  supersedes: rel/bundle-contents@7
+  rationale: 'Same rules and transform (bundles@2) as @7. Re-pin only for the station parser bumps ankersolix_stations@6 -> @7 and bluetti/ecoflow/jackery_stations @6 -> @7 (A3-fix review-8: UPS switchover reader in _powerstation.py, claim/mfr-power-stations-structured@8); no bundle code changed.'
+  audit:
+    by: A3-fix review-8
+    at: '2026-11-26'
+    evidence: 'station claim diff @6 vs @7 over every stored station snapshot: 0 changes (only ups.switchover_ms parsing touched; identifiers, aliases and package structure come from unchanged code); bundles@2 untouched.'
+    parsers:
+      ankersolix_stations@7: 'sha256:f615a4e09566f3db4af8'
+      bluetti_stations@7: 'sha256:1ffe373b11251e5eadfe'
+      ecoflow_stations@7: 'sha256:1ffe373b11251e5eadfe'
+      jackery_stations@7: 'sha256:1ffe373b11251e5eadfe'
       dreame_robovac@2: 'sha256:82418fe203d439831b23'
       narwal_robovac@2: 'sha256:2f212aa7076aff13a250'
       bundles@2: 'sha256:673c815897604268136d'
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25d}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26a}
   rules:
   - method: bundle:ankersolix-us-stations
     types: [contains]
-    parsers: [ankersolix_stations@6+bundles@2]
+    parsers: [ankersolix_stations@7+bundles@2]
   - method: bundle:bluetti-us-stations
     types: [contains]
-    parsers: [bluetti_stations@6+bundles@2]
+    parsers: [bluetti_stations@7+bundles@2]
   - method: bundle:ecoflow-us-stations
     types: [contains]
-    parsers: [ecoflow_stations@6+bundles@2]
+    parsers: [ecoflow_stations@7+bundles@2]
   - method: bundle:jackery-us-stations
     types: [contains]
-    parsers: [jackery_stations@6+bundles@2]
+    parsers: [jackery_stations@7+bundles@2]
   - method: bundle:dreame-us-robovac
     types: [contains]
     parsers: [dreame_robovac@2+bundles@2]
@@ -1552,6 +1643,153 @@ relation_policies:
   - method: crosswalk:reviewed
     types: [same_model]
     parsers: [xwalk@1]
+- id: rel/source-stated-hierarchy@11
+  since: '2026-11-26'
+  supersedes: rel/source-stated-hierarchy@10
+  rationale: 'Same rules, methods and types as @10; one parser pin moves: teamgroup_ssd@5 -> @6 (A2-st r7: adds hw.nand_type claims only; identifier,
+    alias and relation code unchanged). No new method.'
+  audit:
+    by: A2-st r7
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r7-ssd-tv.md; identifiers and aliases identical teamgroup_ssd@5 vs @6 over all 64 stored pages (claim diff: +6 hw.nand_type only).'
+    parsers:
+      lenovo_psref@4: 'sha256:46b5cffaa3f0697920c7'
+      asus@2: 'sha256:882e02a6786b8e27beab'
+      dell@1: 'sha256:13cd4d61b81c005021b6'
+      surface@1: 'sha256:80cd87b7b1b87d6969e9'
+      razer@1: 'sha256:8752d0e2f07ae8b46ff2'
+      samsung@1: 'sha256:d0e9cabff53a15285159'
+      lenovo_monitors@6: 'sha256:6648c4532a12e82e71a6'
+      samsung_ssd@3: 'sha256:ad67b32e468f26b4c5f5'
+      sandisk_ssd@6: 'sha256:8b6fc546e998d3f71a4c'
+      teamgroup_ssd@6: 'sha256:75bc6577801ceac73b22'
+      kingston_ssd@4: 'sha256:c93ab26938d6300a1494'
+      tplink_routers@3: 'sha256:19f0ca2101fbc63e219c'
+      crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26a}
+  rules:
+  - method: adapter:lenovo-psref
+    types: [member_of_family, configuration_of]
+    parsers: [lenovo_psref@4]
+  - method: adapter:asus-us
+    types: [member_of_family]
+    parsers: [asus@2]
+  - method: adapter:dell-us
+    types: [member_of_family]
+    parsers: [dell@1]
+  - method: adapter:microsoft-surface
+    types: [member_of_family, configuration_of]
+    parsers: [surface@1]
+  - method: adapter:razer-us
+    types: [member_of_family, configuration_of]
+    parsers: [razer@1]
+  - method: adapter:samsung-us
+    types: [member_of_family, configuration_of]
+    parsers: [samsung@1]
+  - method: adapter:lenovo-psref-monitors
+    types: [package_of]
+    parsers: [lenovo_monitors@6]
+  - method: adapter:samsung-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [samsung_ssd@3]
+  - method: adapter:sandisk-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [sandisk_ssd@6]
+  - method: adapter:teamgroup-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [teamgroup_ssd@6]
+  - method: adapter:kingston-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [kingston_ssd@4]
+  - method: adapter:tplink-us-routers
+    types: [variant_of]
+    parsers: [tplink_routers@3]
+  - method: page-variants:anker
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:baseus
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:belkin
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+retired_policies:
+- id: claim/mfr-ssd-structured@6
+  since: '2026-11-25'
+  supersedes: claim/mfr-ssd-structured@5
+  rationale: 'Same keys, sources, kinds and rules as @5 for everything it already accepted (teamgroup_ssd@5 unchanged), re-issued for sandisk_ssd@5 -> @6 (A2-keys). WIDENING: therm.heatsink and therm.heatsink_height added. sandisk_ssd@6 reads only the SKU''s own data-sku-title: ''without Heatsink'' -> therm.heatsink none (the maker''s explicit statement); ''with Heatsink'' -> therm.heatsink_height = H of the same SKU''s ''Dimensions (L x W x H)'' row (inches x 25.4 -> mm, raw keeps the literal), never below 5 mm (Optimus GX PRO 8100 heatsink SKUs print the bare drive''s 0.09 in row: nothing). No therm.heatsink enum value for a with-heatsink SKU: low-profile vs full sink is not stated (A1 open question). The page title, other SKUs and silence never count. Every other claim byte-identical.'
+  audit:
+    by: A2-keys
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a2-zero-keys.md; in-memory claim diff sandisk_ssd@5 vs @6 over all 74 stored sandisk-us-ssd pages: +12 therm.heatsink none, +12 therm.heatsink_height (8.89 x4, 9.65 x3, 10.41 x4, 11.18 x1), 0 removed, 0 changed, identifiers/aliases identical. tests/test_zero_keys_ports.py'
+    parsers:
+      sandisk_ssd@6: 'sha256:8b6fc546e998d3f71a4c'
+      teamgroup_ssd@5: 'sha256:88817563932faa004f57'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+  match:
+    extractors: [sandisk_ssd@6, teamgroup_ssd@5]
+    source_ids: [sandisk-us-ssd, teamgroup-us-ssd]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known, not_applicable]
+    keys: [gen.capacity, gen.device_class, gen.form_factor, gen.weight, if.pcie_gen, if.pcie_lanes, if.protocol, if.nvme_version, if.usb_standard, if.usb_connector,
+      hw.controller, hw.controller_vendor, hw.dram_type, hw.dram_size, hw.dram_gen, hw.nand_type, hw.nand_vendor, perf.seq_read, perf.seq_write, perf.rand_read_iops_qd1,
+      perf.rand_read_iops_qd32, perf.rand_write_iops_qd1, perf.rand_write_iops_qd32, end.tbw, end.warranty_years, end.mtbf, pwr.idle_mw, pwr.l1_2_mw, sec.encryption,
+      therm.temp_operating, therm.heatsink, therm.heatsink_height, port.drop]
+    require_normalized: true
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-ssd-structured@7, reason: 'r7 parser bump teamgroup_ssd@5 -> @6 (per-paragraph NAND prose); @6 meaning frozen as locked'}
+- id: claim/mfr-ssd-sandisk-datasheet@2
+  since: '2026-11-25'
+  supersedes: claim/mfr-ssd-sandisk-datasheet@1
+  rationale: 'Re-issue of @1 for a fingerprint pin only (same extractor sandisk_datasheets@1, sources, kinds, keys): sandisk_datasheets.discover imports sandisk_ssd, bumped to @6 by A2-keys (therm.heatsink); parse() code is byte-identical. @1 text follows. New source sandisk-us-ssd-datasheets (crawler/adapters/sandisk_datasheets.py): the SanDisk / WD datasheet PDFs the sandisk.com
+    internal-SSD line pages link (documents.sandisk.com, in data/source-policy.yaml). Coordinator ruling 3 (2026-11-24 r2). ONE key: hw.dram_type,
+    from the PRODUCT SPECIFICATIONS table only, when its DRAM / DRAM CACHE row is one value spanning every capacity column and the MODEL NUMBERS
+    row ties each column to exactly one configuration of the linking line page: Yes = dram; Host Memory Buffer = dramless_hmb; No / DRAM-less /
+    None = _ssd.dram (ruling 5: dramless). A datasheet without the row (SN850X, SN770M, SN5000, SN5100, SN3000, SN7100) writes nothing. The
+    datasheet attaches by configuration mfr_sku only (no model identifier, no relation).'
+  audit:
+    by: A2-keys
+    at: '2026-11-25'
+    evidence: 'git diff: sandisk_datasheets.py unchanged; the fingerprint moves only through the sandisk_ssd import used by discover() (team/reports/2026-11-25-a2-zero-keys.md).'
+    parsers:
+      sandisk_datasheets@1: 'sha256:7b852a248cd6ec1c89d1'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+  match:
+    extractors: [sandisk_datasheets@1]
+    source_ids: [sandisk-us-ssd-datasheets]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys: [hw.dram_type]
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-ssd-sandisk-datasheet@3, reason: 'r7 parser bump sandisk_datasheets@1 -> @2 (NAND row, per table); @2 meaning frozen as locked'}
+- id: claim/mfr-ssd-samsung-datasheet@1
+  since: '2026-11-25'
+  rationale: 'New source samsung-ssd-datasheets (crawler/adapters/samsung_datasheets.py): Samsung''s own consumer internal-SSD datasheet PDFs
+    linked from https://semiconductor.samsung.com/consumer-storage/support/documents/ (semiconductor.samsung.com and download.semiconductor.samsung.com,
+    maker, crawl agent, data/source-policy.yaml 2026-11-25.3). Brief coord-2026-11-25-ssd-dram-sources. ONE key: hw.dram_type, from the spec
+    table''s (DRAM) Cache Memory / DRAM row only, and only when EVERY cell of that row gives the same _ssd.dram() value (every cell names an
+    LPDDR size = dram; HMB = dramless_hmb), so no capacity-column alignment is assumed. It binds to every model code the document prints whose
+    normalised form equals a samsung-us-ssd configuration key (configuration mfr_sku only: no model identifier, no relation). Cells that
+    differ, a dash, or no row write nothing; never inferred from the controller.'
+  audit:
+    by: A2-ssd
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a2-ssd-dram.md; 27 datasheets fetched (1 req/s, honest UA, all 200); 28 claims: dram 23 (9100 PRO 4 + heatsink 4,
+      990 PRO 3 + heatsink 5, 980 PRO 2, 870 EVO 5), dramless_hmb 5 (990 EVO 2, 990 EVO Plus 3). 27 agree with the samsung.com page value, 0 disagree;
+      1 new (980 PRO 1TB MZ-V8P1T0B/AM). Fixtures tests/test_samsung_datasheets.py.'
+    parsers:
+      samsung_datasheets@1: 'sha256:eaf9a973e439c259c184'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+  match:
+    extractors: [samsung_datasheets@1]
+    source_ids: [samsung-ssd-datasheets]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys: [hw.dram_type]
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-ssd-samsung-datasheet@2, reason: 'r7 parser bump samsung_datasheets@1 -> @2 (NAND Flash Memory row); @1 meaning frozen as locked'}
 - id: rel/source-stated-hierarchy@10
   since: '2026-11-25'
   supersedes: rel/source-stated-hierarchy@9
@@ -1621,7 +1859,194 @@ relation_policies:
   - method: page-variants:belkin
     types: [configuration_of]
     parsers: [crawlpy-strips@1]
-retired_policies:
+  retired: {at: '2026-11-26', superseded_by: rel/source-stated-hierarchy@11, reason: 'parser pin bump teamgroup_ssd@5 -> @6 (claims only); @10 meaning frozen as locked'}
+- id: claim/mfr-power-banks-structured@7
+  since: '2026-11-24'
+  supersedes: claim/mfr-power-banks-structured@6
+  rationale: 'Same sources, kinds, tiers and normalisation as @6, re-issued for the A2 preset-fill bump of all nine extractors (@4 -> @5). Changes:
+    (1) pd.pps false is now possible, ONLY by complete enumeration (A1 ruling 1, coordinator 2026-11-24): UGREEN (ugreen_powerbanks@5) writes false
+    when its spec block prints the port inventory (''Ports USB-A*1 USB-C*2''), every inventory output port has its own protocol list in the
+    ''Support Protocol'' block, no list is open-ended (''etc.'') and none names PPS; the claim carries the basis condition basis=complete_enumeration
+    (research/power-banks/spec-profile.yaml condition + pd.pps basis_conditions) and keeps the list as raw. (2) pd.pps true also from a per-port
+    protocol list naming PPS (UGREEN) and from an Anker output protocol row named PPS (''PPS: 65W'', ''[USB-C]-PPS: ...''); never from a USB-A row.
+    (3) UGREEN per-port ''USB-C1 Output: ... USB-C2 Output: ...'' rows are read as the port list (out.ports, out.max_single_port_w, pd.max_fixed_voltage).
+    (4) WIDENING: out.max_single_port_w added to the belkin-us-powerbanks and mophie-us-powerbanks allowlists. Belkin only from a figure the maker
+    labels single-port (''140W Single 158W Shared'', ''Maximum single USB-C output: Up to 100W'', At a Glance ''up to 65W from a single USB-C port'');
+    mophie only as the max of an Output row whose every entry names exactly one port (''1 USB-C Port - 100W1 USB-C Port - 45W...''); ''2 USB-C Ports
+    - 45W'', ''Cable and Port: 20W'' and bare wattages write nothing. INIU, CUKTECH, EcoFlow, SHARGE and KUXIU: version bump only (shared module), 0 claim changes.'
+  audit:
+    by: A2 preset fill
+    at: '2026-11-24'
+    evidence: 'team/reports/2026-11-24-a2-preset-fill.md; claim diff base (copy of crawler/ before this round) vs new parsers over every stored snapshot of the nine sources: +2 anker pd.pps true (A1259, A1339), +6 belkin out.max_single_port_w (BBA009 15, BBA019 140, BBA024 100, BPB020 65, BPB040 140, BPD010 15), +7 mophie out.max_single_port_w, ugreen +2 out.max_single_port_w / +2 out.ports / +2 pd.max_fixed_voltage (35524, two handles), +5 pd.pps true, +2 pd.pps false basis=complete_enumeration (25208, 90597A); 1 ugreen pd.pps true re-raw (65958: now the protocol list); 0 removals; INIU/CUKTECH/EcoFlow/SHARGE/KUXIU 0 changes. Fixtures tests/test_preset_fill_powerbanks.py.'
+    parsers:
+      anker_powerbanks@5: 'sha256:c133eb53d9980d795941'
+      belkin_powerbanks@5: 'sha256:abb5bf59fadce0dc1ae3'
+      cuktech_powerbanks@5: 'sha256:a95b2d2a86119ba7adc7'
+      iniu_powerbanks@5: 'sha256:a95b2d2a86119ba7adc7'
+      ugreen_powerbanks@5: 'sha256:a95b2d2a86119ba7adc7'
+      ecoflow_powerbanks@5: 'sha256:ba2e0f46dd314701b79d'
+      sharge_powerbanks@5: 'sha256:ba2e0f46dd314701b79d'
+      kuxiu_powerbanks@5: 'sha256:ba2e0f46dd314701b79d'
+      mophie_powerbanks@5: 'sha256:ba2e0f46dd314701b79d'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-24', note: owner standing approval 2026-11-24 (coordinator approves on owner's behalf after review)}
+  match:
+    extractors:
+    - anker_powerbanks@5
+    - belkin_powerbanks@5
+    - cuktech_powerbanks@5
+    - iniu_powerbanks@5
+    - ugreen_powerbanks@5
+    - ecoflow_powerbanks@5
+    - sharge_powerbanks@5
+    - kuxiu_powerbanks@5
+    - mophie_powerbanks@5
+    source_ids:
+    - anker-us-powerbanks
+    - belkin-us-powerbanks
+    - cuktech-us-powerbanks
+    - iniu-us-powerbanks
+    - ugreen-us-powerbanks
+    - ecoflow-us-powerbanks
+    - sharge-us-powerbanks
+    - kuxiu-us-powerbanks
+    - mophie-us-powerbanks
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    keys:
+      anker-us-powerbanks:
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.builtin_cable
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - pd.max_fixed_voltage
+      - pd.pps
+      - phys.dimensions
+      - phys.weight
+      belkin-us-powerbanks:
+      - cap.class_mah
+      - out.cable_note
+      - out.max_output_w
+      - out.max_single_port_w
+      - out.usb_a_count
+      - out.usb_c_count
+      - phys.dimensions
+      iniu-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      cuktech-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      ugreen-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - gen.color
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      ecoflow-us-powerbanks:
+      - cap.cell_mah
+      - cap.energy_wh
+      - in.max_w
+      - out.max_single_port_w
+      - out.max_total_w
+      - phys.dimensions
+      - phys.weight
+      sharge-us-powerbanks:
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.max_total_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - pd.pps
+      - pd.protocols
+      - phys.dimensions
+      - phys.weight
+      kuxiu-us-powerbanks:
+      - bat.chemistry
+      - cap.cell_mah
+      - cap.cell_voltage
+      - cap.energy_wh
+      - cap.rated_basis
+      - cap.rated_mah
+      - in.max_w
+      - in.pdos
+      - out.max_single_port_w
+      - out.ports
+      - out.simultaneous
+      - pd.max_fixed_voltage
+      - phys.dimensions
+      - phys.weight
+      mophie-us-powerbanks:
+      - cap.cell_mah
+      - out.max_output_w
+      - out.max_single_port_w
+      - phys.dimensions
+      - phys.weight
+    require_normalized: true
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-power-banks-structured@8, reason: 'r7 PPS parser bump (iniu/cuktech/ecoflow/sharge/kuxiu/mophie/anker @5 -> @6); @7 meaning frozen as locked'}
 - id: claim/document-spec-r3@1
   since: '2026-11-25'
   rationale: 'New transform docspec-attach-r3@1 (scripts/docspec_r3.py; extractors docspec-tv@1, docspec-router@1, docspec-laptop@1 in
@@ -6311,3 +6736,243 @@ retired_policies:
     keys:
       dell-us-monitors: [ergo.vesa, flk.pwm, gen.size_class, gen.viewable_diag, panel.technology, pwr.max, res.height_px, res.native, res.refresh_max, res.refresh_native, res.width_px, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.hdmi_version]
   retired: {at: '2026-11-25', superseded_by: claim/mfr-monitor-dell@2, reason: 'same-round re-issue: complete-enumeration zero widened after @1 was locked (dell_monitors@1 -> @2); @1 meaning frozen as locked, never approved'}
+- id: claim/spec-image-power-pdo@1
+  since: '2026-11-25'
+  rationale: 'New transform imgattach@1 (scripts/imgattach.py, extractor specimg@1; OCR input crawler/specimages.py imgocr@1 = grayscale + 2x
+    upscale + tesseract). Maker gallery spec images (cdn.shopify.com, a document_host inheriting the linking page) found on a REGISTERED maker
+    page the entity is observed on (edge verified as docattach@2). Identity: inherited only when the linking page is single-SKU (exactly one
+    non-bundle variant SKU and it is an own SKU of the entity), every model token in the image file name is an own identifier, and the OCR text
+    names no other model; otherwise the image must name an own model/SKU with every word of the mention at token confidence >= 60 and no
+    sibling, and is variant-exact only when that mention is an own SKU with no other SKU of the base, region token or shared identifier in play
+    (else specimg-review@1, never accepted). Values: docparse@2 grammar and port attribution unchanged; an electrical value line is read only
+    when the mean confidence of its digit-bearing words is >= 70 (and every row >= 60 via docparse@2) and no value token is ambiguous (split
+    digits "3.3-1 1V", letter/digit confusions "1JOOW", dangling decimals); a rejected line closes any open row. Same keys as
+    document-power-pdo@4 minus pd.epr (no image source of it). Affirmative only.'
+  audit:
+    by: A3 OCR + mophie
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a3-ocr-mophie.md; tests/test_imgattach.py (A2667 card corroborates the manual, multi-SKU page without OCR
+      model does not attach, low-confidence model token, file-name other-SKU veto, other model in the image, mean < 70 image drops, ambiguous
+      voltage); replay over all 281 bound Anker spec images (0 claims today).'
+    parsers:
+      imgattach@1: 'sha256:5bed2ab2b49ef89d9931'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25b}
+  match:
+    extractors: [specimg@1]
+    source_ids: [documents]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys: [pd.pps, pd.pps_max_voltage, pd.pps_max_current_a, pd.max_fixed_voltage, out.ports]
+  retired: {at: '2026-11-26', superseded_by: claim/spec-image-power-pdo@2, reason: 'review-8 P1: identity vetoes before single-SKU inheritance (imgattach.py fingerprint moved); @1 meaning frozen as locked'}
+- id: claim/mfr-power-stations-structured@7
+  since: '2026-11-25'
+  supersedes: claim/mfr-power-stations-structured@6
+  rationale: 'Every @6 rule unchanged (LiFePO₄ chemistry, Battery Pack Capacity, coordinator UPS-prose ruling r5), re-issued for shopify_powerstations@5 -> @6 and ankersolix_stations@5 -> @6 (A2-dell r6, brief item 2). CHANGED: a labelled UPS/EPS/switchover row whose ms figure is preceded by a bound (''<'', full-width ''＜'', ''≤'', ''&lt;'', ''under'', ''within'', ''less than'', ''sub-'') now publishes ''up to N'' (normalize qualifier up_to), consistent with the r5 prose ruling; before, it published the bare figure as exact. A bare figure stays exact. The prose regex also reads the full-width ''＜''. Same sources, kinds, tiers and key allowlists as @6.'
+  audit:
+    by: A2-dell r6
+    at: '2026-11-25'
+    evidence: 'team/reports/2026-11-25-a2-r6-dell.md; in-memory claim diff of HEAD parsers (@5) vs @6 over every stored station snapshot (1623 entity/key groups): 17 ups.switchover_ms changed from N to up to N (bluetti ac50b, ac50p, handsfree 1/2 up to 20, premium 100 v2 up to 10; ecoflow delta 3 / 3 plus / 3 max / 3 max plus / 3 ultra / 3 ultra plus up to 10; goalzero yeti 1000/1500 up to 15 (aps); jackery explorer 5000 plus x4 up to 20); 0 added, 0 removed, nothing else changed. tests/test_a2_r6_dell.py'
+    parsers:
+      ankersolix_stations@6: 'sha256:446437087bdebe31d502'
+      bluetti_stations@6: 'sha256:9196ffe3c7c38a949ff0'
+      ecoflow_stations@6: 'sha256:9196ffe3c7c38a949ff0'
+      goalzero_stations@6: 'sha256:9196ffe3c7c38a949ff0'
+      jackery_stations@6: 'sha256:9196ffe3c7c38a949ff0'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25d}
+  match:
+    extractors:
+    - ankersolix_stations@6
+    - bluetti_stations@6
+    - ecoflow_stations@6
+    - goalzero_stations@6
+    - jackery_stations@6
+    source_ids:
+    - ecoflow-us-stations
+    - bluetti-us-stations
+    - jackery-us-stations
+    - goalzero-us-stations
+    - ankersolix-us-stations
+    kinds:
+    - official
+    tiers:
+    - manufacturer
+    statuses:
+    - known
+    keys:
+      ecoflow-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - conn.wireless
+      - exp.expandable
+      - exp.max_batteries
+      - exp.max_wh
+      - gen.warranty_years
+      - in.ac_w
+      - in.car_w
+      - in.solar_port_w
+      - in.solar_ports
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_boost_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      bluetti-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - cert.marks
+      - cert.ul2743
+      - conn.wireless
+      - exp.expandable
+      - gen.warranty_years
+      - in.ac_w
+      - in.max_w
+      - in.passthrough
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_boost_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ac_waveform
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - out.wireless_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      jackery-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - gen.warranty_years
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      goalzero-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - cap.pack_ah
+      - cap.pack_voltage_v
+      - cert.marks
+      - exp.expandable
+      - gen.warranty_years
+      - in.ac_w
+      - in.recharge_ac_h
+      - in.recharge_solar_h
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.ac_waveform
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+      ankersolix-us-stations:
+      - bat.chemistry
+      - bat.cycle_life
+      - cap.energy_wh
+      - conn.wireless
+      - exp.expandable
+      - exp.max_batteries
+      - exp.max_wh
+      - gen.warranty_years
+      - in.ac_w
+      - in.solar_voltage
+      - in.solar_w
+      - out.ac_continuous_w
+      - out.ac_outlets
+      - out.ac_surge_w
+      - out.ac_voltage
+      - out.car_w
+      - out.ports
+      - out.usb_a_count
+      - out.usb_c_count
+      - out.usb_c_max_w
+      - phys.dimensions
+      - phys.weight
+      - ups.supported
+      - ups.switchover_ms
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-power-stations-structured@8, reason: 'review-8 P1-3: station parser bump @6 -> @7 (UPS bounds kept, ranges never endpoints, exact prose model identity); @7 meaning frozen as locked'}
+- id: rel/bundle-contents@7
+  since: '2026-11-25'
+  supersedes: rel/bundle-contents@6
+  rationale: 'Same rules and transform (bundles@2) as @6. Re-pin only for the station parser bumps ankersolix_stations@5 -> @6 and bluetti/ecoflow/jackery_stations @5 -> @6 (A2-dell r6, labelled UPS bound -> up to N, claim/mfr-power-stations-structured@7); no bundle code changed.'
+  audit:
+    by: A2-dell r6
+    at: '2026-11-25'
+    evidence: 'identifiers, aliases and package/bundle structure identical HEAD vs @6 station parsers over every stored station snapshot (only 17 ups.switchover_ms claims changed); bundles@2 untouched.'
+    parsers:
+      ankersolix_stations@6: 'sha256:446437087bdebe31d502'
+      bluetti_stations@6: 'sha256:9196ffe3c7c38a949ff0'
+      ecoflow_stations@6: 'sha256:9196ffe3c7c38a949ff0'
+      jackery_stations@6: 'sha256:9196ffe3c7c38a949ff0'
+      dreame_robovac@2: 'sha256:82418fe203d439831b23'
+      narwal_robovac@2: 'sha256:2f212aa7076aff13a250'
+      bundles@2: 'sha256:673c815897604268136d'
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-25', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-25d}
+  rules:
+  - method: bundle:ankersolix-us-stations
+    types: [contains]
+    parsers: [ankersolix_stations@6+bundles@2]
+  - method: bundle:bluetti-us-stations
+    types: [contains]
+    parsers: [bluetti_stations@6+bundles@2]
+  - method: bundle:ecoflow-us-stations
+    types: [contains]
+    parsers: [ecoflow_stations@6+bundles@2]
+  - method: bundle:jackery-us-stations
+    types: [contains]
+    parsers: [jackery_stations@6+bundles@2]
+  - method: bundle:dreame-us-robovac
+    types: [contains]
+    parsers: [dreame_robovac@2+bundles@2]
+  - method: bundle:narwal-us-robovac
+    types: [contains]
+    parsers: [narwal_robovac@2+bundles@2]
+  retired: {at: '2026-11-26', superseded_by: rel/bundle-contents@8, reason: 're-pin for station parser bumps @6 -> @7 (A3-fix review-8); @7 meaning frozen as locked'}

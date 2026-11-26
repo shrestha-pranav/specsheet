@@ -60,3 +60,11 @@ fetched first), TCL (83 SKUs); per-label value histograms (team/reports/2026-11-
   "Latest HDMI (4K @ 120Hz)" port list. Never false, never a port count: `hdmi.ports_4k120` keeps the rules above. The preset
   `tv-4-hdmi-4k120` ("TVs with 4K 120 Hz HDMI") gates on this key plus a native 120 Hz panel; the port count is a column. TCL rows with no
   4K rate and every Vizio row ("HDMI Type: 2.1" names no rate) stay unknown.
+
+## 4K 120 Hz port counts from TCL quick start guides (A2-st r7, 2026-11-26)
+- New claim/document-tv-ports@1 (docspec-tv-ports@1, transform docspec-attach-tvports@1, pending): the per-port connection lines
+  "HDMI port 1: Supports up to 4K/144Hz | HDMI port 2: Supports up to 4K/120Hz | HDMI ports 3 & 4: Supports up to 4K/60Hz". 13 stored TCL
+  guides print them (all = 2 of 4 ports). Only guides whose text layer names the model bind (85Q651G, 98Q651G, 115QM891G, 85/98X11K, QM64L);
+  QM6K / QM7K / QM8K / QM9K guides show the model range only as artwork (OCR is not read), so those rows stay unknown.
+- No other lever in stored raw: LG "4ea (supports 4K 120Hz ...)" stays unresolved (ruling above); Samsung LST7D 65" / LST9T / MNA89 sizes print
+  no input-rate row for that size (siblings' rows are never transferred); Vizio "Type 2.1" names no rate; LG 2026 pages link no spec sheet.

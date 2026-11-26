@@ -34,7 +34,7 @@ import _powerbank as P
 import _run
 import shopify_powerbanks as S
 
-VERSION = 5       # v5 (A2 preset fill): mophie out.max_single_port_w = max of an Output row that names every output port one by one; v4: r7 shared _powerbank (labelled Wh pairs keep both with energy_basis, case-insensitive Wh); v3: r6 shared _powerbank (repeated port row = one port); v2: review 3 (two unlabelled figures unresolved, 5 V capacity basis, rated load conditions)
+VERSION = 6       # v6 (r7 PPS, A2-pb): EcoFlow own-page FAQ answer listing the output protocols with PPS -> pd.pps true (only on pages that passed the spec-name gate; a FAQ naming a product line must match the page title); v5 (A2 preset fill): mophie out.max_single_port_w = max of an Output row that names every output port one by one; v4: r7 shared _powerbank (labelled Wh pairs keep both with energy_basis, case-insensitive Wh); v3: r6 shared _powerbank (repeated port row = one port); v2: review 3 (two unlabelled figures unresolved, 5 V capacity basis, rated load conditions)
 DELAY = 1.0
 
 
@@ -67,6 +67,7 @@ def dims(s):
 
 class _Shop2(S._Shop):
     host = None
+    version = VERSION          # v6: own version (was inherited from shopify_powerbanks.VERSION, which stays 5)
 
     def keep(self, p):
         return False
@@ -266,6 +267,23 @@ def mophie_single(o):
     return P.fnum(max(ws)) if ws else None
 
 
+def ecoflow_faq_pps(text, title):
+    """r7: EcoFlow FAQ answers on the product's own page. 'What protocols does RAPID Pro power bank support ...? ... Output supports PD3.0 PPS,
+    QC3.0 ...' or 'What are the protocols that support fast charging? BC1.2/.../PD3.0/PPS'. -> (literal) or None. Never from an Input clause;
+    a question naming a product line ('RAPID Pro') must be contained in the page title (EcoFlow copies sections between siblings)."""
+    for q in re.finditer(r"(What (?:protocols does ([A-Za-z0-9 ]+?) support|are the protocols that support fast charging)[^?]*\?)\s*(.{0,400})", text):
+        if q[2] and P.clean(q[2]).lower().replace(" power bank", "") not in title.lower():
+            continue
+        ans = q[3]
+        o = re.search(r"Output supports ([^;?]*?\bPPS\b[^;?]*)", ans)
+        if o:
+            return f"{q[1]} ... Output supports {o[1]}"[:300]
+        if not q[2] and (g := re.match(r"\s*((?:[A-Za-z0-9.]+/){3,}[A-Za-z0-9.]+)", ans)) and re.search(r"(?:^|/)PPS(?:/|$)", g[1]) \
+                and not re.search(r"(?i)input", ans[:g.end()]):
+            return f"{q[1]} {g[1]}"[:300]
+    return None
+
+
 def parse2(ad, snap, page, prod):
     pr, key = C.ParseResult(), snap.ref.key
     pr.sources = [L.source(snap, f"{ad.brand.upper()} US store page {key}")]
@@ -365,6 +383,8 @@ def parse2(ad, snap, page, prod):
         add("pd.protocols", sorted({x.strip() for x in re.split(r"[/,;]", pro) if x.strip() and len(x.strip()) < 20}), pro, lab)
         if re.search(r"\bPPS\b", pro):
             add("pd.pps", True, pro, lab)
+    if ad.brand == "ecoflow" and not any(c["key"] == "pd.pps" for c in pr.claims) and (fq := ecoflow_faq_pps(S.page_text(page), title)):   # v6
+        add("pd.pps", True, fq, "FAQ (protocols)")
     lab, w = _first(rows, r"weight$")
     if w and not re.search(r"package|gross", lab, re.I):
         add("phys.weight", grams(w), w, lab)

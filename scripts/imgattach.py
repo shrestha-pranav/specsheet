@@ -12,8 +12,8 @@ on (edge verified exactly like docattach: the discovery page URL is the URL of t
   (b) OCR IDENTITY: the image text names an own mfr_model / mfr_sku with every word of the mention at token confidence >= 60 (docattach.hits)
       and no sibling model (docattach.identity). Variant 'exact' only when the mention is an own SKU and no other SKU of the base model, no
       foreign region token and no shared identifier is in play; otherwise 'model_only' -> specimg-review@1.
-  A file-name token naming another model or another SKU of the same base (A2667113_TD01 on an A2667111-only page) vetoes (a): then only (b)
-  binds. Nothing else binds; an unbound image is an `image_proposal` event (reason recorded), never a claim.
+  A file-name token naming another model, or ANY variant / foreign-region / shared-identifier evidence (OCR text or file name: A2667113 on an
+  A2667111-only page, even with empty file_models) vetoes (a) and every 'exact' (review-8): then only (b) binds, as model_only. Nothing else binds; an unbound image is an `image_proposal` event (reason recorded), never a claim.
 Value trust (on top of docparse@2's per-row lowest digit-word confidence >= 60): a line is read only when the MEAN confidence of its
 digit-bearing words is >= 70 and none of its value tokens is ambiguous (a digit group split by a space inside a number or range,
 '3.3-1 1V'; a letter OCR often confuses with a digit next to a digit, '1JOOW', '2O.0V'; a dangling decimal point '3. 25A'). A rejected line is
@@ -99,16 +99,21 @@ def binding(e, w, res, img, f):
     fm = set(img.get("file_models") or [])
     page_skus = f.get("page_skus") or []
     single = len(page_skus) == 1 and page_skus[0].upper() in skus
-    if single and fm <= own:
+    # review-8 P1: conflicting-identity vetoes come BEFORE either binding branch. Another SKU of an own base model (OCR text or file name),
+    # a foreign region token or an identifier another entity shares means the image may describe another configuration: never 'exact'.
+    conflict = bool(idn["variants"] or idn["region"] or idn["shared"]) or not fm <= own
+    if single and not conflict:
         return {"identity": "page", "identity_scope": "image", "identity_variant": "exact"}, "single_sku_page"
     if idn["mine"]:
-        exact = any(v.upper() in skus for v in idn["mine"]) and not idn["variants"] and not idn["region"] and not idn["shared"] and fm <= own
+        exact = any(v.upper() in skus for v in idn["mine"]) and not conflict
         return {"identity": "ocr", "identity_scope": "image", "identity_variant": "exact" if exact else "model_only"}, "ocr_model_number"
     if idn["low"]:
         return None, "identity_low_confidence"
     if not single:
         return None, "multi_sku_page_no_ocr_model"
-    return None, "file_name_names_other_sku"
+    if not fm <= own:
+        return None, "file_name_names_other_sku"
+    return None, "conflicting_variant_region_shared"
 
 
 def image_source(e, img, linked_from):

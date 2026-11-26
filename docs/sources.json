@@ -1,7 +1,7 @@
 {
  "generated_from": "data/source-policy.yaml",
- "policy_version": "2026-11-25.6",
- "policy_sha256": "b68d981043cbfb0314bf1446496b91dd02a08f3eae8d04ff86261ab8fa186c26",
+ "policy_version": "2026-11-26.2",
+ "policy_sha256": "712a5e4b181ba95983a0b5199a2d6e6ebe8da715e494ac93fb78868564366d53",
  "license_scope": "compilation + values whose sources[] include licence_grant:true; other values are facts with links, not licensed by us",
  "granted": [
   {
@@ -285,7 +285,8 @@
    "credit": "Belkin official specification pages",
    "categories": [
     "chargers",
-    "power-banks"
+    "power-banks",
+    "power-strips"
    ]
   },
   {
@@ -787,6 +788,38 @@
    "categories": [
     "chargers",
     "power-banks"
+   ]
+  },
+  {
+   "domain": "www.se.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "APC by Schneider Electric official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-strips"
+   ],
+   "to_clear": "Terms: 'You agree not to reproduce, other than for your own personal, non-commercial use ... all or part of this website or its content' and 'not to establish any hypertext links to this website or its content'. Coordinator/owner to rule whether citing facts with a source link is acceptable before any APC value is published (none is today)."
+  },
+  {
+   "domain": "www.apc.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "APC by Schneider Electric official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-strips"
+   ],
+   "to_clear": "Same Schneider Electric terms as www.se.com (reproduction + no-hyperlink clauses)."
+  },
+  {
+   "domain": "www.eaton.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Eaton (Tripp Lite) official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-strips"
    ]
   }
  ]

@@ -243,6 +243,116 @@
     "unknown",
     "unknown"
    ]
+  },
+  {
+   "id": "range-null-min",
+   "v": {
+    "in.voltage": {
+     "min": null,
+     "max": 240
+    }
+   },
+   "s": {},
+   "expect": [
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "no",
+    "no"
+   ]
+  },
+  {
+   "id": "range-null-max",
+   "v": {
+    "in.voltage": {
+     "min": 100,
+     "max": null
+    }
+   },
+   "s": {},
+   "expect": [
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "no",
+    "no"
+   ]
+  },
+  {
+   "id": "alt-key-order",
+   "v": {
+    "in.voltage": {
+     "min": 100,
+     "max": 240
+    }
+   },
+   "s": {},
+   "x": {
+    "in.voltage": {
+     "alt": [
+      {
+       "v": {
+        "max": 240,
+        "min": 100
+       },
+       "k": "measured"
+      }
+     ]
+    }
+   },
+   "expect": [
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "match",
+    "match"
+   ]
+  },
+  {
+   "id": "alt-null-endpoint",
+   "v": {
+    "in.voltage": {
+     "min": 100,
+     "max": 240
+    }
+   },
+   "s": {},
+   "x": {
+    "in.voltage": {
+     "alt": [
+      {
+       "v": {
+        "min": null,
+        "max": 240
+       },
+       "k": "measured"
+      }
+     ]
+    }
+   },
+   "expect": [
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "disagree",
+    "disagree"
+   ]
   }
  ]
 }
