@@ -98,9 +98,9 @@ class Policies(unittest.TestCase):
         import yaml
         pol = {p["id"]: p for p in yaml.safe_load((ROOT / "data/decisions/policies.yaml").read_text())["claim_policies"]}
         self.assertEqual(pol["claim/mfr-monitor-dell@2"]["audit"]["parsers"]["dell_monitors@2"], registry.parser_fingerprint("dell_monitors"))
-        st = pol["claim/mfr-power-stations-structured@8"]["audit"]["parsers"]   # review-8: stations @7
-        self.assertEqual(st["jackery_stations@7"], registry.parser_fingerprint("shopify_powerstations"))
-        self.assertEqual(st["ankersolix_stations@7"], registry.parser_fingerprint("ankersolix_stations"))
+        st = pol["claim/mfr-power-stations-structured@9"]["audit"]["parsers"]   # review-9: stations @8
+        self.assertEqual(st["jackery_stations@8"], registry.parser_fingerprint("shopify_powerstations"))
+        self.assertEqual(st["ankersolix_stations@8"], registry.parser_fingerprint("ankersolix_stations"))
 
 
 if __name__ == "__main__":

@@ -33,19 +33,55 @@ UPS_ROW_MS = re.compile(r"(?:(" + UPS_BOUND + r")\s*)?(?<![\d.])(\d+(?:\.\d+)?)\
 UPS_RANGE = re.compile(r"(?<![\d.])\d+(?:\.\d+)?\s*(?:-?\s*ms\s*)?(?:-|\u2013|\u2014|~|\uff5e|\bto\b)\s*\d+(?:\.\d+)?\s*-?\s*ms\b", re.I)
 
 
+# review-9 (A3-fix 2026-11-26, Codex review-9 P1-3): the qualification AROUND each figure is validated, not just the figure found.
+#   trailing upper bounds ('20 ms maximum', '20 ms max', '20 ms or less / or below / or under', '20 ms at most') -> 'up to N';
+#   ranges also as 'between 10 and 20 ms', 'from 10 to 20 ms', '10/20 ms', '10 or 20 ms' -> unresolved (rows) / nothing (prose);
+#   lower bounds ('\u226520 ms', '>=20', '>20', 'at least 20', 'over 20', 'min. 20', '20 ms or more', '20 ms+', '20 ms minimum') -> unresolved /
+#   nothing, never an exact value; any other qualifier ('~20 ms', 'approx.', 'about', 'around', 'typical', 'average', '\u00b1') -> the same.
+UPS_RANGE_WORDS = re.compile(r"(?i)\b(?:between|from)\s+\d+(?:\.\d+)?\s*(?:-?\s*ms\s*)?(?:and|to|&|-|\u2013|\u2014)\s*\d+(?:\.\d+)?\s*-?\s*ms\b")
+UPS_UPPER_AFTER = re.compile(r"(?i)^\s*\(?\s*(?:max(?:imum)?\b\.?|or\s+(?:less|below|under|lower|faster|shorter)\b|and\s+(?:below|under|less)\b|at\s+most\b)")
+UPS_LOWER_BEFORE = re.compile(r"(?i)(?:>=|>|\uff1e|\u2265|&gt;|\bat\s+least|\bmore\s+than|\bover|\babove|\bgreater\s+than|\bexceed\w*|\bmin(?:imum)?\.?:?|"
+                              r"\bnot\s+less\s+than|\bno\s+(?:less|shorter)\s+than)\s*$")
+UPS_LOWER_AFTER = re.compile(r"(?i)^\s*(?:\+|\(?\s*min(?:imum)?\b|or\s+(?:more|above|greater|longer|higher|slower)\b|and\s+(?:above|up|over|more)\b|at\s+least\b)")
+UPS_OTHER_BEFORE = re.compile(r"(?i)(?:~|\u223c|\u2248|\uff5e|\u00b1|\bapprox(?:\.|imately)?|\babout|\baround|\broughly|\btypical(?:ly)?|\baverage|\bavg\.?|"
+                              r"\bnominal(?:ly)?|\bca\.|\bestimated|\bas\s+(?:low|fast|little)\s+as)\s*$")
+UPS_OTHER_AFTER = re.compile(r"(?i)^\s*(?:\u00b1|\(?\s*(?:typ(?:ical)?|approx(?:imately)?|avg|average|nominal)\b)")
+UPS_LIST_BEFORE = re.compile(r"(?i)\d(?:\.\d+)?\s*(?:ms)?\s*(?:and|or|/|,|&)\s*$")
+
+
+def _qualify(text, m):
+    """One 'N ms' match -> 'up to N', the number, or U(reason) when its qualification is a lower bound / unsupported / part of a list."""
+    b, n = m.group(1), m.group(2)
+    pre, post = text[max(0, m.start() - 30):m.start()], text[m.end():m.end() + 25]
+    if not b and UPS_LIST_BEFORE.search(pre):
+        return U("switchover printed as several figures: no single figure")
+    if UPS_LOWER_BEFORE.search(pre) or UPS_LOWER_AFTER.search(post):
+        return U("switchover printed as a lower bound: never an exact value")
+    if UPS_OTHER_BEFORE.search(pre) or UPS_OTHER_AFTER.search(post):
+        return U("switchover printed with an unsupported qualifier (approximate / typical)")
+    if b or UPS_UPPER_AFTER.search(post):
+        return f"up to {n}"
+    return P.fnum(n)
+
+
 def ms_figure(text, first=True):
-    """-> None (no 'N ms'), U(reason) (a range: never an endpoint), or the value: a number (stated exactly) or 'up to N' (an explicit upper
-    bound, normalize.py qualifier up_to). first=True (labelled rows, unchanged since r6): the row's first figure is the labelled mode's one
-    ('Backup UPS: <20ms, Online UPS: 0ms' -> up to 20); first=False (prose ruling r5): several different figures -> U."""
-    if UPS_RANGE.search(text):
+    """-> None (no 'N ms'), U(reason) (a range, a lower bound or an unsupported qualifier: never an endpoint / exact value), or the value: a
+    number (stated exactly) or 'up to N' (an explicit upper bound before or after the figure, normalize.py qualifier up_to). first=True
+    (labelled rows, unchanged since r6): the row's first figure is the labelled mode's one ('Backup UPS: <20ms, Online UPS: 0ms' -> up to 20);
+    first=False (prose ruling r5): several different figures -> U."""
+    if UPS_RANGE.search(text) or UPS_RANGE_WORDS.search(text):
         return U("switchover printed as a range: no single figure (never an endpoint)")
-    ms = UPS_ROW_MS.findall(text)
+    ms = list(UPS_ROW_MS.finditer(text))
     if not ms:
         return None
-    if not first and (len({P.fnum(n) for _, n in ms}) != 1 or len({bool(b) for b, _ in ms}) != 1):
+    vals = [_qualify(text, m) for m in (ms[:1] if first else ms)]
+    if bad := next((v for v in vals if isinstance(v, U)), None):
+        return bad
+    if not first and len(set(vals)) != 1:
         return U("several different switchover figures printed")
-    b, n = ms[0]
-    return f"up to {n}" if b else P.fnum(n)
+    return vals[0]
+
+
 NEG = re.compile(r"\b(not|no|non|without|pending|in progress|applying|n/a)\b", re.I)
 
 

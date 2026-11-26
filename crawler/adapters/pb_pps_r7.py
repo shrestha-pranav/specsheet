@@ -13,6 +13,8 @@ adapters (discover / fetch / identity unchanged) and add pd.pps claims to the un
   Derived  (both, and anker_powerbanks@6) coordinator ruling r7: Samsung Super Fast Charging 2.0 is PPS by definition. The maker naming
            'Samsung Super Fast Charging 2.0' or '45W (max) (output) for Samsung' for this page -> pd.pps true, kind derived, condition
            basis=derived, quote names the rule. Only when no stated pd.pps claim exists; never a PPS voltage/current range.
+           @7 (review-9 P1-2): only an affirmative own-product OUTPUT sentence (see sfc2()); negation, questions, input / recharge /
+           adapter context and other-model mentions emit nothing.
 """
 import re, sys
 from pathlib import Path
@@ -20,7 +22,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 import _powerbank as P
 import shopify_powerbanks as S
 
-VERSION = 6
+VERSION = 7
 SFC2 = re.compile(r"Samsung Super Fast Charg\w* 2\.0|\b45\s*W (?:max(?:imum)? )?(?:output )?for Samsung\b", re.I)
 NEG = re.compile(r"(?i)\b(?:not|no|doesn.t|does not|without|unsupported|except)\b|\?")
 RULE_QUOTE = ("rule r7-sfc2: maker names Samsung Super Fast Charging 2.0 / 45W for Samsung; SFC 2.0 requires USB PD PPS. "
@@ -53,13 +55,44 @@ def prose_protocols(text):
     return None
 
 
-def sfc2(text):
-    """-> the maker sentence naming Samsung SFC 2.0 / '45W for Samsung', or None (negated mentions skipped)."""
-    for m in SFC2.finditer(text or ""):
-        a = max(text.rfind(". ", 0, m.start()), text.rfind("? ", 0, m.start()))
-        a = a + 2 if a >= 0 else 0
-        if not NEG.search(text[max(0, m.start() - 40):m.start()]):
-            return (text[a:m.start()] + text[m.start():m.end() + 60].split(". ")[0]).strip(" .")[:200]
+SENT_END = re.compile(r"[!?\n]|\.(?!\d)")
+QUESTION = re.compile(r"(?i)^\W*(?:Q\s*[:.]|(?:does|do|is|are|can|will|would|could|should|which|what|how|why|when|where|who)\b)")
+INPUT_CTX = re.compile(r"(?i)\b(?:input|recharg\w*|refill\w*|adapters?|chargers?|wall\s+(?:plug|outlet|socket|brick)|charging\s+(?:the|this|your)\s+"
+                       r"(?:power\s*bank|bank|battery|unit))\b|\bcharg\w*\s+(?:it|this|the\s+(?:power\s*bank|bank|battery))\b")
+OTHER_CTX = re.compile(r"(?i)\b(?:other|another|previous|older|newer|sibling|predecessor|successor|unlike|compared|versus|vs)\b")
+AFFIRM = re.compile(r"(?i)\b(?:supports?|supported|delivers?|outputs?|provides?|offers?|enables?|compatible|fast[- ]charges?)\b")
+MODEL_TOK = re.compile(r"\b[A-Z]{1,4}-?\d{2,5}[A-Z0-9-]*\b")
+
+
+def _sentence(text, m):
+    a = max([x.end() for x in SENT_END.finditer(text, 0, m.start())] or [0])
+    z = SENT_END.search(text, m.end())
+    return text[a:z.start() if z else len(text)], (text[z.start()] if z else "")
+
+
+def _norm(v):
+    return re.sub(r"[^A-Z0-9]", "", (v or "").upper())
+
+
+def sfc2(text, model=None):
+    """-> the maker sentence naming Samsung SFC 2.0 / '45W for Samsung' as THIS product's output, or None.
+
+    @7 (A3-fix, Codex review-9 P1-2): the whole sentence must be an affirmative own-product output statement. Nothing when the sentence
+    is negated anywhere ('... is not supported'), is a question ('Does it support ...?', FAQ 'Q:'), is about input / recharging / an adapter
+    ('Recharge using a Samsung SFC 2.0 adapter'), refers to another product ('Our other model P99 supports ...') or names a model token
+    that is not this page's model, or has no output verb (support / deliver / output / provide / compatible ...)."""
+    text = text or ""
+    own = _norm(model)
+    for m in SFC2.finditer(text):
+        sent, end = _sentence(text, m)
+        if end == "?" or QUESTION.search(sent) or NEG.search(sent) or INPUT_CTX.search(sent) or OTHER_CTX.search(sent):
+            continue
+        devices = re.sub(r"(?i)\b(?:Galaxy|iPhone|iPad|Pixel|Note|Tab)\s+(?:[A-Z]{0,3}\d{1,3}\w*\s*)+", " ", sent)   # target phones, not products
+        if any(_norm(t) != own and not (own and (_norm(t) in own or own in _norm(t))) for t in MODEL_TOK.findall(devices)):
+            continue
+        if not AFFIRM.search(sent):
+            continue
+        return sent.strip(" .")[:200]
     return None
 
 
@@ -84,7 +117,7 @@ class _R7:
         hit = self.stated(text, blk)
         if hit:
             P.emit(pr, self.adapter, snap, "pd.pps", True, hit[0], hit[1], model, None, hit[2])
-        elif (sf := sfc2(text)):
+        elif (sf := sfc2(text, model)):
             add_derived(pr, self.adapter, snap, model, sf)
         return pr
 

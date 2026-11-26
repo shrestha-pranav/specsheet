@@ -11,9 +11,8 @@ parse    : pure. Spec accordion = groups (accordion title h3) of product-specifi
            skipped (22B30H3's <title> says 24B3HM: the title is never used for identity). The JSON-LD name is the marketing alias.
 Traps    : the only refresh row is 'Max Refresh rate'. res.refresh_max = its figure, unless a higher Hz figure appears elsewhere on the page
            (24G51F row 144 Hz, copy '144Hz/OC 180Hz': the row is then the native rate and neither key is written). res.refresh_native = the explicit 'N Hz Native'
-           figure when the row says OC ('260Hz (OC, 240Hz Native)'); otherwise the single plain 'N Hz' figure only when nothing on the page
-           (rows, title, JSON-LD description) says OC/overclock/dual mode and no Hz figure there is higher than N (outside the signal-
-           frequency rows). flk.pwm 'none' ONLY from the maker's 'Flicker-Free' row naming Flicker Free / Yes; Anti Blue Light, silence
+           figure when the row says OC ('260Hz (OC, 240Hz Native)'); never from a plain 'N Hz' row (v2, review-9: the stored excerpt
+           drops the marketing body, so the absence of OC wording proves nothing). flk.pwm 'none' ONLY from the maker's 'Flicker-Free' row naming Flicker Free / Yes; Anti Blue Light, silence
            and 'No' write nothing. Counts: 'HDMI 2.1 x 2' style items of the HDMI / DisplayPort rows (an 'out' item is not counted; an
            item without a count writes nothing). usb.usbc_inputs only from the 'USB-C connectivity' row through _monports (ambiguous
            -> nothing; zero never written); usb.usbc_pd_w only from that row when it is a video input with one W figure.
@@ -26,7 +25,7 @@ import _run
 import _monports as MP
 import _monusb as MU
 
-ID, VERSION, SOURCE = "aoc_monitors", 1, "aoc-us-monitors"
+ID, VERSION, SOURCE = "aoc_monitors", 2, "aoc-us-monitors"     # v2 (A3-fix review-9 P2): no absence-based native refresh
 CATEGORIES = {"monitors"}
 ADAPTER = f"{ID}@{VERSION}"
 SITEMAP = "https://www.aoc.com/sitemap-en-us.xml"
@@ -197,9 +196,9 @@ def parse_html(snap, h):
             higher = any(int(z) > n for x in ctx for z in HZ.findall(x))
             if not higher:     # 24G51F: row 'Max Refresh rate 144 Hz', copy '144Hz/OC 180Hz' -> the row is the native rate, the max is not in it
                 add("res.refresh_max", n, "Max Refresh rate")
-            if not any(OC.search(x) for x in ctx) and not higher:
-                add("res.refresh_native", n, "Max Refresh rate", quote=f"Max Refresh rate: {mr} (no OC / overclock / dual-mode statement and no higher "
-                                                                        f"rate anywhere on the page)")
+            # v2 (A3-fix, Codex review-9 P2): no absence-based res.refresh_native. fetch() keeps only the excerpt (terms: no permanent
+            # storage), so an OC / overclock statement in the discarded marketing body is invisible here: 'no OC wording' is not evidence.
+            # res.refresh_native comes only from the row's explicit 'N Hz Native' figure above.
     # ---- flicker ---------------------------------------------------------------------------------------------------------------------
     ff = get("Flicker-Free") or get("Flicker Free")
     if ff and re.fullmatch(r"(?i)\s*(?:(?:TUV\s+)?flicker[- ]?free|yes)\s*", ff):

@@ -47,8 +47,23 @@ def codeof(t, slug):
     return slug, []
 
 
+
+TYPEA = re.compile(r"\bType[\u2011 -]?A\b|\bUSB[\u2011-]A\b", re.I)
+
+
+def connectors_stated(lines):
+    """v4 (A3-fix, Codex review-9 P2): _xports.dell skips a USB entry that names no Type-C as Type-A. Omission is not proof of 'not USB-C':
+    every USB entry of the Ports list must print its connector (Type-C / Thunderbolt / USB4 per _xports.USBC, or Type-A / USB-A), else the
+    literal port.usbc_list stays (no structured list that would imply a complete USB-C enumeration). Guard lives here so the shared
+    _xports module (pinned by the ASUS / Surface / router policies) stays byte-identical."""
+    for s in lines if isinstance(lines, list) else [lines]:
+        d = _xports._dash(s or "")
+        if re.search(r"\bUSB\b", d) and not _xports.USBC.search(d) and not TYPEA.search(d):
+            return False
+    return True
+
 class Dell:
-    id, version, source_id, categories = "dell", 3, "dell-us", {"laptops"}
+    id, version, source_id, categories = "dell", 4, "dell-us", {"laptops"}     # v4 (A3-fix review-9 P2): _xports.dell keeps the literal port list when a USB entry prints no connector (no Type-C, no Type-A)
 
     def __init__(self):
         self.store = C.BlobStore(self.source_id)
@@ -120,7 +135,7 @@ class Dell:
                 L.mapped(pr, f"{self.id}@{self.version}", snap, LABELMAP, lab, ls, "model_code", up)
         for c in [c for c in pr.claims if c["key"] == "port.usbc_list" and (c.get("locator") or {}).get("label") == "Ports"]:
             v = next(ln for lab_, ln in ports_cells if lab_ == "Ports") if ports_cells else None
-            if v is not None:
+            if v is not None and connectors_stated(v):
                 _xports.replace_claims(pr, C, c, _xports.dell(v), up)
         for c in pr.claims:
             c["locator"]["config"] = "default"

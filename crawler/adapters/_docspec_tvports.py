@@ -1,4 +1,4 @@
-"""Pure per-port HDMI rate parser for TV quick start guides, r7 (2026-11-26, A2-st): docspec-tv-ports@1. No network, deterministic, text layer.
+"""Pure per-port HDMI rate parser for TV quick start guides, r7 (2026-11-26, A2-st): docspec-tv-ports@2 (A3-fix review-9 P1-1). No network, deterministic, text layer.
 
 Separate module (like _docspec_tv / docspec-tv@1) so the pinned r3 extractors never drift. Input = crawler/documents.py derived text
 (pages [{n, text, blocks, method, ocr_conf}]); only pages with method == text_layer are read.
@@ -14,14 +14,20 @@ Rules (affirmative only, all must hold or nothing is read):
   - at least two port statements, so a single "HDMI port 1" sentence about eARC alone never counts as the full list;
   - the document carries no size-qualified rate footnote ('120Hz is only supported for 65"/75"'): a multi-size guide whose rate differs by
     size says nothing per model;
-  - generic 'HDMI 2.1' / 'supports 4K 120Hz' prose and the 'Input Signal Compatibility' format table are not read.
+  - generic 'HDMI 2.1' / 'supports 4K 120Hz' prose and the 'Input Signal Compatibility' format table are not read;
+  - @2 (review-9 P1-1): any 'HDMI port(s) N:' statement the rate pattern does not fully read (port 3 'Supports 4K@120Hz with ...',
+    'HDMI port 3: eARC') voids the whole list: an unread statement is not 'below 120'.
+  - @2: every fact carries n_ports (= the highest port stated). The parser cannot know the set is the whole inventory: the transform
+    (scripts/docspec_r7tv.py @2) emits only when an independent (non-document) hdmi.count for the target model equals n_ports, so a
+    partial prefix (ports 1-2 of a 4-port set) emits no count, including zero.
 """
 import re
 
-VERSION = 1
+VERSION = 2
 NAME = "docspec-tv-ports"
 
 PORT = re.compile(r"HDMI\s+ports?\s+((?:\d\s*(?:,|&|and|/)?\s*)+?)\s*:\s*Supports\s+up\s+to\s+4K\s*/\s*(\d{2,3})\s*Hz", re.I)
+ANY_PORT = re.compile(r"HDMI\s+ports?\s+\d(?:\s*(?:,|&|and|/)\s*\d)*\s*:", re.I)
 SIZE_FOOTNOTE = re.compile(r"only\s+(?:be\s+)?(?:supported|available)\s+(?:on|for|with)\s+[^\n]{0,40}\d{2,3}\s*(?:\"|”|''|-?inch)", re.I)
 
 
@@ -32,7 +38,11 @@ def tv(doc):
         return []
     rates, quotes, first_page = {}, [], None
     for p in pages:
-        for m in PORT.finditer(p.get("text", "")):
+        t = p.get("text", "")
+        read = [(m.start(), m.end()) for m in PORT.finditer(t)]
+        if any(not any(a <= s.start() < b for a, b in read) for s in ANY_PORT.finditer(t)):
+            return []                               # a port statement we cannot read: the list is not understood
+        for m in PORT.finditer(t):
             q = re.sub(r"\s+", " ", m.group(0)).strip()
             for port in re.findall(r"\d", m.group(1)):
                 r = int(m.group(2))
@@ -45,7 +55,9 @@ def tv(doc):
         return []
     n = sum(1 for r in rates.values() if r >= 120)
     raw = " | ".join(quotes)
-    out = [{"key": "hdmi.ports_4k120", "value": n, "raw": raw, "quote": raw, "page": first_page, "ocr": False, "ocr_conf": None}]
+    top = max(rates)
+    out = [{"key": "hdmi.ports_4k120", "value": n, "raw": raw, "quote": raw, "page": first_page, "ocr": False, "ocr_conf": None, "n_ports": top}]
     if n >= 1:
-        out.append({"key": "hdmi.has_4k120", "value": True, "raw": raw, "quote": raw, "page": first_page, "ocr": False, "ocr_conf": None})
+        out.append({"key": "hdmi.has_4k120", "value": True, "raw": raw, "quote": raw, "page": first_page, "ocr": False, "ocr_conf": None,
+                    "n_ports": top})
     return out

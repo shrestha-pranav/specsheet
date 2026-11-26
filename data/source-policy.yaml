@@ -19,8 +19,9 @@
 # Invariants enforced by the gate: licence_grant yes => free yes; paid yes => licence_grant yes.
 # Changing any disposition = bump policy_version (date.N), add a changelog line. Builds stamp the version into
 # manifest.json; a release refuses to promote with a policy version older than the one in git.
-policy_version: "2026-11-26.4"
+policy_version: "2026-11-26.5"
 changelog:
+  - {version: "2026-11-26.5", by: coordinator, note: "www.aoc.com free -> false: takedown of AOC values that went live in 127b1adc/6d755244 although claim/mfr-monitor-aoc was pending (pending policies auto-accepted; governance fix in progress). Owner decision on the storage clause still parked."}
   - {version: "2026-11-26.4", by: coordinator, note: "www.aoc.com -> crawl human_only pending owner decision: legal disclosure prohibits permanent storage/reproduction of the pages; aoc policy left unapproved (no AOC values published). Options: AOC permission, or owner ruling that a spec excerpt + facts is outside the clause."}
   - {version: "2026-11-26.3", by: A2-mon r8, note: "Monitor makers (brief coord-2026-11-26-r8-monitor-makers; robots + terms read 2026-11-26 with the crawler UA, refs per entry). Added www.aoc.com, kind maker, crawl agent: robots.txt 'User-Agent: * Allow: /', the legal disclosure has no automated-access clause; maker default disposition (free yes, paid no, no licence grant); to_clear: 'Permanent storage, reproduction or distribution of the pages is prohibited' (the aoc_monitors fetcher stores only the spec excerpt). New source aoc-us-monitors. crawl human_only (agents never fetch, a person may cite): www.hp.com (terms limit Permitted Uses to personal and business purposes when purchasing HP products and bar copying any Materials; the Acceptable Use Policy bars high-volume robots/spiders/scripts for data gathering), www.viewsonic.com (robots.txt names 'User-agent: Claude*' and 'User-agent: anthropic*' with Disallow: /; our agents are Claude-driven, so the site's stated wish governs even though our UA token differs; terms not read), www.acer.com (evidence blocked: robots.txt fetch reset at the HTTP/2 layer, same as the r2 connection timeouts) and www.gigabyte.com (evidence blocked: robots.txt 403 Akamai Access Denied). No workaround attempted on any of them."}
   - {version: "2026-11-26.2", by: coordinator, note: "ToS consistency: www.se.com + www.apc.com -> crawl human_only (terms limit reproduction to personal non-commercial use; same standard as Samsung/Apple ruling 2026-11-25.6). No APC values published."}
@@ -263,7 +264,7 @@ sources:
      evidence: {level: fetched, checked: 2026-11-26, refs: ["https://www.apc.com/robots.txt (redirects to https://www.se.com/robots.txt)", "https://www.se.com/us/en/about-us/legal/terms-of-use/"]},
      to_clear: "Same Schneider Electric terms as www.se.com (reproduction + no-hyperlink clauses)."}
   # Monitor makers r8 (2026-11-26.3, A2-mon). Robots fetched with our UA 2026-11-26; terms read the same day.
-  - {domain: www.aoc.com, match: exact, kind: maker, credit: "AOC official specification pages", categories: [monitors], free: true, paid: false, licence_grant: false, crawl: human_only,
+  - {domain: www.aoc.com, match: exact, kind: maker, credit: "AOC official specification pages", categories: [monitors], free: false, paid: false, licence_grant: false, crawl: human_only,
      evidence: {level: fetched, checked: 2026-11-26, refs: ["https://www.aoc.com/robots.txt (User-Agent: * Allow: /; Sitemap https://www.aoc.com/sitemap.xml)",
        "https://www.aoc.com/us/legal-disclosure (no robot/scraping/automated-access clause; 'Permanent storage, reproduction or distribution of the pages is prohibited')"]},
      to_clear: "Legal disclosure bars permanent storage/reproduction of the pages. We store only the spec excerpt (title, JSON-LD, spec accordion) and publish facts with a source link; coordinator/owner to confirm this reading."}

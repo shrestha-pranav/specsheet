@@ -46,7 +46,7 @@ class AocParse(unittest.TestCase):
         v = vals(page(G + [("", "Max Refresh rate", "180Hz OC")]))
         self.assertEqual(v["res.refresh_max"], 180); self.assertNotIn("res.refresh_native", v)
         v = vals(page(G + [("", "Max Refresh rate", "180 Hz")]))
-        self.assertEqual((v["res.refresh_max"], v["res.refresh_native"]), (180, 180))
+        self.assertEqual(v["res.refresh_max"], 180); self.assertNotIn("res.refresh_native", v)     # review-9: no absence-based native
 
     def test_refresh_plain_blocked_by_page_copy(self):
         v = vals(page(G + [("", "Max Refresh rate", "144 Hz")], desc="With a 144Hz/OC 180Hz refresh rate"))      # 24G51F
@@ -54,7 +54,7 @@ class AocParse(unittest.TestCase):
         v = vals(page(G + [("", "Max Refresh rate", "240 Hz")], desc="an overclocked refresh rate"))
         self.assertEqual(v["res.refresh_max"], 240); self.assertNotIn("res.refresh_native", v)
         v = vals(page(G + [("", "Max Refresh rate", "144 Hz"), ("", "Digital Signal Frequency Vertical", "48~165Hz")]))
-        self.assertEqual(v["res.refresh_native"], 144)                     # signal-frequency rows are not refresh claims
+        self.assertEqual(v["res.refresh_max"], 144); self.assertNotIn("res.refresh_native", v)     # signal-frequency rows are not refresh claims
 
     def test_flicker_explicit_only(self):
         self.assertEqual(vals(page(G + [("", "Flicker-Free", "Flicker Free")]))["flk.pwm"], "none")

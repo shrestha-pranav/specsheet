@@ -11,6 +11,13 @@ the page URL equals the entity's own observation), only when the document's text
 (DS.named), and never when it also names an identifier of a same-brand catalogued entity that is NOT observed on any of its linking pages
 (multi_model_other_page). A size-range guide whose text names no model (TCL '50-85QM7K' guides print the range only as artwork) attaches
 nothing. Keys: hdmi.ports_4k120 and hdmi.has_4k120 only. Affirmative only; text layer only.
+
+@2 (A3-fix, Codex review-9 P1-1): a count needs an independently established complete port inventory bound to the target model:
+  - the entity carries exactly one distinct official hdmi.count from a non-document source (its own maker page) and it equals the highest
+    port the guide states (TP fact n_ports); otherwise the stated ports are only a prefix and nothing is emitted, not even 0;
+  - the guide must quote the entity's own full identifier (a series/base token such as 'QM7K' alone does not bind a size);
+  - a guide that also names any other same-brand catalogued model is shared: nothing for anyone. @1 exempted models observed on the
+    guide's linking pages, which transferred one model's per-port rates to every linked size; that exemption is gone.
 """
 import hashlib, json, sys
 from collections import Counter
@@ -23,7 +30,7 @@ import _docspec_tvports as TP  # noqa: E402
 import docattach as DA  # noqa: E402
 import docspec_attach as DS  # noqa: E402
 
-TRANSFORM = "docspec-attach-tvports@1"
+TRANSFORM = "docspec-attach-tvports@2"
 SOURCE_ID = DA.SOURCE_ID
 CAT = "tvs"
 KEYS = {"hdmi.ports_4k120", "hdmi.has_4k120"}
@@ -57,6 +64,18 @@ def parsed(d, sha, fp):
     return res
 
 
+def inventory(e):
+    """-> the one independent hdmi.count of this entity (official, known, not from a document), else None."""
+    vals = set()
+    for c, ob in e.claims:
+        if c.get("key") == "hdmi.count" and c.get("status") == "known" and c.get("kind") == "official" and ob[0] != SOURCE_ID:
+            try:
+                vals.add(int(float(c.get("value"))))
+            except (TypeError, ValueError):
+                return None
+    return next(iter(vals)) if len(vals) == 1 else None
+
+
 def claim(f, dkind, url, ident, exact):
     return {"key": f["key"], "status": "known", "kind": "official", "value": f["value"], "unit": None, "raw": f["raw"], "quote": f["quote"],
             "conditions": {"document_kind": dkind, "identity": "text_layer", "identity_scope": "document",
@@ -87,21 +106,24 @@ def apply(worlds, events, stats, root=None):
             continue
         st["r7ports_docs_with_facts"] += 1
         text = res["text"]
-        linked = [x for x in doc["found_on"] if x.get("category") == CAT and x.get("source_id")]
-        local = {id(e) for x in linked for e in by_obs.get((CAT, x["source_id"], x["ref"]), [])}
         for _, e, fs in DA.edges_of(doc, [CAT], by_obs).values():
-            mine = DS.named(e, text)
+            own = set(DA.ident_values(e))
+            mine = [v for v in DS.named(e, text) if v in own]          # the full identifier, never a base/series token
             ob = (SOURCE_ID, doc["norm_url"], rec["snapshot"])
             if not mine:
                 st["r7ports_model_not_named"] += 1
                 continue
-            others = sorted({v for o in w.ents if id(o) not in local and o.brand == e.brand
+            others = sorted({v for o in w.ents if o is not e and o.brand == e.brand
                              for v in DS.named(o, text) if not any(v in m or m in v for m in mine)})
             if others:
-                events.append(("document_proposal", CAT, e, w.anchors(e.keys), ob, {"reason": "multi_model_other_page", "url": doc["url"], "others": others[:8]}))
+                events.append(("document_proposal", CAT, e, w.anchors(e.keys), ob, {"reason": "multi_model_shared_guide", "url": doc["url"], "others": others[:8]}))
                 st["r7ports_proposal_multi_model"] += 1
                 continue
             facts = [x for x in res["facts"] if x["key"] in KEYS]
+            inv = inventory(e)
+            if inv is None or any(x.get("n_ports") != inv for x in facts):
+                st["r7ports_no_complete_inventory"] += 1
+                continue
             edges = 0
             for f in fs:
                 if not DA.edge_verified(e, f):
@@ -110,7 +132,7 @@ def apply(worlds, events, stats, root=None):
                 edges += 1
                 DA.add_document(e, doc, f["page_url"])
                 for x in facts:
-                    c = claim(x, doc["kind"], doc["url"], mine, bool(set(mine) & set(DA.ident_values(e))))
+                    c = claim({k: v for k, v in x.items() if k != "n_ports"}, doc["kind"], doc["url"], mine, True)
                     snap = DA.edge_source(e, doc, rec, c["locator"]["pdf_page"], f["page_url"])
                     c["locator"]["linked_from"] = f["page_url"]
                     c["observed_at"] = rec.get("fetched_at") or "1970-01-01T00:00:00Z"

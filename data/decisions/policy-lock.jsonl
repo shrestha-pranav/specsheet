@@ -154,3 +154,11 @@
 {"at": "2026-11-26T10:11:21Z", "id": "claim/mfr-monitor-structured@10", "sha256": "sha256:8b4aa2192bff3b8393cf507cd66edae2467bef767b53b84756bd2e336e05ec61"}
 {"at": "2026-11-26T10:11:21Z", "id": "claim/derive-tuv-eye-comfort-5star@4", "sha256": "sha256:4d728279a2c349433df4d5bbb7623b6380e30ce93993fdb7e4153fece2a781ad"}
 {"at": "2026-11-26T10:11:21Z", "id": "rel/source-stated-hierarchy@14", "sha256": "sha256:a79a03c7ac9b78f1094d516bf87469470a9a61c783f9ca595a86c5c2e7995908"}
+{"at": "2026-11-26T10:46:53Z", "id": "claim/mfr-power-banks-structured@9", "sha256": "sha256:c9c40385f15fb5946b7e4596a54b5503dab8e31fd16053820c7691833512fe88"}
+{"at": "2026-11-26T10:46:53Z", "id": "claim/derive-samsung-sfc2-pps@2", "sha256": "sha256:4ae6bd35fa07a23d8a321df15944daf0fc79bf861d741fa1a4071c967e17999f"}
+{"at": "2026-11-26T10:46:53Z", "id": "claim/mfr-power-stations-structured@9", "sha256": "sha256:502de1963030ab3ad8a918fea37d88b40070debc7591d202d53e855c6e379b34"}
+{"at": "2026-11-26T10:46:53Z", "id": "claim/document-tv-ports@2", "sha256": "sha256:b70e3d736bdd9f9b1b945f7744cb20898a5d6fb7f6e231e28142fd38bd16701e"}
+{"at": "2026-11-26T10:46:53Z", "id": "claim/mfr-laptop-ports@3", "sha256": "sha256:b2f9862a533114b1b4048fe62fddbe32814356b8a4b43fc84cc9c16d744126ce"}
+{"at": "2026-11-26T10:46:53Z", "id": "claim/mfr-monitor-aoc@3", "sha256": "sha256:33cda710c3983d59fa1c76790fd254c3bc3e546180fec5d0e9aa763ba3f5ed26"}
+{"at": "2026-11-26T10:46:53Z", "id": "rel/bundle-contents@9", "sha256": "sha256:fd962b56589d93f2a441811c372577acafd8d5bd477e419553743ca5e662c1e2"}
+{"at": "2026-11-26T10:46:53Z", "id": "rel/source-stated-hierarchy@15", "sha256": "sha256:42ec24ee064a2d0c6d73fa530f95605a1227ea7313ca6364d52c5446a4577974"}

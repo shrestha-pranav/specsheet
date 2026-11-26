@@ -1,7 +1,7 @@
 {
  "generated_from": "data/source-policy.yaml",
- "policy_version": "2026-11-26.4",
- "policy_sha256": "72308c19ecf2baa0c51cd239da0ffb0e03e70bf455c04a1847e6809a9681da0a",
+ "policy_version": "2026-11-26.5",
+ "policy_sha256": "9a471ca0bcb292527d39db77f31288b8cc5207dfeea6319b9d7572a826a2ac64",
  "license_scope": "compilation + values whose sources[] include licence_grant:true; other values are facts with links, not licensed by us",
  "granted": [
   {
@@ -811,17 +811,6 @@
     "power-strips"
    ],
    "to_clear": "Same Schneider Electric terms as www.se.com (reproduction + no-hyperlink clauses)."
-  },
-  {
-   "domain": "www.aoc.com",
-   "match": "exact",
-   "kind": "maker",
-   "credit": "AOC official specification pages",
-   "crawl": "human_only",
-   "categories": [
-    "monitors"
-   ],
-   "to_clear": "Legal disclosure bars permanent storage/reproduction of the pages. We store only the spec excerpt (title, JSON-LD, spec accordion) and publish facts with a source link; coordinator/owner to confirm this reading."
   },
   {
    "domain": "www.hp.com",

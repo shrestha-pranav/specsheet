@@ -352,7 +352,8 @@ def do_apple(world, meta, sid, rec, pr, extra, stats):
     stats["claims_adapter"] += attach_claims(pr, rec, sid, lambda loc: e, e)
 
 
-_CAPTOK = re.compile(r"(\d+(?:\.\d+)?)\s*(TB|GB)\b", re.I)
+_CAPNUM = r"(?<![\d.,])(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?"          # review-9 P2: '1,024GB' is one figure (1024), never '024'
+_CAPTOK = re.compile(r"(" + _CAPNUM + r")\s*(TB|GB)\b", re.I)
 
 
 def _own_cap(pr, sku):
@@ -361,7 +362,7 @@ def _own_cap(pr, sku):
 
 
 def _caps(text):
-    return {float(v) * (1000 if u.upper() == "TB" else 1) for v, u in _CAPTOK.findall(text)}
+    return {float(v.replace(",", "")) * (1000 if u.upper() == "TB" else 1) for v, u in _CAPTOK.findall(text)}
 
 
 def _skus_on_page(pr):
@@ -385,6 +386,8 @@ def own_alias(pr, sku):
     if (b := bound_label(pr, sku)) is not None or any((a.get("sku") or (a.get("locator") or {}).get("sku")) == sku for a in mk):
         return b                                        # r8: the adapter bound this SKU's own label (None = its labels disagree)
     for a in mk:
+        if (a.get("sku") or (a.get("locator") or {}).get("sku")) not in (None, sku):
+            continue                                    # review-9 P2: an explicit foreign binding vetoes before any textual match
         if _names_sku(a["text"], sku) and not any(_names_sku(a["text"], o) for o in others):
             return a["text"]
     cap = _own_cap(pr, sku)
@@ -402,7 +405,7 @@ def own_alias(pr, sku):
 
 
 def _strip_caps(text):
-    out = re.sub(r"\s*(?:[-,/|]\s*)?\(?\b\d+(?:\.\d+)?\s*(?:TB|GB)\b\)?", "", text, flags=re.I)
+    out = re.sub(r"\s*(?:[-,/|]\s*)?\(?" + _CAPNUM + r"\s*(?:TB|GB)\b\)?", "", text, flags=re.I)
     out = re.sub(r"\s*([-,])\s*(?=[-,])", "", out)                   # '- ,' left where a capacity sat between two separators
     return re.sub(r"\s{2,}", " ", out).strip(" -,/|")
 
@@ -442,7 +445,7 @@ def neutral_name(name, pr, sku):
     toks, cap = _caps(name), _own_cap(pr, sku)
     if not toks or (cap is not None and all(abs(t - cap) / cap <= 0.03 for t in toks)):
         return name
-    out = re.sub(r"\s*[-,/|(]?\s*\b\d+(?:\.\d+)?\s*(?:TB|GB)\b\s*\)?", " ", name, flags=re.I)
+    out = re.sub(r"\s*[-,/|(]?\s*" + _CAPNUM + r"\s*(?:TB|GB)\b\s*\)?", " ", name, flags=re.I)
     out = re.sub(r"\s{2,}", " ", out).strip(" -,/|")
     return out or name
 

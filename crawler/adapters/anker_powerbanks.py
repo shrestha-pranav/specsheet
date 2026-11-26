@@ -23,7 +23,7 @@ import _powerbank as P
 import _run
 import pb_pps_r7 as R7   # v6: sfc2() (Samsung SFC 2.0 rule, shared with INIU/CUKTECH)
 
-ID, VERSION, SOURCE = "anker_powerbanks", 6, "anker-us-powerbanks"     # v6 (r7 PPS, A2-pb): own prose naming Samsung Super Fast Charging 2.0 / "45W ... for Samsung" -> pd.pps true kind derived (basis derived), only when no output-row PPS; v5 (A2 preset fill): a protocol row named PPS in the output section ('PPS: 65W', '[USB-C]-PPS: 3V-11V') = pd.pps true; r7: shared _powerbank changed (energy_basis pairs, case-insensitive Wh); v3: r6 shared _powerbank (repeated port row = one port); v2: review 3
+ID, VERSION, SOURCE = "anker_powerbanks", 7, "anker-us-powerbanks"     # v7 (A3-fix review-9 P1-2): pb_pps_r7.sfc2 needs an affirmative own-product output sentence (model passed); v6 (r7 PPS, A2-pb): own prose naming Samsung Super Fast Charging 2.0 / "45W ... for Samsung" -> pd.pps true kind derived (basis derived), only when no output-row PPS; v5 (A2 preset fill): a protocol row named PPS in the output section ('PPS: 65W', '[USB-C]-PPS: 3V-11V') = pd.pps true; r7: shared _powerbank changed (energy_basis pairs, case-insensitive Wh); v3: r6 shared _powerbank (repeated port row = one port); v2: review 3
 CATEGORIES = {"power-banks"}
 ADAPTER = f"{ID}@{VERSION}"
 BASE = "https://www.anker.com"
@@ -240,7 +240,7 @@ def parse_page(snap, h):
     if ch:
         i = re.search(r"lifepo4|semi-?solid|polymer|lithium|li-?ion", prose, re.I)
         add("bat.chemistry", ch, prose[max(0, i.start() - 60):i.start() + 80], "FAQ / description")
-    if not any(c["key"] == "pd.pps" for c in pr.claims) and (sf := R7.sfc2(prose + " " + P.clean(comps.get("htmlContainer") if isinstance(comps.get("htmlContainer"), str) else ""))):   # v6 derived: SFC 2.0 is PPS
+    if not any(c["key"] == "pd.pps" for c in pr.claims) and (sf := R7.sfc2(prose + " " + P.clean(comps.get("htmlContainer") if isinstance(comps.get("htmlContainer"), str) else ""), model)):   # v6 derived: SFC 2.0 is PPS
         R7.add_derived(pr, ADAPTER, snap, model, sf)
     rh, lit = P.recharge_h(prose)
     add("in.recharge_time_h", rh, lit, "FAQ / description")

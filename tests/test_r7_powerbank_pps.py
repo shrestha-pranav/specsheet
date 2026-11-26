@@ -39,7 +39,7 @@ class Iniu(unittest.TestCase):
         self.assertEqual(len(c), 1)
         self.assertIs(c[0]["value"], True)
         self.assertEqual(c[0]["kind"], "official")
-        self.assertEqual(c[0]["method"]["extractor"], "iniu_powerbanks@6")
+        self.assertEqual(c[0]["method"]["extractor"], "iniu_powerbanks@7")
         self.assertTrue(c[0]["raw"].startswith("Output port: USB-C"))
 
     def test_input_only_pps_writes_nothing(self):
