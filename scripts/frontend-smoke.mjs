@@ -246,11 +246,13 @@ assert.equal(requests.length,beforeIssue,'Constructing draft links sends no requ
 // DOM layout and post-render disclosure behavior still require browser verification.
 for (const category of categories) {
   if (category.index) Object.assign(category, await json(`api/v1/${category.id}/schema.json`));
-  const categoryRows = await ui.indexFor(category);
-  await ui.renderProduct(category, categoryRows[0].id, new URLSearchParams(), 0);
+  let categoryRows = await ui.indexFor(category);
+  const pv = !categoryRows.length;          // r11 A2-appl: a category whose policies are all pending is preview-only
+  if (pv) categoryRows = await ui.indexFor(category, true);
+  await ui.renderProduct(category, categoryRows[0].id, new URLSearchParams(pv ? 'preview=1' : ''), 0);
   assert.match(element('main').innerHTML, /detail-grid/, `${category.id}: product rendered`);
   assert.doesNotMatch(element('main').innerHTML, /\[object Object\]/, `${category.id}: no object coercion`);
-  await ui.renderCompare(category, new URLSearchParams({ids:categoryRows.slice(0,2).map(r=>r.id).join(',')}), 0);
+  await ui.renderCompare(category, new URLSearchParams({ids:categoryRows.slice(0,2).map(r=>r.id).join(','), ...(pv ? {preview:'1'} : {})}), 0);
   assert.match(element('#comparison-table').innerHTML, /compare-table/, `${category.id}: comparison rendered`);
 }
 // A3 r8 / A4: certification-only listings are opt-in, flat, off by default; preview never relabels them as unreviewed.

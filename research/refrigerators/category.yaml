@@ -1,0 +1,28 @@
+name: Refrigerators
+description: "US refrigerators and refrigerator-freezers by maker model number (Bosch B36CL80SNS, Frigidaire FRFS2823AS) and by ENERGY STAR
+  certified pattern (Samsung BRB106003**: one DOE basic model covering several finishes/hinges, shown as its own row and flagged): ENERGY STAR
+  type and DOE product class, counter-depth / compact / built-in flags, width and height, DOE total and adjusted volume (adjusted volume is
+  never shown as capacity), annual kWh under the DOE test procedure with the federal limit and % below it, refrigerant, ice maker,
+  connected. Source: ENERGY STAR Certified Residential Refrigerators (U.S. EPA). Absent from ENERGY STAR = unknown, never 'not certified'."
+columns: [config.es_type, dims.width_in, capacity.total_ft3, energy.annual_kwh, config.counter_depth, cert.energy_star]
+# r11 A2-appl (scripts/escover.py): ES pattern rows are their own entities (key x_energystar_model_pattern, gen.is_pattern); concrete models get
+# directed covered_by_certification edges to them (listed in additional_model_information, or a unique whole-string match), never a merge.
+features: [es_pattern_entities]
+es_patterns: {source: energystar-refrigerators}
+# Filing-brand folding (A1 profile gen.brand: sub-brands are separate ES brand_name values; fold via brand_aliases). Issuer ids are the
+# adapter's slug of brand_name (crawler/adapters/energystar_appliances.brand_id). Multi-brand cells ('upstreman, frestec, nooody') are NOT folded.
+brand_aliases: {ge_profile: ge, cafe: ge, monogram: ge, ge_adora: ge, frigidaire_gallery: frigidaire, frigidaire_professional: frigidaire,
+  lg_signature: lg, jenn_air: jennair, kitchen_aid: kitchenaid, viking_range_llc: viking, sks: signature_kitchen_suite,
+  signature_kitchen_suite_sks: signature_kitchen_suite, thorkitchen: thor_kitchen, westbend: west_bend, danby_designer: danby, danby_diplomat: danby,
+  danby_or_danby_designer: danby, danby_or_danby_designer_or_danby_premiere_or_danby_diplomat: danby, crosley_professional: crosley,
+  silhouette_professional: silhouette, smeg_spa: smeg, summit_professional: summit, hamilton_beach_commercial: hamilton_beach}
+brand_names: {ge: GE Appliances (GE / Profile / Cafe / Monogram), lg: LG, samsung: Samsung, whirlpool: Whirlpool, frigidaire: Frigidaire, bosch: Bosch,
+  kitchenaid: KitchenAid, maytag: Maytag, midea: Midea, hisense: Hisense, haier: Haier, summit: Summit, galanz: Galanz, magic_chef: Magic Chef,
+  insignia: Insignia, kenmore: Kenmore, fisher_paykel: Fisher & Paykel, black_decker: BLACK+DECKER, sub_zero: Sub-Zero, jennair: JennAir,
+  thermador: Thermador, liebherr: Liebherr, miele: Miele, danby: Danby, beko: Beko, signature_kitchen_suite: Signature Kitchen Suite,
+  u_line: U-Line, xo: XO, rca: RCA, tcl: TCL, thor_kitchen: THOR Kitchen, viking: Viking, smeg: Smeg, zline: ZLINE, ikea: IKEA}
+# importer 'model' identity scope: key = (brand, normalised model or pattern string), market not in the key. Every row states market US
+# (rows without "United States" are dropped by the adapter).
+identity_scope:
+  cross_market_brands: "*"
+  market_scoped_brands: []

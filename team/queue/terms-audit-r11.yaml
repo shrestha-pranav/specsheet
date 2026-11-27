@@ -1,0 +1,122 @@
+# Terms audit r11 (A5), brief team/briefs/coord-2026-11-26-r11-terms-audit-a5.md. PROPOSALS ONLY: the coordinator
+# applies them to data/source-policy.yaml (A5 did not edit it). Against policy_version 2026-11-26.9.
+# Scope: every crawl:agent (or crawl-absent) domain with evidence none/search. Hosts already handled by A2-chg/A2-bat
+# in .7/.9 (belkin, s3.belkin, choetech, hypershop, aukey, plugable, nekteck, satechi, baseus, kuxiu, nativeunion,
+# mophie) are left out.
+# Method 2026-11-26: robots.txt + homepage + terms pages fetched with the crawler UA
+# (crawler/crawl.py UA, specsheet-crawler/0.1), >=1.1 s between requests per host, robots checked before each page.
+# Any 403/WAF challenge = blocked, no other fetcher used. The one exception is TP-Link: WebSearch was used only to
+# find the URL of its terms page, and the page itself was fetched with our UA.
+# basis: A = terms bar robots/scraping/automated collection (the LG/Samsung/Apple standard)
+#        B = the site licence limits access to or use of the site/content to personal non-commercial use (the
+#            se.com/apc 2026-11-26.2 and satechi .9 standard). A download/print-only clause stays agent (mophie .9 precedent).
+#        R = robots.txt names Claude*/anthropic* or ClaudeBot with Disallow: / (ViewSonic/Bissell precedent)
+#        X = blocked (403 / WAF challenge / unreachable)
+# published_values = spec values citing the host in docs/api/v1/*/products/*.json at audit time.
+checked: 2026-11-26
+proposals:
+  # ---------------- flips to crawl: human_only ----------------
+  - {domain: www.asus.com, crawl: human_only, basis: [A, B], published_values: 10841,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://www.asus.com/terms_of_use_notice_privacy_policy/official-site/ (1.8 'the following actions are strictly prohibited: ... 1.8.4 Using any data mining, robots, or similar data gathering and/ or extraction tools'; 5.1 'limited, personal, non-commercial ... license to access or enter the SERVICE')", "https://www.asus.com/robots.txt (User-agent * path disallows only)"]}}
+  - {domain: rog.asus.com, crawl: human_only, basis: [A, B], published_values: 3651,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://rog.asus.com/us/terms-of-notice/official-site/ (same ASUS notice: 1.8.4 'data mining, robots, or similar data gathering and/ or extraction tools' strictly prohibited)"]}}
+  - {domain: www.tp-link.com, crawl: human_only, basis: [A, B], published_values: 3927,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://privacy.tp-link.com/web/official/terms-of-use?country=US (prohibits use that '\"Crawls,\" \"scrapes,\" or \"spiders\" any page or portion of the Services (through use of manual or automated means)'; 'You may only use the Services for your personal, non-commercial use')", "https://www.tp-link.com/robots.txt (path disallows only)"]}}
+  - {domain: us.tcl.com, crawl: human_only, basis: [A, B], published_values: 2088,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://us.tcl.com/policies/terms-of-service ('use any robot, spider, crawler, scraper, script ... or other automated means or interface not authorized by us to access the Services, extract data'; licence 'solely for your own private, non-commercial purposes'). Note: same clause says robots.txt 'controls all automated access', and robots.txt is Allow: /. Read conservatively as not an authorization"]}}
+  - {domain: www.netgear.com, crawl: human_only, basis: [A], published_values: 481,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://www.netgear.com/about/terms-and-conditions/ (s12: 'YOU WILL NOT USE THE SERVICES THROUGH ANY AUTOMATED TOOLS ... (INCLUDING SCRIPTS OR WEB CRAWLERS)'; the Terms cover 'websites (including netgear.com ...)' as Products)"]},
+     note: "CONTESTED: 2026-11-25.5 read this clause as binding subscription Services only and set www.downloads.netgear.com (180 values) + downloads1.netgear.com agent. s12 names NETGEAR WEBSITES. The coordinator should rule once for all three hosts."}
+  - {domain: levoit.com, crawl: human_only, basis: [A, B], published_values: 64,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://levoit.com/policies/terms-of-service (do not 'Interfere with or disrupt the operation of the Application or Websites (including by using automated means such as bots, scrapers, or crawlers ...)'; licence 'for your personal, non-commercial use')"]}}
+  - {domain: byjasco.com, crawl: human_only, basis: [A, B], published_values: 0,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://byjasco.com/policies/terms-of-service (s9: 'Reverse engineer, decompile, scrape, or otherwise attempt to extract data from the Services'; no AI training use; licence 'for personal, non-commercial purposes')"]}}
+  - {domain: austere.com, crawl: human_only, basis: [A], published_values: 0,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://austere.com/policies/terms-of-service (Shopify boilerplate: may not use the Service '(i) to spam, phish, pharm, pretext, spider, crawl, or scrape')"]}}
+  - {domain: www.sandisk.com, crawl: human_only, basis: [B], published_values: 2605,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://www.sandisk.com/legal/terms-of-use ('limited non-exclusive right to access and use the materials ... for personal, non-commercial use only, and provided you do not modify, re-sell, or make commercial use of such materials'); no robot clause"]}}
+  - {domain: documents.sandisk.com, crawl: human_only, basis: [B], published_values: 124,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["SanDisk datasheet host linked from www.sandisk.com; robots.txt 404; governed by https://www.sandisk.com/legal/terms-of-use (personal, non-commercial use only)"]}}
+  - {domain: www.vizio.com, crawl: human_only, basis: [B], published_values: 1922,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://www.vizio.com/en/terms/terms-of-use (view/download pages provided use is 'for your informational, personal and non-commercial use only' and 'you will not copy, transfer or transmit such information to another person or entity, post it on any network computer')"]}}
+  - {domain: www.dell.com, crawl: human_only, basis: [B], published_values: 1418,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://www.dell.com/en-us/legal/lp/site-terms-of-use-copyright ('display, copy, distribute and download the Materials on this Site solely for personal, noncommercial use only'; no '\"mirror\" any Materials ... on any other server')"]},
+     note: "Consistency: i.dell.com + www.delltechnologies.com are agent per 2026-11-25.5 (0 values each here). Same Dell terms presumably apply; not re-read."}
+  - {domain: www.dreametech.com, crawl: human_only, basis: [B], published_values: 542,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://www.dreametech.com/pages/terms-conditions (download/display 'only on your personal computer and only for personal, non-profitable purposes'; 'prohibited to copy any content from our web page to any other web page or any other media')"]}}
+  - {domain: www.gl-inet.com, crawl: human_only, basis: [B], published_values: 508,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://www.gl-inet.com/en-us/policies/terms-of-service (s3: 'only for non-commercial transitory viewing. You need to obtain a commercial license if you want to use it for commercial purposes'; not to 'reproduce, duplicate, copy ... or exploit for any commercial purpose')"]},
+     note: "static.gl-inet.com stays agent per 2026-11-25.5 (7 values), though the same GL.iNet terms presumably apply. The coordinator should rule on it."}
+  - {domain: www.winixamerica.com, crawl: human_only, basis: [R, B], published_values: 307,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://www.winixamerica.com/robots.txt ('User-agent: ClaudeBot / anthropic-ai / Claude-Web' each 'Disallow: /'; * Content-Signal ai-train=no,use=reference)", "https://www.winixamerica.com/terms-and-conditions/ ('solely for internal, personal, noncommercial purposes')"]}}
+  - {domain: us.mova.tech, crawl: human_only, basis: [B], published_values: 265,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://us.mova.tech/pages/terms-conditions ('license to access, view, and use the Services and Content solely for your personal, non-commercial use')"]}}
+  - {domain: www.irobot.com, crawl: human_only, basis: [B], published_values: 119,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://www.irobot.com/en_US/legal/terms-and-conditions.html ('The Information that the Company authorizes you to view and download is provided solely for your personal, non-commercial use'; may not 'reproduce, publicly ...')"]}}
+  - {domain: www.microsoft.com, crawl: human_only, basis: [B], published_values: 0,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://www.microsoft.com/en-us/legal/terms-of-use ('Personal and Non-Commercial Use Limitation: Unless otherwise specified, the Services are for your personal and non-commercial use. You may not ... copy ... reproduce, publish'; scraping clause binds AI services only)"]},
+     note: "Consistency: download.microsoft.com is agent per 2026-11-25.5 under the same TOU (0 values here)."}
+  - {domain: learn.microsoft.com, crawl: human_only, basis: [B], published_values: 18,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://learn.microsoft.com/en-us/legal/termsofuse (same 'Personal and Non-Commercial Use Limitation'; robots.txt allows *)"]}}
+  - {domain: www.razer.com, crawl: human_only, basis: [B], published_values: 0,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://www.razer.com/legal/general-terms-of-use (s3: 'limited license to access and use the Razer Sites for your personal, non-commercial use'; 'you may not download (other than through page caching) ... or reproduce, ... copy, ... mirror')"]}}
+  - {domain: www.cyberpowersystems.com, crawl: human_only, basis: [X], published_values: 4929,
+     evidence: {level: blocked, checked: 2026-11-26, refs: ["https://www.cyberpowersystems.com/robots.txt and / answer 405 with an AWS WAF 'Human Verification' challenge to our UA; no workaround, terms not read"]}}
+  - {domain: www.kingston.com, crawl: human_only, basis: [X], published_values: 425,
+     evidence: {level: blocked, checked: 2026-11-26, refs: ["https://www.kingston.com/robots.txt 200 (allows *), but https://www.kingston.com/en answers 403 Cloudflare 'Just a moment...' challenge; no workaround, terms not read"]}}
+  - {domain: assets.tripplite.com, crawl: human_only, basis: [X], published_values: 4898,
+     evidence: {level: blocked, checked: 2026-11-26, refs: ["https://assets.tripplite.com/robots.txt 404", "https://www.tripplite.com/ redirects to www.eaton.com, which answers 403 Akamai Access Denied (Eaton already human_only/blocked, 2026-11-26.1). Owner's terms unreadable"]}}
+  - {domain: slickdeals.net, crawl: human_only, basis: [A], published_values: 0,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://slickdeals.net/content/list/slickdeals-terms-of-service/ ('agree not to access ... any of the Services via any automated means (including scripts, web crawlers or other bots)')"]}}
+  - {domain: techradar.com, crawl: human_only, basis: [A], published_values: 0,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://futureplc.com/terms-and-conditions-us/ (linked from techradar.com footer; (k) no 'robot, ... spider, crawlers or other automatic device ... that ... scrapes ... to monitor, extract, copy or collect information'; 'in no event shall any robots.txt file ... be construed as granting written permission')"]}}
+  - {domain: the-gadgeteer.com, crawl: human_only, basis: [A], published_values: 0,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://the-gadgeteer.com/terms-of-service/ ('you will not access the Site through automated or non-human means, whether through a bot, script, or otherwise'; no 'data mining, robots, or similar data gathering and extraction tools')"]}}
+  - {domain: furper.com, crawl: human_only, basis: [A], published_values: 0,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://furper.com/policies/terms-of-service (Shopify boilerplate '(i) to spam, phish, pharm, pretext, spider, crawl, or scrape')"]}}
+  - {domain: amazon.com, crawl: human_only, basis: [R], published_values: 0,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://www.amazon.com/robots.txt ('User-agent: Claude-User / ClaudeBot / Claude-SearchBot' each 'Disallow: /'); conditions of use not read"]}}
+  - {domain: 9to5toys.com, crawl: human_only, basis: [R], published_values: 0,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://9to5toys.com/robots.txt (ClaudeBot in the 'AI crawlers used only for model training' group, Disallow: /); terms not read"]}}
+  - {domain: bhphotovideo.com, crawl: human_only, basis: [X], published_values: 0,
+     evidence: {level: blocked, checked: 2026-11-26, refs: ["https://www.bhphotovideo.com/ 403 to our UA (robots.txt itself 200)"]}}
+  - {domain: androidauthority.com, crawl: human_only, basis: [X], published_values: 0,
+     evidence: {level: blocked, checked: 2026-11-26, refs: ["https://www.androidauthority.com/ 403 to our UA (robots.txt 200)"]}}
+  - {domain: gizmochina.com, crawl: human_only, basis: [X], published_values: 0,
+     evidence: {level: blocked, checked: 2026-11-26, refs: ["https://www.gizmochina.com/ 403 to our UA (robots.txt 200)"]}}
+  - {domain: switchchargers.com, crawl: human_only, basis: [X], published_values: 0,
+     evidence: {level: blocked, checked: 2026-11-26, refs: ["https://switchchargers.com/robots.txt connection timed out (30 s); unreachable, same treatment as www.acer.com"]}}
+  # ---------------- stay crawl: agent (evidence upgraded) ----------------
+  - {domain: ww2.arb.ca.gov, crawl: agent, published_values: 4406,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://ww2.arb.ca.gov/privacy-conditions-use (privacy + disclaimers; no automated-access clause, and no reuse licence)", "https://ww2.arb.ca.gov/robots.txt (User-agent * Disallow: /*\\? with Crawl-delay: 5)"]},
+     note: "Crawl-delay 5 for *: our ~1 req/s pacing breaks it. The CARB fetcher must wait >=5 s per request."}
+  - {domain: techspecs.ui.com, crawl: agent, published_values: 982,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://www.ui.com/legal/termsofservice/ (personal-use licence binds Ubiquiti 'Services' (device/cloud), same reading as www.ui.com in 2026-11-25.5); techspecs.ui.com/robots.txt serves the SPA HTML (no robots file)"]}}
+  - {domain: www.benq.com, crawl: agent, published_values: 1660,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://www.benq.com/en-us/policy/user-terms.html (sales terms only; no automated-access or personal-use clause; no separate site terms of use linked)", "https://www.benq.com/robots.txt (path disallows only)"]}}
+  - {domain: us.roborock.com, crawl: agent, published_values: 113,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://us.roborock.com/policies/terms-of-service + /pages/terms-and-conditions (purchase terms; no automated-access clause)"]},
+     note: "/pages/user-agreement renders its text by JS and could not be read. Re-check by hand."}
+  - {domain: www.teamgroupinc.com, crawl: agent, published_values: 2708,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://file.teamgroupinc.com/File/TeamGroupInc-Terms-and-Conditions-of-Sale-en.pdf (sale terms, the only legal link; no website clause)", "https://www.teamgroupinc.com/robots.txt (allows *); /en/terms-of-use/ 404"]}}
+  - {domain: images.teamgroupinc.com, crawl: agent, published_values: 100,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["robots.txt 302 -> www.teamgroupinc.com/404.php (no robots file, not a WAF); TEAMGROUP terms as above"]}}
+  - {domain: furmanpower.com, crawl: agent, published_values: 0,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://furmanpower.com/policies/terms-of-service (download/print 'solely for your own non-commercial use' only, the same ZAGG boilerplate as www.mophie.com, which stays agent per .9; no robot clause)"]}}
+  - {domain: smartgadgetkit.com, crawl: agent, published_values: 0,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://smartgadgetkit.com/terms-of-service/ (no automated-access clause; 'You may not reproduce content without permission')", "robots.txt Content-Signal ai-train=no (we do not train)"]}}
+  - {domain: en.best-batteries.com, crawl: agent, published_values: 0,
+     evidence: {level: fetched, checked: 2026-11-26, refs: ["https://en.best-batteries.com/terms-conditions/ + /legal-information/ (no automated-access clause)"]}}
+  # document_host (inherit: linking_page): the maker page's terms govern, so there is no crawl change; robots only
+  - {domain: cdn.shopify.com, crawl: agent, published_values: 86, evidence: {level: fetched, checked: 2026-11-26, refs: ["https://cdn.shopify.com/robots.txt (User-agent * allow)"]}}
+  - {domain: cdn.shopifycdn.net, crawl: agent, published_values: 0, evidence: {level: fetched, checked: 2026-11-26, refs: ["https://cdn.shopifycdn.net/robots.txt (User-agent * allow)"]}}
+  - {domain: images.salsify.com, crawl: agent, published_values: 0, evidence: {level: fetched, checked: 2026-11-26, refs: ["robots.txt 404"]}}
+  - {domain: d2211byn0pk9fi.cloudfront.net, crawl: agent, published_values: 0, evidence: {level: fetched, checked: 2026-11-26, refs: ["robots.txt 403 S3 AccessDenied XML (missing object, not a WAF)"]}}
+  - {domain: dix7fd4yse9rd.cloudfront.net, crawl: agent, published_values: 0, evidence: {level: fetched, checked: 2026-11-26, refs: ["robots.txt 403 S3 AccessDenied XML (missing object, not a WAF)"]}}
+  - {domain: dz02g1kgtiysz.cloudfront.net, crawl: agent, published_values: 0, evidence: {level: fetched, checked: 2026-11-26, refs: ["robots.txt 403 S3 AccessDenied XML (missing object, not a WAF)"]}}
+consistency_review:   # agent hosts with recent fetched evidence whose terms match a flip above; the coordinator should rule
+  - {domains: [www.downloads.netgear.com, downloads1.netgear.com], with: www.netgear.com, published_values: 180}
+  - {domains: [i.dell.com, www.delltechnologies.com], with: www.dell.com, published_values: 0}
+  - {domains: [download.microsoft.com], with: www.microsoft.com, published_values: 0}
+  - {domains: [static.gl-inet.com], with: www.gl-inet.com, published_values: 7}
+  - {domains: [www.mophie.com, furmanpower.com], note: "download/print-for-non-commercial-use clause kept agent (.9). Basis B above flips stronger clauses that limit access/use of the content. The coordinator should confirm where the line sits."}

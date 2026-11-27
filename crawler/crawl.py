@@ -16,11 +16,14 @@ Usage: python3 -I crawler/crawl.py [--brands ugreen,anker] [--stage all|discover
                                    [--limit N] [--refresh]
 Output is local only (raw/ is gitignored).
 """
-import argparse, gzip, hashlib, html, json, re, sys, threading, time, urllib.parse, urllib.robotparser
+import argparse, gzip, hashlib, html, json, re, sys, threading, time, urllib.parse
 from html.parser import HTMLParser
 from pathlib import Path
 
 import requests, yaml
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import robots as robots_txt  # noqa: E402  RFC 9309 matcher (urllib.robotparser ignores * and $)
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "raw"
@@ -47,30 +50,128 @@ def crawl_mode(url):
     return _POLICY[0].crawl(url)
 
 
+class Refused(requests.RequestException):
+    """A request the crawl policy or robots.txt refuses (first URL or redirect hop): raised before it is sent. A RequestException, so
+    adapter code that catches network errors treats it as one; Net.get returns its reason ("policy" | "robots") instead."""
+    def __init__(self, why, url):
+        super().__init__(f"{why}: {url}")
+        self.why, self.url = why, url
+
+
+RedirectRefused = Refused
+
+
+class _Session(requests.Session):
+    """The one transport. EVERY request (Net.get, and adapters calling NET.s.get/post directly) and every redirect hop is checked by
+    `hop_check(url)` -> None | refusal reason (source-policy crawl mode, then robots.txt), and paced by `pace(url)` (robots Crawl-delay)."""
+    hop_check = pace = None
+
+    def request(self, method, url, *args, **kwargs):
+        if self.hop_check:
+            why = self.hop_check(url)
+            if why:
+                raise Refused(why, url)
+        if self.pace:
+            self.pace(url)
+        return super().request(method, url, *args, **kwargs)
+
+    def get_redirect_target(self, resp):
+        t = super().get_redirect_target(resp)
+        if t and self.hop_check:
+            nxt = urllib.parse.urljoin(resp.url, t)
+            why = self.hop_check(nxt)
+            if why:
+                raise Refused(why, nxt)
+            if self.pace:
+                self.pace(nxt)
+        return t
+
+
 class Net:
     def __init__(self):
-        self.s = requests.Session()
+        self.s = _Session()
         self.s.headers.update({"User-Agent": UA, "Accept-Language": "en-US,en;q=0.8"})
+        self.s.hop_check, self.s.pace = self._refusal, self._pace
         self.locks, self.last, self.fails, self.robots = {}, {}, {}, {}
         self.g = threading.Lock()
+        self._tl = threading.local()
 
     def _host(self, url):
         return urllib.parse.urlsplit(url).netloc.lower()
 
-    def allowed(self, url):
-        h = self._host(url)
+    def robots_for(self, url):
+        """crawler/robots.py Robots for url's scheme+host, fetched once per run. 4xx = allow all, 5xx / error = disallow all (RFC 9309)."""
+        sp = urllib.parse.urlsplit(url)
+        h = f"{sp.scheme or 'https'}://{sp.netloc.lower()}"
         with self.g:
-            rp = self.robots.get(h)
-        if rp is None:
-            rp = urllib.robotparser.RobotFileParser()
+            rb = self.robots.get(h)
+        if rb is None:
+            self._tl.robots = True       # a robots.txt redirect (-> /robots-us.txt, other host) is followed unchecked: no recursion
             try:
-                r = self.s.get(f"https://{h}/robots.txt", timeout=20)
-                rp.parse(r.text.splitlines() if r.status_code == 200 else [])
+                r = self.s.get(f"{h}/robots.txt", timeout=20)
+                rb = robots_txt.Robots.from_response(r.status_code, r.text if r.status_code < 300 else "")
             except requests.RequestException:
-                rp.parse([])
+                rb = robots_txt.Robots.from_response(None, "")
+            finally:
+                self._tl.robots = False
             with self.g:
-                self.robots[h] = rp
-        return rp.can_fetch("*", url)
+                self.robots[h] = rb
+        return rb
+
+    def allowed(self, url):
+        return self.robots_for(url).allowed(url)
+
+    def crawl_delay(self, url, delay=0):
+        """Effective per-host delay: max(our delay, the robots.txt Crawl-delay of our UA group / '*')."""
+        return max(delay or 0, self.robots_for(url).crawl_delay or 0)
+
+    def _refusal(self, url):
+        if crawl_mode(url) != "agent":      # policy applies to robots.txt too: a human_only / none host is not contacted at all
+            return "policy"
+        if getattr(self._tl, "robots", False) or urllib.parse.urlsplit(url).path == "/robots.txt":
+            return None
+        if not self.allowed(url):
+            return "robots"
+        return None
+
+    def _pace(self, url):
+        """Crawl-delay floor for every request, including adapters' direct NET.s calls (Net.get already waited max(delay, Crawl-delay))."""
+        if getattr(self._tl, "robots", False) or urllib.parse.urlsplit(url).path == "/robots.txt":
+            return
+        h = self._host(url)
+        cd = self.robots_for(url).crawl_delay or 0
+        wait = self.last.get(h, 0) + cd - time.time()
+        if wait > 0:
+            time.sleep(wait)
+        self.last[h] = time.time()
+
+    def curl_get(self, url, delay, max_hops=10, timeout=90):
+        """(status, body bytes) over curl (HTTP/2) with the same honest UA, for hosts that tarpit python-requests (www.microsoft.com store,
+        surface.py). Redirects are followed HERE, one hop at a time, each hop through the same policy + robots check and per-host
+        max(delay, Crawl-delay) pacing as get(); a refused hop returns (0, b"") without being requested. Status 0 = refused / curl failure."""
+        import subprocess
+        for _ in range(max_hops + 1):
+            if self._refusal(url):
+                return 0, b""
+            h = self._host(url)
+            with self.g:
+                lock = self.locks.setdefault(h, threading.Lock())
+            d = self.crawl_delay(url, delay)
+            with lock:
+                wait = self.last.get(h, 0) + d - time.time()
+                if wait > 0:
+                    time.sleep(wait)
+                p = subprocess.run(["curl", "-s", "--max-time", str(timeout), "-A", UA, "-o", "-", "-w", "\n%{http_code}\n%{redirect_url}", url],
+                                   capture_output=True)
+                self.last[h] = time.time()
+            rest, _, loc = p.stdout.rpartition(b"\n")
+            body, _, code = rest.rpartition(b"\n")
+            code = int(code) if code.strip().isdigit() else 0
+            if code in (301, 302, 303, 307, 308) and loc.strip():
+                url = urllib.parse.urljoin(url, loc.decode("utf-8", "replace").strip())
+                continue
+            return code, body
+        return 0, b""
 
     def get(self, url, delay, headers=None, stream=False):
         """Returns requests.Response or None. Records failures per host; opens the breaker at 15."""
@@ -83,6 +184,7 @@ class Net:
             return "policy"
         if not self.allowed(url):
             return "robots"
+        delay = self.crawl_delay(url, delay)       # robots.txt Crawl-delay (r11): e.g. ww2.arb.ca.gov asks 5 s, our default is 1 s
         for attempt in range(4):
             with lock:
                 wait = self.last.get(h, 0) + delay - time.time()
@@ -90,6 +192,9 @@ class Net:
                     time.sleep(wait)
                 try:
                     r = self.s.get(url, timeout=40, headers=headers or {}, stream=stream, allow_redirects=True)
+                except Refused as e:      # the request or a redirect hop is policy- / robots-refused (r11): nothing was sent to it
+                    self.last[h] = time.time()
+                    return e.why
                 except requests.RequestException:
                     r = None
                 self.last[h] = time.time()

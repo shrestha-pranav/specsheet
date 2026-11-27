@@ -23,7 +23,11 @@ python3 -I scripts/build.py > /tmp/specsheet-build.log
 node scripts/smoke.mjs
 node scripts/frontend-smoke.mjs
 python3 -I scripts/zero_trace.py > /tmp/specsheet-zero-trace.log || { tail -20 /tmp/specsheet-zero-trace.log; echo "release: free:false host trace in published artifacts" >&2; exit 3; }
-for t in tests/test_*.py; do python3 -I "$t" > /dev/null; done
+scripts/run-tests.sh > /tmp/specsheet-tests.log || { grep -v '^PASS' /tmp/specsheet-tests.log; echo "release: tests FAILED (full list /tmp/specsheet-tests.log)" >&2; exit 3; }
+tail -1 /tmp/specsheet-tests.log
+# Coverage regression guard: a category losing > 5% free records/values vs the live gh-pages coverage.json fails (RELEASE_ALLOW_DROP=1 overrides)
+python3 -I scripts/coverage_guard.py || { echo "release: coverage dropped vs the published site" >&2; exit 4; }
+# Determinism (scripts/determinism.sh, two full builds into temp dirs) is NOT run here: ~7 min on 2026-11-26, over the 60 s budget. Run it by hand.
 if ! python3 -I scripts/release_manifest.py measure > /tmp/specsheet-measure.json; then
   cat /tmp/specsheet-measure.json; echo "release: size budget FAILED (data/release-budget.json)" >&2; exit 2
 fi

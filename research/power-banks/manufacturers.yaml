@@ -44,6 +44,9 @@ manufacturers:
     status: viable             # Shopify products.json 200, 0 power banks.
   nimble:
     status: unprobed           # products.json 404 (not Shopify at that path); not pursued.
+  nitecore:
+    status: adapter            # r11: crawler/adapters/nitecore_powerbanks.py, raw/nitecore-us-powerbanks (20 pages -> 16 models). www.nitecore.com sitemap + server-rendered spec-key/spec-value table; model = printed product name == slug.
+  # r11 terms audit (source-policy 2026-11-26.7): anker, iniu, cuktech, ugreen, sharge, ecoflow stores are crawl human_only (terms bar automated collection).
 evidence_sources:
   chargerlab: "robots.txt: 'User-agent: *' Allow / with Content-Signal ai-train=no, use=reference, but ClaudeBot / anthropic-ai / Claude-Web are explicitly Disallow: /. Treated as blocked for this agent. Content is prose teardown/test articles, not a structured table."
   cpsc_recalls: "https://www.saferproducts.gov/RestWebServices/Recall?format=json&ProductName=power%20bank -> 200, 33 recalls (2026-10-29 newest). Products[].Model is usually empty; model strings are in Description text ('model W5 PRO'). Viable as a safety adapter (exact model-string match only); not built."

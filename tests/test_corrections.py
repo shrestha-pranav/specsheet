@@ -470,10 +470,15 @@ class Hardening:
             with self.assertRaises(CR.BlockedFetch):
                 CR.hash_image(first, pol=self.pol, handlers=(net,))
             self.assertEqual(net.seen, [])
-        net = FakeNet({"https://www.notebookcheck.net/a.png": (302, "https://www.chargerlab.com/a.png", b"")})
+        nbc_robots = ("https://www.notebookcheck.net/robots.txt", (200, None, b"User-agent: *\nDisallow: /*.gif$\n"))   # r11: agent sources are robots-checked
+        net = FakeNet(dict([nbc_robots, ("https://www.notebookcheck.net/a.png", (302, "https://www.chargerlab.com/a.png", b""))]))
         with self.assertRaises(CR.BlockedFetch):
             CR.hash_image("https://www.notebookcheck.net/a.png", pol=self.pol, handlers=(net,))
-        self.assertEqual(net.seen, ["https://www.notebookcheck.net/a.png"], "a crawl: agent source may not bounce us to a human_only one")
+        self.assertEqual(net.seen, [nbc_robots[0], "https://www.notebookcheck.net/a.png"], "a crawl: agent source may not bounce us to a human_only one")
+        net = FakeNet(dict([nbc_robots]))
+        with self.assertRaises(CR.BlockedFetch):
+            CR.hash_image("https://www.notebookcheck.net/a.gif", pol=self.pol, handlers=(net,))
+        self.assertEqual(net.seen, [nbc_robots[0]], "robots.txt wildcard Disallow: the image is never requested")
 
     def test_measurement_scope(self):
         class Cat:

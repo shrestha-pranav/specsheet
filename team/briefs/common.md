@@ -39,3 +39,7 @@ Builds: run bare import.py/build.py as `flock /tmp/specsheet-release.lock <cmd>`
 Approvals: agents never fill approval.by/at. New policies land pending; the coordinator approves on the owner's standing authority (granted 2026-11-24) after review. Superseded versions move to retired_policies verbatim with a retired: {at, superseded_by, reason} line.
 Fixtures that look like secrets (tokens, keys) must carry an inline '# gitleaks:allow' comment; CI runs gitleaks on every push.
 When a site refuses our crawler (403/503/WAF), it is blocked for this round: do not reach it through any other fetcher (WebFetch, search-engine cache, third-party readers) — not even for robots.txt or terms.
+
+## New-host order (coordinator rule 2026-11-26, after 4 r11 slips)
+Before the FIRST request to any host not yet in data/source-policy.yaml (product pages, products.json probes, sitemaps, specs pages — anything but robots.txt and the terms/legal pages themselves): read robots.txt AND the site terms in full, add the provisional entry, then fetch. Probing "just to see the catalog" before reading the terms is a violation, even if nothing is stored.
+Tests never assert a real policy's approval snapshot (`{"state": "pending"}`): the coordinator approves at release. Assert the invariant (pending, or approved with by + at).

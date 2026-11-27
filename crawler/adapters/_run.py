@@ -27,6 +27,24 @@ def _refs(store, ad):
                   hints=r.get("hints") or {k: v for k, v in r.items() if k not in ("source_id", "key", "url", "hints")}) for r in d["refs"]], d
 
 
+def carry_delisted(prev_doc, doc, today=None):
+    """Delisting safety (A3-rob r11): a ref the previous discovery listed and this one does not is KEPT in refs (so its stored snapshot keeps
+    feeding the importer and every consumer of discovery.json), hints marked listing: delisted + delisted_at (first date it went missing;
+    kept across runs). Only a complete discovery marks; an incomplete one carries the ref unmarked. A ref listed again comes back fresh
+    from the adapter (marks dropped). Returns the number of refs carried. A release must never lose records because discovery shrank."""
+    today = today or time.strftime("%Y-%m-%d", time.gmtime())
+    have = {r["key"] for r in doc["refs"]}
+    n = 0
+    for r in (prev_doc or {}).get("refs", []):
+        if r["key"] in have:
+            continue
+        r = dict(r, hints=dict(r.get("hints") or {k: v for k, v in r.items() if k not in ("source_id", "key", "url", "hints")}))
+        if doc.get("complete") and r["hints"].get("listing") != "delisted":
+            r["hints"].update(listing="delisted", delisted_at=today)
+        doc["refs"].append(r); have.add(r["key"]); n += 1
+    return n
+
+
 def main(ad):
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["discover", "fetch", "parse", "run"])
@@ -36,15 +54,18 @@ def main(ad):
     a = ap.parse_args()
     store = ad.store
     if a.cmd in ("discover", "run"):
-        prev = json.loads((store.dir / "discovery.json").read_text())["checkpoint"] if (store.dir / "discovery.json").exists() else None
-        d = ad.discover(prev, C.NET)
-        (store.dir / "discovery.json").write_text(json.dumps(dataclasses.asdict(d), indent=0))
-        print(f"discover: refs={len(d.refs)} complete={d.complete} stop={d.stop_reason}")
+        prev_doc = json.loads((store.dir / "discovery.json").read_text()) if (store.dir / "discovery.json").exists() else None
+        d = ad.discover(prev_doc["checkpoint"] if prev_doc else None, C.NET)
+        doc = dataclasses.asdict(d)
+        kept = carry_delisted(prev_doc, doc)
+        (store.dir / "discovery.json").write_text(json.dumps(doc, indent=0))
+        print(f"discover: refs={len(d.refs)} complete={d.complete} stop={d.stop_reason} carried_not_listed={kept}")
     if a.cmd in ("fetch", "run"):
         refs, _ = _refs(store, ad)
         import registry as REG      # lazy: registry imports adapter modules
         done = {s["ref"] for s in store.snapshots() if s["status"] == 200 and REG.compatible(type(ad), s)}   # any parser version (review 2 risk 1)
-        todo = [r for r in refs if (a.refresh or r.key not in done) and (not a.match or re.search(a.match, r.key))]
+        todo = [r for r in refs if (a.refresh or r.key not in done) and (not a.match or re.search(a.match, r.key))
+                and r.hints.get("listing") != "delisted"]      # delisted: keep the stored snapshot, do not re-fetch
         if a.limit:
             todo = todo[:a.limit]
         fails = n = 0

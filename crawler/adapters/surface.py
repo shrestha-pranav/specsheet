@@ -16,7 +16,7 @@ Not published anywhere fetched: regulatory model numbers (1xxx) and per-config w
 www.microsoft.com/en-us/surface/devices/* marketing pages were probed (table: processor/battery/display/ports/weight per size)
 but dropped: strictly less than the learn pages.
 """
-import json, re, subprocess, sys, time
+import json, re, sys, time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -40,19 +40,11 @@ LABELMAP.update({"Memory and storage": "mem.size", "Keyboard": "in.kb_layout", "
 LABELMAP = {k.lower().replace("&", "and"): v for k, v in LABELMAP.items() if v}
 
 
-_LAST = [0.0]
-
-
 def curl_get(url):
     """www.microsoft.com/en-us/store/* tarpits python-requests (HTTP/1.1) when the UA is ours (ReadTimeout; same URL answers
-    in 0.2 s over curl HTTP/2 with the SAME honest UA). Same identity, different transport: robots checked through Net, 1 req/s."""
-    if not C.NET.allowed(url):
-        return 0, b""
-    time.sleep(max(0.0, _LAST[0] + DELAY - time.time()))
-    p = subprocess.run(["curl", "-s", "-L", "--max-time", "90", "-A", C.crawl.UA, "-o", "-", "-w", "\n%{http_code}", url], capture_output=True)
-    _LAST[0] = time.time()
-    body, _, code = p.stdout.rpartition(b"\n")
-    return (int(code) if code.strip().isdigit() else 0), body
+    in 0.2 s over curl HTTP/2 with the SAME honest UA). Same identity, different transport: crawl.Net.curl_get follows redirects itself,
+    checking policy + robots.txt and pacing max(DELAY, Crawl-delay) on every hop (r11)."""
+    return C.NET.curl_get(url, DELAY)
 
 
 def curl_snapshot(store, ref, url, adapter, ext=".html"):

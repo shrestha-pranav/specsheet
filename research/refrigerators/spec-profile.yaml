@@ -1,0 +1,447 @@
+# A1 r11 (2026-11-26). Major-appliances pilot, part 1 of 2 (dishwashers = part 2). Scope ruling: ONE CATEGORY PER APPLIANCE TYPE, not one
+# `appliances` category with a subtype key. Why: crawler/adapters/registry.py SOURCES maps each source to exactly one category, schemas,
+# presets.json, the D8 gate and the UI grid are all per category, and the subtypes share almost no comparison keys (place settings, IWF,
+# CEF, adjusted volume, CEER, pints/day are each meaningful for one type only). One parameterised energystar_appliances adapter can still
+# serve every type (one SOURCES entry per dataset id). Order: refrigerators (incl. freezers as a later sibling `freezers`), dishwashers,
+# clothes-washers, clothes-dryers; room-acs, dehumidifiers, cooking later.
+# Data checked live 2026-11-26 against data.energystar.gov p5st-her9 (4,942 rows; columns listed per key below). Counts are Socrata
+# group-by counts on that day, not copied into data.
+profile_format: specsheet.category-profile/1
+category: refrigerators
+version: 0.1
+label: Refrigerators
+market: US
+status: draft
+scope: 'Residential refrigerators and refrigerator-freezers sold in the US (full-size and compact, freestanding and built-in), as DOE
+  10 CFR 430 covered products. ENERGY STAR p5st-her9 also lists coolers / compact coolers (wine and beverage, DOE product classes C-x) and a
+  handful of freezers: coolers are in scope as config.es_type cooler/compact_cooler (filterable out), stand-alone freezers belong to a
+  sibling category `freezers` (8t9c-g3tn) and are dropped here. Excludes commercial refrigeration (wati-2tfp), lab grade, ice makers.'
+identity:
+  levels:
+  - level: family
+    label: Line
+    meaning: 'Marketing line ("Bespoke 4-Door Flex", "Café French-Door"). Browse only; never passes values down.'
+    key_schemes: [mfr_family]
+    inherits: false
+  - level: model
+    label: Model number / certified pattern
+    meaning: 'Either (a) a concrete maker model number (Bosch B36CL80SNS) or (b) an ENERGY STAR certified PATTERN row (Samsung BRB106003**,
+      ABL AREF18**, Absocold ARD484F*10R/L) = one DOE basic model as filed. A pattern row is a published row in its own right (33% of
+      p5st-her9 rows are patterns; dropping them as the TV/purifier importers do would drop a third of the category) but is flagged
+      is_pattern and is never merged with, expanded into, or keyed as a concrete SKU. See the wildcard trap on cert.energy_star.'
+    key_schemes: [mfr_model, x_energystar_model_pattern]
+    inherits: true
+  - level: package
+    label: Trade item / UPC
+    meaning: 'UPC (ES upc column; crosswalk dataset 8edu-y555). One UPC = one concrete colour/finish/hinge unit. Attached to a pattern row
+      as a covered-UPC lookup alias only (scan -> row); never a merge key, never evidence of which concrete string it is.'
+    key_schemes: [gtin]
+    inherits: true
+  primary_key: 'Maker model number of one sellable unit, exactly as filed with ENERGY STAR / DOE or printed by the maker (finish code
+    included: Bosch B36CL80SNS vs B36CL80SNB are separate models). ES pattern strings are a separate key scheme. Retail titles and
+    line names are aliases.'
+  per_brand:
+    samsung: 'RF29BB8600QL = RF (French door) 29 (nominal cu ft class, NOT a measured volume) BB8600 (series) QL (finish/market). ES files
+      many as patterns (BRB106003**, RB10FSR4E**) with the finish pair wildcarded.'
+    bosch: 'B36CL80SNS: S/B/W tail = finish. ES files concrete strings with siblings in additional_model_information.'
+    ge: 'GE/Café/Profile/Monogram share one ES brand set; finish letter tail (GNE27JYMFS: FS = fingerprint-resistant stainless).'
+    lg: 'LRMVS3006S: final letter = finish; lg.com terms bar automated collection (category-survey-r2 s.0), so LG values come from ES only.'
+    frigidaire: 'FRFS2823AS: AS/AW/AB tail = finish; ES lists Frigidaire/Gallery/Professional as separate brand_name values.'
+    absocold: 'ARD484F*10R/L: * = finish character, trailing R/L = hinge alternation (one row covers both hinges).'
+  schemes:
+  - {scheme: mfr_family, level: family}
+  - {scheme: mfr_model, level: model, normalize: upper_strip_spaces}
+  - {scheme: x_energystar_model_pattern, level: model, pattern: '[*#/]', normalize: upper_strip_spaces}
+  - {scheme: x_energystar_pd_id, level: model}
+  - {scheme: gtin, issuer: GS1, level: package, alias_only: true}
+  variant_axes: []
+  model_defining: [config.es_product_class, capacity.total_ft3, capacity.adjusted_ft3]
+  note: 'Join rules. (1) ES row <-> maker page only on exact normalised (brand, model string), or on a string the ES row itself lists in
+    additional_model_information (split on , ; and whitespace; each token = a declared variant of the same basic model). (2) A concrete SKU
+    that matches a pattern row gets a covered_by_certification EDGE (TV precedent rel/tvs-es-certification-scope@1), never a merge, and
+    receives only the transfer keys listed in the cert.energy_star traps. (3) ES rows sharing a model_number with different pd_id are
+    re-filings (seen in dishwashers: Bosch DWHD640EFP x2): latest date_qualified wins, disagreement = conflicted, never two entities.
+    (4) markets "Canada" only rows are dropped (US market); "United States, Canada" kept.'
+units:
+  system: us_customary
+  custom:
+  - {unit: ft3, base: m3, factor: 0.028316846592}
+  - {unit: kWh/yr, base: kWh/yr, factor: 1}
+  - {unit: dBA, base: dBA, factor: 1}
+conditions:
+- id: test_procedure
+  label: DOE test procedure
+  type: enum
+  enum: [appendix_a, appendix_a1, appendix_b, maker_unstated]
+  description: 'Basis of a volume or kWh figure. Current US refrigerator-freezer figures are 10 CFR 430 Subpart B Appendix A (freezers:
+    Appendix B); pre-2014 filings used Appendix A1 with a different adjusted-volume factor and kWh basis, so pre-2014 figures do not compare.
+    ES p5st-her9 rows are current-procedure by construction (active specification); a maker spec sheet states no procedure = maker_unstated.'
+- id: depth_basis
+  label: Depth measured to
+  type: enum
+  enum: [case, doors, handles, doors_open_90, unstated]
+  description: 'Fridge depth is printed four ways and they differ by 2-5 in: cabinet only, to the door face, to the handle tips, and
+    installation depth with doors open 90 deg. A depth without its basis is maker-stated, unstated basis.'
+- id: noise_basis
+  label: Noise basis
+  type: enum
+  enum: [maker_dba_unstated_method, sound_power_db_re_1pw, sound_pressure_dba]
+  description: 'US maker pages print "dBA" with no method; EU energy labels give sound POWER dB(A) re 1 pW (IEC 60704), which reads several
+    dB higher than a sound-pressure figure for the same unit. Never compare across bases.'
+groups:
+- {id: general, label: General & identity, order: 0}
+- {id: config, label: Configuration, order: 1}
+- {id: dims, label: Size & fit, order: 2}
+- {id: capacity, label: Capacity, order: 3}
+- {id: energy, label: Energy & certification, order: 4}
+- {id: refrigerant, label: Refrigerant, order: 5}
+- {id: features, label: 'Ice, water & features', order: 6}
+- {id: conn, label: Connectivity, order: 7}
+- {id: noise, label: Noise, order: 8}
+specs:
+- key: gen.brand
+  label: Brand
+  group: general
+  type: enum
+  enum: [frigidaire, whirlpool, ge, lg, samsung, bosch, kitchenaid, maytag, midea, hisense, haier, summit, galanz, magic_chef, insignia, kenmore]
+  enum_open: true
+  unit: null
+  tier: core
+  level: family
+  facet: {kind: enum, column: true}
+  why: Filter; ES brand_name is the filing brand (sub-brands Café/Profile/Gallery are separate brand_name values; fold via brand_aliases).
+  traps: ['Retail-exclusive house brands (Insignia, Vissani, upstreman) are filed under their own brand_name by a contract maker; do not fold into the maker.']
+  sources: [ENERGY STAR brand_name, maker page]
+  example: samsung
+- key: gen.is_pattern
+  label: Certified pattern (covers several SKUs)
+  group: general
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: Tells the buyer this row is one certified basic model covering finishes/hinges, so they must match their SKU to it.
+  traps: ['Derived from the key string only (contains * # or a / alternation); never from absence of a finish code.']
+  sources: [ENERGY STAR model_number]
+  example: true
+- key: config.es_type
+  label: Type (ENERGY STAR)
+  group: config
+  type: enum
+  enum: [bottom_freezer, top_freezer, side_by_side, freezerless_single_door, compact_refrigerator, compact_cooler, cooler]
+  unit: null
+  tier: core
+  facet: {kind: enum, column: true}
+  why: First filter of every fridge search.
+  traps:
+  - 'ES has NO french-door value: French-door, 4-door and single-door bottom-mount all file as "Bottom Freezer". French door lives only in config.style (maker).'
+  - 'Rows typed Upright/Chest Freezer in p5st-her9 (5 on 2026-11-26) belong to `freezers`; drop here.'
+  sources: [ENERGY STAR type]
+  example: bottom_freezer
+- key: config.style
+  label: Door style
+  group: config
+  type: enum
+  enum: [french_door, french_door_4_door, bottom_freezer_single_door, top_freezer, side_by_side, column, single_door, under_counter, drawer]
+  unit: null
+  tier: core
+  facet: {kind: enum}
+  why: What a buyer actually means by "configuration" (french door vs bottom-freezer single door); needed because ES conflates them.
+  traps: ['"4-Door Flex" / "Quad door" = french_door_4_door only if the lower two are a freezer + convertible drawer; a 3-door with drawer is french_door.', 'Never derive from config.es_type.']
+  sources: [maker spec table (Bosch "Configuration")]
+  example: french_door
+- key: config.es_product_class
+  label: DOE product class
+  group: config
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Sets the federal kWh limit; encodes defrost, freezer position, ice maker and through-door ice.
+  traps: ['Class codes are reused across product groups: "3" = top-mount auto-defrost refrigerator-freezer AND "3" = freestanding compact cooler. Store the full ES string, never the bare code.']
+  sources: [ENERGY STAR product_class]
+  example: '5A - Refrigerator-freezers - automatic defrost with bottom-mounted freezer with through-the-door ice service'
+- key: config.counter_depth
+  label: Counter-depth
+  group: config
+  type: bool
+  unit: null
+  tier: core
+  facet: {kind: bool, column: true}
+  why: Decides whether it sits flush with 24-25 in cabinets.
+  traps:
+  - 'ES standard_or_counter_depth is the partner''s self-declaration with no published depth threshold; it says nothing about the depth in inches. Show the flag, and filter fit by dims.depth_in when known.'
+  - 'Marketing "counter-depth" ranges from ~24 in (case) to ~30 in (to handles); "zero clearance" / built-in is a different claim.'
+  sources: [ENERGY STAR standard_or_counter_depth, maker spec]
+  example: true
+- key: config.compact
+  label: Compact
+  group: config
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: Separates dorm/bar fridges from full-size; DOE compact = total volume < 7.75 ft3 and <= 36 in tall.
+  sources: [ENERGY STAR compact]
+  example: false
+- key: config.built_in
+  label: Built-in
+  group: config
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: Built-in units need a cutout and a different federal class (-BI).
+  sources: [ENERGY STAR built_in]
+  example: false
+- key: config.defrost
+  label: Defrost
+  group: config
+  type: enum
+  enum: [automatic, partial_automatic, manual]
+  unit: null
+  tier: detail
+  facet: {kind: enum}
+  why: Manual-defrost compacts need periodic defrosting.
+  traps: ['ES defrost_type is blank on ~4% of rows: unknown, not manual. partial_automatic only from the product class text.']
+  sources: [ENERGY STAR defrost_type, product_class]
+  example: automatic
+- key: dims.width_in
+  label: Width
+  group: dims
+  type: number
+  unit: in
+  tier: core
+  facet: {kind: range, column: true}
+  why: The opening is fixed (30/33/36 in); the hardest fit constraint.
+  traps: ['ES width_in is per filing and may be a nominal or a measured figure (35.75 vs 36); never round to the nominal class. A pattern row''s width does NOT transfer to a concrete SKU (trim/handle kits differ).']
+  sources: [ENERGY STAR width_in, maker spec]
+  example: 35.75
+- key: dims.height_in
+  label: Height
+  group: dims
+  type: number
+  unit: in
+  tier: core
+  facet: {kind: range}
+  why: Upper-cabinet clearance.
+  traps: ['To top of case vs top of hinge cap differ ~1 in; maker sheets often give both. ES gives one figure, basis unstated.']
+  sources: [ENERGY STAR height_in, maker spec]
+  example: 70.1
+- key: dims.depth_in
+  label: Depth
+  group: dims
+  type: number
+  unit: in
+  tier: core
+  conditions: [depth_basis]
+  headline_condition: {depth_basis: doors}
+  facet: {kind: range}
+  why: Whether it protrudes past the counter and fits the room.
+  traps: ['NOT in ENERGY STAR (p5st-her9 has height/width only): maker pages are the only source, so fill will be maker-coverage-bound.', 'Always carry depth_basis; a bare "depth" is unstated.']
+  sources: [maker spec / installation guide]
+  example: 28.75
+- key: capacity.total_ft3
+  label: Total capacity (DOE)
+  group: capacity
+  type: number
+  unit: ft3
+  tier: core
+  conditions: [test_procedure]
+  basis_conditions: [test_procedure]   # A2-appl r11: a basis (incomparable across procedures), not a grouping condition
+  facet: {kind: range, column: true}
+  why: The storage volume buyers compare.
+  traps:
+  - 'DOE vs marketing: ES capacity_total_volume_ft3 is the DOE-measured storage volume (fresh + freezer). Model-number digits (Samsung RF29..., "28 cu ft class") are a size CLASS, not a measurement; never parse capacity from a model number or title.'
+  - 'Maker spec sheets may print "total capacity" rounded up or including ice-bin/door space; keep the maker figure as a separate claim (maker_unstated) and let a disagreement show, never average.'
+  sources: [ENERGY STAR capacity_total_volume_ft3, maker spec]
+  example: 28.2
+- key: capacity.adjusted_ft3
+  label: Adjusted volume (DOE)
+  group: capacity
+  type: number
+  unit: ft3
+  tier: important
+  conditions: [test_procedure]
+  basis_conditions: [test_procedure]   # A2-appl r11: a basis (incomparable across procedures), not a grouping condition
+  facet: {kind: range}
+  why: The volume the federal kWh limit is computed from; useful for kWh-per-volume efficiency comparisons.
+  traps:
+  - 'Adjusted volume = fresh-food volume + a temperature-weighting factor x freezer volume (Appendix A), so it is LARGER than the physical volume for any unit with a freezer (Absocold ARD484F*10R/L: total 4.8, adjusted 5.8). Never show it as "capacity" and never use it for a capacity filter.'
+  - 'Not comparable to pre-2014 (Appendix A1) adjusted volumes: the factor changed.'
+  sources: [ENERGY STAR adjusted_volume_ft3]
+  example: 32.1
+- key: capacity.fresh_food_ft3
+  label: Fresh-food volume
+  group: capacity
+  type: number
+  unit: ft3
+  tier: important
+  facet: {kind: range}
+  why: Fridge vs freezer split matters more than the total for most households.
+  traps: ['Not in ES; maker only. Never derive from total minus freezer unless both are printed on one sheet for the same SKU.']
+  sources: [maker spec]
+  example: 17.5
+- key: capacity.freezer_ft3
+  label: Freezer volume
+  group: capacity
+  type: number
+  unit: ft3
+  tier: important
+  facet: {kind: range}
+  why: Freezer split.
+  traps: ['A convertible drawer may be counted in fresh OR freezer depending on the maker sheet; record as printed.']
+  sources: [maker spec]
+  example: 10.7
+- key: energy.annual_kwh
+  label: Energy use
+  group: energy
+  type: number
+  unit: kWh/yr
+  tier: core
+  conditions: [test_procedure]
+  basis_conditions: [test_procedure]   # A2-appl r11: a basis (incomparable across procedures), not a grouping condition
+  facet: {kind: range, column: true}
+  why: Running cost; the number on the yellow EnergyGuide label.
+  traps: ['DOE test-procedure figure (Appendix A, closed-door lab test); real use differs. Only compare figures under the same procedure version.', 'EnergyGuide label kWh and ES kWh should agree for one basic model; a maker sheet figure that disagrees is a conflict to surface, not to resolve.']
+  sources: [ENERGY STAR annual_energy_use_kwh_yr, EnergyGuide label]
+  example: 640
+- key: energy.federal_standard_kwh
+  label: Federal maximum
+  group: energy
+  type: number
+  unit: kWh/yr
+  tier: detail
+  facet: false
+  why: Context for the % better figure.
+  sources: [ENERGY STAR us_federal_standard_kwh_yr]
+  example: 711
+- key: energy.pct_below_federal
+  label: Better than federal standard
+  group: energy
+  type: number
+  unit: '%'
+  tier: important
+  facet: {kind: range}
+  why: Normalises efficiency across sizes and classes.
+  traps: ['Relative to the limit for ITS product class: a side-by-side with through-door ice at 10% below uses more kWh than a top-freezer at 10% below.']
+  sources: [ENERGY STAR percent_less_energy_use_than_us_federal_standard]
+  example: 10
+- key: cert.energy_star
+  label: ENERGY STAR certified
+  group: energy
+  type: bool
+  unit: null
+  tier: core
+  absence: [unknown, not_published, conflicted]
+  facet: {kind: bool, column: true}
+  why: Rebates and efficiency filter.
+  traps:
+  - 'ES lists only certified models: a model absent from p5st-her9 is UNKNOWN, never false (a maker page may still say certified; a de-listed model may have been certified when sold). false only from a maker statement "not ENERGY STAR certified".'
+  - 'WILDCARD PATTERN ROWS (`*`, `**`, `#`, `R/L`: 1,647 of 4,942 rows on 2026-11-26). A row is ONE DOE basic model: units "having essentially identical electrical, physical and functional characteristics that affect energy consumption". So the row MAY assert, for every concrete SKU it covers: cert.energy_star, cert.es_most_efficient, cert.es_date, energy.* , capacity.total_ft3, capacity.adjusted_ft3, config.es_type, config.es_product_class (which fixes defrost, freezer position, ice maker, through-door ice), config.compact, config.built_in, refrigerant.type. It MAY NOT assert, per SKU: finish/colour, hinge side, handle/trim kit, dims (any), depth, UPC (one UPC = one concrete unit), connectivity (a Wi-Fi module can be a model-string character), price, availability, noise, any maker-page feature.'
+  - 'Which concrete SKUs a pattern covers: ES does not document wildcard semantics for appliances (searched 2026-11-26; TVs/monitors filings document them inline, appliance filings do not). So a concrete maker SKU is linked only when (a) the ES row lists it verbatim in additional_model_information, or (b) a whole-string match with each `*` = exactly one [A-Z0-9], `#` = one digit, `R/L` = exactly R or L, same brand, US market, and exactly one active pattern row matches. Two matching rows, length mismatch, or an undocumented token = proposal only. Never expand a pattern into synthetic SKUs.'
+  sources: [ENERGY STAR p5st-her9 row, date_qualified]
+  example: true
+- key: cert.es_most_efficient
+  label: ENERGY STAR Most Efficient
+  group: energy
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: Top-tier efficiency badge; some utility rebates require it.
+  traps: ['Criteria are per calendar year (column label "Most Efficient 2025 Criteria"); record the year with the claim; a "No" on an ES row is a real false for that year only.']
+  sources: [ENERGY STAR meets_most_efficient_criteria]
+  example: false
+- key: cert.es_date
+  label: Certified on
+  group: energy
+  type: date
+  unit: null
+  tier: detail
+  facet: false
+  why: Dates the certification and the spec version it was judged under.
+  sources: [ENERGY STAR date_qualified]
+  example: '2025-04-15'
+- key: refrigerant.type
+  label: Refrigerant
+  group: refrigerant
+  type: enum
+  enum: [r600a, r134a, r1234yf, r290, r513a, other]
+  enum_open: true
+  unit: null
+  tier: important
+  facet: {kind: enum}
+  why: "R-600a/R-290 (hydrocarbon, GWP ~3) vs R-134a (GWP 1,430) under the EPA SNAP phase-down; buyers filter for low-GWP."
+  traps: ['ES refrigerant_type is free text with charge mass and GWP mixed in ("R-600a,R600a/20g(0.705 ounces)", "R-600a,2.12", "R-600a,GWP:3 | Lower GWP"): parse the R-number only; a trailing bare number is charge or GWP, ambiguous, kept raw.', 'Blank on 68% of rows: unknown, never "none".']
+  sources: [ENERGY STAR refrigerant_type, refrigerant_with_gwp, maker spec / nameplate]
+  example: r600a
+- key: refrigerant.gwp
+  label: Refrigerant GWP
+  group: refrigerant
+  type: number
+  unit: null
+  tier: detail
+  facet: false
+  why: Climate impact of the refrigerant.
+  traps: ['Only from refrigerant_with_gwp or an explicit "GWP:" token; never looked up from the R-number by us (AR4 vs AR5 values differ).']
+  sources: [ENERGY STAR refrigerant_with_gwp]
+  example: 3
+- key: features.ice_maker
+  label: Automatic ice maker
+  group: features
+  type: bool
+  unit: null
+  tier: core
+  facet: {kind: bool}
+  why: Needs a water line; a common must-have.
+  traps: ['"Ice maker ready" / optional kit = false for the unit as sold; record kit part as text.']
+  sources: [ENERGY STAR ice_maker, product_class, maker spec]
+  example: true
+- key: features.dispenser
+  label: Through-the-door dispenser
+  group: features
+  type: enum
+  enum: [none, water, ice_and_water]
+  unit: null
+  tier: core
+  facet: {kind: enum}
+  why: Feature and energy (through-door ice raises the federal limit).
+  traps: ['ES thru_the_door_dispenser is yes/no and does not separate water-only from ice+water; product class 5A/4 = through-door ICE. Internal water dispensers do not count.']
+  sources: [ENERGY STAR thru_the_door_dispenser, product_class, maker spec]
+  example: ice_and_water
+- key: conn.connected
+  label: Smart / connected
+  group: conn
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: App control and utility demand-response.
+  traps: ['ES connected_functionality = meets the ES connected criteria (demand response capable), not merely "has an app". An app-only Wi-Fi fridge can be "No". Carry the ES meaning in the claim, maker "Wi-Fi" as conn.protocols.']
+  sources: [ENERGY STAR connected_functionality, maker spec]
+  example: true
+- key: conn.protocols
+  label: Connects using
+  group: conn
+  type: list
+  items: enum
+  enum: [wifi, bluetooth, zigbee, thread, matter, other]
+  unit: null
+  tier: detail
+  facet: {kind: multi}
+  why: Home-integration filter.
+  sources: [ENERGY STAR connects_using, maker spec]
+  example: [wifi]
+- key: noise.dba
+  label: Noise
+  group: noise
+  type: number
+  unit: dBA
+  tier: detail
+  conditions: [noise_basis]
+  facet: {kind: range}
+  why: Open-plan kitchens; few US makers print it.
+  traps: ['Maker-claimed only (no US federal noise test for fridges); EU label sound-power dB(A) re 1 pW is a different quantity (noise_basis).']
+  sources: [maker spec (Bosch)]
+  example: 42

@@ -14,12 +14,14 @@
 ## Categories
 
 - air-purifiers: Air purifiers (217 products)
-- chargers: USB chargers (142 products)
+- chargers: USB chargers (147 products)
+- dishwashers: Dishwashers (690 products)
 - laptops: Laptops (2525 products)
 - monitors: Monitors (4306 products)
-- power-banks: Power banks (168 products)
-- power-stations: Portable power stations (75 products)
+- power-banks: Power banks (184 products)
+- power-stations: Portable power stations (82 products)
 - power-strips: Power strips & surge protectors (591 products)
+- refrigerators: Refrigerators (4373 products)
 - robot-vacuums: Robot vacuums & mops (144 products)
 - routers: Wi-Fi routers & mesh (334 products)
 - ssds: SSDs (586 products)

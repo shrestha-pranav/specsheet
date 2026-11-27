@@ -4,9 +4,11 @@ Retailers are identifier bridges (UPC/ASIN <-> model) and never spec sources her
 
 | source | status | use | notes |
 |---|---|---|---|
-| Maker US stores (dreametech.com, us.roborock.com, us.narwal.com) | **adapter** | specs + SKUs | Shopify; products.json + product page; robots allow; 1 req/s |
-| ecovacs.com/us shop, irobot.com, us.mova.tech (r2) | **adapter** | specs + SKUs/UPC (iRobot: model codes) | Next.js __NEXT_DATA__ / SFCC grid + Product-Variation JSON / Shopify + compare-page inputs; see manufacturers.yaml |
-| us.eufy.com, us.switch-bot.com, lefant.com | viable (products.json 200) | SKUs only | spec tables client-side or prose; see manufacturers.yaml |
+| Maker US stores (dreametech.com, us.roborock.com) | **adapter** | specs + SKUs | Shopify; products.json + product page; robots allow; terms re-read r11: no automated-access clause; 1 req/s |
+| irobot.com, us.mova.tech (r2) | **adapter** | specs + SKUs/UPC (iRobot: model codes) | SFCC grid + Product-Variation JSON / Shopify + compare-page inputs; terms re-read r11: no automated-access clause |
+| ecovacs.com/us, us.narwal.com | **human_only (r11)** | stored values only | terms bar automated collection / page-scrape robots (read 2026-11-26, refs in data/source-policy.yaml); no further agent fetches; stored rows pending coordinator ruling |
+| us.eufy.com, us.switch-bot.com, lefant.com, yeedi.com, proscenic.com, wyze.com, tapo.com | **human_only (r11)** | - | terms bar crawling/scraping (eufy robots also 'Disallow: /*.json'); SwitchBot pages have a labelled Specs table: permission request candidate |
+| bissell.com | **human_only (r11)** | - | robots.txt 'User-agent: ClaudeBot Disallow: /' |
 | sharkclean.com | **blocked** | - | robots.txt itself 403 (WAF) to the honest UA; stopped |
 | Amazon | not a source | ASIN alias | retail listings; no product-page scraping; Bright Data not used |
 | Best Buy | not probed | UPC/SKU bridge | Products API terms cap caching at 72 h (ARCHITECTURE 0.7); needs a key |

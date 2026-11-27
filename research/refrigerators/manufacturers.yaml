@@ -1,0 +1,13 @@
+# A2-appl r11 discovery, refrigerators (US). Probed 2026-11-26 with the shared crawler client (specsheet-crawler UA), robots.txt + Crawl-delay honoured.
+# status: adapter = built+run; blocked / human_only = no agent collection (category-survey-r2 s.0); not_probed = later round.
+cross_brand_sources:
+  energystar:
+    status: adapter            # crawler/adapters/energystar_appliances.py (refrigerators class), raw/energystar-refrigerators
+    url: https://data.energystar.gov/resource/p5st-her9.json   # Socrata, paged $limit 1000, robots Crawl-delay 1 (we wait 1.5 s)
+    rows: "4942 rows / 4696 refs / 4373 models (1461 pattern, 2912 concrete) on 2026-11-26"
+    note: pattern rows are their own entities (x_energystar_model_pattern); concrete SKUs link via covered_by_certification only (scripts/escover.py)
+manufacturers:
+  bosch:     {status: not_probed, how: 'bosch-home.com/us prints dBA (A1); optional r11 item not done. Re-read robots + terms before any fetch.'}
+  lg:        {status: human_only, how: 'lg.com terms bar automated collection (category-survey-r2 s.0): ES values only.'}
+  ge:        {status: human_only, how: 'geappliances.com terms (survey r2).'}
+  whirlpool: {status: blocked, how: 'Whirlpool / KitchenAid / Maytag / JennAir sites blocked (survey r2).'}

@@ -87,6 +87,18 @@
           "format": "date-time",
           "description": "Last complete official enumeration that contained it. Partial/blocked discovery never advances 'gone' (section 0.6)."
         },
+        "listing": {
+          "enum": [
+            "listed",
+            "delisted"
+          ],
+          "description": "delisted: the maker's store discovery stopped listing it; the last stored snapshot's claims are kept (r11 delisting safety). Absent = listed."
+        },
+        "delisted_at": {
+          "type": "string",
+          "format": "date",
+          "description": "First complete discovery run that no longer listed it."
+        },
         "gone_since": {
           "type": [
             "string",

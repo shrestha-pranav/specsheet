@@ -354,15 +354,17 @@ def publish(api: Path, build_stats: dict, gate_out: dict | None = None):
             relations = [{"type": r["type"], "target": r["target_id"], "status": r["status"], "method": r["method"], "decision": r["decision"]}
                          for r in rels[eid] if r["status"] in ok_rel and (scope != "trusted" or r["target_id"] in files_t)]
             lc = {"current": "current", "discontinued": "discontinued"}.get(e["lifecycle"], "unknown")
+            lst = (json.loads(e["extra"] or "{}").get("listing") or {})      # r11: store stopped listing it; claims kept (import.mark_delisted)
+            lcd = {"state": lc, **({"listing": "delisted", "delisted_at": lst["since"]} if lst.get("state") == "delisted" else {})}
             model_str = next((i["value"] for i in idents[eid] if i["scheme"] in ("mtm", "mfr_model", "mfr_sku") and i["role"] == "key"), None)
             vl = variant_label(cfg, specdefs, e, specs)
             return {"record_format": "specsheet.record/1", "review_scope": scope, "id": eid, "category": cat, "kind": e["kind"],
-                    "brand": {"id": e["brand"], "name": e["brand_name"]}, "name": SP.TAG.sub("", e["name"] or "").strip() or eid, "variant_label": vl, "lifecycle": {"state": lc},
+                    "brand": {"id": e["brand"], "name": e["brand_name"]}, "name": SP.TAG.sub("", e["name"] or "").strip() or eid, "variant_label": vl, "lifecycle": lcd,
                     "identifiers": ids_out, "aliases": [{"text": a["text"], "kind": a["kind"]} for a in aliases[eid]], "relations": relations,
                     "family": (ents[e["family_id"]]["name"] if e["family_id"] in ents else None), "model": model_str, "variant": vl}
 
         core = [k for k, f in fields.items() if f["tier"] == "core"]
-        keep_vs = {k for k, f in fields.items() if f["facet"] or f["column"]}
+        keep_vs = [k for k, f in fields.items() if f["facet"] or f["column"]]   # profile order: a set made row key order hash-seed dependent (r11 determinism)
         method_keys = {k: [c for c in (f.get("conditions") or []) if c in METHOD_DEFAULTS] for k, f in fields.items()}
 
         def row_of(eid, d, specs, scope):

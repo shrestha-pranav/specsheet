@@ -1,0 +1,318 @@
+# A1 r11 (2026-11-26). Major-appliances pilot, part 2 of 2. Category-per-type ruling and the wildcard / join rules: see the header and
+# identity.note of research/refrigerators/spec-profile.yaml (same rules apply; only the transfer-key list differs, below).
+# Live check 2026-11-26, data.energystar.gov q8py-6w3f: 753 rows (722 Standard, 31 Compact), 370 pattern rows (49%), 87 brands among
+# Standard. Columns used per key below. ES has NO height and NO noise: those are maker-only (Bosch us/en product pages print dBA).
+profile_format: specsheet.category-profile/1
+category: dishwashers
+version: 0.1
+label: Dishwashers
+market: US
+status: draft
+scope: 'Residential dishwashers sold in the US (DOE 10 CFR 430 covered products): built-in 24 in standard, 18 in compact/slim, drawer,
+  portable and countertop. Excludes commercial dishwashers (ES commercial dataset).'
+identity:
+  levels:
+  - level: family
+    label: Line / series
+    meaning: 'Bosch 800 Series, KitchenAid "FreeFlex". Browse only; never passes values down.'
+    key_schemes: [mfr_family]
+    inherits: false
+  - level: model
+    label: Model number / certified pattern
+    meaning: 'Concrete maker model (Bosch SHP78CM5N) or an ENERGY STAR pattern row (one DOE basic model). Same rules as refrigerators.'
+    key_schemes: [mfr_model, x_energystar_model_pattern]
+    inherits: true
+  - level: package
+    label: Trade item / UPC
+    meaning: 'UPC per finish (Bosch DWHD640EFP lists 3 UPCs for EFP/EFM/EPR). Lookup alias only.'
+    key_schemes: [gtin]
+    inherits: true
+  primary_key: 'Maker model number of one sellable unit as filed with ENERGY STAR / DOE or printed by the maker, finish/market tail included
+    (Bosch SHP78CM5N; "N" = North America). ES pattern strings are a separate scheme.'
+  per_brand:
+    bosch: 'SHP78CM5N style; the N tail is the North-America market and is kept. Position meanings are not decoded by us. ES files
+      concrete strings with finish siblings in additional_model_information (DWHD640EFP: EFM, EPR); bosch-home.com/us is the dBA source.'
+    whirlpool_group: 'Whirlpool / KitchenAid / Maytag / JennAir: WDT750SAKZ, KDTM404KPS: final 1-2 letters = finish. Maker sites blocked (survey r2); ES only.'
+    ge: 'GE / Profile / Café / Monogram: GDT670SYVFS style, finish tail; geappliances.com is human_only (terms).'
+    samsung: 'DW80B7070US/AA: /AA = US market suffix, significant (never stripped).'
+  schemes:
+  - {scheme: mfr_family, level: family}
+  - {scheme: mfr_model, level: model, normalize: upper_strip_spaces}
+  - {scheme: x_energystar_model_pattern, level: model, pattern: '[*#/]', normalize: upper_strip_spaces}
+  - {scheme: x_energystar_pd_id, level: model}
+  - {scheme: gtin, issuer: GS1, level: package, alias_only: true}
+  variant_axes: []
+  model_defining: [capacity.place_settings, energy.annual_kwh, water.gal_per_cycle]
+  note: 'Join rules as refrigerators identity.note. Duplicate filings are real here: Bosch DWHD640EFP appears as two pd_id rows
+    (additional_model_information "DWHD640EFM; DWHD640EPR" vs "DWHD640EFM, DWHD640EPR"): one entity, latest date_certified wins,
+    disagreeing values = conflicted.'
+units:
+  system: us_customary
+  custom:
+  - {unit: kWh/yr, base: kWh/yr, factor: 1}
+  - {unit: gal, base: L, factor: 3.785411784}
+  - {unit: dBA, base: dBA, factor: 1}
+conditions:
+- id: test_procedure
+  label: DOE test procedure
+  type: enum
+  enum: [appendix_c1, appendix_c2, maker_unstated]
+  description: 'Basis of kWh/yr and gal/cycle. Current filings use 10 CFR 430 Subpart B Appendix C1 (normal cycle, soil-sensing average,
+    215 cycles/yr). DOE''s newer Appendix C2 (adopted with the amended standards; to verify the mandatory date before an adapter tags it)
+    changes cycle/soil definitions, so C1 and C2 figures are not comparable. ES active rows = the procedure of the active specification.'
+- id: noise_basis
+  label: Noise basis
+  type: enum
+  enum: [maker_dba_unstated_method, sound_power_db_re_1pw]
+  description: 'US makers print "dBA" without method (in practice a sound-power-style rating on the normal or quietest cycle, varies by
+    maker); EU label figures are sound power dB(A) re 1 pW. Cycle is rarely stated. Not comparable across makers with confidence.'
+- id: noise_cycle
+  label: Cycle measured
+  type: enum
+  enum: [normal, quietest, unstated]
+  description: Which wash cycle a noise figure is for; "Quiet/Silence" cycles can be 2-4 dB lower than Normal.
+groups:
+- {id: general, label: General & identity, order: 0}
+- {id: config, label: Type & installation, order: 1}
+- {id: dims, label: Size & fit, order: 2}
+- {id: capacity, label: Capacity, order: 3}
+- {id: energy, label: Energy & certification, order: 4}
+- {id: water, label: Water, order: 5}
+- {id: noise, label: Noise, order: 6}
+- {id: features, label: Drying & features, order: 7}
+- {id: conn, label: Connectivity, order: 8}
+specs:
+- key: gen.brand
+  label: Brand
+  group: general
+  type: enum
+  enum: [bosch, whirlpool, kitchenaid, maytag, ge, lg, samsung, frigidaire, midea, miele, thermador, beko, fisher_paykel, asko]
+  enum_open: true
+  unit: null
+  tier: core
+  level: family
+  facet: {kind: enum, column: true}
+  why: Filter
+  sources: [ENERGY STAR brand_name, maker page]
+  example: bosch
+- key: gen.is_pattern
+  label: Certified pattern (covers several SKUs)
+  group: general
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: Buyer must match their SKU to the certified basic model.
+  sources: [ENERGY STAR model_number]
+  example: false
+- key: config.es_type
+  label: Size class (ENERGY STAR)
+  group: config
+  type: enum
+  enum: [standard, compact]
+  unit: null
+  tier: core
+  facet: {kind: enum}
+  why: 'DOE classes: standard = capacity >= 8 place settings + 6 serving pieces; compact = below. Different federal limits.'
+  traps: ['"Compact" (DOE capacity class) is not "18 in slim": some 18 in units are Standard by capacity. Filter width by dims.width_in.']
+  sources: [ENERGY STAR type]
+  example: standard
+- key: config.install
+  label: Installation
+  group: config
+  type: enum
+  enum: [built_in, drawer, portable, countertop, integrated_panel_ready]
+  unit: null
+  tier: important
+  facet: {kind: enum}
+  why: Built-in vs portable vs drawer decides the install entirely.
+  traps: ['Not in ES; maker only. panel_ready (custom panel) is a front style of a built-in, recorded here because buyers filter on it.']
+  sources: [maker spec]
+  example: built_in
+- key: dims.width_in
+  label: Width
+  group: dims
+  type: number
+  unit: in
+  tier: core
+  facet: {kind: range, column: true}
+  why: 24 in vs 18 in cutout.
+  traps: ['ES width_inches is the unit width (23.5-23.9 typical for a "24 in" dishwasher); filter the 24 in cutout as 23-24.25, never equality with 24.', 'UNIT ERRORS IN ES: 38 rows carry width 59.8 (Beko DDN25401*, DDT25401**): that is 59.8 cm (a 60 cm = 23.5 in unit) typed into the inches column. Quarantine as conflicted (implausible: > 30 in for type standard/compact), never auto-convert.', 'A pattern row''s width does not transfer to a concrete SKU.']
+  sources: [ENERGY STAR width_inches, maker spec]
+  example: 23.6
+- key: dims.depth_in
+  label: Depth
+  group: dims
+  type: number
+  unit: in
+  tier: important
+  facet: {kind: range}
+  why: Flush with cabinets; with or without door/handle varies.
+  traps: ['Depth to door face vs to handle vs with door open: record as printed; ES gives one figure with no basis.']
+  sources: [ENERGY STAR depth_inches, maker spec]
+  example: 22.5
+- key: dims.height_in
+  label: Height (min-max)
+  group: dims
+  type: range
+  unit: in
+  tier: important
+  facet: {kind: range}
+  why: Under-counter clearance (33.875-34.5 in typical); adjustable feet give a range.
+  traps: ['Not in ES. Maker range only; a single number is the minimum unless stated.']
+  sources: [maker spec / installation guide]
+  example: '33.875-34.5'
+- key: capacity.place_settings
+  label: Place settings
+  group: capacity
+  type: integer
+  unit: null
+  tier: core
+  facet: {kind: range, column: true}
+  why: The capacity measure; DOE-tested (AHAM DW-1 loading).
+  traps: ['ES column is "capacity_maximum_number_of_place_settings": a third rack may be counted to reach 16. Marketing "fits 16 place settings" should match the ES figure; disagreement = conflicted.']
+  sources: [ENERGY STAR capacity_maximum_number_of_place_settings, maker spec]
+  example: 16
+- key: energy.annual_kwh
+  label: Energy use
+  group: energy
+  type: number
+  unit: kWh/yr
+  tier: core
+  conditions: [test_procedure]
+  basis_conditions: [test_procedure]   # A2-appl r11: a basis (incomparable across procedures), not a grouping condition
+  facet: {kind: range, column: true}
+  why: Running cost (EnergyGuide label).
+  traps: ['Normal-cycle DOE figure (Appendix C1) at 215 cycles/yr, incl. water-heating energy; Eco / sensor cycles in daily use differ. Only compare same-procedure figures.']
+  sources: [ENERGY STAR annual_energy_use_kwh_year]
+  example: 269
+- key: energy.pct_below_federal
+  label: Better than federal standard (energy)
+  group: energy
+  type: number
+  unit: '%'
+  tier: detail
+  facet: false
+  why: Normalised efficiency.
+  traps: ['ES column better_than_us_federal_standard_kwh_year is a PERCENT despite its name (row 234 kWh vs 307 federal -> 24; checked 2026-11-26). Same for the _gallons_cycle twin.']
+  sources: [ENERGY STAR better_than_us_federal_standard_kwh_year]
+  example: 12
+- key: water.gal_per_cycle
+  label: Water use
+  group: water
+  type: number
+  unit: gal
+  tier: core
+  conditions: [test_procedure]
+  basis_conditions: [test_procedure]   # A2-appl r11: a basis (incomparable across procedures), not a grouping condition
+  facet: {kind: range, column: true}
+  why: Water cost and drought rebates.
+  traps: ['DOE normal-cycle average under the test soil mix, not the heavy cycle. Maker "as little as 2.4 gal" can be the lightest sensor cycle: keep maker figures as maker_unstated claims, never overwrite ES.']
+  sources: [ENERGY STAR water_use_gallons_cycle]
+  example: 3.1
+- key: cert.energy_star
+  label: ENERGY STAR certified
+  group: energy
+  type: bool
+  unit: null
+  tier: core
+  absence: [unknown, not_published, conflicted]
+  facet: {kind: bool, column: true}
+  why: Rebates and efficiency filter.
+  traps:
+  - 'Absent from q8py-6w3f = unknown, never false (see refrigerators).'
+  - 'WILDCARD ROWS (370 of 753): the row MAY assert, for every concrete SKU it covers (matching rules: refrigerators cert.energy_star): cert.energy_star, cert.es_most_efficient, cert.es_date, energy.annual_kwh, energy.pct_below_federal, water.gal_per_cycle, capacity.place_settings, config.es_type, features.soil_sensor, features.drying_method (drying system affects tested energy). It MAY NOT assert per SKU: finish, panel/handle style, any dimension, noise (a quieter-insulation trim is a different SKU but can share a basic model), tub_material (not energy-defining; maker may vary it within a basic model), connectivity, UPC, price.'
+  sources: [ENERGY STAR q8py-6w3f row, date_certified]
+  example: true
+- key: cert.es_most_efficient
+  label: ENERGY STAR Most Efficient
+  group: energy
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: Top-tier efficiency badge.
+  traps: ['Year-specific criteria; record the year.']
+  sources: [ENERGY STAR meets_most_efficient_criteria]
+  example: false
+- key: cert.es_date
+  label: Certified on
+  group: energy
+  type: date
+  unit: null
+  tier: detail
+  facet: false
+  why: Dates the certification.
+  sources: [ENERGY STAR date_certified]
+  example: '2024-06-10'
+- key: noise.dba
+  label: Noise
+  group: noise
+  type: number
+  unit: dBA
+  tier: core
+  conditions: [noise_basis, noise_cycle]
+  facet: {kind: range, column: true}
+  why: The headline buying spec for open kitchens (38-50 dBA range; each 3 dB ~ doubles sound energy).
+  traps:
+  - 'Maker-claimed only: no DOE/ES noise test, no ES column. Today only Bosch (bosch-home.com/us) is agent-reachable; Whirlpool/KitchenAid/Maytag blocked, GE and LG human_only (survey r2). A cross-brand dBA filter will be one-brand until a second source exists.'
+  - 'Quietest-cycle figure vs normal cycle; method unstated; EU sound power (re 1 pW). Never compare a US maker dBA with an EU label figure.'
+  sources: [maker spec (Bosch "Noise level")]
+  example: 42
+- key: features.tub_material
+  label: Tub
+  group: features
+  type: enum
+  enum: [stainless, hybrid, plastic]
+  unit: null
+  tier: important
+  facet: {kind: enum}
+  why: Durability, drying and noise proxy.
+  traps: ['"Hybrid (Plastic & Steel)" = stainless walls + plastic base; never fold into stainless.']
+  sources: [ENERGY STAR tub_material, maker spec]
+  example: stainless
+- key: features.drying_method
+  label: Drying system
+  group: features
+  type: list
+  items: enum
+  enum: [heated, condensation, fan_assisted, auto_door_open, mineral_zeolite, air, turbo, other]
+  unit: null
+  tier: important
+  facet: {kind: multi}
+  why: Plastics drying performance; heated vs condensation vs zeolite (Bosch CrystalDry = mineral).
+  traps: ['ES drying_method is a comma list ("Automatic Door Release,Condensation Dry,Fan-Assisted Dry"): split, all apply. "Mineral Dry" = zeolite (Bosch CrystalDry). Blank = unknown.']
+  sources: [ENERGY STAR drying_method, maker spec]
+  example: [condensation, auto_door_open]
+- key: features.soil_sensor
+  label: Soil sensor
+  group: features
+  type: bool
+  unit: null
+  tier: detail
+  facet: {kind: bool}
+  why: Adjusts water/energy to the load.
+  sources: [ENERGY STAR soil_sensing_capability]
+  example: true
+- key: features.third_rack
+  label: Third rack
+  group: features
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: Common must-have (cutlery tray).
+  traps: ['Maker only (ES additional_product_features is free text; parse only an explicit "third rack" token, never infer from 16 place settings).']
+  sources: [maker spec, ENERGY STAR additional_product_features]
+  example: true
+- key: conn.connected
+  label: Smart / connected
+  group: conn
+  type: bool
+  unit: null
+  tier: detail
+  facet: {kind: bool}
+  why: App control / remote start.
+  traps: ['ES connected_capable is blank on almost every row (2 of 753 carry connects_using on 2026-11-26): blank = unknown; maker "Home Connect" / "SmartHQ" = true.']
+  sources: [ENERGY STAR connected_capable, maker spec]
+  example: true

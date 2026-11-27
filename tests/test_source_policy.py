@@ -359,39 +359,48 @@ class Fixture(unittest.TestCase):
                         SP.load(f.name)
         pol = SP.load()
         self.assertGreaterEqual(pol.version, "2026-11-25.1")      # 2026-11-25.2 (corrections flow) adds path_prefix + crowd
-        want = {"https://www.notebookcheck.net/Review.1.0.html": ("agent", True, "measurement"),
-                "https://www.chargerlab.com/x/": ("human_only", True, "measurement"),
-                "https://www.tomshardware.com/reviews/x": ("human_only", True, "measurement"),
-                "https://www.techpowerup.com/ssd-specs/x": ("none", False, "measurement"),     # 2026-11-25.2: path_prefix /ssd-specs excluded (host entry stays measurement)
-                "https://www.techpowerup.com/review/x": ("human_only", True, "measurement"),
-                "https://www.storagereview.com/review/x": ("human_only", True, "measurement"),
-                "https://tftcentral.co.uk/reviews/x": ("human_only", True, "measurement"),
-                "https://pcmonitors.info/reviews/x": ("human_only", True, "measurement"),
-                "https://www.rtings.com/monitor/x": ("none", False, "measurement"),
-                "https://ssdwiki.com/x": ("none", False, None), "https://www.displayspecifications.com/x": ("none", False, None),
-                "https://www.hardware-corner.net/x": ("none", False, None), "https://www.monitornerds.com/x": ("none", False, None),
-                "https://www.certipedia.com/quality_marks/0217009904": ("agent", True, "certification"),
-                "https://psrefstuff.lenovo.com/syspool/Sys/PDF/datasheet/x.pdf": ("agent", True, "maker"),
-                "https://download.lenovo.com/pccbbs/x.pdf": ("agent", True, "maker"),
-                "https://www.belkin.com/support-article/?articleNum=1": ("agent", True, "maker"),
-                "https://unlisted.example/x": ("agent", True, None)}
-        for u, (crawl, free, kind) in want.items():
-            e = pol.entry(SP.host_of(u)) or {}
-            self.assertEqual((pol.crawl(u), pol.disposition(u)["free"]), (crawl, free), u)
-            if kind:
-                self.assertEqual(e.get("kind"), kind, u)
-            self.assertFalse(pol.disposition(u)["paid"] or pol.disposition(u)["licence_grant"], u)
+        # Live policy: expectations come from each yaml entry's own intent (rulings flip hosts between agent / human_only; r11 audit = .10),
+        # so this tests the resolver (exact > subdomains, path_prefix over its host, crawl default agent), not today's list of hosts.
+        hosts = {}
+        for e in pol.doc["sources"]:
+            m = e.get("match", "exact")
+            if m == "path_prefix":
+                u = f"https://{e['domain']}{e['path'].rstrip('/')}/x"
+            elif m == "subdomains":
+                u = f"https://www.{e['domain']}/x" if pol.entry("www." + e["domain"]) is e else None   # an exact entry may shadow www.
+            else:
+                u = f"https://{e['domain']}/x"
+            if u is None:
+                continue
+            want = (e.get("crawl", "agent"), bool(e["free"]))
+            self.assertEqual((pol.crawl(u), pol.disposition(u)["free"]), want, u)
+            self.assertIn(e.get("crawl", "agent"), ("agent", "human_only", "none"), u)
+            if e.get("crawl") == "none":
+                self.assertFalse(e["free"], f"{u}: crawl none is never free")
+            if e.get("kind") == "measurement":
+                self.assertIn("crawl", e, u)
+                self.assertFalse(e["paid"] or e["licence_grant"], u)
+            if m != "path_prefix":
+                hosts.setdefault(e.get("crawl", "agent"), []).append(u)
+        self.assertEqual((pol.crawl("https://unlisted.invalid/x"), pol.disposition("https://unlisted.invalid/x")["free"]), ("agent", True))
+        tpu = pol.entry_for("https://www.techpowerup.com/ssd-specs/x")      # path_prefix wins over the host entry, reviews keep the host's
+        if tpu and tpu.get("match") == "path_prefix":
+            self.assertEqual(pol.crawl("https://www.techpowerup.com/ssd-specs/x"), tpu.get("crawl", "agent"))
+            self.assertNotEqual(pol.entry_for("https://www.techpowerup.com/review/x"), tpu)
         doms = [s["domain"] for s in pol.doc["sources"]]
         self.assertEqual((doms.count("notebookcheck.net"), doms.count("chargerlab.com")), (1, 1), "replaced, not duplicated")
         import site_meta
         fo = {s["domain"]: s for s in site_meta.sources()["facts_only"]}
-        self.assertEqual(fo["chargerlab.com"]["crawl"], "human_only")
-        self.assertNotIn("crawl", fo["notebookcheck.net"])
-        self.assertNotIn("rtings.com", fo)
+        for d_, s_ in fo.items():          # facts_only carries crawl exactly when the entry is not agent
+            e = next(x for x in pol.doc["sources"] if x["domain"] == d_)
+            if e.get("crawl", "agent") == "agent":
+                self.assertNotIn("crawl", s_, d_)
+            else:
+                self.assertEqual(s_.get("crawl"), e["crawl"], d_)
         sys.path.insert(0, str(CODE / "crawler"))
         import crawl as CR
-        for u in ("https://www.chargerlab.com/x", "https://www.tomshardware.com/x", "https://www.rtings.com/x"):
-            self.assertEqual(CR.NET.get(u, 0), "policy", "no request is made to a human_only/none host")
+        for u in hosts.get("human_only", []) + hosts.get("none", []):
+            self.assertEqual(CR.NET.get(u, 0), "policy", f"no request is made to a human_only/none host: {u}")
 
     def test_real_policy_valid(self):
         pol = SP.load()

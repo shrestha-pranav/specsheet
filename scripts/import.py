@@ -40,6 +40,7 @@ import _cpu  # noqa: E402
 import _lcell  # noqa: E402
 import bundles as B  # noqa: E402
 import tvcert as TC  # noqa: E402
+import escover as EC  # noqa: E402
 import xwalk as XW  # noqa: E402
 import docattach as DA  # noqa: E402
 import docspec_attach as DS  # noqa: E402
@@ -176,6 +177,23 @@ def add_src(e, pr, rec, sid="s1"):
     s = next((x for x in pr["sources"] if x["id"] == sid), None) or {"id": sid, "url": rec["url"], "tier": "manufacturer"}
     e.srcs.setdefault(rec["snapshot"], {"url": s["url"], "tier": s.get("tier", "manufacturer"), "label": s.get("label") or s.get("title"),
                                        "snapshot": rec["snapshot"], "retrieved_at": rec.get("fetched_at")})
+
+
+def mark_delisted(worlds, listing):
+    """r11: an entity every one of whose observations from some discovery source is a ref that source no longer lists keeps its claims
+    (the last stored snapshot) and gets extra.listing = {state: delisted, since, sources}. Observations of other sources do not unmark it."""
+    n = 0
+    for w in worlds.values():
+        for e in w.ents:
+            by = collections.defaultdict(list)
+            for sid, ref, _snap in e.obs:
+                if (sid, ref) in listing:
+                    by[sid].append(listing[(sid, ref)])
+            gone = {sid: max(ds) for sid, ds in by.items() if ds and all(ds)}
+            if gone:
+                e.extra["listing"] = {"state": "delisted", "since": min(gone.values()), "sources": sorted(gone)}
+                n += 1
+    return n
 
 
 def obs_of(sid, rec):
@@ -520,6 +538,8 @@ def do_model(world, meta, sid, rec, pr, extra, stats):
     ob = obs_of(sid, rec)
     ids = pr["identifiers"]
     mi = next((i for i in ids if i["scheme"] == "mfr_model" and i.get("role", "key") == "key"), None)
+    if mi is None and "es_pattern_entities" in (cm.get("features") or []):     # r11 A2-appl: ES pattern row = own entity (scripts/escover.py)
+        mi = next((i for i in ids if i["scheme"] == EC.PATTERN_SCHEME and i.get("role", "key") == "key"), None)
     if mi is None:
         stats["no_model_identifier"] += 1
         return
@@ -547,7 +567,7 @@ def do_model(world, meta, sid, rec, pr, extra, stats):
     if not sc:
         raise SystemExit(f"research/{world.category}/category.yaml: importer 'model' needs an explicit identity_scope (review 2 risk 4)")
     scoped = brand in (sc.get("market_scoped_brands") or []) or (sc.get("cross_market_brands", "*") != "*" and brand not in sc["cross_market_brands"])
-    mkey = K("mfr_model", mi["value"], brand, "model", mi.get("market") if scoped else None)
+    mkey = K(mi["scheme"], mi["value"], brand, "model", mi.get("market") if scoped else None)
     prev = world.index.get(mkey)
     if prev is not None and not scoped and mi.get("market"):
         stated = {v["market"] for (sch, _), v in prev.idents.items() if sch == "mfr_model" and v["role"] == "key" and v["market"]}
@@ -571,7 +591,7 @@ def do_model(world, meta, sid, rec, pr, extra, stats):
         stats["identity_conflict_sole_page"] += 1
     for qm in fp.get("quarantined_members") or []:
         world.id_review.append((e, "member_handle", str(qm.get("handle")), f"bundle member quarantined: {qm.get('reason')} (name {qm.get('name')!r}, skus {qm.get('skus')})"))
-    e.idhint = e.idhint or f"{brand}-{slug(mi['value'])}"
+    e.idhint = e.idhint or f"{brand}-{slug(mi['value'])}" + ("-es-pattern" if mi["scheme"] == EC.PATTERN_SCHEME else "")
     nk = (0 if tier == "manufacturer" else 1, sid)      # deterministic whatever the ingestion order: manufacturer name, then source id
     if e.name is None or nk < getattr(e, "name_key", (9, "")):
         e.name = title; e.name_key = nk
@@ -1037,6 +1057,7 @@ def main():
     parsers = {sid: registry.parser_info(sid) for sid, m in registry.SOURCES.items()}
     current_fp = {v["parser"]: v["fingerprint"] for v in parsers.values() if v["parser"]}
     current_fp.update({B.TRANSFORM: B.fingerprint(), TC.TRANSFORM: TC.fingerprint(), XW.TRANSFORM: XW.fingerprint(), DA.TRANSFORM: DA.fingerprint(), DS.TRANSFORM: DS.fingerprint(), DS3.TRANSFORM: DS3.fingerprint(), DS7.TRANSFORM: DS7.fingerprint(), IA.TRANSFORM: IA.fingerprint(), HA.TRANSFORM: HA.fingerprint()})     # r7: shared transforms are pinned like parsers
+    current_fp[EC.TRANSFORM] = EC.fingerprint()            # r11 A2-appl: ES pattern coverage transform, pinned like a parser
     current_fp.update(registry.supplement_parsers())       # r7: legacy-store supplement extractors (crawlpy_strips_belkin) pinned like parsers
     current_fp[PSPLIT] = "sha256:" + hashlib.sha256(Path(_lcell.__file__).read_bytes()).hexdigest()[:20]       # psref-split cell parser, pinned like a parser
     drift = dec.parser_drift(current_fp)
@@ -1058,6 +1079,7 @@ def main():
     srcs = [(k, m) for k, m in registry.SOURCES.items() if m["category"] in cats]
     if a.reverse_sources:
         srcs.reverse()
+    listing = {}         # (source_id, ref) -> delisted_at | None (listed), for sources with a discovery.json
     for sid, meta in srcs:
         if a.source and sid not in a.source:
             continue
@@ -1073,6 +1095,9 @@ def main():
             d = json.loads(dp.read_text())
             disc = {r["key"]: dict(r, **(r.get("hints") or {})) for r in d.get("refs", [])}
             st["discovery_complete"] = int(bool(d.get("complete")))
+            for k_, r_ in disc.items():    # r11 delisting safety: refs a later discovery stopped listing stay (crawler/adapters/_run.carry_delisted)
+                listing[(sid, k_)] = r_.get("delisted_at") if r_.get("listing") == "delisted" else None
+            st["delisted_refs"] = sum(1 for k_ in disc if listing[(sid, k_)])
         n = 0
         cstats = {}
         PARSER["current"] = parsers[sid]["parser"]
@@ -1098,12 +1123,15 @@ def main():
         if "es_cert_scopes" in metas[cat]["features"]:      # r7: certification scopes + declared-alias audit + reviewed crosswalks (scripts/tvcert.py)
             TC.apply(w, cat_stats[cat], {"link": link, "parser": PARSER, "crosswalks": data / "decisions" / "tv-crosswalks.yaml"})
         XW.apply(w, cat_stats[cat], {"link": link, "parser": PARSER, "decisions": data / "decisions"})     # r8: crosswalks + same_hardware_as
+        if "es_pattern_entities" in metas[cat]["features"]:      # r11 A2-appl: concrete model -> ES pattern entity coverage edges (scripts/escover.py)
+            EC.apply(w, cat_stats[cat], parsers[metas[cat]["es_patterns"]["source"]]["parser"])
     doc_stats = DA.apply(worlds, events, {})        # document pipeline: linked manuals/datasheets -> claims on the linking page's entity (scripts/docattach.py)
     DS.apply(worlds, events, doc_stats)            # r2: SSD datasheet rows (scripts/docspec_attach.py, separate transform: docattach@1 stays pinned)
     DS3.apply(worlds, events, doc_stats)           # r3: TV / router / laptop spec-sheet rows (scripts/docspec_r3.py; docspec-attach@2 stays pinned)
     DS7.apply(worlds, events, doc_stats, trusted=trusted_probe(dec, profiles, unitsets, psref))   # r7: TV per-port HDMI rates from quick start guides (scripts/docspec_r7tv.py; r3@2 stays pinned)
     IA.apply(worlds, events, doc_stats)            # maker spec images (OCR) -> claims on the linking page's entity (scripts/imgattach.py)
     HA.apply(worlds, events, doc_stats)            # kind: hub pages (data/document-hubs.yaml) -> bound only by the document's own text (scripts/hubattach.py)
+    mark_delisted(worlds, listing)
     ignored_rows = []
     rules = {c: load_label_rules(c) for c in worlds}
     for sid, st in stats.items():
@@ -1208,6 +1236,7 @@ def main():
         B.finalize(w)               # package contents (entity ids now exist)
         TC.finalize(w, dec, {"add_src": add_src, "crosswalks": data / "decisions" / "tv-crosswalks.yaml"})   # r7: decided coverage edges -> allowlisted transfer
         XW.finalize(w, dec, {"add_src": add_src})       # r8: decided same_hardware_as edges -> certification-only transfer
+        EC.finalize(w, dec)                             # r11: decided ES pattern coverage edges -> extra.certifications (no transfer)
     # ------------------------------------------------------------------ write
     dbp = Path(a.db); dbp.parent.mkdir(parents=True, exist_ok=True)
     tmp = dbp.with_suffix(".tmp")

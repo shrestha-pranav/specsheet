@@ -1,0 +1,44 @@
+name: tests
+# A3-rob r11. Runs what works from committed files alone: raw/, state/ (specsheet.sqlite), docs/api/ and api-worker/pack/ are gitignored,
+# so CI never has the store or a built dataset. Every tests/test_*.py runs; tests needing local-only data skip themselves (unittest skip),
+# and scripts/run-tests.sh prints the skip count per file. Local-only (skipped in CI, run by scripts/release.sh on roxy):
+#   test_chargers.Published.{test_dataset,test_store_and_migration}       built dataset / release store
+#   test_coverage_r4.KingstonTitle.test_stored_datasheets                  raw/ store
+#   test_match.{Lookalikes.*,Scores.*} (5)                                 built dataset
+#   test_presets.PresetDefsR2.test_filters_parse_against_published_schemas built index
+#   test_replay.ReplayTest.* (2)                                           state/specsheet.sqlite
+#   test_review10.EndToEnd.* (3)                                           PSREF raw store
+#   test_review3.ReleaseStore.test_page_conflicts_reviewable_and_ids_kept release store
+#   test_zero_trace.Live.test_no_trace_in_served_artifacts                 store + pack
+# Not runnable here: scripts/smoke.mjs and scripts/frontend-smoke.mjs (they validate the real dataset, which needs the store).
+# `build.py --no-state` (demo category only) runs AFTER the tests (a built docs/api would un-skip the dataset tests), then zero_trace.py
+# runs its url/label checks over docs/ (no store = no value check). No secrets are used.
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.3"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.20.0"
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y --no-install-recommends poppler-utils
+          python -m pip install --no-cache-dir pyyaml==6.0.1 requests==2.31.0 jsonschema==4.10.3
+      - name: Python tests
+        run: scripts/run-tests.sh
+      - name: Build without the store (demo category; checks the build pipeline + JS syntax of docs/)
+        run: python3 -I scripts/build.py --no-state
+      - name: Zero-trace (free:false hosts) over the site shell + no-state build
+        run: python3 -I scripts/zero_trace.py
+      - name: JavaScript syntax
+        run: for f in docs/*.js scripts/*.mjs; do node --check "$f"; done

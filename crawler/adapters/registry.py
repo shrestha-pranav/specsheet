@@ -59,6 +59,7 @@ SOURCES = {
     "sharge-us-powerbanks": {"brand": "sharge", "brand_name": "SHARGE", "category": "power-banks", "module": "shopify_powerbanks2", "importer": "model"},
     "kuxiu-us-powerbanks": {"brand": "kuxiu", "brand_name": "KUXIU", "category": "power-banks", "module": "shopify_powerbanks2", "importer": "model"},
     "mophie-us-powerbanks": {"brand": "mophie", "brand_name": "mophie", "category": "power-banks", "module": "shopify_powerbanks2", "importer": "model"},
+    "nitecore-us-powerbanks": {"brand": "nitecore", "brand_name": "NITECORE", "category": "power-banks", "module": "nitecore_powerbanks", "importer": "model"},   # r11 A2-bat
     "anker-us-chargers": {"brand": "anker", "brand_name": "Anker", "category": "chargers", "module": "anker_chargers", "importer": "model"},
     "belkin-us-chargers": {"brand": "belkin", "brand_name": "Belkin", "category": "chargers", "module": "belkin_chargers", "importer": "model"},
     "ugreen-us-chargers": {"brand": "ugreen", "brand_name": "UGREEN", "category": "chargers", "module": "shopify_chargers", "importer": "model"},
@@ -73,11 +74,13 @@ SOURCES = {
     "plugable-us-chargers": {"brand": "plugable", "brand_name": "Plugable", "category": "chargers", "module": "shopify_chargers", "importer": "model"},
     "nekteck-us-chargers": {"brand": "nekteck", "brand_name": "Nekteck", "category": "chargers", "module": "shopify_chargers", "importer": "model"},
     "choetech-us-chargers": {"brand": "choetech", "brand_name": "CHOETECH", "category": "chargers", "module": "shopify_chargers", "importer": "model"},
+    "kuxiu-us-chargers": {"brand": "kuxiu", "brand_name": "KUXIU", "category": "chargers", "module": "kuxiu_chargers", "importer": "model"},   # r11 A2-chg
     "ecoflow-us-stations": {"brand": "ecoflow", "brand_name": "EcoFlow", "category": "power-stations", "module": "shopify_powerstations", "importer": "model"},
     "bluetti-us-stations": {"brand": "bluetti", "brand_name": "BLUETTI", "category": "power-stations", "module": "shopify_powerstations", "importer": "model"},
     "jackery-us-stations": {"brand": "jackery", "brand_name": "Jackery", "category": "power-stations", "module": "shopify_powerstations", "importer": "model"},
     "goalzero-us-stations": {"brand": "goal_zero", "brand_name": "Goal Zero", "category": "power-stations", "module": "shopify_powerstations", "importer": "model"},
     "ankersolix-us-stations": {"brand": "anker", "brand_name": "Anker", "category": "power-stations", "module": "ankersolix_stations", "importer": "model"},
+    "pecron-us-stations": {"brand": "pecron", "brand_name": "PECRON", "category": "power-stations", "module": "pecron_stations", "importer": "model"},   # r11 A2-bat
     "dreame-us-robovac": {"brand": "dreame", "brand_name": "Dreame", "category": "robot-vacuums", "module": "dreame_robovac", "importer": "model"},
     "roborock-us-robovac": {"brand": "roborock", "brand_name": "Roborock", "category": "robot-vacuums", "module": "roborock_robovac", "importer": "model"},
     "narwal-us-robovac": {"brand": "narwal", "brand_name": "Narwal", "category": "robot-vacuums", "module": "narwal_robovac", "importer": "model"},
@@ -94,6 +97,8 @@ SOURCES = {
     "carb-airpurifiers": {"brand": "carb", "brand_name": "CARB certified air cleaners (cross-brand)", "category": "air-purifiers", "module": "carb_airpurifiers", "importer": "model"},
     "levoit-us-airpurifiers": {"brand": "levoit", "brand_name": "Levoit", "category": "air-purifiers", "module": "levoit_airpurifiers", "importer": "model"},
     "winix-us-airpurifiers": {"brand": "winix", "brand_name": "Winix", "category": "air-purifiers", "module": "winix_airpurifiers", "importer": "model"},
+    "energystar-refrigerators": {"brand": "energystar", "brand_name": "ENERGY STAR (cross-brand)", "category": "refrigerators", "module": "energystar_appliances", "importer": "model"},   # r11 A2-appl
+    "energystar-dishwashers": {"brand": "energystar", "brand_name": "ENERGY STAR (cross-brand)", "category": "dishwashers", "module": "energystar_appliances", "importer": "model"},   # r11 A2-appl
     "tripplite": {"brand": "tripplite", "brand_name": "Tripp Lite", "category": "power-strips", "module": "tripplite", "importer": "strip"},
     "cyberpower": {"brand": "cyberpower", "brand_name": "CyberPower", "category": "power-strips", "module": "cyberpower", "importer": "strip"},
     # crawl.py v0 stores (raw/<slug>/products/<key>/{extract,feed}.json, no snapshot log): read through crawlpy_strips, never written

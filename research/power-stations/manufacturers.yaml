@@ -26,8 +26,12 @@ manufacturers:
     how: "Shopify https://www.goalzero.com/products.json (399 products) -> product_type 'Portable Power Station', open box/cases dropped; accordion li rows (Yeti X/Lithium) or functional-specs columns (new LFP Yeti)."
     gives: [5-digit item number (cross-checked with SKU row), pack Wh (V, Ah), AC continuous/surge, waveform, ports, HPP/8mm solar windows, combined solar total, recharge times 0-80/0-100 %, NMC/LFP + cycles, APS ms]
     lacks: [Yeti PRO 8000 page = PRO 4000 + Tank (package -> absence); USB counts printed in labels ('USB-C QC (30 W x 2)') stay unresolved]
+  pecron:
+    status: adapter            # r11: crawler/adapters/pecron_stations.py, raw/pecron-us-stations (9 pages, 7 models with th/td spec tables). Model = E/F...LFP title token == unit SKU.
+  zendure: {status: human_only}  # r11: terms bar spiders/bots/data gathering; dabbsson, vtoman, fossibot also human_only (Shopify ToS 'spider, crawl, or scrape').
+  # r11 terms audit (source-policy 2026-11-26.7): ecoflow, bluetti, jackery, goal_zero, anker (ankersolix) stores are crawl human_only.
   dji:
-    status: unstructured       # store.dji.com and www.dji.com: /products.json 404 (not Shopify), robots allows product pages; DJI Power 1000/2000 specs live on www.dji.com/power-*/specs (prose tables). Not built this round.
+    status: human_only         # r11: www.dji.com/terms 6.9 bars robots/spiders/crawlers/scrapers. Before r11: unstructured       # store.dji.com and www.dji.com: /products.json 404 (not Shopify), robots allows product pages; DJI Power 1000/2000 specs live on www.dji.com/power-*/specs (prose tables). Not built this round.
 evidence_sources:
   ul_product_iq: "UL 2743 listing verification (cert.ul2743 is a maker claim until checked). Not probed this round."
   bench_tests: "Usable Wh / idle draw are measured (independent tier). category-survey links (capytoolkit, wildsmartgear) are vendor-ish; not used."

@@ -43,3 +43,9 @@ Retail listings are aliases only (team rule). Nothing below was scraped.
 | Belkin | BPB027 / BPB028 pages link V2 leaflets (Model No BPB027V2 / BPB028V2, PPS 5-11V): identity rule needs an exact own model, so nothing attaches. BBA019 page links the BPB039 leaflet (another model): nothing | open (A1/coordinator) |
 | Belkin | 10 in-scope rows have a leaflet with a complete Output list and no PPS (BBA010, BBA018, BBC010/BPD004, BPD006, BPD007, BPD008, BPD011, BPD015, BPD022): pd.pps false NOT written (complete-enumeration rule needs an A1 ruling) | logged |
 | mophie | hub manuals (A3 r6): unchanged, no PPS | 0 |
+
+## r11 (A2-bat, 2026-11-26): terms audit + NITECORE
+- New crawl:agent maker: www.nitecore.com (robots allows * and ClaudeBot; no terms page). Source nitecore-us-powerbanks: sitemap -> 20 bank pages -> 16 models (kits / NBP68HD battery pack mint nothing). Policy claim/mfr-power-banks-nitecore@1 pending.
+- Terms bar automated collection -> crawl human_only (source-policy 2026-11-26.7), no further agent fetches: www.anker.com, iniushop.com, www.cuktech.com, us.ugreen.com, sharge.com, us.ecoflow.com. Stored values unchanged pending coordinator/owner ruling.
+- kuxiu.com, www.mophie.com: no such clause found (stay agent). Baseus: still unstructured (spec images); Zendure: no power banks. Satechi: chargers lane.
+- CPSC recalls (saferproducts.gov API, robots 404 = no rules): 13 power-bank recalls name our brands (Anker A1263/A1366/A1642/A1647/A1652, Belkin BPB002/PB0003/BPD005, INIU BI-B41, Baseus PPCXM06/PPCXW06/BS-30KP365), but none matches a stored model: safety.recall needs either recall-only records (coordinator ruling) or nothing. Adapter not built.

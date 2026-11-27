@@ -206,7 +206,8 @@ def measure(preset, category, schema, rows, default_min, default_min_brands=2, d
                   "ruled_out": buckets["no"], "total": len(pool), "out_of_scope": category_total - len(pool)}
 
 
-def build(api, categories, source=None):
+def build(api, categories, source=None, skip_unpublished=False):
+    """skip_unpublished (build.py --no-state only): presets of categories this build does not publish are left out instead of failing."""
     src = source or json.loads((DOCS / "presets.json").read_text())
     by_id = {c["id"]: c for c in categories}
     default_min = float(src.get("default_min_fill", 0.8))
@@ -219,6 +220,8 @@ def build(api, categories, source=None):
             raise SystemExit(f"duplicate preset id {p['id']}")
         ids.add(p["id"])
         cat = by_id.get(p["category"])
+        if skip_unpublished and not cat:
+            continue
         if not cat or not cat.get("index") or not cat.get("schema"):
             raise SystemExit(f"preset {p['id']}: category {p['category']!r} is not a published indexed category")
         if p["category"] not in cache:
@@ -236,10 +239,10 @@ def build(api, categories, source=None):
     return {"version": 1, "default_min_fill": default_min, "default_min_brands": default_min_brands, "renderers": src.get("renderers", {}), "presets": out}
 
 
-def write(api):
+def write(api, skip_unpublished=False):
     api = Path(api)
     categories = json.loads((api / "categories.json").read_text())
-    data = build(api, categories)
+    data = build(api, categories, skip_unpublished=skip_unpublished)
     (api / "presets.json").write_text(json.dumps(data, indent=1, ensure_ascii=False) + "\n")
     return {"presets": len(data["presets"]), "pass": [p["id"] for p in data["presets"] if p["gate"]["passes"]]}
 

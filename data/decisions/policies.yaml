@@ -8,6 +8,114 @@
 # (preview dataset only) until a human ledger line (ledger.jsonl) accepts or rejects it.
 format: specsheet.policies/2
 claim_policies:
+- id: claim/appliances-energystar@2
+  since: '2026-11-26'
+  supersedes: claim/appliances-energystar@1
+  rationale: 'Re-issue of claim/appliances-energystar@1 (locked by a parallel import before audit, never approved, never released) for the final energystar_appliances@1 fingerprint (federal kWh carries no procedure condition). A2-appl r11 (brief coord-2026-11-26-r11-appliances-a2; A1 rulings team/reports/2026-11-26-a1-r11-appliances.md). New cross-brand
+    sources energystar-refrigerators (data.energystar.gov p5st-her9) and energystar-dishwashers (q8py-6w3f), one parameterised adapter
+    crawler/adapters/energystar_appliances.py (paged SoQL, robots + Crawl-delay obeyed, own UA, raw pages stored). CONCRETE model rows only
+    (key mfr_model; pattern rows carry their own extractor, claim/appliances-es-pattern@2). Values as filed: rows without United States
+    dropped, fridge Upright/Chest Freezer rows dropped (freezers category), re-filings of one string that disagree on a field leave it unresolved
+    (status unknown, not accepted). kWh / volume / water carry test_procedure (appendix_a fridges, appendix_c1 dishwashers); adjusted volume is
+    its own key, never capacity; percent_less / better_than columns are percents; refrigerant.type = the single R-number of the free-text cell,
+    refrigerant.gwp only from an explicit GWP token; features.dispenser only none (through-door No); dishwasher widths > 30 in (Beko 59.8 cm in
+    the inches column) quarantined as unknown, never converted; cert.energy_star only true (absent = unknown, never false).'
+  audit:
+    by: A2-appl r11
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-appl-r11.md; raw/energystar-refrigerators (4,942 rows, 5 pages), raw/energystar-dishwashers (753 rows); tests/test_a2_appl_r11.py'
+    parsers: {'energystar_appliances@1': 'sha256:6a7eb244aa1d4628846b'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
+  match:
+    extractors: [energystar_appliances@1]
+    source_ids: [energystar-refrigerators, energystar-dishwashers]
+    kinds: [official]
+    tiers: [regulatory]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      energystar-refrigerators: [capacity.adjusted_ft3, capacity.total_ft3, cert.energy_star, cert.es_date, cert.es_most_efficient, config.built_in,
+        config.compact, config.counter_depth, config.defrost, config.es_product_class, config.es_type, conn.connected, conn.protocols, dims.height_in,
+        dims.width_in, energy.annual_kwh, energy.federal_standard_kwh, energy.pct_below_federal, features.dispenser, features.ice_maker, gen.is_pattern,
+        refrigerant.gwp, refrigerant.type]
+      energystar-dishwashers: [capacity.place_settings, cert.energy_star, cert.es_date, cert.es_most_efficient, config.es_type, conn.connected,
+        dims.depth_in, dims.width_in, energy.annual_kwh, energy.pct_below_federal, features.drying_method, features.soil_sensor, features.tub_material,
+        gen.is_pattern, water.gal_per_cycle]
+- id: claim/appliances-es-pattern@2
+  since: '2026-11-26'
+  supersedes: claim/appliances-es-pattern@1
+  rationale: 'Re-issue of claim/appliances-es-pattern@1 (locked by a parallel import before audit, never approved, never released) for the final energystar_appliances@1 fingerprint (federal kWh carries no procedure condition). A2-appl r11, A1 wildcard ruling. An ENERGY STAR PATTERN row (model_number with * or #, a trailing R/L hinge alternation, or a
+    trailing xxx placeholder: BRB106003**, ARD484F*10R/L) is its own entity keyed x_energystar_model_pattern (never merged with or expanded into a
+    concrete SKU) and flagged gen.is_pattern = true. It may assert ONLY the energy-defining facts of the DOE basic model (A1 transfer lists):
+    fridges cert.*, energy.*, capacity.total_ft3, capacity.adjusted_ft3, config.es_type, config.es_product_class, config.compact,
+    config.built_in, refrigerant.type; dishwashers cert.*, energy.*, water.gal_per_cycle, capacity.place_settings, config.es_type,
+    features.soil_sensor, features.drying_method. NOT accepted for a pattern (emitted, preview only): any dimension, counter-depth flag,
+    defrost, ice maker, dispenser, tub, connectivity, refrigerant GWP; UPCs on a pattern row are covered_upc lookup aliases, never GTIN
+    identifiers. Same value rules as claim/appliances-energystar@2.'
+  audit:
+    by: A2-appl r11
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-appl-r11.md; tests/test_a2_appl_r11.py (pattern rows keep only allowlisted keys in the trusted index)'
+    parsers: {'energystar_appliances@1': 'sha256:6a7eb244aa1d4628846b'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
+  match:
+    extractors: [energystar_appliances_pattern@1]
+    source_ids: [energystar-refrigerators, energystar-dishwashers]
+    kinds: [official]
+    tiers: [regulatory]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      energystar-refrigerators: [capacity.adjusted_ft3, capacity.total_ft3, cert.energy_star, cert.es_date, cert.es_most_efficient, config.built_in,
+        config.compact, config.es_product_class, config.es_type, energy.annual_kwh, energy.federal_standard_kwh, energy.pct_below_federal,
+        gen.is_pattern, refrigerant.type]
+      energystar-dishwashers: [capacity.place_settings, cert.energy_star, cert.es_date, cert.es_most_efficient, config.es_type, energy.annual_kwh,
+        energy.pct_below_federal, features.drying_method, features.soil_sensor, gen.is_pattern, water.gal_per_cycle]
+- id: claim/mfr-power-banks-nitecore@1
+  since: '2026-11-26'
+  rationale: 'A2-bat r11 (brief coord-2026-11-26-r11-datasets). New maker source nitecore-us-powerbanks (crawler/adapters/nitecore_powerbanks.py): NITECORE''s own
+    product pages on www.nitecore.com (robots allows *, ClaudeBot; no terms page published). Official labelled rows of the Specifications table only (spec-key /
+    spec-value), mapped by the shared shopify_powerbanks2.parse2 row mapper (same rules as the SHARGE / KUXIU / EcoFlow rows of claim/mfr-power-banks-structured):
+    Capacity cell (mAh + cell V + Wh), Output per-port PDO list (one port per printed line), Total Output (all-ports W as labelled), Input, Weight, Dimensions;
+    plus Cell -> bat.chemistry. Model = the page''s printed product name, which must equal the page''s own slug (NB20000 Gen3 / nb20000Gen3); kits and pages
+    without an Output row (battery packs) mint nothing. ''Rated Energy 6,400mAh 5V (TYP 1A)'' stays unresolved (preview), not in the allowlist.'
+  audit:
+    by: A2-bat r11
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-A2-bat-r11.md; 20 stored pages (raw/nitecore-us-powerbanks), 16 models; tests/test_r11_bat.py'
+    parsers: {'nitecore_powerbanks@1': 'sha256:e223d94929868ccab8a0'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
+  match:
+    extractors: [nitecore_powerbanks@1]
+    source_ids: [nitecore-us-powerbanks]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys:
+      nitecore-us-powerbanks: [bat.chemistry, cap.cell_mah, cap.cell_voltage, cap.energy_wh, in.max_w, in.pdos, out.max_single_port_w, out.max_total_w, out.ports,
+        out.wireless_w, pd.max_fixed_voltage, phys.dimensions, phys.weight]
+- id: claim/mfr-power-stations-pecron@1
+  since: '2026-11-26'
+  rationale: 'A2-bat r11 (brief coord-2026-11-26-r11-datasets). New maker source pecron-us-stations (crawler/adapters/pecron_stations.py): PECRON''s own US Shopify
+    store www.pecron.com (robots Shopify default; terms of service have no automated-access clause). Official <th>/<td> spec-table rows only, mapped by the shared
+    _powerstation.emit_rows (same station rules as claim/mfr-power-stations-structured@10, incl. the UPS prose ruling r5 via parse_station). In the table headed
+    ''Model | <own model>'' the unsectioned Rated Power / Peak Power / Output Volts rows are read as AC Output rows (the title names the same figure as the AC
+    inverter rating). Approximate rows (''Around 28.7kg'') are dropped. Identity = the one E/F...LFP token in the title, equal to the unit-only variant SKU stem.'
+  audit:
+    by: A2-bat r11
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-A2-bat-r11.md; 9 stored pages (raw/pecron-us-stations), 7 models with spec rows; tests/test_r11_bat.py'
+    parsers: {'pecron_stations@1': 'sha256:4842a2072acd97c23612'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
+  match:
+    extractors: [pecron_stations@1]
+    source_ids: [pecron-us-stations]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys:
+      pecron-us-stations: [bat.chemistry, cap.energy_wh, in.ac_w, in.car_w, in.solar_voltage, in.solar_w, out.ac_continuous_w, out.ac_surge_w, out.ac_voltage,
+        out.ac_waveform, out.ports, phys.dimensions, phys.weight, ups.switchover_ms]
 - id: claim/mfr-structured-datasheet@5
   since: '2026-11-26'
   supersedes: claim/mfr-structured-datasheet@4
@@ -823,6 +931,34 @@ claim_policies:
       hyper-us-chargers: [gen.color, out.max_single_port_w, out.ports, out.rated_w, pd.pps]
       nativeunion-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.ports, pd.max_fixed_voltage, phys.weight]
       choetech-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.max_total_w, out.ports, pd.max_fixed_voltage, phys.dimensions, phys.weight]
+- id: claim/mfr-chargers-kuxiu@1
+  since: '2026-11-26'
+  rationale: 'r11 (A2-chg, brief coord-2026-11-26-r11-datasets): new source kuxiu-us-chargers (kuxiu.com, crawl agent in source-policy 2026-11-26.9,
+    provisional r11, licensing review later), adapter crawler/adapters/kuxiu_chargers.py (own module so the shopify_chargers@3 pins of
+    claim/mfr-chargers-structured@4 do not move; discover/fetch are the shared Shopify ones). Same rules as claim/mfr-chargers-structured@4:
+    review-3 charger semantics in the shared _charger.read_rows, official maker page, manufacturer tier, known, normalised. Identity = the
+    page''s printed Model row (RY-C40C-C, DP-A127G45, GS-45W0993, OL-H02-PD45); listings whose every variant SKU names a non-US plug and
+    plug-adapter sets mint nothing. KUXIU-specific preprocessing: bullet dashes dropped from values; ''AVS:'' lines (USB PD Adjustable Voltage
+    Supply) dropped so an AVS range is never read as PPS. pd.pps only when the protocol row names PPS (affirmative). Not allowlisted: in.rating
+    (the shared PDO normaliser rewrites the AC ''V~10A'' input literal with the DC symbol), out.ports (two spec blocks on one page name the
+    same ports differently, so the port list duplicates), gen.form_factor/gen.gan/gen.product_line/pd.protocols/id.msrp_us (never accepted
+    for chargers).'
+  audit:
+    by: A2-chg r11
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-chg-r11.md; 12 pages fetched (own UA, 1 req/s), 6 parse to 4 models, 6 absences (no Model row);
+      tests/test_a2_chg_r11.py (keep, Model row, stored-snapshot AVS is not PPS)'
+    parsers:
+      kuxiu_chargers@1: 'sha256:02bdc11e4bb73efbcc08'
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
+  match:
+    extractors: [kuxiu_chargers@1]
+    source_ids: [kuxiu-us-chargers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys: [gen.color, in.type, in.voltage_range, out.max_single_port_w, out.max_total_w, pd.max_fixed_voltage, pd.pps, phys.dimensions, phys.weight]
 - id: claim/psref-split@1
   since: '2026-11-24'
   rationale: 'import.py splits the Lenovo PSREF multi-target cells that research/laptops/psref-mapping.yaml maps to several keys (Display, Memory Slots,
@@ -1221,31 +1357,16 @@ claim_policies:
     statuses: [known]
     require_normalized: true
     keys: [hdmi.ports_4k120, hdmi.has_4k120]
-- id: claim/mfr-laptop-ports@3
+- id: claim/mfr-laptop-ports@4
   since: '2026-11-26'
-  supersedes: claim/mfr-laptop-ports@2
-  rationale: 'New (A2-lap r8 brief item 1): per-port USB-C facts from the maker''s own port list for Dell (dell@2, www.dell.com spd Tech Specs ''Ports''
-    list, default configuration of the platform) and Microsoft Surface (surface@2, learn.microsoft.com tech-spec ''Ports and charging'' row), parsed by
-    crawler/adapters/_xports.py in the Lenovo _lports per-port model. Each fact only from the line that states it, never pooled: one item per physical USB-C
-    port; usb_gbps from one printed figure (''80/120 Gbps'' = none); dp_alt only when the port line names DisplayPort (Surface: also its own ''with support
-    for:'' sub-items or an ''All USB-C ports support ...'' line; a separate ''DisplayPort 2.1 with support for monitors'' line is not attributed); pd_in_w
-    only from a printed ''N W charging''; tb_usb4 = highest TB5 > TB4 > USB4 on a USB-C line; video_out = dedicated HDMI lines, literal; charge_port: Dell
-    ''barrel power port'' = barrel, Surface Connect = proprietary, usb-c only when a USB-C line or charging line states charging over USB-C and no other
-    charge path is named (Surface Connect + USB-C = nothing; Dell ''power-adapter port'' of unstated shape = nothing). Whole list refused on any platform/config
-    condition (''AMD Ryzen 200 Series:'', ''only for computers with'', ''OR'', ''(optional)''), unknown line, or Surface size sections that disagree. Dell
-    bare ''USB 3.2 Gen 1 (5 Gbps) port'' lines are read as non-USB-C (Dell names every Type-C port explicitly). r9: port.charge_port gains the value dedicated
-    (A1 ruling): the maker''s port list names a separate DC-in / power-adapter / power connector of unstated shape; never inferred from absence of USB-C
-    charging. Dedicated + USB-C charging both stated -> list [dedicated, usb-c]. review-9 (A3-fix, Codex review-9 P2): dell@3 -> @4. dell.connectors_stated():
-    every USB entry of the Ports list must print its connector (Type-C / Thunderbolt / USB4, or Type-A / USB-A); a connector-unknown entry (''1 USB 3.2
-    Gen 1 (5 Gbps) port'') keeps the literal port.usbc_list and writes no structured usbc_list / tb_usb4 / video_out / charge_port for that page. surface@3
-    unchanged; _xports.py untouched.'
+  supersedes: claim/mfr-laptop-ports@3
+  rationale: 'Same rules as claim/mfr-laptop-ports@3; one parser pin moves: surface@3 fingerprint 64272f1d131c238f62cb -> 0944b93214ad06c7130e (A3-rob r11 robots compliance: the Microsoft Store curl transport now goes through crawl.Net with per-hop policy / robots.txt / Crawl-delay checks). Parser output byte-identical; no claim or relation changes.'
   audit:
-    by: A3-fix review-9
+    by: A3-rob r11
     at: '2026-11-26'
-    evidence: 'reviews/2026-11-26-astra-review-9.md P2; team/reports/2026-11-26-a3-review9-fixes.md; full scratch import vs published: 16 Dell platforms,
-      44 published claims change (16 usbc_list structured -> literal, 14 video_out, 9 tb_usb4, 5 charge_port withheld). tests/test_review9.py DellConnector'
-    parsers: {dell@4: 'sha256:45e2304acec9f5149909', surface@3: 'sha256:64272f1d131c238f62cb'}
-  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26d (review-9 fixes)}
+    evidence: 'team/reports/2026-11-26-a3-rob-r11.md; surface.py transport only: curl -L replaced by crawl.Net.curl_get (per-hop policy + robots.txt + Crawl-delay), parse code unchanged; old (git HEAD) vs new surface.parse over every stored snapshot (15: 8 learn + 7 store): 15/15 byte-identical ParseResult'
+    parsers: {dell@4: 'sha256:45e2304acec9f5149909', surface@3: 'sha256:0944b93214ad06c7130e'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
   match:
     extractors: [dell@4, surface@3]
     source_ids: [dell-us, microsoft-surface]
@@ -1295,6 +1416,30 @@ claim_policies:
       aoc-us-monitors: [ergo.vesa, flk.pwm, gen.size_class, gen.viewable_diag, panel.technology, pwr.max, res.height_px, res.native, res.refresh_max, res.refresh_native,
         res.width_px, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.hdmi_version]
 relation_policies:
+- id: rel/appliances-es-pattern-coverage@2
+  since: '2026-11-26'
+  supersedes: rel/appliances-es-pattern-coverage@1
+  rationale: 'Re-issue of rel/appliances-es-pattern-coverage@1 (locked by a parallel import before audit, never approved, never released) for the final energystar_appliances@1 fingerprint (federal kWh carries no procedure condition). A2-appl r11, A1 matching ruling (scripts/escover.py). A directed covered_by_certification edge from a concrete model entity to an
+    ENERGY STAR pattern entity of the same brand, published in the model detail as certifications[] (coverage, not identity: no merge, no
+    inheritance, no synthetic SKU, no claim transfer in escover@1). Approved only for es-pattern:listed (the pattern row lists the concrete string
+    verbatim in additional_model_information) and es-pattern:unique-match (whole-string match, * = one [A-Z0-9], # = one digit, trailing R/L =
+    R or L, every other character literal, exactly one pattern of the brand matches). es-pattern:ambiguous (2+ patterns match) and
+    es-pattern:undocumented-token (xxx placeholder, / next to a wildcard) stay proposals.'
+  audit:
+    by: A2-appl r11
+    at: '2026-11-26'
+    evidence: scripts/escover.py; tests/test_a2_appl_r11.py.
+    parsers:
+      energystar_appliances@1: 'sha256:6a7eb244aa1d4628846b'
+      escover@1: 'sha256:31dcf48414ace5004dd4'
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
+  rules:
+  - method: es-pattern:listed
+    types: [covered_by_certification]
+    parsers: [energystar_appliances@1+escover@1]
+  - method: es-pattern:unique-match
+    types: [covered_by_certification]
+    parsers: [energystar_appliances@1+escover@1]
 - id: rel/bundle-contents@10
   since: '2026-11-26'
   supersedes: rel/bundle-contents@9
@@ -1403,15 +1548,15 @@ relation_policies:
   - method: crosswalk:reviewed
     types: [same_model]
     parsers: [xwalk@1]
-- id: rel/source-stated-hierarchy@17
+- id: rel/source-stated-hierarchy@18
   since: '2026-11-26'
-  supersedes: rel/source-stated-hierarchy@16
-  rationale: 'Same rules, methods and types as @15; one parser pin moves: lenovo_monitors@6 -> @7 (A2-ref r10: res.refresh_max only). Package identity and package_of relation code unchanged. @16 was locked by the first r10 import at an intermediate lenovo_monitors@7 fingerprint; never approved.'
+  supersedes: rel/source-stated-hierarchy@17
+  rationale: 'Same rules as rel/source-stated-hierarchy@17; one parser pin moves: surface@3 fingerprint 64272f1d131c238f62cb -> 0944b93214ad06c7130e (A3-rob r11 robots compliance: the Microsoft Store curl transport now goes through crawl.Net with per-hop policy / robots.txt / Crawl-delay checks). Parser output byte-identical; no claim or relation changes.'
   audit:
-    by: A2-ref r10
+    by: A3-rob r11
     at: '2026-11-26'
-    evidence: 'team/reports/2026-11-26-a2-r10-refresh.md; tests/test_a2_r10_refresh.py; in-memory claim diff old vs new parser over every stored snapshot; lenovo_monitors@6 vs @7: 0 entity / relation changes (refresh_max claims only).'
-    parsers: {lenovo_psref@5: 'sha256:e5ba2db22c514b340e50', asus@4: 'sha256:d7207c7067ec94343149', dell@4: 'sha256:45e2304acec9f5149909', surface@3: 'sha256:64272f1d131c238f62cb',
+    evidence: 'team/reports/2026-11-26-a3-rob-r11.md; surface.py transport only: curl -L replaced by crawl.Net.curl_get (per-hop policy + robots.txt + Crawl-delay), parse code unchanged; old (git HEAD) vs new surface.parse over every stored snapshot (15: 8 learn + 7 store): 15/15 byte-identical ParseResult'
+    parsers: {lenovo_psref@5: 'sha256:e5ba2db22c514b340e50', asus@4: 'sha256:d7207c7067ec94343149', dell@4: 'sha256:45e2304acec9f5149909', surface@3: 'sha256:0944b93214ad06c7130e',
       razer@1: 'sha256:8752d0e2f07ae8b46ff2', samsung@1: 'sha256:d0e9cabff53a15285159', lenovo_monitors@7: 'sha256:bc0b113ba07be6e8e47d', samsung_ssd@4: 'sha256:b1bfbfe652623ee2630c',
       sandisk_ssd@7: 'sha256:f436dae10cc11e468138', teamgroup_ssd@6: 'sha256:75bc6577801ceac73b22', kingston_ssd@4: 'sha256:c93ab26938d6300a1494', tplink_routers@3: 'sha256:19f0ca2101fbc63e219c',
       crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'}
@@ -1463,6 +1608,146 @@ relation_policies:
     types: [configuration_of]
     parsers: [crawlpy-strips@1]
 retired_policies:
+- id: claim/appliances-energystar@1
+  since: '2026-11-26'
+  rationale: 'A2-appl r11 (brief coord-2026-11-26-r11-appliances-a2; A1 rulings team/reports/2026-11-26-a1-r11-appliances.md). New cross-brand
+    sources energystar-refrigerators (data.energystar.gov p5st-her9) and energystar-dishwashers (q8py-6w3f), one parameterised adapter
+    crawler/adapters/energystar_appliances.py (paged SoQL, robots + Crawl-delay obeyed, own UA, raw pages stored). CONCRETE model rows only
+    (key mfr_model; pattern rows carry their own extractor, claim/appliances-es-pattern@1). Values as filed: rows without United States
+    dropped, fridge Upright/Chest Freezer rows dropped (freezers category), re-filings of one string that disagree on a field leave it unresolved
+    (status unknown, not accepted). kWh / volume / water carry test_procedure (appendix_a fridges, appendix_c1 dishwashers); adjusted volume is
+    its own key, never capacity; percent_less / better_than columns are percents; refrigerant.type = the single R-number of the free-text cell,
+    refrigerant.gwp only from an explicit GWP token; features.dispenser only none (through-door No); dishwasher widths > 30 in (Beko 59.8 cm in
+    the inches column) quarantined as unknown, never converted; cert.energy_star only true (absent = unknown, never false).'
+  audit:
+    by: A2-appl r11
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-appl-r11.md; raw/energystar-refrigerators (4,942 rows, 5 pages), raw/energystar-dishwashers (753 rows); tests/test_a2_appl_r11.py'
+    parsers: {'energystar_appliances@1': 'sha256:79830bda3012f7389e78'}
+  approval: {state: pending}
+  match:
+    extractors: [energystar_appliances@1]
+    source_ids: [energystar-refrigerators, energystar-dishwashers]
+    kinds: [official]
+    tiers: [regulatory]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      energystar-refrigerators: [capacity.adjusted_ft3, capacity.total_ft3, cert.energy_star, cert.es_date, cert.es_most_efficient, config.built_in,
+        config.compact, config.counter_depth, config.defrost, config.es_product_class, config.es_type, conn.connected, conn.protocols, dims.height_in,
+        dims.width_in, energy.annual_kwh, energy.federal_standard_kwh, energy.pct_below_federal, features.dispenser, features.ice_maker, gen.is_pattern,
+        refrigerant.gwp, refrigerant.type]
+      energystar-dishwashers: [capacity.place_settings, cert.energy_star, cert.es_date, cert.es_most_efficient, config.es_type, conn.connected,
+        dims.depth_in, dims.width_in, energy.annual_kwh, energy.pct_below_federal, features.drying_method, features.soil_sensor, features.tub_material,
+        gen.is_pattern, water.gal_per_cycle]
+  retired: {at: '2026-11-26', superseded_by: claim/appliances-energystar@2, reason: 'r11 A2-appl draft locked by a parallel import before the adapter fingerprint was final; never approved, never in a release; content frozen as locked'}
+- id: claim/appliances-es-pattern@1
+  since: '2026-11-26'
+  rationale: 'A2-appl r11, A1 wildcard ruling. An ENERGY STAR PATTERN row (model_number with * or #, a trailing R/L hinge alternation, or a
+    trailing xxx placeholder: BRB106003**, ARD484F*10R/L) is its own entity keyed x_energystar_model_pattern (never merged with or expanded into a
+    concrete SKU) and flagged gen.is_pattern = true. It may assert ONLY the energy-defining facts of the DOE basic model (A1 transfer lists):
+    fridges cert.*, energy.*, capacity.total_ft3, capacity.adjusted_ft3, config.es_type, config.es_product_class, config.compact,
+    config.built_in, refrigerant.type; dishwashers cert.*, energy.*, water.gal_per_cycle, capacity.place_settings, config.es_type,
+    features.soil_sensor, features.drying_method. NOT accepted for a pattern (emitted, preview only): any dimension, counter-depth flag,
+    defrost, ice maker, dispenser, tub, connectivity, refrigerant GWP; UPCs on a pattern row are covered_upc lookup aliases, never GTIN
+    identifiers. Same value rules as claim/appliances-energystar@1.'
+  audit:
+    by: A2-appl r11
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-appl-r11.md; tests/test_a2_appl_r11.py (pattern rows keep only allowlisted keys in the trusted index)'
+    parsers: {'energystar_appliances@1': 'sha256:79830bda3012f7389e78'}
+  approval: {state: pending}
+  match:
+    extractors: [energystar_appliances_pattern@1]
+    source_ids: [energystar-refrigerators, energystar-dishwashers]
+    kinds: [official]
+    tiers: [regulatory]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      energystar-refrigerators: [capacity.adjusted_ft3, capacity.total_ft3, cert.energy_star, cert.es_date, cert.es_most_efficient, config.built_in,
+        config.compact, config.es_product_class, config.es_type, energy.annual_kwh, energy.federal_standard_kwh, energy.pct_below_federal,
+        gen.is_pattern, refrigerant.type]
+      energystar-dishwashers: [capacity.place_settings, cert.energy_star, cert.es_date, cert.es_most_efficient, config.es_type, energy.annual_kwh,
+        energy.pct_below_federal, features.drying_method, features.soil_sensor, gen.is_pattern, water.gal_per_cycle]
+  retired: {at: '2026-11-26', superseded_by: claim/appliances-es-pattern@2, reason: 'r11 A2-appl draft locked by a parallel import before the adapter fingerprint was final; never approved, never in a release; content frozen as locked'}
+- id: rel/appliances-es-pattern-coverage@1
+  since: '2026-11-26'
+  rationale: 'A2-appl r11, A1 matching ruling (scripts/escover.py). A directed covered_by_certification edge from a concrete model entity to an
+    ENERGY STAR pattern entity of the same brand, published in the model detail as certifications[] (coverage, not identity: no merge, no
+    inheritance, no synthetic SKU, no claim transfer in escover@1). Approved only for es-pattern:listed (the pattern row lists the concrete string
+    verbatim in additional_model_information) and es-pattern:unique-match (whole-string match, * = one [A-Z0-9], # = one digit, trailing R/L =
+    R or L, every other character literal, exactly one pattern of the brand matches). es-pattern:ambiguous (2+ patterns match) and
+    es-pattern:undocumented-token (xxx placeholder, / next to a wildcard) stay proposals.'
+  audit:
+    by: A2-appl r11
+    at: '2026-11-26'
+    evidence: scripts/escover.py; tests/test_a2_appl_r11.py.
+    parsers:
+      energystar_appliances@1: 'sha256:79830bda3012f7389e78'
+      escover@1: 'sha256:31dcf48414ace5004dd4'
+  approval: {state: pending}
+  rules:
+  - method: es-pattern:listed
+    types: [covered_by_certification]
+    parsers: [energystar_appliances@1+escover@1]
+  - method: es-pattern:unique-match
+    types: [covered_by_certification]
+    parsers: [energystar_appliances@1+escover@1]
+  retired: {at: '2026-11-26', superseded_by: rel/appliances-es-pattern-coverage@2, reason: 'r11 A2-appl draft locked by a parallel import before the adapter fingerprint was final; never approved, never in a release; content frozen as locked'}
+- id: claim/mfr-chargers-structured@5
+  since: '2026-11-26'
+  supersedes: claim/mfr-chargers-structured@4
+  rationale: 'Same rules, kinds, tiers, statuses and normalisation as @4 (review-3 charger rules unchanged), re-issued for the r11 shopify_chargers bump @3 -> @4 (A2-chg, brief coord-2026-11-26-r11-datasets).
+    shopify_chargers@4 changes discovery only for the existing stores (a ''+'' between port names, ''USB-C + USB-A'' / ''1C + 1A'', is a port layout, not a bundle) and
+    adds one store, KUXIU (kuxiu.com; robots allow /products, terms have no automated-access clause): identity = the page''s printed Model row (RY-C40C-C,
+    DP-A127G45, GS-45W0993, OL-H02-PD45); listings whose every variant SKU names a non-US plug and plug-adapter sets mint nothing; bullet dashes are dropped
+    from values before the shared _charger rows are read, and ''AVS:'' lines (USB PD Adjustable Voltage Supply) are dropped so an AVS range is never read as PPS.
+    WIDENING: source kuxiu-us-chargers with keys gen.color, in.type, in.voltage_range, out.max_single_port_w, out.max_total_w, pd.max_fixed_voltage, pd.pps
+    (affirmative only: the protocol row names PPS), phys.dimensions, phys.weight. Not allowlisted for KUXIU: in.rating (the shared PDO normaliser rewrites
+    the AC ''V~10A'' input literal with the DC symbol), out.ports (two spec blocks on one page name the same ports differently, so the port list duplicates),
+    pd.pps_max_*. anker_chargers@3 and belkin_chargers@3 unchanged. Hosts reclassified crawl human_only in source-policy 2026-11-26.9 (terms) keep their
+    already-stored values under this policy pending a coordinator/owner ruling; no new fetches from them.'
+  audit:
+    by: A2-chg r11
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-chg-r11.md; claim diff shopify_chargers@3 vs @4 over every stored snapshot of the 12 existing Shopify charger sources (scratch re-parse):
+      0 claims, identifiers or absences change. KUXIU: 12 pages fetched, 6 parse to 4 models, 6 absences (no Model row / not a charger title). tests/test_a2_chg_r11.py'
+    parsers:
+      anker_chargers@3: 'sha256:244bbacdc1e10f9cc231'
+      belkin_chargers@3: 'sha256:8e4e8ec4d0e13be8e6d6'
+      ugreen_chargers@4: 'sha256:4718209ed5c15c384ea4'
+      iniu_chargers@4: 'sha256:4718209ed5c15c384ea4'
+      cuktech_chargers@4: 'sha256:4718209ed5c15c384ea4'
+      satechi_chargers@4: 'sha256:4718209ed5c15c384ea4'
+      mophie_chargers@4: 'sha256:4718209ed5c15c384ea4'
+      aukey_chargers@4: 'sha256:4718209ed5c15c384ea4'
+      hyper_chargers@4: 'sha256:4718209ed5c15c384ea4'
+      nativeunion_chargers@4: 'sha256:4718209ed5c15c384ea4'
+      choetech_chargers@4: 'sha256:4718209ed5c15c384ea4'
+      kuxiu_chargers@4: 'sha256:4718209ed5c15c384ea4'
+  approval: {state: pending}
+  match:
+    extractors: [anker_chargers@3, belkin_chargers@3, ugreen_chargers@4, iniu_chargers@4, cuktech_chargers@4, satechi_chargers@4, mophie_chargers@4, aukey_chargers@4, hyper_chargers@4, nativeunion_chargers@4, choetech_chargers@4, kuxiu_chargers@4]
+    source_ids: [anker-us-chargers, belkin-us-chargers, ugreen-us-chargers, iniu-us-chargers, cuktech-us-chargers, satechi-us-chargers, mophie-us-chargers, aukey-us-chargers, hyper-us-chargers, nativeunion-us-chargers, choetech-us-chargers, kuxiu-us-chargers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      anker-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.all_ports_w, out.max_single_port_w, out.max_total_w, out.port_count, out.ports, out.simultaneous, out.usb_a_count, out.usb_c_count, pd.epr, pd.max_fixed_voltage, pd.pps, pd.pps_max_current_a, pd.pps_max_voltage, phys.dimensions, phys.foldable_plug, phys.weight]
+      belkin-us-chargers: [out.port_count, out.rated_w, out.usb_a_count, out.usb_c_count, phys.dimensions]
+      ugreen-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.max_total_w, out.port_count, out.ports, out.rated_w, out.usb_a_count, out.usb_c_count, pd.epr, pd.max_fixed_voltage, pd.pps, pd.pps_max_current_a, pd.pps_max_voltage, phys.dimensions, phys.weight]
+      iniu-us-chargers: [gen.color, out.max_single_port_w, out.ports, pd.max_fixed_voltage]
+      cuktech-us-chargers: [in.rating, in.type, in.voltage_range, out.max_single_port_w, out.port_count, out.ports, out.usb_a_count, out.usb_c_count, pd.max_fixed_voltage, phys.dimensions, phys.weight]
+      satechi-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.ports, phys.foldable_plug, phys.weight]
+      mophie-us-chargers: [out.rated_w]
+      aukey-us-chargers: [gen.color, out.max_single_port_w, out.ports]
+      hyper-us-chargers: [gen.color, out.max_single_port_w, out.ports, out.rated_w, pd.pps]
+      nativeunion-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.ports, pd.max_fixed_voltage, phys.weight]
+      choetech-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.max_total_w, out.ports, pd.max_fixed_voltage, phys.dimensions, phys.weight]
+      kuxiu-us-chargers: [gen.color, in.type, in.voltage_range, out.max_single_port_w, out.max_total_w, pd.max_fixed_voltage, pd.pps, phys.dimensions, phys.weight]
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-chargers-kuxiu@1, reason: 'r11 draft, locked by one import, never approved and never in a release: re-issued as claim/mfr-chargers-kuxiu@1 with shopify_chargers left at @3 so approved @4 keeps holding the existing charger claims; content frozen as locked'}
 - id: claim/mfr-power-banks-structured@9
   since: '2026-11-26'
   supersedes: claim/mfr-power-banks-structured@8
@@ -8404,3 +8689,99 @@ retired_policies:
     types: [configuration_of]
     parsers: [crawlpy-strips@1]
   retired: {at: '2026-11-26', superseded_by: rel/source-stated-hierarchy@17, reason: 'fingerprint pin of an intermediate lenovo_monitors@7 (bare-range rule withdrawn); never approved'}
+- id: claim/mfr-laptop-ports@3
+  since: '2026-11-26'
+  supersedes: claim/mfr-laptop-ports@2
+  rationale: 'New (A2-lap r8 brief item 1): per-port USB-C facts from the maker''s own port list for Dell (dell@2, www.dell.com spd Tech Specs ''Ports''
+    list, default configuration of the platform) and Microsoft Surface (surface@2, learn.microsoft.com tech-spec ''Ports and charging'' row), parsed by
+    crawler/adapters/_xports.py in the Lenovo _lports per-port model. Each fact only from the line that states it, never pooled: one item per physical USB-C
+    port; usb_gbps from one printed figure (''80/120 Gbps'' = none); dp_alt only when the port line names DisplayPort (Surface: also its own ''with support
+    for:'' sub-items or an ''All USB-C ports support ...'' line; a separate ''DisplayPort 2.1 with support for monitors'' line is not attributed); pd_in_w
+    only from a printed ''N W charging''; tb_usb4 = highest TB5 > TB4 > USB4 on a USB-C line; video_out = dedicated HDMI lines, literal; charge_port: Dell
+    ''barrel power port'' = barrel, Surface Connect = proprietary, usb-c only when a USB-C line or charging line states charging over USB-C and no other
+    charge path is named (Surface Connect + USB-C = nothing; Dell ''power-adapter port'' of unstated shape = nothing). Whole list refused on any platform/config
+    condition (''AMD Ryzen 200 Series:'', ''only for computers with'', ''OR'', ''(optional)''), unknown line, or Surface size sections that disagree. Dell
+    bare ''USB 3.2 Gen 1 (5 Gbps) port'' lines are read as non-USB-C (Dell names every Type-C port explicitly). r9: port.charge_port gains the value dedicated
+    (A1 ruling): the maker''s port list names a separate DC-in / power-adapter / power connector of unstated shape; never inferred from absence of USB-C
+    charging. Dedicated + USB-C charging both stated -> list [dedicated, usb-c]. review-9 (A3-fix, Codex review-9 P2): dell@3 -> @4. dell.connectors_stated():
+    every USB entry of the Ports list must print its connector (Type-C / Thunderbolt / USB4, or Type-A / USB-A); a connector-unknown entry (''1 USB 3.2
+    Gen 1 (5 Gbps) port'') keeps the literal port.usbc_list and writes no structured usbc_list / tb_usb4 / video_out / charge_port for that page. surface@3
+    unchanged; _xports.py untouched.'
+  audit:
+    by: A3-fix review-9
+    at: '2026-11-26'
+    evidence: 'reviews/2026-11-26-astra-review-9.md P2; team/reports/2026-11-26-a3-review9-fixes.md; full scratch import vs published: 16 Dell platforms,
+      44 published claims change (16 usbc_list structured -> literal, 14 video_out, 9 tb_usb4, 5 charge_port withheld). tests/test_review9.py DellConnector'
+    parsers: {dell@4: 'sha256:45e2304acec9f5149909', surface@3: 'sha256:64272f1d131c238f62cb'}
+  approval: {state: approved, by: shrestha-pranav, at: '2026-11-26', note: owner standing approval 2026-11-24; coordinator reviewed round 2026-11-26d (review-9 fixes)}
+  match:
+    extractors: [dell@4, surface@3]
+    source_ids: [dell-us, microsoft-surface]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      dell-us: [port.charge_port, port.tb_usb4, port.usbc_list, port.video_out]
+      microsoft-surface: [port.charge_port, port.tb_usb4, port.usbc_list, port.video_out]
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-laptop-ports@4, reason: 'surface@3 fingerprint re-pin (transport-only edit, parser output byte-identical; A3-rob r11)'}
+- id: rel/source-stated-hierarchy@17
+  since: '2026-11-26'
+  supersedes: rel/source-stated-hierarchy@16
+  rationale: 'Same rules, methods and types as @15; one parser pin moves: lenovo_monitors@6 -> @7 (A2-ref r10: res.refresh_max only). Package identity and package_of relation code unchanged. @16 was locked by the first r10 import at an intermediate lenovo_monitors@7 fingerprint; never approved.'
+  audit:
+    by: A2-ref r10
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-r10-refresh.md; tests/test_a2_r10_refresh.py; in-memory claim diff old vs new parser over every stored snapshot; lenovo_monitors@6 vs @7: 0 entity / relation changes (refresh_max claims only).'
+    parsers: {lenovo_psref@5: 'sha256:e5ba2db22c514b340e50', asus@4: 'sha256:d7207c7067ec94343149', dell@4: 'sha256:45e2304acec9f5149909', surface@3: 'sha256:64272f1d131c238f62cb',
+      razer@1: 'sha256:8752d0e2f07ae8b46ff2', samsung@1: 'sha256:d0e9cabff53a15285159', lenovo_monitors@7: 'sha256:bc0b113ba07be6e8e47d', samsung_ssd@4: 'sha256:b1bfbfe652623ee2630c',
+      sandisk_ssd@7: 'sha256:f436dae10cc11e468138', teamgroup_ssd@6: 'sha256:75bc6577801ceac73b22', kingston_ssd@4: 'sha256:c93ab26938d6300a1494', tplink_routers@3: 'sha256:19f0ca2101fbc63e219c',
+      crawlpy-strips@1: 'sha256:9ec7e1d3fba3aa046c97'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
+  rules:
+  - method: adapter:lenovo-psref
+    types: [member_of_family, configuration_of]
+    parsers: [lenovo_psref@5]
+  - method: adapter:asus-us
+    types: [member_of_family]
+    parsers: [asus@4]
+  - method: adapter:dell-us
+    types: [member_of_family]
+    parsers: [dell@4]
+  - method: adapter:microsoft-surface
+    types: [member_of_family, configuration_of]
+    parsers: [surface@3]
+  - method: adapter:razer-us
+    types: [member_of_family, configuration_of]
+    parsers: [razer@1]
+  - method: adapter:samsung-us
+    types: [member_of_family, configuration_of]
+    parsers: [samsung@1]
+  - method: adapter:lenovo-psref-monitors
+    types: [package_of]
+    parsers: [lenovo_monitors@7]
+  - method: adapter:samsung-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [samsung_ssd@4]
+  - method: adapter:sandisk-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [sandisk_ssd@7]
+  - method: adapter:teamgroup-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [teamgroup_ssd@6]
+  - method: adapter:kingston-us-ssd
+    types: [member_of_family, configuration_of]
+    parsers: [kingston_ssd@4]
+  - method: adapter:tplink-us-routers
+    types: [variant_of]
+    parsers: [tplink_routers@3]
+  - method: page-variants:anker
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:baseus
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  - method: page-variants:belkin
+    types: [configuration_of]
+    parsers: [crawlpy-strips@1]
+  retired: {at: '2026-11-26', superseded_by: rel/source-stated-hierarchy@18, reason: 'surface@3 fingerprint re-pin (transport-only edit, parser output byte-identical; A3-rob r11)'}

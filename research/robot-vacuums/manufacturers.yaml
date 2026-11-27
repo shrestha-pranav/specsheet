@@ -3,6 +3,8 @@
 # spec table in server HTML; blocked = stopped at 403/WAF, no workaround; unprobed = not reached.
 manufacturers:
   dreame:
+    # r11: discovery re-run 41 models (unchanged). Terms: bot clause covers orders/inventory/security only. GoVac 100 Lite / 200 Lite ('Robotic Vacuum',
+    # empty product_type) are missed by model_of; their pages have no spec block (checked GoVac 200 Lite), so no adapter bump.
     status: adapter            # crawler/adapters/dreame_robovac.py  raw/dreame-us-robovac  (41 models from 472 products; 41 bundles, all 200)
     how: "https://www.dreametech.com/products.json?limit=250&page=N (2 pages, Shopify) -> robot products with a SKU -> group by shared SKU. Bundle per model =
       product page (SSR 1-3 MB) + /products/<handle>.json per member page (robots allow both)."
@@ -14,6 +16,7 @@ manufacturers:
       the column header names the model). 13 pages have no spec block (GoVac 300-600, C30 Plus, D20 Ultra, L10s older, X30 Ultra uses a multi-model
       pcw widget): identity only."
   roborock:
+    # r11: discovery 33 models (Q7 Max / Q7 Max+ left the store; stored rows kept). Terms: no automated-access clause. /pages/compare-robot-vacuums is client-rendered.
     status: adapter            # crawler/adapters/roborock_robovac.py  raw/roborock-us-robovac  (35 models from 312 products; all 200)
     how: "https://us.roborock.com/products.json (2 pages, Shopify) -> product_type 'Robot Vacuums' minus F25/H60/Dyad/Flexi, refurbished, trade-in -> SKU grouping.
       Same bundle shape."
@@ -24,7 +27,9 @@ manufacturers:
     note: "'Robot Dimensions' / 'Robot Weight' cells sometimes hold robot+dock (32.19 lbs on S8 MaxV Ultra, 'Robot&Dock Size' on Q8 Max+): bounded out.
       Matter on Qrevo Edge is 'available through an upcoming OTA' (a promise, not recorded)."
   narwal:
-    status: adapter            # crawler/adapters/narwal_robovac.py  raw/narwal-us-robovac  (8 models from 105 products; all 200)
+    status: human_only         # r11 2026-11-26: us.narwal.com terms bar obtaining Materials by 'page-scrape, robot, spider or other automatic device'.
+                               # Was: adapter (stored values kept pending a coordinator ruling; no further fetches).
+    was: adapter               # crawler/adapters/narwal_robovac.py  raw/narwal-us-robovac  (8 models from 105 products; all 200)
     how: "https://us.narwal.com/products.json (1 page, Shopify) -> 'Robot Vacuum Cleaner' / 'Vacuum Mop' robot titles. Bundle as above."
     gives: [Freo Z10 Turbo only: suction, battery, mop lift, LDS navigation, robot/dock dimensions and weight]
     lacks: [7 of 8 pages (Flow, Flow 2, Freo 20, Freo 20 Edge, Freo S, Freo X10 Pro, Freo X Plus) have marketing sections only, no spec rows]
@@ -36,7 +41,10 @@ manufacturers:
       the count matches)."
     lacks: [V70 Ultra Complete, Z70 Ultra Roller Complete (not on the compare page, no island entry), runtime, noise, dimensions/weight]
   ecovacs:
-    status: adapter            # crawler/adapters/ecovacs_robovac.py (v2)  raw/ecovacs-us-robovac  (48 models from 59 main_goods; 8 empty spec_list)
+    status: human_only         # r11 2026-11-26: www.ecovacs.com/us/terms-of-use bars 'systematic or automated data collection (scraping, data mining ...)'
+                               # without written consent. Was: adapter (stored values kept pending a coordinator ruling; no further fetches).
+                               # The r11 discover re-run crashed (IndexError: a model group with no alias) before the terms read; not fixed (no more fetches).
+    was: adapter               # crawler/adapters/ecovacs_robovac.py (v2)  raw/ecovacs-us-robovac  (48 models from 59 main_goods; 8 empty spec_list)
     how: "www.ecovacs.com/us/shop/deebot-robotic-vacuum-cleaner?page=N (robots explicitly allows '*/deebot-robotic-vacuum-cleaner?page=*'; every other
       '?page=' is disallowed; the stdlib robotparser ignores '*' rules, so this was checked by hand). Next.js __NEXT_DATA__ productData.list (12/page).
       Product page __NEXT_DATA__ pageData.spec_list = grouped labelled rows (units in the label) - the shop API response, server-rendered."
@@ -52,16 +60,30 @@ manufacturers:
     gives: [robot weight/dimensions, dock dimensions/weight, battery mAh (10 of 30), bin/tank mL (one)]
     lacks: [suction (only '4X more suction'), navigation, runtime, noise]
   eufy:
-    status: unstructured       # https://us.eufy.com/products.json 200 (210 products, ~5 RoboVac with T-code SKUs T210M111 = real model numbers);
-                               # product page 200 has no spec table in HTML (reviews + prose). www.eufy.com/products.json 404.
+    status: human_only         # r11 2026-11-26: Anker Terms of Use bar systematic/automated data collection; robots.txt '*' also has 'Disallow: /*.json'
+                               # (the r1 products.json probe and one r11 probe request broke that wildcard rule: the stdlib robotparser ignores '*').
+                               # Pages are prose only; 4 robots (Omni E35 T210M111, Omni S2 Pro T210T111, Omni C28 T211A120, Omni C20 bundle).
   shark:
-    status: blocked            # https://www.sharkclean.com/robots.txt -> 403 (WAF) to the honest UA. Stopped; no workaround.
+    status: blocked            # https://www.sharkclean.com/robots.txt -> 403 (WAF) to the honest UA. Stopped; no workaround. source-policy: human_only, evidence blocked.
   switchbot:
-    status: unstructured       # us.switch-bot.com/products.json 200 (6 robots: S10, S20, K10+ Pro, K11+, K11+ Pro, K20+ Pro); pages carry prose, no table.
+    status: human_only         # r11: Shopify ToS bars 'spider, crawl, or scrape'. The product page DOES carry a labelled Specs table (S20: size, weight,
+                               # suction 10 kPa, dToF LiDAR, obstacle sensors, battery, station features), 6 robots: worth a permission request.
   lefant:
-    status: unstructured       # www.lefant.com/products.json 200 (9 robots, SKUs 101-1670-2100); page prose only.
+    status: human_only         # r11: Shopify ToS bars 'spider, crawl, or scrape'; pages prose only (9 robots, SKUs 101-1670-2100).
   yeedi:
-    status: unstructured       # www.yeedi.com/products.json 200 but 5 untyped products (launch gifts); not pursued.
+    status: human_only         # r11: terms bar systematic or automated data collection (scraping, data mining).
+  proscenic:
+    status: human_only         # r11: www.proscenic.com terms bar systematic or automated data collection. Not fetched beyond robots + terms.
+  wyze:
+    status: human_only         # r11: www.wyze.com terms bar data mining / robots to scrape or extract data. Not fetched beyond robots + terms.
+  tapo:
+    status: human_only         # r11: www.tapo.com links TP-Link Terms of Use (privacy.tp-link.com, region US), which bar crawling/scraping/spidering.
+  bissell:
+    status: human_only         # r11: www.bissell.com robots.txt 'User-agent: ClaudeBot Disallow: /' (AI opt-out, ViewSonic precedent). Terms not read.
+  xiaomi:
+    status: not_pursued        # r11: www.mi.com/us home lists no robot vacuum (no US robot-vacuum storefront found). Terms not read.
+  kyvol:
+    status: not_pursued        # r11: robots fetched; /policies/terms-of-service 404, no terms located; Amazon-first brand, not pursued.
 evidence_sources:
   energy_star: "No ENERGY STAR product category for vacuums (analyst judgment; the ENERGY STAR product finder was not re-checked this round)."
   fcc: "Same constraints as routers (research/routers/manufacturers.yaml): fcc.gov EAS 403 (Akamai), fcc.report Cloudflare; fccid.io device pages fetchable

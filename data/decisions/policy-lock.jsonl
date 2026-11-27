@@ -178,3 +178,15 @@
 {"at": "2026-11-26T12:54:25Z", "id": "claim/mfr-monitor-structured@12", "sha256": "sha256:bc17d0693aad7d5587bcab355a6b074716a6dc0c75929cd531f0fae24f59cb2b"}
 {"at": "2026-11-26T12:54:25Z", "id": "claim/derive-tuv-eye-comfort-5star@6", "sha256": "sha256:3bb96b1b37fadb85395efcbf4dec5e8934a424fb12e1915b201068365b2a1e66"}
 {"at": "2026-11-26T12:54:25Z", "id": "rel/source-stated-hierarchy@17", "sha256": "sha256:699780ec93b8b31bf63a8af7103e63db0ef830c8c059014ccc9270cda9737a79"}
+{"at": "2026-11-26T22:55:58Z", "id": "claim/mfr-power-banks-nitecore@1", "sha256": "sha256:694e940d8da8e54337d3d6ffe7c8f9b99ddda3bcc09c9671d32d21c7c8d9b805"}
+{"at": "2026-11-26T22:55:58Z", "id": "claim/mfr-power-stations-pecron@1", "sha256": "sha256:a3eb4d53e88ac385f7f2bd08d2c3c2099dc1f5992a80940858c04ae2218dde58"}
+{"at": "2026-11-26T23:01:29Z", "id": "claim/mfr-chargers-structured@5", "sha256": "sha256:abad9c5908e915b3df641f540fdb59506d68e060b04ac016d06734205003ba39"}
+{"at": "2026-11-26T23:11:55Z", "id": "claim/mfr-chargers-kuxiu@1", "sha256": "sha256:c9fb92248464bcd4f7a7ba1e533551d9c7505ba22b3ea3dc51113051d909218e"}
+{"at": "2026-11-26T23:16:18Z", "id": "claim/appliances-energystar@1", "sha256": "sha256:5765705299da76cb4ab38b8edbc7c66ba918af55d001f5bc13686d60262e7749"}
+{"at": "2026-11-26T23:16:18Z", "id": "claim/appliances-es-pattern@1", "sha256": "sha256:595575aea3123ad132449461d059196cd95153c61c7277e5211f09c8ca40d66c"}
+{"at": "2026-11-26T23:16:18Z", "id": "rel/appliances-es-pattern-coverage@1", "sha256": "sha256:f794d54e057885bb8473f660008e1ab38d8533d1a844aabd9ebd235bc7915b03"}
+{"at": "2026-11-27T02:15:55Z", "id": "claim/appliances-energystar@2", "sha256": "sha256:d34e316be5e885dd2b410e0e42f32a151d13aa165394c23d8a0471b872385dff"}
+{"at": "2026-11-27T02:15:55Z", "id": "claim/appliances-es-pattern@2", "sha256": "sha256:766366e64112fd9b7ae81291a77eae4b59e875cfdbb8c3691c3ba71c217e0c22"}
+{"at": "2026-11-27T02:15:55Z", "id": "rel/appliances-es-pattern-coverage@2", "sha256": "sha256:ac69ea3461416f11a4a54abfb2869b06473516df00a8aa37cc64dcd29373513d"}
+{"at": "2026-11-27T02:21:54Z", "id": "claim/mfr-laptop-ports@4", "sha256": "sha256:75be0b5086588e292b4600ca7b9359b66d689b389cece41b14f77de623cc6582"}
+{"at": "2026-11-27T02:21:54Z", "id": "rel/source-stated-hierarchy@18", "sha256": "sha256:1cafbb06edf18fb3809beb573ed8937c4cae2550daa01a72e277e9c8b0b1818e"}
