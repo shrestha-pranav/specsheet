@@ -265,7 +265,7 @@ assert.equal(total, categories.reduce((sum, category) => sum + category.count, 0
 {
   // Killer-query presets: computed at build time from the real index (scripts/presets.py), never hand-written.
   const presets = await parse(join(root, 'presets.json'));
-  assert(presets.presets.length >= 6 && presets.presets.length <= 14, 'presets: 6-14 killer queries');
+  assert(presets.presets.length >= 6 && presets.presets.length <= 24, 'presets: 6-24 killer queries');   // r12 A2-appl2: 14 -> 20 (washer/dryer + smart-home); r12 A2-bulb: 20 -> 24 (4 light-bulbs presets)
   for (const p of presets.presets) {
     assert(categories.some(c => c.id === p.category), `preset ${p.id}: known category`);
     assert(p.gate && typeof p.gate.passes === 'boolean' && p.gate.keys.length, `preset ${p.id}: gate computed`);

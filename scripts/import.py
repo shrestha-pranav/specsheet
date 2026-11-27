@@ -48,6 +48,7 @@ import docspec_r3 as DS3  # noqa: E402
 import docspec_r7tv as DS7  # noqa: E402
 import imgattach as IA  # noqa: E402
 import hubattach as HA  # noqa: E402
+import usbif as UI  # noqa: E402
 import corrections as CR  # noqa: E402
 import registry  # noqa: E402
 import identity as I  # noqa: E402
@@ -179,9 +180,11 @@ def add_src(e, pr, rec, sid="s1"):
                                        "snapshot": rec["snapshot"], "retrieved_at": rec.get("fetched_at")})
 
 
-def mark_delisted(worlds, listing):
+def mark_delisted(worlds, listing, seen=None):
     """r11: an entity every one of whose observations from some discovery source is a ref that source no longer lists keeps its claims
-    (the last stored snapshot) and gets extra.listing = {state: delisted, since, sources}. Observations of other sources do not unmark it."""
+    (the last stored snapshot) and gets extra.listing = {state: delisted, since, sources}. Observations of other sources do not unmark it.
+    A re-listed ref stays delisted here until its fresh fetch passed the identity check (crawler/adapters/_run.revalidate, review-11).
+    seen: {(source_id, snapshot): fetched_at} -> listing.last_verified = date of the newest stored snapshot behind the delisted claims."""
     n = 0
     for w in worlds.values():
         for e in w.ents:
@@ -192,6 +195,9 @@ def mark_delisted(worlds, listing):
             gone = {sid: max(ds) for sid, ds in by.items() if ds and all(ds)}
             if gone:
                 e.extra["listing"] = {"state": "delisted", "since": min(gone.values()), "sources": sorted(gone)}
+                lv = [str(seen[(sid, snap)])[:10] for sid, _ref, snap in e.obs if sid in gone and (seen or {}).get((sid, snap))]
+                if lv:
+                    e.extra["listing"]["last_verified"] = max(lv)
                 n += 1
     return n
 
@@ -1058,6 +1064,7 @@ def main():
     current_fp = {v["parser"]: v["fingerprint"] for v in parsers.values() if v["parser"]}
     current_fp.update({B.TRANSFORM: B.fingerprint(), TC.TRANSFORM: TC.fingerprint(), XW.TRANSFORM: XW.fingerprint(), DA.TRANSFORM: DA.fingerprint(), DS.TRANSFORM: DS.fingerprint(), DS3.TRANSFORM: DS3.fingerprint(), DS7.TRANSFORM: DS7.fingerprint(), IA.TRANSFORM: IA.fingerprint(), HA.TRANSFORM: HA.fingerprint()})     # r7: shared transforms are pinned like parsers
     current_fp[EC.TRANSFORM] = EC.fingerprint()            # r11 A2-appl: ES pattern coverage transform, pinned like a parser
+    current_fp[UI.TRANSFORM] = UI.fingerprint()            # r12 A2-usbif: USB-IF certified-product overlay, pinned like a parser
     current_fp.update(registry.supplement_parsers())       # r7: legacy-store supplement extractors (crawlpy_strips_belkin) pinned like parsers
     current_fp[PSPLIT] = "sha256:" + hashlib.sha256(Path(_lcell.__file__).read_bytes()).hexdigest()[:20]       # psref-split cell parser, pinned like a parser
     drift = dec.parser_drift(current_fp)
@@ -1131,7 +1138,9 @@ def main():
     DS7.apply(worlds, events, doc_stats, trusted=trusted_probe(dec, profiles, unitsets, psref))   # r7: TV per-port HDMI rates from quick start guides (scripts/docspec_r7tv.py; r3@2 stays pinned)
     IA.apply(worlds, events, doc_stats)            # maker spec images (OCR) -> claims on the linking page's entity (scripts/imgattach.py)
     HA.apply(worlds, events, doc_stats)            # kind: hub pages (data/document-hubs.yaml) -> bound only by the document's own text (scripts/hubattach.py)
-    mark_delisted(worlds, listing)
+    usbif_stats = UI.apply(worlds, events, collections.Counter())      # r12: USB-IF listing -> cert.usb_if on existing entities, exact maker model (scripts/usbif.py)
+    raw_digest_rows += UI.digest_rows(); print(f"usbif: {dict(sorted(usbif_stats.items()))}", file=sys.stderr)
+    mark_delisted(worlds, listing, {(r[1], r[0]): r[4] for r in obs_rows})
     ignored_rows = []
     rules = {c: load_label_rules(c) for c in worlds}
     for sid, st in stats.items():

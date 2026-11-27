@@ -10,7 +10,9 @@ shopify_powerbanks2 (kuxiu-us-powerbanks).
 
 parse : spec values are bullet lines ('- 5V⎓3A ...', '- USB C1/C2 Output: ...'): the bullet is dropped so port names are read.
         'AVS: 9V-15V⎓2.67A' lines are USB PD AVS (Adjustable Voltage Supply), not PPS: they are dropped so a range is never read as PPS.
-        Then the shared _charger.parse_store().
+        v2 (review-11): the AVS exclusion is text-level, not layout-dependent: an AVS label cell (th/td/dt/li/div/span) with its value
+        cell, and any inline 'AVS[:] <figure>' run up to the next tag, line, ';', '|' or PPS mention, wherever it sits ('USB-C: PD 3.0,
+        AVS 9V-15V⎓2.67A', '<td>AVS</td><td>9-15V</td>'). Then the shared _charger.parse_store().
 """
 import gzip, json, re, sys
 from pathlib import Path
@@ -19,11 +21,21 @@ import _charger as G
 import _run
 import shopify_chargers as SC
 
-VERSION = 1
+VERSION = 2
 PORTPLUS = re.compile(r"\b\d?\s*[x×]?\s*(?:USB[- ]?|Type[- ]?)?[AC]\d?\s*\+\s*\d?\s*[x×]?\s*(?:USB[- ]?|Type[- ]?)?[AC]\d?\b", re.I)
 KCHG = re.compile(r"charger|(?:power|travel|gan|wall) adapter", re.I)
 KNOT = re.compile(r"plug adapter set|smart connector|ipad|power ?bank|wireless|magsafe|\bqi2?\b|\bstand\b|\bcase\b", re.I)
 MODEL = re.compile(r"^([A-Z]{1,3}-[A-Z0-9]{2,10}(?:-[A-Z0-9]{1,6}){0,2})(?![A-Z0-9-])")
+
+
+AVS_CELL = re.compile(r"(?is)<(t[hd]|dt|li|div|span|strong|b|p)\b[^>]*>\s*(?:(?:SPR|EPR|PD(?:\s*3\.\d)?)\s+)?AVS\s*[:：]?\s*</\1>\s*"
+                      r"<(t[hd]|dd|li|div|span|p)\b[^>]*>\s*(?:<[^>]+>\s*)*\(?\s*(?:up to\s*)?\d.*?</\2>")
+AVS_RUN = re.compile(r"(?i)\b(?:(?:SPR|EPR)\s+)?AVS\b\s*[:：]?\s*(?=\(?\s*(?:up to\s*)?\d)(?:(?!\bPPS\b)[^<\n;|])*")     # 'AVS' + a figure; the bare protocol name stays
+
+
+def drop_avs(h):
+    """USB PD AVS ranges are never PPS (review-11: text-level, any layout)."""
+    return AVS_RUN.sub("", AVS_CELL.sub("", h or ""))
 
 
 class KuxiuChargers(SC._ShopC):
@@ -50,7 +62,7 @@ class KuxiuChargers(SC._ShopC):
 
         def unbullet(h):
             h = re.sub(r"(>|<br\s*/?>|\n)(\s*)[-–•]\s+(?=[A-Za-z0-9])", r"\1\2", h or "")
-            return re.sub(r"(?i)(>|<br\s*/?>|\n)\s*(?:SPR |EPR )?AVS\s*:[^<\n]*", r"\1", h)
+            return drop_avs(h)
         prod = dict(d.get("product") or {})
         prod["body_html"] = unbullet(prod.get("body_html"))
         return G.parse_store(self, snap, unbullet(d["page"]), prod)

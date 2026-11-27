@@ -53,7 +53,7 @@ class Nitecore(unittest.TestCase):
         self.assertEqual(v["phys.weight"], 150)
         self.assertEqual(v["in.max_w"], 18)
         self.assertEqual(v["out.max_total_w"], 15)
-        self.assertEqual(pr.claims[0]["method"]["extractor"], "nitecore_powerbanks@1")
+        self.assertEqual(pr.claims[0]["method"]["extractor"], "nitecore_powerbanks@2")
 
     def test_one_port_per_line(self):
         v = vals(nite(NB10000))
@@ -109,7 +109,7 @@ class Pecron(unittest.TestCase):
         v = vals(pr)
         self.assertEqual((v["out.ac_continuous_w"], v["out.ac_surge_w"], v["cap.energy_wh"]), (1800, 3000, 1024))
         self.assertEqual((v["bat.chemistry"], v["out.ac_waveform"], v["phys.weight"], v["in.solar_w"]), ("lfp", "pure_sine", 13.5, 600))
-        self.assertEqual(pr.claims[0]["method"]["extractor"], "pecron_stations@1")
+        self.assertEqual(pr.claims[0]["method"]["extractor"], "pecron_stations@2")
         self.assertNotIn("E1000LFP-200W", [i["value"] for i in pr.identifiers])       # bundle SKUs are packages, not aliases
 
     def test_other_models_table_skipped(self):
@@ -137,7 +137,7 @@ class Policies(unittest.TestCase):
         import yaml
         import registry as R
         pol = {p["id"]: p for p in yaml.safe_load((ROOT / "data/decisions/policies.yaml").read_text())["claim_policies"]}
-        for pid, src in (("claim/mfr-power-banks-nitecore@1", "nitecore-us-powerbanks"), ("claim/mfr-power-stations-pecron@1", "pecron-us-stations")):
+        for pid, src in (("claim/mfr-power-banks-nitecore@2", "nitecore-us-powerbanks"), ("claim/mfr-power-stations-pecron@2", "pecron-us-stations")):
             p = pol[pid]
             a = p["approval"]                                        # invariant, not a snapshot: pending, or approved with by + at
             self.assertIn(a["state"], ("pending", "approved"))

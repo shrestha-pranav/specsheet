@@ -1,7 +1,8 @@
 {
  "_why": "reviews/2026-11-23-astra-review-2.md risk 5: project targets, not hosting limits. Raising api_fail_mib is an explicit reviewed edit of this file.",
- "api_warn_mib": 100,
- "api_fail_mib": 150,
+ "api_warn_mib": 250,
+ "api_fail_mib": 400,
  "repo_pack_warn_mib": 250,
- "repo_pack_migrate_mib": 500
+ "repo_pack_migrate_mib": 500,
+ "_raised_2026-11-27": "Coordinator: r12 added 6 regulator-dataset categories (live API 173.5 MiB, gzip 40 MiB). Owner direction 2026-11-26 is datasets first. GitHub Pages published-site limit is 1 GB, so 400 MiB keeps 2.5x headroom. Follow-up for A3: shrink per-record JSON (pattern rows, repeated source blocks) before the next raise."
 }

@@ -33,3 +33,12 @@ Still held (licensing-driven, not a data gap): claim/mfr-monitor-aoc@3 (www.aoc.
 | 2026-11-26 | claim/mfr-laptop-ports@4 | see report | r11 |
 | 2026-11-26 | rel/appliances-es-pattern-coverage@2 | see report | r11 |
 | 2026-11-26 | rel/source-stated-hierarchy@18 | see report | r11 |
+| 2026-11-27 | claim/smart-home-zigbee2mqtt@2 | see report | r12 |
+| 2026-11-27 | claim/cpsc-recalls@1 | see report | r12 |
+| 2026-11-27 | claim/light-bulbs-energystar@1 | see report | r12 |
+| 2026-11-27 | claim/appliances-siblings-energystar@1 | see report | r12 |
+| 2026-11-27 | claim/appliances-siblings-es-pattern@1 | see report | r12 |
+| 2026-11-27 | claim/mfr-power-banks-nitecore@2 | see report | r12 |
+| 2026-11-27 | claim/mfr-power-stations-pecron@2 | see report | r12 |
+| 2026-11-27 | claim/mfr-chargers-kuxiu@2 | see report | r12 |
+| 2026-11-27 | claim/usbif-certified-products@1 | see report | r12 |

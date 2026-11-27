@@ -190,3 +190,13 @@
 {"at": "2026-11-27T02:15:55Z", "id": "rel/appliances-es-pattern-coverage@2", "sha256": "sha256:ac69ea3461416f11a4a54abfb2869b06473516df00a8aa37cc64dcd29373513d"}
 {"at": "2026-11-27T02:21:54Z", "id": "claim/mfr-laptop-ports@4", "sha256": "sha256:75be0b5086588e292b4600ca7b9359b66d689b389cece41b14f77de623cc6582"}
 {"at": "2026-11-27T02:21:54Z", "id": "rel/source-stated-hierarchy@18", "sha256": "sha256:1cafbb06edf18fb3809beb573ed8937c4cae2550daa01a72e277e9c8b0b1818e"}
+{"at": "2026-11-27T03:12:47Z", "id": "claim/appliances-siblings-energystar@1", "sha256": "sha256:d2f76dce1f01bda797756ede36bf4353e2c68aea248e3cc2cac8891acc7e6b39"}
+{"at": "2026-11-27T03:12:47Z", "id": "claim/appliances-siblings-es-pattern@1", "sha256": "sha256:05e87cff95d32d01ffd8d43f6794b688701cb73bc2190de3ad88a7224bdef092"}
+{"at": "2026-11-27T03:17:36Z", "id": "claim/usbif-certified-products@1", "sha256": "sha256:d05c8cba74338e5c8c9b77df261640f1d603884d3ffd452e295699bcb472d41c"}
+{"at": "2026-11-27T03:29:50Z", "id": "claim/smart-home-zigbee2mqtt@1", "sha256": "sha256:56cebc3d9d54067e863700e97d3a4d79ae5d085bbc38e170888b73c94f732c75"}
+{"at": "2026-11-27T03:29:50Z", "id": "claim/cpsc-recalls@1", "sha256": "sha256:781d0a1c494f3f7e1cbbd2ff29f27717fc7e263e00704ac4df65d17d17906d55"}
+{"at": "2026-11-27T07:32:17Z", "id": "claim/mfr-power-banks-nitecore@2", "sha256": "sha256:2ac9a0b9f9941358968fead02ac2877e516cd7e9f0f23eaf293243d2827c5603"}
+{"at": "2026-11-27T07:32:17Z", "id": "claim/mfr-power-stations-pecron@2", "sha256": "sha256:c2d7ec158091ceddcb0dd42f6f431f887e0d53b063e562dc48349e0a45b10d92"}
+{"at": "2026-11-27T07:32:17Z", "id": "claim/mfr-chargers-kuxiu@2", "sha256": "sha256:397ae1b06d991ca77c341a8674a44f77d3b623da72417bfd1b21da8c6c81f132"}
+{"at": "2026-11-27T07:38:18Z", "id": "claim/smart-home-zigbee2mqtt@2", "sha256": "sha256:0a463a82fa75be3adb5a2ef33190820424d015a1dd899b87876d59b29ffcab26"}
+{"at": "2026-11-27T12:22:49Z", "id": "claim/light-bulbs-energystar@1", "sha256": "sha256:dc27eec561008c81a711025f7c34baf0571222d48a68d493afbf8b5cf487e8c5"}

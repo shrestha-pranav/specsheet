@@ -45,7 +45,9 @@ class Partition(unittest.TestCase):
         m = catmeta.load("air-purifiers")
         cert = set(m["profile"]["index_rows"]["certification_keys"])
         self.assertEqual(cert, {"ozone.carb_certified", "ozone.carb_type", "ozone.carb_date", "ozone.carb_eo", "eff.energy_star",
-                                "eff.most_efficient", "cert.maker_listed"})
+                                "eff.most_efficient", "cert.maker_listed",
+                                # r12 A2-safe: CPSC recall facts are regulatory metadata (a recall-only record is not a grid row)
+                                "safety.recall", "safety.recall_id", "safety.recall_date", "safety.recall_remedy", "safety.recall_url", "gen.record_kind"})
         self.assertTrue({"cadr.smoke_cfm", "ozone.es_emissions_ppb", "pwr.annual_kwh"} <= m["substantive"], "measured values are substantive")
         self.assertTrue(set(m["same_hardware"]["transfer_keys"]) <= cert)
 

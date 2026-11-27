@@ -280,6 +280,10 @@ What the pilot taught:
   (Best Buy) or skip.
 - **Delisted products vanish** (Spigen removed all chargers; Belkin/EcoFlow US 404s). Raw snapshots
   must be kept forever, and "status" needs evidence (last-seen-on-official-store date).
+  Implemented (r11 + review-11): a ref discovery stops listing is kept, marked `listing: delisted`; a delisted record publishes
+  `lifecycle.state: unknown` (never `current`) + `last_verified`. Re-listing alone never resurrects it: the ref is re-fetched and only a
+  fresh 200 whose key identifiers match the last good snapshot clears the marks; a failed or wrong-identity re-fetch keeps it delisted and
+  pins parsing to the last verified snapshot (`crawler/adapters/_run.py` carry_delisted / revalidate, `registry.apply_pins`).
 - **Typos and contradictions are common in T1 sources** (Anker support "3..25A"; Belkin chart 96W
   vs 140W measured; UGREEN 8-port vs 5-port): the claims/conflicts model is required, not optional.
 - **Prices are noisy** during sales (store list vs promo vs feed); price is a separate, volatile

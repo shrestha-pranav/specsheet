@@ -1,0 +1,509 @@
+# A2-bulb r12 (2026-11-26, owner request; A2-bulb acts as A1 for this profile). Light bulbs (lamps) sold in the US, smart and non-smart.
+# Owner goal: compare MAXIMUM BRIGHTNESS easily, especially smart bulbs ("brightest smart A19/E26", "brightest colour bulb at full colour",
+# "brightest BR30 smart"). So lumens are kept precise and comparable: one key per light MODE (white vs full colour), the test CCT carried as a
+# basis condition, and the marketing "equivalent watts" kept in its own key so it can never stand in for brightness.
+# Sources this round (research/light-bulbs/merchants.md): ENERGY STAR Connected Light Bulbs (data.energystar.gov msj5-kqfv; the lamps
+# programme has sunset and the dataset is frozen at 2025-01-15, every row a connected bulb). CEC MAEDBS (state-regulated LED lamps) is
+# policy-cleared (crawl agent) but not fetched this round. Maker pages: only Signify's Philips Hue and WiZ are agent-crawlable; all other
+# smart-bulb makers are human_only.
+profile_format: specsheet.category-profile/1
+category: light-bulbs
+version: 0.1
+label: Light bulbs
+market: US
+status: draft
+scope: 'Screw-in and pin-base replacement lamps (light bulbs) for the US 120 V market: A-line (A19/A21/A23), reflector (BR/R/PAR/MR), globe,
+  candle/decorative (B/BA/C/ST/G), smart (Wi-Fi / Zigbee / Bluetooth / Thread / Matter) and non-smart, LED mainly (CFL/halogen rows if a
+  source files them). Excludes integrated fixtures and downlights (ENERGY STAR ej6d-wb4c is a fixture dataset), light strips, lamps with a
+  cord (furniture), linear tubes (TLED), and EU/UK E27/B22 230 V variants (different models; see identity).'
+identity:
+  levels:
+  - level: family
+    label: Line
+    meaning: 'Marketing line ("Hue White and Color Ambiance", "WiZ Tunable White", "Cync Direct Connect"). Browse only; passes no values down.'
+    key_schemes: [mfr_family]
+    inherits: false
+  - level: model
+    label: Bulb model
+    meaning: 'One bulb as a buyable unit: the maker model number / 12NC (Philips Hue 9290011998B, WiZ 9290024493A, GE 93128981, Feit
+      OM60/927CA/AG, Sengled B11-N11). ENERGY STAR model_number is this level. Single-bulb and multi-pack SKUs of the same bulb are the same
+      model; the pack SKU is a model_variant alias (GE CLEDA199CD1-2P / -4P, Philips 12NC sub-codes 929001199871..79) unless the pack SKU is
+      the only identifier a source prints, in which case the pack is the identity and gen.pack_count says how many bulbs.'
+    key_schemes: [mfr_model]
+    inherits: true
+  - level: package
+    label: Pack / UPC
+    meaning: 'A pack SKU or UPC (1-pack, 2-pack, 4-pack). Lookup alias only this round; never carries bulb values.'
+    key_schemes: [gtin]
+    inherits: true
+  primary_key: 'Brand + maker model number exactly as filed / printed (normalised upper case, spaces stripped). Regional variants are
+    different models: E26 120 V (US) vs E27 230 V (EU) Hue bulbs have different 12NCs, never merged. Retail titles ("60W equivalent smart
+    bulb 4 pack") are aliases.'
+  per_brand:
+    philips: 'Signify 12NC (10-12 digits + optional letter: 9290011998B). ENERGY STAR files Hue as "Philips Hue" and non-Hue Signify
+      smart bulbs as "PHILIPS"; both fold to philips (12NCs are unique across Signify). Same key A2-home smart-home uses (identity coordination
+      only: the smart-home row and the light-bulbs row are separate category rows of one maker model).'
+    wiz: 'WiZ (Signify) 12NC 929002449x (+ A/B tails for pack variants); a Philips-branded twin with the same 12NC exists in Canada only.'
+    ge: 'ENERGY STAR model_number is the 8-digit GE product code (93128981); model_name CLEDA199CD1 is the catalogue model; pack suffixes -1P/-2P/-4P.'
+    feit_electric: 'OM60/927CA/AG: /927 = CRI 90 + 2700 K; /3 tail = 3-pack.'
+    sengled: 'B11-N11 style; Sengled sites are not crawlable (robots Disallow: / / no response).'
+  schemes:
+  - {scheme: mfr_family, level: family}
+  - {scheme: mfr_model, level: model, normalize: upper_strip_spaces}
+  - {scheme: x_energystar_pd_id, level: model}
+  - {scheme: gtin, issuer: GS1, level: package, alias_only: true}
+  variant_axes: []
+  model_defining: [form.shape, form.base, light.lumens, light.cct_k]
+  note: 'Join rules. (1) ENERGY STAR row <-> maker page only on exact normalised (brand, model number) or a string the ES row lists in
+    additional_model_information (model_variant alias). (2) ES rows that name a FAMILY with a wildcard (Globe 34208*, Nanoleaf NL67E1##) are
+    not entities this round. (3) Re-filings of one model string that disagree on a field leave it unknown. (4) Canada-only rows dropped.'
+units:
+  system: us_customary
+conditions:
+- id: cct_k
+  label: Measured at colour temperature
+  type: number
+  unit: K
+  description: 'The correlated colour temperature the lumen figure was measured / rated at. A tunable bulb gives different lumens at 2700 K
+    and 6500 K (often 20-40% apart), so a lumen figure without its CCT is not comparable to one with it. ENERGY STAR lamp filings state the
+    CCT of the tested setting (light_appearance_kelvin). A basis condition: two figures at different CCTs are alternatives, never merged.'
+- id: lumens_basis
+  label: Lumen figure basis
+  type: enum
+  enum: [certified_lm79, maker_max, maker_rated, maker_up_to]
+  description: 'certified_lm79 = ENERGY STAR / regulator filed output (IES LM-79 test); maker_max = maker prints "max lumen output";
+    maker_rated = maker prints the nominal output without qualifier; maker_up_to = "up to N lumens" marketing qualifier (shown, never a
+    preset gate).'
+groups:
+- {id: general, label: General & identity, order: 0}
+- {id: light, label: Brightness & light quality, order: 1}
+- {id: form, label: Shape & base, order: 2}
+- {id: power, label: Power, order: 3}
+- {id: ctl, label: Dimming & control, order: 4}
+- {id: smart, label: Smart features, order: 5}
+- {id: life, label: Life & warranty, order: 6}
+- {id: features, label: Ratings & features, order: 7}
+- {id: cert, label: Certification, order: 8}
+specs:
+- key: gen.brand
+  label: Brand
+  group: general
+  type: enum
+  enum: [philips, wiz, ge, feit_electric, sylvania, ledvance, sengled, lifx, govee, nanoleaf, cree, kasa, wyze, ikea, satco, globe, ring, sonoff]
+  enum_open: true
+  unit: null
+  tier: core
+  facet: {kind: enum, column: true}
+  why: First filter; smart ecosystems are per brand.
+  traps: ['ENERGY STAR brand_name is the filing brand typed by hand ("Feit Electroc", "Phillips", "GE Lighting"): spelling variants fold, sub-brands per category.yaml.']
+  sources: [ENERGY STAR brand_name, maker page]
+  example: philips
+- key: gen.pack_count
+  label: Bulbs in pack
+  group: general
+  type: integer
+  unit: null
+  tier: detail
+  why: Only when a pack SKU is the identity (no single-bulb model is printed).
+  traps: ['A pack listing is not a different bulb; never multiply lumens or watts by the pack count.']
+  sources: [maker page]
+  example: 4
+- key: gen.lamp_category
+  label: Lamp category
+  group: general
+  type: enum
+  enum: [omnidirectional, directional, decorative]
+  unit: null
+  tier: important
+  facet: {kind: enum}
+  why: Omnidirectional (A-line) vs directional (reflector / spot) decides whether lumens or beam intensity (cd) matters.
+  traps: ['A directional lamp''s lumens spread over its beam angle: a 650 lm BR30 floods, a 650 lm PAR16 spots; compare candela (light.cbcp_cd) for spots.']
+  sources: [ENERGY STAR lamp_category]
+  example: omnidirectional
+- key: gen.technology
+  label: Technology
+  group: general
+  type: enum
+  enum: [led, cfl, halogen, incandescent]
+  enum_open: true
+  unit: null
+  tier: detail
+  why: Nearly all current bulbs are LED; kept for older filings.
+  traps: []
+  sources: [ENERGY STAR technology]
+  example: led
+- key: light.lumens
+  label: Brightness (white, lumens)
+  group: light
+  type: number
+  unit: lm
+  tier: core
+  conditions: [cct_k, lumens_basis]
+  basis_conditions: [cct_k, lumens_basis]
+  facet: {kind: range, column: true, bins: [450, 800, 1100, 1600, 2600]}
+  why: 'THE brightness number: light output in white at full power. 450 / 800 / 1100 / 1600 lm are the 40 / 60 / 75 / 100 W replacement classes.'
+  traps:
+  - '"Up to 1100 lumens" = the maximum of a tunable bulb (usually at its coolest or a middle CCT); kept with basis maker_up_to, never used as a gate.'
+  - 'Lumens depend on the CCT setting of a tunable bulb (2700 K vs 6500 K differ): the CCT is a basis condition; two figures at different CCTs are not merged.'
+  - 'ENERGY STAR measures the filing''s tested setting (light_appearance_kelvin), which for a tunable bulb is not necessarily its brightest setting.'
+  - 'Equivalent watts (power.equiv_watts) is a marketing class, never a brightness value.'
+  - 'A colour bulb at full saturated colour is far dimmer than in white: that figure is light.lumens_color_max, never this key.'
+  sources: [ENERGY STAR brightness_lumens, CEC MAEDBS (light output), 'maker spec table (Lumen output, Max lumen output)']
+  example: 1100
+- key: light.lumens_color_max
+  label: Brightness at full colour (lumens)
+  group: light
+  type: number
+  unit: lm
+  tier: core
+  conditions: [lumens_basis]
+  basis_conditions: [lumens_basis]
+  facet: {kind: range, column: true}
+  why: 'How bright a colour bulb is when showing a saturated colour (red / blue / green); answers "brightest colour bulb at full colour".'
+  traps:
+  - 'Only some makers print it; often far lower than white output (a 1100 lm white bulb may give a few hundred lm in deep blue).'
+  - 'Never merged with or derived from light.lumens. Never from ENERGY STAR (it tests in white).'
+  - 'Which colour the figure is for is rarely stated; record the maker''s wording in raw.'
+  sources: [maker spec table]
+  example: 300
+- key: light.lumens_by_cct
+  label: Lumens by colour temperature
+  group: light
+  type: list
+  items: {fields: [{key: cct_k, type: number, unit: K}, {key: lumens, type: number, unit: lm}]}
+  unit: null
+  tier: detail
+  why: For tunable bulbs that print output per CCT (2700 / 4000 / 6500 K).
+  traps: ['Only when the source prints each pair; never interpolated.']
+  sources: [maker spec table]
+  example: [{cct_k: 2700, lumens: 800}, {cct_k: 4000, lumens: 1100}]
+- key: light.efficacy_lm_w
+  label: Efficacy
+  group: light
+  type: number
+  unit: lm/W
+  tier: important
+  conditions: [cct_k]
+  basis_conditions: [cct_k]
+  facet: {kind: range}
+  why: Light per watt; running cost.
+  traps: ['Only as the source states it or from the SAME source''s lumens and watts of the same test; never mixed across sources.']
+  sources: [ENERGY STAR efficacy_lumens_watt]
+  example: 88.9
+- key: light.cct_k
+  label: Colour temperature (rated)
+  group: light
+  type: number
+  unit: K
+  tier: core
+  facet: {kind: range, column: true, bins: [2200, 2700, 3000, 4000, 5000, 6500]}
+  why: Warm (2700 K) vs daylight (5000-6500 K). For a tunable bulb this is the rated / tested setting; its range is light.cct_min_k..light.cct_max_k.
+  traps: ['A tunable bulb''s ENERGY STAR row names ONE tested CCT, not its range.']
+  sources: [ENERGY STAR light_appearance_kelvin, maker page]
+  example: 2700
+- key: light.cct_min_k
+  label: Colour temperature, warmest
+  group: light
+  type: number
+  unit: K
+  tier: important
+  facet: {kind: range}
+  why: Tunable-white range, warm end.
+  traps: ['"Dim to warm" bulbs reach their warm end only while dimming; not a selectable setting.']
+  sources: [maker page]
+  example: 2000
+- key: light.cct_max_k
+  label: Colour temperature, coolest
+  group: light
+  type: number
+  unit: K
+  tier: important
+  facet: {kind: range}
+  why: Tunable-white range, cool end.
+  traps: []
+  sources: [maker page]
+  example: 6500
+- key: light.cri
+  label: Colour rendering (CRI Ra)
+  group: light
+  type: number
+  unit: null
+  tier: core
+  facet: {kind: range, column: true, bins: [80, 90, 95]}
+  why: How true colours look; 90+ is "high CRI".
+  traps: ['"CRI 80+" is the minimum many makers print; treat ">=" qualifiers as such.']
+  sources: [ENERGY STAR color_quality_cri, maker page]
+  example: 90
+- key: light.r9
+  label: R9 (saturated red)
+  group: light
+  type: number
+  unit: null
+  tier: important
+  facet: {kind: range}
+  why: Skin tones and reds; CRI averages leave it out and many CRI 80 bulbs have R9 near 0 or negative.
+  traps: ['Can be negative.']
+  sources: [ENERGY STAR r9]
+  example: 15
+- key: light.beam_angle_deg
+  label: Beam angle
+  group: light
+  type: number
+  unit: deg
+  tier: important
+  facet: {kind: range}
+  why: 'Reflector / spot bulbs (BR, PAR, MR16, GU10): flood vs spot.'
+  traps: ['Omnidirectional bulbs have none.']
+  sources: [ENERGY STAR beam_angle, maker page]
+  example: 40
+- key: light.cbcp_cd
+  label: Centre beam intensity
+  group: light
+  type: number
+  unit: cd
+  tier: detail
+  why: Spot brightness at the centre of the beam; compares directional lamps better than lumens.
+  traps: []
+  sources: [ENERGY STAR cbcp]
+  example: 1500
+- key: form.shape
+  label: Shape
+  group: form
+  type: enum
+  enum: [a19, a21, a23, a15, br30, br40, br20, r20, par16, par20, par30, par30s, par30l, par38, mr16, g25, g40, b10, b11, b13, ba10, c7, c9, st19, st64, t8]
+  enum_open: true
+  unit: null
+  tier: core
+  facet: {kind: enum, column: true}
+  why: 'What fits the fixture: A19 lamps, BR30 cans, PAR38 outdoor floods, candelabra B11.'
+  traps: ['GU10 and E12 are bases, not shapes.', '"A60" is the metric (EU) name of A19.']
+  sources: [ENERGY STAR bulb_type, maker page]
+  example: a19
+- key: form.base
+  label: Base
+  group: form
+  type: enum
+  enum: [e26, e12, e17, e11, gu10, gu24, g9, gx53]
+  enum_open: true
+  unit: null
+  tier: core
+  facet: {kind: enum, column: true}
+  why: 'Socket fit: E26 medium (US standard), E12 candelabra, GU10 twist-lock.'
+  traps: ['E27 (EU, 230 V) fits an E26 socket mechanically but is a different, 230 V model: out of scope.']
+  sources: [ENERGY STAR base_type, maker page]
+  example: e26
+- key: form.length_mm
+  label: Length
+  group: form
+  type: number
+  unit: mm
+  tier: detail
+  why: Fit in enclosed shades and small fixtures.
+  traps: []
+  sources: [ENERGY STAR maximum_overall_length_mm]
+  example: 108
+- key: form.diameter_mm
+  label: Diameter
+  group: form
+  type: number
+  unit: mm
+  tier: detail
+  why: Fit.
+  traps: []
+  sources: [ENERGY STAR maximum_overall_diameter_mm]
+  example: 60
+- key: form.enclosed_rated
+  label: Rated for enclosed fixtures
+  group: features
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: LED life drops in enclosed fixtures unless the bulb is rated for them.
+  traps: []
+  sources: [ENERGY STAR lamp_rated_for_enclosed_fixtures]
+  example: false
+- key: power.watts
+  label: Power draw
+  group: power
+  type: number
+  unit: W
+  tier: core
+  conditions: [cct_k]
+  basis_conditions: [cct_k]
+  facet: {kind: range, column: true}
+  why: Real power at full output.
+  traps: ['Not the "60 W equivalent" figure.']
+  sources: [ENERGY STAR energy_used_watts, maker page]
+  example: 9
+- key: power.equiv_watts
+  label: Incandescent equivalent (marketing)
+  group: power
+  type: number
+  unit: W
+  tier: detail
+  facet: {kind: range}
+  why: The "replaces a 60 W bulb" class printed on the box.
+  traps: ['A marketing class, NEVER a brightness value: two "60 W equivalent" bulbs can differ by hundreds of lumens. Never used by a preset.']
+  sources: [ENERGY STAR wattage_equivalency_watts, maker page]
+  example: 60
+- key: power.standby_w
+  label: Standby power
+  group: power
+  type: number
+  unit: W
+  tier: important
+  facet: {kind: range}
+  why: A smart bulb draws power while "off" (radio listening); adds up over many bulbs.
+  traps: []
+  sources: [ENERGY STAR standby_power_consumption_w]
+  example: 0.2
+- key: power.power_factor
+  label: Power factor
+  group: power
+  type: number
+  unit: null
+  tier: detail
+  why: Low PF bulbs load wiring and some dimmers more.
+  traps: []
+  sources: [ENERGY STAR power_factor]
+  example: 0.9
+- key: ctl.dimmable
+  label: Dimmable (wall dimmer)
+  group: ctl
+  type: bool
+  unit: null
+  tier: core
+  facet: {kind: bool}
+  why: Works on a wall dimmer.
+  traps: ['Smart bulbs dim in the app even when they must NOT be put on a wall dimmer; this key is the wall-dimmer claim as filed.', 'Blank = unknown; false only from an explicit non-dimmable statement.']
+  sources: [ENERGY STAR dimmable, maker page]
+  example: true
+- key: ctl.dims_down_to_pct
+  label: Dims down to
+  group: ctl
+  type: number
+  unit: '%'
+  tier: detail
+  why: Low-end dimming.
+  traps: []
+  sources: [ENERGY STAR dims_down_to]
+  example: 10
+- key: ctl.three_way
+  label: Three-way
+  group: ctl
+  type: bool
+  unit: null
+  tier: detail
+  why: Works in a three-way socket.
+  traps: []
+  sources: [ENERGY STAR three_way]
+  example: false
+- key: smart.connected
+  label: Smart (connected)
+  group: smart
+  type: bool
+  unit: null
+  tier: core
+  facet: {kind: bool, column: true}
+  why: Smart bulbs vs plain bulbs; every preset about "smart" starts here.
+  traps: ['Only true is written from a dataset flag; a source that does not say is unknown, not false.']
+  sources: [ENERGY STAR connected_lamp, maker page]
+  example: true
+- key: smart.protocols
+  label: Radio / protocol
+  group: smart
+  type: list
+  enum: [wifi, bluetooth, zigbee, thread, matter, other]
+  unit: null
+  tier: core
+  facet: {kind: multi, column: true}
+  why: Decides hub / app / ecosystem.
+  traps: ['ENERGY STAR filings (2016-2023) have no Matter or Thread value; Matter support comes from the maker or the CSA DCL (A2-home lane).', 'Bluetooth-only bulbs need a phone nearby or a hub for remote control.']
+  sources: [ENERGY STAR communication_method_connected_protocol, maker page]
+  example: [zigbee, bluetooth]
+- key: smart.color
+  label: Colour capability
+  group: smart
+  type: enum
+  enum: [full_color, tunable_white, fixed_white]
+  unit: null
+  tier: core
+  facet: {kind: enum, column: true}
+  why: Colour (RGB + white) vs tunable white vs single fixed white.
+  traps: ['From ENERGY STAR only positively (Full-Color-Tunable / White-Tunable flags); a row without a flag is unknown (some colour bulbs omit it), never fixed_white.']
+  sources: [ENERGY STAR special_features, maker page]
+  example: full_color
+- key: smart.hub_required
+  label: Hub / bridge required
+  group: smart
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: Zigbee bulbs need a hub or bridge; Wi-Fi / Bluetooth / Matter-over-Wi-Fi bulbs do not.
+  traps: ['"Works without a bridge (Bluetooth)" with reduced features = false with a note; never derived from protocol alone.']
+  sources: [maker page]
+  example: false
+- key: life.rated_h
+  label: Rated life
+  group: life
+  type: number
+  unit: h
+  tier: important
+  facet: {kind: range}
+  why: Expected life (L70).
+  traps: ['"22.8 years" figures assume 3 h/day; the hours figure is the comparable one.']
+  sources: [ENERGY STAR life_hrs, maker page]
+  example: 25000
+- key: life.warranty_years
+  label: Warranty
+  group: life
+  type: number
+  unit: yr
+  tier: detail
+  why: Warranty term.
+  traps: []
+  sources: [ENERGY STAR warranty_years]
+  example: 2
+- key: features.es_special
+  label: Ratings & features (as filed)
+  group: features
+  type: list
+  enum: [damp_rated, wet_rated, recessed_ok, not_recessed, wireless_control, timers_ok, sensors_ok, dim_to_warm, full_color_tunable, white_tunable, three_way, outdoor, other]
+  unit: null
+  tier: detail
+  facet: {kind: multi}
+  why: Damp / wet location, recessed-can use, dim to warm.
+  traps: ['A filed list: an item missing from it is unknown, not "no".']
+  sources: [ENERGY STAR special_features]
+  example: [damp_rated, wireless_control]
+- key: cert.energy_star
+  label: ENERGY STAR certified (lamps programme, ended)
+  group: cert
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: Was certified under ENERGY STAR Lamps V2.0/V2.1.
+  traps: ['The lamps programme has sunset; the dataset is frozen (2025-01-15). True = certified then, not a current listing. Absent = unknown, never false.']
+  sources: [ENERGY STAR msj5-kqfv]
+  example: true
+- key: cert.es_date
+  label: ENERGY STAR certification date
+  group: cert
+  type: date
+  unit: null
+  tier: detail
+  why: Age of the filing.
+  traps: []
+  sources: [ENERGY STAR date_qualified]
+  example: '2021-08-10'
+index_rows:
+  why: 'Same rule as other categories: an entity whose only trusted values are certification metadata goes to the cert-only shard.'
+  certification_keys: [cert.energy_star, cert.es_date]
+  substantive_keys: [gen.brand, gen.pack_count, gen.lamp_category, gen.technology, light.lumens, light.lumens_color_max, light.lumens_by_cct,
+    light.efficacy_lm_w, light.cct_k, light.cct_min_k, light.cct_max_k, light.cri, light.r9, light.beam_angle_deg, light.cbcp_cd, form.shape,
+    form.base, form.length_mm, form.diameter_mm, form.enclosed_rated, power.watts, power.equiv_watts, power.standby_w, power.power_factor,
+    ctl.dimmable, ctl.dims_down_to_pct, ctl.three_way, smart.connected, smart.protocols, smart.color, smart.hub_required, life.rated_h,
+    life.warranty_years, features.es_special]

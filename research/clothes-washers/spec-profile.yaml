@@ -1,0 +1,410 @@
+# A2-appl2 r12 (2026-11-26), following A1's refrigerators profile (category-per-type ruling, wildcard / join rules) and A1's washer traps
+# (team/reports/2026-11-26-a1-r11-appliances.md: DOE J2 vs the new J; IEC vs DOE cu ft). Source data.energystar.gov bghd-e2wd
+# (Version 8.0/8.1 specification, effective 2018-02-05). Live check 2026-11-26: 421 rows (283 Front Load, 138 Top Load), 51 Canada-only,
+# 261 of 369 US models are pattern rows (71%), all intended_market Residential. Height and depth are filed on ~25% of rows only.
+profile_format: specsheet.category-profile/1
+category: clothes-washers
+version: 0.1
+label: Clothes washers
+market: US
+status: draft
+scope: 'Residential clothes washers sold in the US (front-load, top-load, all-in-one washer-dryers and laundry centers), DOE 10 CFR 430
+  covered products. Commercial / coin-op washers (intended_market Commercial) would be flagged by config.intended_market (none listed today).'
+identity:
+  levels:
+  - level: family
+    label: Line
+    meaning: 'Marketing line (LG TurboWash, Samsung Bespoke AI Laundry). Browse only; never passes values down.'
+    key_schemes: [mfr_family]
+    inherits: false
+  - level: model
+    label: Model number / certified pattern
+    meaning: 'A concrete maker model (LG WM4000HWA) or an ENERGY STAR pattern row (Samsung WF45B6300A*, one DOE basic model covering finishes),
+      as refrigerators. Patterns are 71% of US washer rows, so they are first-class rows here.'
+    key_schemes: [mfr_model, x_energystar_model_pattern]
+    inherits: true
+  - level: package
+    label: Trade item / UPC
+    meaning: 'UPC per finish unit; covered-UPC lookup alias on a pattern row, never a merge key.'
+    key_schemes: [gtin]
+    inherits: true
+  primary_key: 'Maker model number as filed with ENERGY STAR / DOE (finish tail included: LG WM4000HWA vs WM4000HBA). Samsung "/A5" market
+    suffixes are significant. ES pattern strings are a separate key scheme.'
+  per_brand:
+    lg: 'WM4000HWA: H = generation, W/B/... = finish; lg.com is human_only (terms), ES values only.'
+    samsung: 'WF45B6300AW/US: /US market suffix kept; ES often files WF45B6300A* (finish wildcarded).'
+    whirlpool_group: 'Whirlpool / Maytag / KitchenAid: WFW5605MW, MHW8630HC; a trailing finish letter. Maker sites blocked (survey r2).'
+    ge: 'GE / GE Profile: PFW870SPVRS style; finish tail; geappliances.com human_only.'
+  schemes:
+  - {scheme: mfr_family, level: family}
+  - {scheme: mfr_model, level: model, normalize: upper_strip_spaces}
+  - {scheme: x_energystar_model_pattern, level: model, pattern: '[*#/]', normalize: upper_strip_spaces}
+  - {scheme: x_energystar_pd_id, level: model}
+  - {scheme: gtin, issuer: GS1, level: package, alias_only: true}
+  variant_axes: []
+  model_defining: [config.load, capacity.doe_ft3, energy.imef, water.iwf]
+  note: 'Join rules as refrigerators identity.note. A cell like "WTW500CM**(V22AAF50(3B))" is kept as filed (one pattern string); the
+    parenthesised manufacturer code is not decoded.'
+units:
+  system: us_customary
+  custom:
+  - {unit: ft3, base: m3, factor: 0.028316846592}
+  - {unit: kWh/yr, base: kWh/yr, factor: 1}
+  - {unit: ft3/kWh/cycle, base: ft3/kWh/cycle, factor: 1}
+  - {unit: gal/cycle/ft3, base: gal/cycle/ft3, factor: 1}
+  - {unit: gal/yr, base: L/yr, factor: 3.785411784}
+conditions:
+- id: test_procedure
+  label: DOE test procedure
+  type: enum
+  enum: [appendix_j2, appendix_j, maker_unstated]
+  description: 'Basis of capacity, IMEF, IWF and the annual figures. ES bghd-e2wd rows are 10 CFR 430 Subpart B Appendix J2 (the column
+    descriptions cite J2; 295 loads/yr). DOE''s 2022 test-procedure rule added a NEW Appendix J that reports different metrics (EER, WER,
+    per-load) for the amended standards: J figures are never put under the IMEF / IWF keys and never compared with J2 ones.'
+groups:
+- {id: general, label: General & identity, order: 0}
+- {id: config, label: Type, order: 1}
+- {id: capacity, label: Capacity, order: 2}
+- {id: energy, label: Energy & certification, order: 3}
+- {id: water, label: Water, order: 4}
+- {id: dims, label: Size & fit, order: 5}
+- {id: features, label: Features, order: 6}
+- {id: conn, label: Connectivity, order: 7}
+specs:
+- key: gen.brand
+  label: Brand
+  group: general
+  type: enum
+  enum: [lg, samsung, ge, midea, whirlpool, electrolux, maytag, summit, miele, hisense, bosch, speed_queen]
+  enum_open: true
+  unit: null
+  tier: core
+  level: family
+  facet: {kind: enum, column: true}
+  why: Filter; ES brand_name is the filing brand (GE Profile folded into ge via brand_aliases).
+  sources: [ENERGY STAR brand_name, maker page]
+  example: lg
+- key: gen.is_pattern
+  label: Certified pattern (covers several SKUs)
+  group: general
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: This row is one certified basic model covering finishes; the buyer matches their SKU to it.
+  traps: ['Derived from the key string only (contains * # or a trailing R/L).']
+  sources: [ENERGY STAR model_number]
+  example: true
+- key: config.load
+  label: Loading
+  group: config
+  type: enum
+  enum: [front, top]
+  unit: null
+  tier: core
+  facet: {kind: enum, column: true}
+  why: The first washer decision; it also selects the federal standard (front-load and top-load standard-size classes differ).
+  traps: ['Top-load agitator vs impeller (HE) is NOT a column: ES files it inside additional_washer_features ("Impeller", "Agitator") on a few rows; it lands in features.washer.']
+  sources: [ENERGY STAR load_configuration]
+  example: front
+- key: config.special_type
+  label: Combo / laundry center
+  group: config
+  type: enum
+  enum: [all_in_one_washer_dryer, laundry_center]
+  unit: null
+  tier: important
+  facet: {kind: enum}
+  why: All-in-one washer-dryers and stacked laundry centers are different purchases from a washer alone.
+  traps: ['Blank = a plain washer per the filing but ES does not say so explicitly: unknown, never "none".']
+  sources: [ENERGY STAR special_type]
+  example: laundry_center
+- key: config.intended_market
+  label: Market
+  group: config
+  type: enum
+  enum: [residential, commercial, both]
+  unit: null
+  tier: detail
+  facet: false
+  why: Commercial / coin-op washers are certified to different requirements.
+  sources: [ENERGY STAR intended_market]
+  example: residential
+- key: capacity.doe_ft3
+  label: Capacity (DOE cu ft)
+  group: capacity
+  type: number
+  unit: ft3
+  tier: core
+  conditions: [test_procedure]
+  basis_conditions: [test_procedure]
+  facet: {kind: range, column: true}
+  why: How much laundry per load.
+  traps:
+  - 'DOE vs IEC: US maker pages and boxes often print an "IEC equivalent" capacity, which is larger than the DOE tub volume for the same drum (A1 r11). ES volume_cubic_feet is DOE (Appendix J2). IEC figures go to capacity.iec_ft3, never here, and the two are never compared.'
+  - 'Model-number digits (Samsung WF45 = 4.5) are a size class, never parsed as capacity.'
+  sources: [ENERGY STAR volume_cubic_feet, maker spec (DOE line)]
+  example: 4.5
+- key: capacity.iec_ft3
+  label: Capacity (IEC equivalent)
+  group: capacity
+  type: number
+  unit: ft3
+  tier: detail
+  facet: false
+  why: Shown only because maker marketing leads with it; not comparable to DOE capacity.
+  traps: ['Maker-only, larger than DOE; never a capacity filter.']
+  sources: [maker spec]
+  example: 5.0
+- key: energy.imef
+  label: Integrated modified energy factor (IMEF)
+  group: energy
+  type: number
+  unit: ft3/kWh/cycle
+  tier: important
+  conditions: [test_procedure]
+  basis_conditions: [test_procedure]
+  facet: {kind: range}
+  why: The efficiency metric ES certifies (higher = better), size-normalised.
+  traps: ['Blank on ~5% of ES rows (all-in-one combos and some top-loads): unknown.', 'J2 metric; the new Appendix J EER is a different quantity.']
+  sources: [ENERGY STAR integrated_modified_energy_factor_imef]
+  example: 2.76
+- key: energy.federal_standard_imef
+  label: Federal minimum IMEF
+  group: energy
+  type: number
+  unit: ft3/kWh/cycle
+  tier: detail
+  conditions: [test_procedure]
+  basis_conditions: [test_procedure]
+  facet: false
+  why: Context (front-load standard 1.84, top-load standard 1.57).
+  sources: [ENERGY STAR us_federal_standard_imef]
+  example: 1.84
+- key: energy.annual_kwh
+  label: Energy use
+  group: energy
+  type: number
+  unit: kWh/yr
+  tier: core
+  conditions: [test_procedure]
+  basis_conditions: [test_procedure]
+  facet: {kind: range, column: true}
+  why: Running cost (washer + electric water heating, 295 loads/yr).
+  traps: ['Excludes the dryer energy that a weak spin leaves behind (IMEF includes the remaining-moisture term, annual kWh does not): rank efficiency by IMEF, cost by kWh.']
+  sources: [ENERGY STAR annual_energy_use_kwh_year, EnergyGuide label]
+  example: 105
+- key: water.iwf
+  label: Integrated water factor (IWF)
+  group: water
+  type: number
+  unit: gal/cycle/ft3
+  tier: core
+  conditions: [test_procedure]
+  basis_conditions: [test_procedure]
+  facet: {kind: range, column: true}
+  why: Water per cycle per cubic foot (lower = better); the water-rebate metric.
+  traps: ['Per cubic foot: a big drum at IWF 3.2 uses more gallons per load than a compact at 3.2. Gallons per year is water.annual_gal.']
+  sources: [ENERGY STAR integrated_water_factor_iwf]
+  example: 3.2
+- key: water.federal_standard_iwf
+  label: Federal maximum IWF
+  group: water
+  type: number
+  unit: gal/cycle/ft3
+  tier: detail
+  conditions: [test_procedure]
+  basis_conditions: [test_procedure]
+  facet: false
+  why: Context (front-load 4.7, top-load 6.5).
+  sources: [ENERGY STAR us_federal_standard_iwf]
+  example: 4.7
+- key: water.annual_gal
+  label: Water use
+  group: water
+  type: number
+  unit: gal/yr
+  tier: important
+  conditions: [test_procedure]
+  basis_conditions: [test_procedure]
+  facet: {kind: range}
+  why: Water bill (295 loads/yr).
+  sources: [ENERGY STAR annual_water_use_gallons_year]
+  example: 3841
+- key: cert.energy_star
+  label: ENERGY STAR certified
+  group: energy
+  type: bool
+  unit: null
+  tier: core
+  absence: [unknown, not_published, conflicted]
+  facet: {kind: bool, column: true}
+  why: Rebates and efficiency filter.
+  traps:
+  - 'Absent from bghd-e2wd = UNKNOWN, never false.'
+  - 'Pattern rows (`*`, `#`, trailing R/L) = one DOE basic model. Transfer list (A1 ruling applied to washers): cert.*, energy.imef / annual_kwh / federal, water.iwf / annual_gal / federal, capacity.doe_ft3, config.load, config.special_type. NOT per SKU: finish, any dimension, UPC, connectivity, features, price.'
+  - 'bghd-e2wd metadata does NOT document wildcard semantics (dryers and freezers do): A1 matcher rule applies unchanged.'
+  sources: [ENERGY STAR bghd-e2wd row, date_qualified]
+  example: true
+- key: cert.es_most_efficient
+  label: ENERGY STAR Most Efficient
+  group: energy
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: Top-tier badge; some rebates require it.
+  traps: ['Per calendar year; a "No" is false for that year only.']
+  sources: [ENERGY STAR meets_most_efficient_criteria]
+  example: false
+- key: cert.es_date
+  label: Certified on
+  group: energy
+  type: date
+  unit: null
+  tier: detail
+  facet: false
+  why: Dates the certification.
+  sources: [ENERGY STAR date_qualified]
+  example: '2023-07-04'
+- key: dims.width_in
+  label: Width
+  group: dims
+  type: number
+  unit: in
+  tier: core
+  facet: {kind: range}
+  why: Closet / stacking fit (27 in standard, 24 in compact).
+  traps: ['Pattern rows do not transfer dimensions to a SKU (pedestal / trim variants).']
+  sources: [ENERGY STAR width_inches, maker spec]
+  example: 27
+- key: dims.height_in
+  label: Height
+  group: dims
+  type: number
+  unit: in
+  tier: important
+  facet: {kind: range}
+  why: Stacking and under-counter fit.
+  traps: ['Filed on ~25% of ES rows; top-load height lid-closed vs lid-open differs ~20 in, basis unstated.']
+  sources: [ENERGY STAR height_inches, maker spec]
+  example: 38.7
+- key: dims.depth_in
+  label: Depth
+  group: dims
+  type: number
+  unit: in
+  tier: important
+  facet: {kind: range}
+  why: Closet depth; front-loads with door open need more.
+  traps: ['Filed on ~25% of ES rows; door-closed vs door-open basis unstated.']
+  sources: [ENERGY STAR depth_inches, maker spec]
+  example: 32
+- key: features.washer
+  label: Features
+  group: features
+  type: list
+  items: enum
+  enum: [steam, anti_wrinkle, gentle, delicates, delay_start, sanitize, hand_wash, drum_clean, supplementary_wash, pre_soak, impeller, agitator, other]
+  unit: null
+  tier: detail
+  facet: {kind: multi}
+  why: Cycle features buyers filter on.
+  traps: ['Free-text comma list in ES; "None" = an explicit empty list (the partner said none), unlisted features map to other.']
+  sources: [ENERGY STAR additional_washer_features, maker spec]
+  example: [steam, sanitize]
+- key: conn.connected
+  label: Smart / connected
+  group: conn
+  type: bool
+  unit: null
+  tier: detail
+  facet: {kind: bool}
+  why: App control and demand response.
+  traps: ['ES "connected" = meets the ES connected criteria, not merely "has an app".']
+  sources: [ENERGY STAR connected]
+  example: false
+- key: conn.protocols
+  label: Connects using
+  group: conn
+  type: list
+  items: enum
+  enum: [wifi, bluetooth, zigbee, thread, matter, other]
+  unit: null
+  tier: detail
+  facet: {kind: multi}
+  why: Home-integration filter.
+  sources: [ENERGY STAR connects_using]
+  example: [wifi]
+- key: safety.recall
+  label: CPSC recall
+  group: general
+  type: text
+  unit: null
+  tier: important
+  level: model
+  facet: false
+  why: A recalled unit is a fire / injury hazard until the remedy is done; recall status is model-specific (CPSC names the model numbers).
+  traps: ['Applies only to the model numbers the notice prints; never extended by prefix, family or look-alike suffix.', 'No recall listed is unknown, never "not recalled".']
+  sources: [CPSC Recalls API (saferproducts.gov RestWebServices/Recall)]
+  example: 'CPSC 25338 (2025-06-12): The lithium-ion battery in the power bank can overheat, posing fire and burn hazards to consumers.'
+- key: safety.recall_id
+  label: CPSC recall number
+  group: general
+  type: list
+  items: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: The recall number to quote to the firm and to look up the notice.
+  sources: [CPSC Recalls API RecallNumber]
+  example: ['25338']
+- key: safety.recall_date
+  label: Recall date
+  group: general
+  type: date
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Date of the most recent recall naming this model.
+  sources: [CPSC Recalls API RecallDate]
+  example: '2025-06-12'
+- key: safety.recall_remedy
+  label: Recall remedy
+  group: general
+  type: list
+  items: enum
+  enum: [replace, refund, repair, new_instructions, dispose, label, other]
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: What the firm offers (replacement, refund, repair).
+  sources: [CPSC Recalls API RemedyOptions]
+  example: [replace]
+- key: safety.recall_url
+  label: Recall notice
+  group: general
+  type: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: The CPSC notice with the serial ranges and remedy steps (the recall usually covers only some serial numbers).
+  sources: [CPSC Recalls API URL (www.cpsc.gov/Recalls/...)]
+  example: https://www.cpsc.gov/Recalls/2025/More-than-One-Million-Anker-Power-Banks-Recalled-Due-to-Fire-and-Burn-Hazards-Manufactured-by-Anker-Innovations
+- key: gen.record_kind
+  label: Record kind
+  group: general
+  type: enum
+  enum: [recall_only]
+  unit: null
+  tier: detail
+  level: model
+  facet: {kind: enum}
+  why: 'recall_only = we hold no maker or certifier record of this model, only the CPSC recall (identity + recall facts). Coordinator ruling r12: such rows are left out of every preset population.'
+  traps: ['Absent = a normal record (maker / certifier). Never set on a model that a maker or certifier source lists.']
+  sources: [cpsc_recalls overlay (crawler/adapters/cpsc_recalls.py)]
+  example: recall_only

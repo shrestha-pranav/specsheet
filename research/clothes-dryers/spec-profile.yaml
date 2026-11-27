@@ -1,0 +1,432 @@
+# A2-appl2 r12 (2026-11-26), following A1's refrigerators profile (category-per-type ruling, wildcard / join rules) and A1's dryer trap
+# (team/reports/2026-11-26-a1-r11-appliances.md: DOE D1 vs D2). Source data.energystar.gov t9u7-4d2j (Version 1.1 specification, effective
+# 2015-01-01). Live check 2026-11-26: 706 rows, 146 Canada-only; 441 of 553 US models are pattern rows (80%). heat_pump_technology is filed
+# on 81 rows only and voltage on 77: blank = unknown. Metadata documents the wildcard ("* represents a letter, and # a digit").
+profile_format: specsheet.category-profile/1
+category: clothes-dryers
+version: 0.1
+label: Clothes dryers
+market: US
+status: draft
+scope: 'Residential clothes dryers sold in the US: electric and gas, standard and compact, vented and ventless (condenser, heat pump,
+  hybrid heat pump), laundry-center dryers. All-in-one washer-dryers appear in both ES laundry datasets; here as config.special_type.'
+identity:
+  levels:
+  - level: family
+    label: Line
+    meaning: 'Marketing line (Samsung Bespoke, LG TurboSteam). Browse only; never passes values down.'
+    key_schemes: [mfr_family]
+    inherits: false
+  - level: model
+    label: Model number / certified pattern
+    meaning: 'A concrete maker model (Bosch WQB245B0UC) or an ENERGY STAR pattern row (LG DLGX3371*, one DOE basic model), as refrigerators.
+      Patterns are 80% of US dryer rows, so they are first-class rows here.'
+    key_schemes: [mfr_model, x_energystar_model_pattern]
+    inherits: true
+  - level: package
+    label: Trade item / UPC
+    meaning: 'UPC per finish unit (LG DLGX3371* lists 3); covered-UPC lookup alias on a pattern row, never a merge key.'
+    key_schemes: [gtin]
+    inherits: true
+  primary_key: 'Maker model number as filed with ENERGY STAR / DOE, fuel and finish characters included (Whirlpool WED/WGD = electric/gas
+    twins: separate models). ES pattern strings are a separate key scheme.'
+  per_brand:
+    lg: 'DLEX / DLGX prefix: E = electric, G = gas; trailing finish letter often wildcarded; lg.com human_only (terms).'
+    whirlpool_group: 'Whirlpool / Maytag / KitchenAid: WED (electric) / WGD (gas); a leading Y on some electric strings (YWED9500EW*) is kept
+      as filed, never stripped or decoded. Maker sites blocked (survey r2).'
+    samsung: 'DVE (electric) / DVG (gas) + finish; a "/A.." market suffix is kept as significant.'
+    ge: 'GE / GE Profile: GTD / GTX style, E vs G fuel letter.'
+  schemes:
+  - {scheme: mfr_family, level: family}
+  - {scheme: mfr_model, level: model, normalize: upper_strip_spaces}
+  - {scheme: x_energystar_model_pattern, level: model, pattern: '[*#/]', normalize: upper_strip_spaces}
+  - {scheme: x_energystar_pd_id, level: model}
+  - {scheme: gtin, issuer: GS1, level: package, alias_only: true}
+  variant_axes: []
+  model_defining: [config.es_product_type, capacity.drum_ft3, energy.cef]
+  note: 'Join rules as refrigerators identity.note. The ES model_name column is a certifier listing alias when it differs from model_number.'
+units:
+  system: us_customary
+  custom:
+  - {unit: ft3, base: m3, factor: 0.028316846592}
+  - {unit: kWh/yr, base: kWh/yr, factor: 1}
+  - {unit: lb/kWh, base: lb/kWh, factor: 1}
+  - {unit: min, base: s, factor: 60}
+conditions:
+- id: test_procedure
+  label: DOE test procedure
+  type: enum
+  enum: [appendix_d2, appendix_d1, maker_unstated]
+  description: 'Basis of CEF, drum capacity, test-cycle time and annual kWh. ES t9u7-4d2j cites 10 CFR 430 Subpart B Appendix D2 (automatic
+    termination, over-drying counted; 283 cycles/yr). Appendix D1 (the federal-standard procedure many DOE CCD filings use) credits
+    drying differently and typically gives a HIGHER CEF for the same dryer: D1 and D2 figures are never compared.'
+groups:
+- {id: general, label: General & identity, order: 0}
+- {id: config, label: Type & installation, order: 1}
+- {id: capacity, label: Capacity, order: 2}
+- {id: energy, label: Energy & certification, order: 3}
+- {id: dims, label: Size & fit, order: 4}
+- {id: refrigerant, label: Refrigerant, order: 5}
+- {id: features, label: Features, order: 6}
+- {id: conn, label: Connectivity, order: 7}
+specs:
+- key: gen.brand
+  label: Brand
+  group: general
+  type: enum
+  enum: [lg, whirlpool, samsung, electrolux, ge, maytag, midea, kenmore, miele, summit, asko, bosch]
+  enum_open: true
+  unit: null
+  tier: core
+  level: family
+  facet: {kind: enum, column: true}
+  why: Filter; ES brand_name is the filing brand (GE Profile folded into ge via brand_aliases).
+  sources: [ENERGY STAR brand_name, maker page]
+  example: lg
+- key: gen.is_pattern
+  label: Certified pattern (covers several SKUs)
+  group: general
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: This row is one certified basic model covering finishes; the buyer matches their SKU to it.
+  traps: ['Derived from the key string only (contains * # or a trailing R/L).']
+  sources: [ENERGY STAR model_number]
+  example: true
+- key: config.es_product_type
+  label: DOE product type
+  group: config
+  type: text
+  unit: null
+  tier: important
+  facet: false
+  why: Fuel + size + venting class that sets the ES CEF threshold (Electric Compact Ventless 240V, Gas Standard Vented, ...).
+  traps: ['Compact = drum < 4.4 ft3 (DOE); the 120V/240V in the type name is the class, voltage itself is filed separately on few rows.']
+  sources: [ENERGY STAR product_type]
+  example: Electric Standard Vented
+- key: config.fuel
+  label: Fuel
+  group: config
+  type: enum
+  enum: [electric, gas]
+  unit: null
+  tier: core
+  facet: {kind: enum, column: true}
+  why: Gas needs a gas line; electric needs a 240 V circuit (except 120 V compacts).
+  traps: ['Gas dryers still need 120 V for the drum and controls; "gas" is the heat source only.']
+  sources: [ENERGY STAR type]
+  example: electric
+- key: config.ventless
+  label: Ventless
+  group: config
+  type: bool
+  unit: null
+  tier: core
+  facet: {kind: bool, column: true}
+  why: Ventless (condenser or heat pump) installs where there is no outside vent (closets, apartments).
+  traps: ['Ventless is NOT heat pump: condenser dryers are ventless with resistance heat (CEF ~2.7). Check config.heat_pump.', 'Blank on ~2% of rows: unknown.']
+  sources: [ENERGY STAR vented_or_ventless]
+  example: true
+- key: config.heat_pump
+  label: Heat pump
+  group: config
+  type: enum
+  enum: [heat_pump, hybrid_heat_pump, none]
+  unit: null
+  tier: core
+  facet: {kind: enum, column: true}
+  why: Heat-pump dryers use roughly half the energy and need no vent; hybrids add a resistance heater for speed.
+  traps:
+  - 'ES heat_pump_technology is filed on 81 of 706 rows (2026-11-26). Blank is UNKNOWN, never none: several blank ventless rows are clearly heat pumps by their CEF (LG DLHC1455*B, Midea MLE27N5AWWC), but CEF is never used to infer the technology.'
+  - 'none only from an explicit maker / ES statement.'
+  sources: [ENERGY STAR heat_pump_technology, maker spec]
+  example: heat_pump
+- key: config.special_type
+  label: Combo / laundry center
+  group: config
+  type: enum
+  enum: [all_in_one_washer_dryer, laundry_center]
+  unit: null
+  tier: important
+  facet: {kind: enum}
+  why: All-in-one washer-dryers and laundry centers are different purchases.
+  traps: ['Blank = unknown, never "standalone".']
+  sources: [ENERGY STAR special_type]
+  example: laundry_center
+- key: elec.voltage
+  label: Voltage
+  group: config
+  type: number
+  unit: V
+  tier: important
+  facet: {kind: range}
+  why: 120 V compacts plug into any outlet; 240 V needs a dryer circuit.
+  traps: ['Filed on ~11% of ES rows (A1: not a gate key). Never inferred from the product-type name.']
+  sources: [ENERGY STAR voltage, maker spec]
+  example: 240
+- key: capacity.drum_ft3
+  label: Drum capacity (DOE)
+  group: capacity
+  type: number
+  unit: ft3
+  tier: core
+  conditions: [test_procedure]
+  basis_conditions: [test_procedure]
+  facet: {kind: range, column: true}
+  why: Load size; a dryer should be ~2x the washer drum.
+  traps: ['DOE Appendix D2 drum volume; marketing "cu ft class" rounds up. DOE compact = < 4.4 ft3.']
+  sources: [ENERGY STAR drum_capacity_cu_ft, maker spec]
+  example: 7.4
+- key: energy.cef
+  label: Combined energy factor (CEF)
+  group: energy
+  type: number
+  unit: lb/kWh
+  tier: core
+  conditions: [test_procedure]
+  basis_conditions: [test_procedure]
+  facet: {kind: range, column: true}
+  why: The certified efficiency metric (pounds of laundry per kWh, higher = better).
+  traps:
+  - 'Appendix D2 figure; a DOE CCD or maker D1 CEF for the same dryer reads higher. Compare only within one procedure.'
+  - 'Gas CEF counts gas energy as kWh-equivalent; compare gas with gas.'
+  sources: [ENERGY STAR combined_energy_factor_cef]
+  example: 3.93
+- key: energy.cef_max_dry
+  label: CEF at max dryness (calculated)
+  group: energy
+  type: number
+  unit: lb/kWh
+  tier: detail
+  facet: false
+  why: Most Efficient criterion, efficiency on the most energy-hungry dryness setting.
+  traps: ['A calculated, rated figure on a different setting: never compared with energy.cef (ES column note). Filed on ~9% of rows.']
+  sources: [ENERGY STAR calculated_combined_energy_factor_max_dryness_setting_lbs_kwh]
+  example: 4.36
+- key: energy.annual_kwh
+  label: Energy use
+  group: energy
+  type: number
+  unit: kWh/yr
+  tier: core
+  conditions: [test_procedure]
+  basis_conditions: [test_procedure]
+  facet: {kind: range, column: true}
+  why: Running cost (283 cycles/yr).
+  traps: ['For gas dryers ES still prints a kWh figure (gas converted): not an electricity bill.']
+  sources: [ENERGY STAR estimated_annual_energy_use_kwh_yr]
+  example: 608
+- key: energy.test_cycle_min
+  label: Test-cycle time
+  group: energy
+  type: number
+  unit: min
+  tier: detail
+  conditions: [test_procedure]
+  basis_conditions: [test_procedure]
+  facet: {kind: range}
+  why: Heat-pump dryers trade time for energy; ES requires < 80 min on the test cycle.
+  traps: ['The DOE test load and cycle, not a real-world cycle time.']
+  sources: [ENERGY STAR estimated_energy_test_cycle_time_min]
+  example: 70
+- key: cert.energy_star
+  label: ENERGY STAR certified
+  group: energy
+  type: bool
+  unit: null
+  tier: core
+  absence: [unknown, not_published, conflicted]
+  facet: {kind: bool, column: true}
+  why: Rebates and efficiency filter.
+  traps:
+  - 'Absent from t9u7-4d2j = UNKNOWN, never false.'
+  - 'Pattern rows (`*`, `#`, trailing R/L) = one DOE basic model. Transfer list (A1 ruling applied to dryers): cert.*, energy.* (CEF, annual kWh, test cycle, CEF max dry), capacity.drum_ft3, config.es_product_type, config.fuel, config.ventless, config.heat_pump (all fix the DOE product class and the CEF), refrigerant.type. NOT per SKU: finish, any dimension, voltage, UPC, connectivity, features, price.'
+  sources: [ENERGY STAR t9u7-4d2j row, date_qualified]
+  example: true
+- key: cert.es_most_efficient
+  label: ENERGY STAR Most Efficient
+  group: energy
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: Top-tier badge; some rebates require it.
+  traps: ['Per calendar year; a "No" is false for that year only.']
+  sources: [ENERGY STAR meets_most_efficient_criteria]
+  example: false
+- key: cert.es_date
+  label: Certified on
+  group: energy
+  type: date
+  unit: null
+  tier: detail
+  facet: false
+  why: Dates the certification.
+  sources: [ENERGY STAR date_qualified]
+  example: '2014-07-31'
+- key: dims.width_in
+  label: Width
+  group: dims
+  type: number
+  unit: in
+  tier: core
+  facet: {kind: range}
+  why: Closet / stacking fit (27 in standard, 24 in compact).
+  traps: ['Pattern rows do not transfer dimensions to a SKU.']
+  sources: [ENERGY STAR width_inches, maker spec]
+  example: 27
+- key: dims.height_in
+  label: Height
+  group: dims
+  type: number
+  unit: in
+  tier: important
+  facet: {kind: range}
+  why: Stacking and counter fit.
+  sources: [ENERGY STAR height_inches, maker spec]
+  example: 38.7
+- key: dims.depth_in
+  label: Depth
+  group: dims
+  type: number
+  unit: in
+  tier: important
+  facet: {kind: range}
+  why: Closet depth.
+  traps: ['Basis (door closed, with vent/hose clearance) unstated in ES.']
+  sources: [ENERGY STAR depth_inches, maker spec]
+  example: 30
+- key: refrigerant.type
+  label: Refrigerant (heat pump)
+  group: refrigerant
+  type: enum
+  enum: [r290, r134a, r600a, r1234yf, other]
+  enum_open: true
+  unit: null
+  tier: detail
+  facet: {kind: enum}
+  why: Heat-pump dryers carry a refrigerant; R-290 (GWP ~3) vs R-134a (GWP 1,430).
+  traps: ['"n/a - air-cooled" (condenser) = no refrigerant stated: unknown, not none.']
+  sources: [ENERGY STAR refrigerant_type, refrigerant_with_gwp]
+  example: r290
+- key: refrigerant.gwp
+  label: Refrigerant GWP
+  group: refrigerant
+  type: number
+  unit: null
+  tier: detail
+  facet: false
+  why: Climate impact.
+  traps: ['Only from an explicit "GWP:" token.']
+  sources: [ENERGY STAR refrigerant_with_gwp]
+  example: 3
+- key: features.dryer
+  label: Features
+  group: features
+  type: list
+  items: enum
+  enum: [drum_light, wrinkle_prevention, steam, sanitize, filter_indicator, energy_monitor, time_remaining, supplementary_drying, other]
+  unit: null
+  tier: detail
+  facet: {kind: multi}
+  why: Cycle features buyers filter on.
+  traps: ['Free-text comma list; "None" = explicit empty list; unlisted features map to other.']
+  sources: [ENERGY STAR additional_dryer_features, maker spec]
+  example: [steam, sanitize]
+- key: conn.connected
+  label: Smart / connected
+  group: conn
+  type: bool
+  unit: null
+  tier: detail
+  facet: {kind: bool}
+  why: App control and demand response.
+  traps: ['ES "connected" = meets the ES connected criteria.']
+  sources: [ENERGY STAR connected]
+  example: false
+- key: conn.protocols
+  label: Connects using
+  group: conn
+  type: list
+  items: enum
+  enum: [wifi, bluetooth, zigbee, thread, matter, other]
+  unit: null
+  tier: detail
+  facet: {kind: multi}
+  why: Home-integration filter.
+  traps: ['ES files it under the mislabelled column connected_demand_response_functionality_tested ("Wi-Fi").']
+  sources: [ENERGY STAR connected_demand_response_functionality_tested]
+  example: [wifi]
+- key: safety.recall
+  label: CPSC recall
+  group: general
+  type: text
+  unit: null
+  tier: important
+  level: model
+  facet: false
+  why: A recalled unit is a fire / injury hazard until the remedy is done; recall status is model-specific (CPSC names the model numbers).
+  traps: ['Applies only to the model numbers the notice prints; never extended by prefix, family or look-alike suffix.', 'No recall listed is unknown, never "not recalled".']
+  sources: [CPSC Recalls API (saferproducts.gov RestWebServices/Recall)]
+  example: 'CPSC 25338 (2025-06-12): The lithium-ion battery in the power bank can overheat, posing fire and burn hazards to consumers.'
+- key: safety.recall_id
+  label: CPSC recall number
+  group: general
+  type: list
+  items: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: The recall number to quote to the firm and to look up the notice.
+  sources: [CPSC Recalls API RecallNumber]
+  example: ['25338']
+- key: safety.recall_date
+  label: Recall date
+  group: general
+  type: date
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Date of the most recent recall naming this model.
+  sources: [CPSC Recalls API RecallDate]
+  example: '2025-06-12'
+- key: safety.recall_remedy
+  label: Recall remedy
+  group: general
+  type: list
+  items: enum
+  enum: [replace, refund, repair, new_instructions, dispose, label, other]
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: What the firm offers (replacement, refund, repair).
+  sources: [CPSC Recalls API RemedyOptions]
+  example: [replace]
+- key: safety.recall_url
+  label: Recall notice
+  group: general
+  type: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: The CPSC notice with the serial ranges and remedy steps (the recall usually covers only some serial numbers).
+  sources: [CPSC Recalls API URL (www.cpsc.gov/Recalls/...)]
+  example: https://www.cpsc.gov/Recalls/2025/More-than-One-Million-Anker-Power-Banks-Recalled-Due-to-Fire-and-Burn-Hazards-Manufactured-by-Anker-Innovations
+- key: gen.record_kind
+  label: Record kind
+  group: general
+  type: enum
+  enum: [recall_only]
+  unit: null
+  tier: detail
+  level: model
+  facet: {kind: enum}
+  why: 'recall_only = we hold no maker or certifier record of this model, only the CPSC recall (identity + recall facts). Coordinator ruling r12: such rows are left out of every preset population.'
+  traps: ['Absent = a normal record (maker / certifier). Never set on a model that a maker or certifier source lists.']
+  sources: [cpsc_recalls overlay (crawler/adapters/cpsc_recalls.py)]
+  example: recall_only

@@ -236,7 +236,7 @@ class Fix3Conditions(unittest.TestCase):
 class Policies(unittest.TestCase):
     # r6: power banks re-issued as @5 (parser bump for the repeated-port-row fix); @4 joins the inert superseded set
     NEW = {"claim/mfr-robovac-structured@5", "claim/mfr-power-banks-structured@10", "claim/dcl-matter-certified@2",
-           "claim/belkin-support-articles@1", "claim/mfr-power-banks-nitecore@1"}   # r7: power banks @5 -> @6; A2 preset fill: @6 -> @7; 2026-11-25: + Belkin support articles; 2026-11-26 r7 PPS: @7 -> @8; review-9: @8 -> @9; review-10: @9 -> @10; r11: + NITECORE (own policy)
+           "claim/belkin-support-articles@1", "claim/mfr-power-banks-nitecore@2"}   # r7: power banks @5 -> @6; A2 preset fill: @6 -> @7; 2026-11-25: + Belkin support articles; 2026-11-26 r7 PPS: @7 -> @8; review-9: @8 -> @9; review-10: @9 -> @10; r11: + NITECORE (own policy); review-11: NITECORE @1 -> @2
     OLD = {"claim/mfr-robovac-structured@2", "claim/mfr-robovac-structured@3", "claim/mfr-robovac-structured@4",
            "claim/mfr-power-banks-structured@2", "claim/mfr-power-banks-structured@3", "claim/mfr-power-banks-structured@4", "claim/mfr-power-banks-structured@5", "claim/mfr-power-banks-structured@6", "claim/mfr-power-banks-structured@7", "claim/mfr-power-banks-structured@8", "claim/mfr-power-banks-structured@9", "claim/dcl-matter-certified@1"}
 
@@ -246,7 +246,8 @@ class Policies(unittest.TestCase):
         self.assertTrue(self.NEW <= set(pol))
         for i in self.NEW:
             a = pol[i]["approval"]; self.assertIn(a["state"], ("pending", "approved"), i); self.assertTrue(a["state"] == "pending" or (a.get("by") and a.get("at")), i)  # human-approved 2026-11-23
-        cur = {registry.parser_info(s)["parser"] for s, m in registry.SOURCES.items() if m["category"] in ("robot-vacuums", "power-banks")}
+        cur = {registry.parser_info(s)["parser"] for s, m in registry.SOURCES.items() if m["category"] in ("robot-vacuums", "power-banks")
+               and not s.startswith("cpsc-recalls-")}       # r12: the cross-category CPSC overlay is under claim/cpsc-recalls@1
         covered = {x for i in self.NEW for x in pol[i]["match"]["extractors"]}
         self.assertEqual(cur, covered, "every current robovac/power-bank extractor is under exactly the new policies")
         self.assertNotIn("smart.matter", pol["claim/mfr-robovac-structured@5"]["match"]["keys"]["dreame-us-robovac"])

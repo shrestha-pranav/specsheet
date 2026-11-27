@@ -1,0 +1,20 @@
+name: Smart-home devices
+description: "Zigbee and Matter smart-home devices by maker model id (IKEA E1743, Aqara RTCGQ11LM, Philips Hue 9290012573A): device type,
+  protocols, whether Zigbee2MQTT supports it (works locally without the vendor hub), what it reports over Zigbee (motion, lux, temperature,
+  contact, leak, smoke, energy metering, battery level), light colour / tunable white, and (when the CSA ledger is reachable) Matter
+  certificate and version. Source this round: Zigbee2MQTT device definitions (zigbee-herdsman-converters, MIT), a community integration
+  database, not the maker. 'Reports X' means Zigbee2MQTT exposes X for the paired device; no means its definition lists every expose and X
+  is not one of them."
+columns: [gen.device_type, conn.protocols, power.source, power.metering, sensor.illuminance]
+# Brand slugs are the adapter's slug of the Z2M `vendor` (crawler/adapters/zigbee2mqtt_devices.brand_id). Z2M files Aqara devices under
+# vendor "Aqara" (current) and "Xiaomi" (older Mi-branded units, a distinct brand on the box): not folded.
+brand_aliases: {signify_netherlands_b_v: philips, philips_hue: philips, third_reality_inc: third_reality, schneider: schneider_electric}
+brand_names: {ikea: IKEA, philips: Philips Hue, aqara: Aqara, xiaomi: Xiaomi, sengled: Sengled, sonoff: SONOFF, third_reality: Third Reality,
+  inovelli: Inovelli, innr: Innr, ledvance: LEDVANCE, lutron: Lutron, schneider_electric: Schneider Electric, legrand: Legrand, ge: GE,
+  samsung: Samsung SmartThings, eve: Eve, tuya: Tuya, lidl: Lidl, gledopto: GLEDOPTO, moes: MOES, zemismart: Zemismart, heiman: HEIMAN,
+  develco: Develco, frient: frient, bosch: Bosch, centralite: Centralite, ecodim: EcoDim, mueller_licht: Mueller Licht, paulmann: Paulmann,
+  osram: OSRAM, sylvania: SYLVANIA, sinope: Sinope, sunricher: Sunricher, danfoss: Danfoss, yale: Yale, schlage: Schlage, kwikset: Kwikset}
+# importer 'model': key = (brand, normalised model id). Z2M has no market field: rows state market null; no market-scoped brands.
+identity_scope:
+  cross_market_brands: "*"
+  market_scoped_brands: []

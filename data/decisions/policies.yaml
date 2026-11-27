@@ -8,6 +8,78 @@
 # (preview dataset only) until a human ledger line (ledger.jsonl) accepts or rejects it.
 format: specsheet.policies/2
 claim_policies:
+- id: claim/smart-home-zigbee2mqtt@2
+  since: '2026-11-26'
+  supersedes: claim/smart-home-zigbee2mqtt@1
+  rationale: 'Re-issue of claim/smart-home-zigbee2mqtt@1 (locked by my own first import, never approved, never released): claim stage adapter (the record schema enum; @1''s ts_definition made every claim invalid) and sources cite the raw.githubusercontent.com file URL the source-policy lists. A2-home r12 (brief coord-2026-11-26-r12, lane A2-home). New category smart-home; new cross-brand source zigbee2mqtt-devices
+    (crawler/adapters/zigbee2mqtt_devices.py): the Zigbee2MQTT device database, Koenkk/zigbee-herdsman-converters src/devices/*.ts on
+    raw.githubusercontent.com (MIT; source-policy kind measurement, crawl agent, free yes / paid no / no licence grant). Definitions are cut
+    from the stored TypeScript by a brace scanner, never evaluated. Claims are kind REPORTED, source tier other (a community integration
+    database, not the maker). Identity: mfr_model = Z2M model as written, issuer = vendor slug; slash lists stay one row; Tuya TS0xxx module
+    ids, digit-less names and > 60-char strings mint nothing. Values: conn.protocols [zigbee] and compat.zigbee2mqtt true for every row;
+    capability booleans true from the exposes / extend helpers named in the definition; FALSE only when every top-level exposes / extend
+    item is an e.* / m.* call (a complete static enumeration: no vendor helper, variable, spread, arrow function) and only when every
+    definition of the model agrees; gen.device_type by the adapter''s DEVICE_TYPE rule table; power.source only battery (never mains).
+    gen.description (community text) is in the allowlist as a text column only.'
+  audit:
+    by: A2-home r12
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-A2-home-r12.md; raw/zigbee2mqtt-devices (index.ts + every vendor file); tests/test_a2_home_r12.py'
+    parsers: {'zigbee2mqtt_devices@1': 'sha256:7f333db11272d32d5057'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-27"}
+  match:
+    extractors: [zigbee2mqtt_devices@1]
+    source_ids: [zigbee2mqtt-devices]
+    kinds: [reported]
+    tiers: [other]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      zigbee2mqtt-devices: [compat.zigbee2mqtt, conn.protocols, ctl.action, ctl.color, ctl.color_temp, ctl.cover, ctl.light, ctl.lock, ctl.on_off,
+        ctl.thermostat, gen.description, gen.device_type, power.battery, power.metering, power.source, sensor.contact, sensor.humidity,
+        sensor.illuminance, sensor.occupancy, sensor.smoke, sensor.temperature, sensor.vibration, sensor.water_leak]
+- id: claim/cpsc-recalls@1
+  since: '2026-11-26'
+  rationale: 'A2-safe r12 (brief coord-2026-11-26-r12, lane A2-safe; coordinator ruling r12 on recall-only records). New cross-brand regulatory
+    overlay: U.S. CPSC Recalls REST API (www.saferproducts.gov/RestWebServices/Recall, one GET per recall year through crawl.Net, robots +
+    terms read first, source-policy 2026-11-26.12), one registry source per model-importer category (cpsc-recalls-<category>), one adapter
+    crawler/adapters/cpsc_recalls.py. A recall is attached ONLY to a model number the notice prints after a model lead (model / models /
+    model number(s) X, Y and Z) or, for a model some maker or certifier source already lists, anywhere in the notice text, matched exactly
+    (import.py mfr_model normalisation) for a brand the notice names. Never by prefix ("model numbers beginning with"), model series,
+    wildcard, a sentence with a negation (not / no other / excluded / except), or a model split by a stray space. The product type of the
+    phrase before the lead picks the category (charging stand -> chargers, power bank -> power-banks). With no existing entity, a single
+    named brand mints a recall-only record (identity + recall facts only) flagged gen.record_kind recall_only; a notice naming several
+    brands, or a notice whose title says Commercial, mints nothing. Values: safety.recall = "CPSC <number> (<date>): <hazard sentence>" per recall, safety.recall_id the recall
+    numbers, safety.recall_date the latest recall date, safety.recall_remedy the RemedyOptions (replace / refund / repair / ...),
+    safety.recall_url the notice on www.cpsc.gov. Nothing here writes a negative: no recall listed is unknown.'
+  audit:
+    by: A2-safe r12
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-A2-safe-r12.md; raw/cpsc-recalls (22 year pages 2005-2026, 7,201 recalls); tests/test_a2_safe_r12.py'
+    parsers: {'cpsc_recalls@1': 'sha256:96b2f1dd427b733c86e3'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-27"}
+  match:
+    extractors: [cpsc_recalls@1]
+    source_ids: [cpsc-recalls-air-purifiers, cpsc-recalls-chargers, cpsc-recalls-clothes-dryers, cpsc-recalls-clothes-washers, cpsc-recalls-dishwashers, cpsc-recalls-freezers, cpsc-recalls-monitors, cpsc-recalls-power-banks, cpsc-recalls-power-stations, cpsc-recalls-refrigerators, cpsc-recalls-robot-vacuums, cpsc-recalls-routers, cpsc-recalls-smart-home, cpsc-recalls-tvs]
+    kinds: [official]
+    tiers: [regulatory]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      cpsc-recalls-air-purifiers: [gen.record_kind, safety.recall, safety.recall_date, safety.recall_id, safety.recall_remedy, safety.recall_url]
+      cpsc-recalls-chargers: [gen.record_kind, safety.recall, safety.recall_date, safety.recall_id, safety.recall_remedy, safety.recall_url]
+      cpsc-recalls-clothes-dryers: [gen.record_kind, safety.recall, safety.recall_date, safety.recall_id, safety.recall_remedy, safety.recall_url]
+      cpsc-recalls-clothes-washers: [gen.record_kind, safety.recall, safety.recall_date, safety.recall_id, safety.recall_remedy, safety.recall_url]
+      cpsc-recalls-dishwashers: [gen.record_kind, safety.recall, safety.recall_date, safety.recall_id, safety.recall_remedy, safety.recall_url]
+      cpsc-recalls-freezers: [gen.record_kind, safety.recall, safety.recall_date, safety.recall_id, safety.recall_remedy, safety.recall_url]
+      cpsc-recalls-monitors: [gen.record_kind, safety.recall, safety.recall_date, safety.recall_id, safety.recall_remedy, safety.recall_url]
+      cpsc-recalls-power-banks: [gen.record_kind, safety.recall, safety.recall_date, safety.recall_id, safety.recall_remedy, safety.recall_url]
+      cpsc-recalls-power-stations: [gen.record_kind, safety.recall, safety.recall_date, safety.recall_id, safety.recall_remedy, safety.recall_url]
+      cpsc-recalls-refrigerators: [gen.record_kind, safety.recall, safety.recall_date, safety.recall_id, safety.recall_remedy, safety.recall_url]
+      cpsc-recalls-robot-vacuums: [gen.record_kind, safety.recall, safety.recall_date, safety.recall_id, safety.recall_remedy, safety.recall_url]
+      cpsc-recalls-routers: [gen.record_kind, safety.recall, safety.recall_date, safety.recall_id, safety.recall_remedy, safety.recall_url]
+      cpsc-recalls-smart-home: [gen.record_kind, safety.recall, safety.recall_date, safety.recall_id, safety.recall_remedy, safety.recall_url]
+      cpsc-recalls-tvs: [gen.record_kind, safety.recall, safety.recall_date, safety.recall_id, safety.recall_remedy, safety.recall_url]
 - id: claim/appliances-energystar@2
   since: '2026-11-26'
   supersedes: claim/appliances-energystar@1
@@ -71,22 +143,104 @@ claim_policies:
         gen.is_pattern, refrigerant.type]
       energystar-dishwashers: [capacity.place_settings, cert.energy_star, cert.es_date, cert.es_most_efficient, config.es_type, energy.annual_kwh,
         energy.pct_below_federal, features.drying_method, features.soil_sensor, gen.is_pattern, water.gal_per_cycle]
-- id: claim/mfr-power-banks-nitecore@1
+- id: claim/light-bulbs-energystar@1
   since: '2026-11-26'
-  rationale: 'A2-bat r11 (brief coord-2026-11-26-r11-datasets). New maker source nitecore-us-powerbanks (crawler/adapters/nitecore_powerbanks.py): NITECORE''s own
-    product pages on www.nitecore.com (robots allows *, ClaudeBot; no terms page published). Official labelled rows of the Specifications table only (spec-key /
-    spec-value), mapped by the shared shopify_powerbanks2.parse2 row mapper (same rules as the SHARGE / KUXIU / EcoFlow rows of claim/mfr-power-banks-structured):
-    Capacity cell (mAh + cell V + Wh), Output per-port PDO list (one port per printed line), Total Output (all-ports W as labelled), Input, Weight, Dimensions;
-    plus Cell -> bat.chemistry. Model = the page''s printed product name, which must equal the page''s own slug (NB20000 Gen3 / nb20000Gen3); kits and pages
-    without an Output row (battery packs) mint nothing. ''Rated Energy 6,400mAh 5V (TYP 1A)'' stays unresolved (preview), not in the allowlist.'
+  rationale: 'A2-bulb r12 (brief coord-2026-11-26-r12-bulbs, owner request). New category light-bulbs; new cross-brand source
+    energystar-light-bulbs (data.energystar.gov msj5-kqfv, ENERGY STAR Connected Light Bulbs: lamps programme sunset, dataset frozen
+    2025-01-15), adapter crawler/adapters/energystar_bulbs.py (discover/fetch shared with energystar_appliances: paged SoQL through crawl.Net,
+    own UA, robots + Crawl-delay obeyed, raw page stored). US rows only; wildcard rows (* #) are not entities; re-filings that disagree on a
+    field leave it unknown. light.lumens / power.watts / light.efficacy_lm_w carry the filing CCT as basis condition cct_k (never merged across
+    CCTs); efficacy is the ES column, not derived; power.equiv_watts is its own key; smart.color only positive (Full-Color-Tunable ->
+    full_color, White-Tunable -> tunable_white), smart.connected only true, ctl.dimmable false only from an explicit non-dimmable;
+    light.lumens_color_max is never written (ES tests in white); cert.energy_star only true (historical: programme ended).'
   audit:
-    by: A2-bat r11
+    by: A2-bulb r12
     at: '2026-11-26'
-    evidence: 'team/reports/2026-11-26-A2-bat-r11.md; 20 stored pages (raw/nitecore-us-powerbanks), 16 models; tests/test_r11_bat.py'
-    parsers: {'nitecore_powerbanks@1': 'sha256:e223d94929868ccab8a0'}
-  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
+    evidence: 'team/reports/2026-11-26-A2-bulb-r12.md; raw/energystar-light-bulbs (465 rows, 1 page); tests/test_a2_bulb_r12.py'
+    parsers: {'energystar_bulbs@1': 'sha256:0b21660a33a6198df503'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-27"}
   match:
-    extractors: [nitecore_powerbanks@1]
+    extractors: [energystar_bulbs@1]
+    source_ids: [energystar-light-bulbs]
+    kinds: [official]
+    tiers: [regulatory]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      energystar-light-bulbs: [cert.energy_star, cert.es_date, ctl.dimmable, ctl.dims_down_to_pct, ctl.three_way, features.es_special,
+        form.base, form.diameter_mm, form.enclosed_rated, form.length_mm, form.shape, gen.lamp_category, gen.technology, life.rated_h,
+        life.warranty_years, light.beam_angle_deg, light.cbcp_cd, light.cct_k, light.cri, light.efficacy_lm_w, light.lumens, light.r9,
+        power.equiv_watts, power.power_factor, power.standby_w, power.watts, smart.color, smart.connected, smart.protocols]
+- id: claim/appliances-siblings-energystar@1
+  since: '2026-11-26'
+  rationale: 'A2-appl2 r12 (brief coord-2026-11-26-r12, lane A2-appl2; A1 rulings team/reports/2026-11-26-a1-r11-appliances.md applied to the
+    ENERGY STAR siblings A1 named). New cross-brand sources energystar-freezers (data.energystar.gov 8t9c-g3tn), energystar-clothes-washers
+    (bghd-e2wd), energystar-clothes-dryers (t9u7-4d2j); adapter crawler/adapters/energystar_siblings.py = the energystar_appliances@1 code
+    (imported unchanged, methods rebound to the energystar_siblings ids; paged SoQL, crawl.Net, robots + Crawl-delay obeyed, raw pages stored).
+    CONCRETE model rows only (pattern rows: claim/appliances-siblings-es-pattern@1). Same value rules as claim/appliances-energystar@2 (US rows
+    only, disagreeing re-filings unresolved, cert.energy_star only true, refrigerant R-number only, GWP only from a GWP token). Per category:
+    freezers kWh / volumes carry test_procedure appendix_b, ES type "Compact" kept as compact (upright/chest split only in the product
+    class), the through-door column (mirrors ice_maker) not mapped; washers capacity is the DOE (Appendix J2) tub volume (capacity.doe_ft3,
+    never IEC), IMEF / IWF / annual kWh / gallons and the federal IMEF / IWF carry appendix_j2; dryers CEF / drum / annual kWh / test-cycle time
+    carry appendix_d2, CEF max-dry is its own unconditioned key, a blank heat_pump_technology is no claim (unknown, never none), voltage only
+    from a bare 120/240 cell, conn.protocols from the mislabelled connected_demand_response_functionality_tested column. Feature lists: "None"
+    = an explicit empty list.'
+  audit:
+    by: A2-appl2 r12
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-A2-appl2-r12.md; raw/energystar-freezers (680 rows), raw/energystar-clothes-washers (421), raw/energystar-clothes-dryers (706); tests/test_a2_appl2_r12.py'
+    parsers: {'energystar_siblings@1': 'sha256:f7e3458108da32fb0699'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-27"}
+  match:
+    extractors: [energystar_siblings@1]
+    source_ids: [energystar-freezers, energystar-clothes-washers, energystar-clothes-dryers]
+    kinds: [official]
+    tiers: [regulatory]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      energystar-freezers: [capacity.adjusted_ft3, capacity.total_ft3, cert.energy_star, cert.es_date, cert.es_most_efficient, config.built_in, config.compact, config.defrost, config.es_product_class, config.es_type, conn.connected, energy.annual_kwh, energy.federal_standard_kwh, energy.pct_below_federal, features.ice_maker, gen.is_pattern, refrigerant.gwp, refrigerant.type]
+      energystar-clothes-washers: [capacity.doe_ft3, cert.energy_star, cert.es_date, cert.es_most_efficient, config.intended_market, config.load, config.special_type, conn.connected, conn.protocols, dims.depth_in, dims.height_in, dims.width_in, energy.annual_kwh, energy.federal_standard_imef, energy.imef, features.washer, gen.is_pattern, water.annual_gal, water.federal_standard_iwf, water.iwf]
+      energystar-clothes-dryers: [capacity.drum_ft3, cert.energy_star, cert.es_date, cert.es_most_efficient, config.es_product_type, config.fuel, config.heat_pump, config.special_type, config.ventless, conn.connected, conn.protocols, dims.depth_in, dims.height_in, dims.width_in, elec.voltage, energy.annual_kwh, energy.cef, energy.cef_max_dry, energy.test_cycle_min, features.dryer, gen.is_pattern, refrigerant.gwp, refrigerant.type]
+- id: claim/appliances-siblings-es-pattern@1
+  since: '2026-11-26'
+  rationale: 'A2-appl2 r12, A1 wildcard ruling applied to freezers / washers / dryers. An ENERGY STAR PATTERN row (*, #, trailing R/L, trailing
+    xxx) is its own entity keyed x_energystar_model_pattern, flagged gen.is_pattern, never merged with or expanded into a SKU. It may assert
+    ONLY the energy-defining facts of the DOE basic model: freezers = the refrigerators list plus config.defrost (fixed by the DOE product
+    class); washers cert.*, energy.imef / federal IMEF / annual kWh, water.iwf / federal IWF / annual gallons, capacity.doe_ft3, config.load,
+    config.special_type; dryers cert.*, energy.cef / annual kWh / test-cycle time / CEF max-dry, capacity.drum_ft3, config.es_product_type,
+    config.fuel, config.ventless, config.heat_pump (venting and heat-pump technology define the DOE class and the CEF), refrigerant.type.
+    NOT accepted for a pattern (emitted, preview only): every dimension, voltage, connectivity, feature lists, ice maker, refrigerant GWP,
+    intended market. UPCs on a pattern row are covered_upc lookup aliases. Same value rules as claim/appliances-siblings-energystar@1.'
+  audit:
+    by: A2-appl2 r12
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-A2-appl2-r12.md; tests/test_a2_appl2_r12.py (allowlists == adapter pattern_keys; no dimension / voltage / connectivity key)'
+    parsers: {'energystar_siblings@1': 'sha256:f7e3458108da32fb0699'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-27"}
+  match:
+    extractors: [energystar_siblings_pattern@1]
+    source_ids: [energystar-freezers, energystar-clothes-washers, energystar-clothes-dryers]
+    kinds: [official]
+    tiers: [regulatory]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      energystar-freezers: [capacity.adjusted_ft3, capacity.total_ft3, cert.energy_star, cert.es_date, cert.es_most_efficient, config.built_in, config.compact, config.defrost, config.es_product_class, config.es_type, energy.annual_kwh, energy.federal_standard_kwh, energy.pct_below_federal, gen.is_pattern, refrigerant.type]
+      energystar-clothes-washers: [capacity.doe_ft3, cert.energy_star, cert.es_date, cert.es_most_efficient, config.load, config.special_type, energy.annual_kwh, energy.federal_standard_imef, energy.imef, gen.is_pattern, water.annual_gal, water.federal_standard_iwf, water.iwf]
+      energystar-clothes-dryers: [capacity.drum_ft3, cert.energy_star, cert.es_date, cert.es_most_efficient, config.es_product_type, config.fuel, config.heat_pump, config.ventless, energy.annual_kwh, energy.cef, energy.cef_max_dry, energy.test_cycle_min, gen.is_pattern, refrigerant.type]
+- id: claim/mfr-power-banks-nitecore@2
+  since: '2026-11-26'
+  supersedes: claim/mfr-power-banks-nitecore@1
+  rationale: 'Same sources, kinds, tiers, statuses, keys and rules as claim/mfr-power-banks-nitecore@1, re-issued for the parser bump nitecore_powerbanks@1 -> @2 (review-11 low): every og:title / <h1> / <title> naming a power-bank line is read; when they name different models the page is an absence (''contradictory page titles''), never the first match.'
+  audit:
+    by: A3-fix r12
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a3-review11-fixes.md; in-memory claim diff @1 vs @2 over all 20 stored snapshots: 185 claims, 0 claims / identifiers / absences change. tests/test_review11.py'
+    parsers: {'nitecore_powerbanks@2': 'sha256:b8b9f80e3e20d8686594'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-27"}
+  match:
+    extractors: [nitecore_powerbanks@2]
     source_ids: [nitecore-us-powerbanks]
     kinds: [official]
     tiers: [manufacturer]
@@ -94,21 +248,18 @@ claim_policies:
     keys:
       nitecore-us-powerbanks: [bat.chemistry, cap.cell_mah, cap.cell_voltage, cap.energy_wh, in.max_w, in.pdos, out.max_single_port_w, out.max_total_w, out.ports,
         out.wireless_w, pd.max_fixed_voltage, phys.dimensions, phys.weight]
-- id: claim/mfr-power-stations-pecron@1
+- id: claim/mfr-power-stations-pecron@2
   since: '2026-11-26'
-  rationale: 'A2-bat r11 (brief coord-2026-11-26-r11-datasets). New maker source pecron-us-stations (crawler/adapters/pecron_stations.py): PECRON''s own US Shopify
-    store www.pecron.com (robots Shopify default; terms of service have no automated-access clause). Official <th>/<td> spec-table rows only, mapped by the shared
-    _powerstation.emit_rows (same station rules as claim/mfr-power-stations-structured@10, incl. the UPS prose ruling r5 via parse_station). In the table headed
-    ''Model | <own model>'' the unsectioned Rated Power / Peak Power / Output Volts rows are read as AC Output rows (the title names the same figure as the AC
-    inverter rating). Approximate rows (''Around 28.7kg'') are dropped. Identity = the one E/F...LFP token in the title, equal to the unit-only variant SKU stem.'
+  supersedes: claim/mfr-power-stations-pecron@1
+  rationale: 'Same sources, kinds, tiers, statuses, keys and rules as claim/mfr-power-stations-pecron@1, re-issued for the parser bump pecron_stations@1 -> @2 (review-11 P1-3): a spec table with any Model row -- th/th, th/td or td/td -- naming another PECRON model (or not the page''s own) is skipped whole before any claim; approximate values are never exact with or without whitespace (''~28.7kg'', ''approx.28.7kg'', ''about 28.7 kg'', trailing ''+'' / ''about'', ''(approx.)''; a range separator ''100V~120V'' is not one).'
   audit:
-    by: A2-bat r11
+    by: A3-fix r12
     at: '2026-11-26'
-    evidence: 'team/reports/2026-11-26-A2-bat-r11.md; 9 stored pages (raw/pecron-us-stations), 7 models with spec rows; tests/test_r11_bat.py'
-    parsers: {'pecron_stations@1': 'sha256:4842a2072acd97c23612'}
-  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
+    evidence: 'team/reports/2026-11-26-a3-review11-fixes.md; live impact: none of the 9 stored PECRON pages has a table naming another model, so no published PECRON value came from a wrong-model table; in-memory claim diff @1 vs @2 over all 9 stored snapshots: 69 claims, 0 claims / identifiers / absences change. tests/test_review11.py'
+    parsers: {'pecron_stations@2': 'sha256:8e5b8b87879748b5a6f3'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-27"}
   match:
-    extractors: [pecron_stations@1]
+    extractors: [pecron_stations@2]
     source_ids: [pecron-us-stations]
     kinds: [official]
     tiers: [manufacturer]
@@ -931,28 +1082,18 @@ claim_policies:
       hyper-us-chargers: [gen.color, out.max_single_port_w, out.ports, out.rated_w, pd.pps]
       nativeunion-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.ports, pd.max_fixed_voltage, phys.weight]
       choetech-us-chargers: [gen.color, in.rating, in.type, in.voltage_range, out.max_single_port_w, out.max_total_w, out.ports, pd.max_fixed_voltage, phys.dimensions, phys.weight]
-- id: claim/mfr-chargers-kuxiu@1
+- id: claim/mfr-chargers-kuxiu@2
   since: '2026-11-26'
-  rationale: 'r11 (A2-chg, brief coord-2026-11-26-r11-datasets): new source kuxiu-us-chargers (kuxiu.com, crawl agent in source-policy 2026-11-26.9,
-    provisional r11, licensing review later), adapter crawler/adapters/kuxiu_chargers.py (own module so the shopify_chargers@3 pins of
-    claim/mfr-chargers-structured@4 do not move; discover/fetch are the shared Shopify ones). Same rules as claim/mfr-chargers-structured@4:
-    review-3 charger semantics in the shared _charger.read_rows, official maker page, manufacturer tier, known, normalised. Identity = the
-    page''s printed Model row (RY-C40C-C, DP-A127G45, GS-45W0993, OL-H02-PD45); listings whose every variant SKU names a non-US plug and
-    plug-adapter sets mint nothing. KUXIU-specific preprocessing: bullet dashes dropped from values; ''AVS:'' lines (USB PD Adjustable Voltage
-    Supply) dropped so an AVS range is never read as PPS. pd.pps only when the protocol row names PPS (affirmative). Not allowlisted: in.rating
-    (the shared PDO normaliser rewrites the AC ''V~10A'' input literal with the DC symbol), out.ports (two spec blocks on one page name the
-    same ports differently, so the port list duplicates), gen.form_factor/gen.gan/gen.product_line/pd.protocols/id.msrp_us (never accepted
-    for chargers).'
+  supersedes: claim/mfr-chargers-kuxiu@1
+  rationale: 'Same sources, kinds, tiers, statuses, keys and rules as claim/mfr-chargers-kuxiu@1, re-issued for the parser bump kuxiu_chargers@1 -> @2 (review-11 low): the AVS exclusion is text-level, not layout-dependent: an AVS label cell (th/td/dt/li/div/span) with its figure cell, and any inline ''AVS[:] <figure>'' run up to the next tag / line / '';'' / ''|'' / PPS mention, wherever it sits; the bare protocol name (''PD 3.2 / SPR AVS'') stays a protocol literal.'
   audit:
-    by: A2-chg r11
+    by: A3-fix r12
     at: '2026-11-26'
-    evidence: 'team/reports/2026-11-26-a2-chg-r11.md; 12 pages fetched (own UA, 1 req/s), 6 parse to 4 models, 6 absences (no Model row);
-      tests/test_a2_chg_r11.py (keep, Model row, stored-snapshot AVS is not PPS)'
-    parsers:
-      kuxiu_chargers@1: 'sha256:02bdc11e4bb73efbcc08'
-  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
+    evidence: 'team/reports/2026-11-26-a3-review11-fixes.md; in-memory claim diff @1 vs @2 over all 12 stored snapshots: 76 claims, 0 claims / identifiers / absences change. tests/test_review11.py'
+    parsers: {'kuxiu_chargers@2': 'sha256:e7ce71cde2d75267c33d'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-27"}
   match:
-    extractors: [kuxiu_chargers@1]
+    extractors: [kuxiu_chargers@2]
     source_ids: [kuxiu-us-chargers]
     kinds: [official]
     tiers: [manufacturer]
@@ -1415,6 +1556,30 @@ claim_policies:
     keys:
       aoc-us-monitors: [ergo.vesa, flk.pwm, gen.size_class, gen.viewable_diag, panel.technology, pwr.max, res.height_px, res.native, res.refresh_max, res.refresh_native,
         res.width_px, usb.kvm, usb.usbc_alt_dp, usb.usbc_inputs, usb.usbc_pd_w, vin.dp_count, vin.hdmi_count, vin.hdmi_version]
+- id: claim/usbif-certified-products@1
+  since: '2026-11-26'
+  rationale: 'A2-usbif r12 (brief coord-2026-11-26-r12). USB-IF Certified Product List overlay: transform usbif-attach@1 (scripts/usbif.py) over
+    the stored snapshot of www.usb.org/vtm-products/v1/all (crawler/adapters/usbif_products.py, one GET through crawl.Net; source-policy
+    2026-11-26.11: robots allows, no site terms published, free only, no licence grant). Attaches to EXISTING chargers / power-banks / laptops
+    entities only, never mints. Identity: the listing company is the brand (explicit COMPANIES map; OEM/ODM listings are usbif_proposal
+    oem_listing, never bound) AND a part-number token EQUALS one of the entity''s own mfr_model / mfr_sku / mtm identifiers (identity.norm_value,
+    no prefix/stem/suffix match); the row''s product type must be the category''s (Power Brick / Power Bank / Systems > Notebooks), else
+    usbif_proposal type_mismatch; status Obsolete or no TID attaches nothing. cert.usb_if only true (absent = unknown, never false); tid, date and
+    product type only when exactly one TID binds.'
+  audit:
+    by: A2-usbif r12
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-A2-usbif-r12.md; raw/usbif-certified-products (16,472 rows, one snapshot); tests/test_a2_usbif_r12.py'
+    parsers: {usbif-attach@1: 'sha256:92428680f56c67cbd0ef'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-27"}
+  match:
+    extractors: [usbif_products@1]
+    source_ids: [usbif-certified-products]
+    kinds: [official]
+    tiers: [certifier]
+    statuses: [known]
+    require_normalized: true
+    keys: [cert.usb_if, cert.usb_if_tid, cert.usb_if_date, cert.usb_if_product_type]
 relation_policies:
 - id: rel/appliances-es-pattern-coverage@2
   since: '2026-11-26'
@@ -1608,6 +1773,36 @@ relation_policies:
     types: [configuration_of]
     parsers: [crawlpy-strips@1]
 retired_policies:
+- id: claim/smart-home-zigbee2mqtt@1
+  since: '2026-11-26'
+  rationale: 'A2-home r12 (brief coord-2026-11-26-r12, lane A2-home). New category smart-home; new cross-brand source zigbee2mqtt-devices
+    (crawler/adapters/zigbee2mqtt_devices.py): the Zigbee2MQTT device database, Koenkk/zigbee-herdsman-converters src/devices/*.ts on
+    raw.githubusercontent.com (MIT; source-policy kind measurement, crawl agent, free yes / paid no / no licence grant). Definitions are cut
+    from the stored TypeScript by a brace scanner, never evaluated. Claims are kind REPORTED, source tier other (a community integration
+    database, not the maker). Identity: mfr_model = Z2M model as written, issuer = vendor slug; slash lists stay one row; Tuya TS0xxx module
+    ids, digit-less names and > 60-char strings mint nothing. Values: conn.protocols [zigbee] and compat.zigbee2mqtt true for every row;
+    capability booleans true from the exposes / extend helpers named in the definition; FALSE only when every top-level exposes / extend
+    item is an e.* / m.* call (a complete static enumeration: no vendor helper, variable, spread, arrow function) and only when every
+    definition of the model agrees; gen.device_type by the adapter''s DEVICE_TYPE rule table; power.source only battery (never mains).
+    gen.description (community text) is in the allowlist as a text column only.'
+  audit:
+    by: A2-home r12
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-A2-home-r12.md; raw/zigbee2mqtt-devices (index.ts + every vendor file); tests/test_a2_home_r12.py'
+    parsers: {'zigbee2mqtt_devices@1': 'sha256:3c5a297ad73408427974'}
+  approval: {state: pending}
+  match:
+    extractors: [zigbee2mqtt_devices@1]
+    source_ids: [zigbee2mqtt-devices]
+    kinds: [reported]
+    tiers: [other]
+    statuses: [known]
+    require_normalized: true
+    keys:
+      zigbee2mqtt-devices: [compat.zigbee2mqtt, conn.protocols, ctl.action, ctl.color, ctl.color_temp, ctl.cover, ctl.light, ctl.lock, ctl.on_off,
+        ctl.thermostat, gen.description, gen.device_type, power.battery, power.metering, power.source, sensor.contact, sensor.humidity,
+        sensor.illuminance, sensor.occupancy, sensor.smoke, sensor.temperature, sensor.vibration, sensor.water_leak]
+  retired: {at: '2026-11-26', superseded_by: claim/smart-home-zigbee2mqtt@2, reason: 'r12 A2-home draft locked by its own first import before the claim stage fix; never approved, never in a release; content frozen as locked'}
 - id: claim/appliances-energystar@1
   since: '2026-11-26'
   rationale: 'A2-appl r11 (brief coord-2026-11-26-r11-appliances-a2; A1 rulings team/reports/2026-11-26-a1-r11-appliances.md). New cross-brand
@@ -8785,3 +8980,79 @@ retired_policies:
     types: [configuration_of]
     parsers: [crawlpy-strips@1]
   retired: {at: '2026-11-26', superseded_by: rel/source-stated-hierarchy@18, reason: 'surface@3 fingerprint re-pin (transport-only edit, parser output byte-identical; A3-rob r11)'}
+- id: claim/mfr-power-stations-pecron@1
+  since: '2026-11-26'
+  rationale: 'A2-bat r11 (brief coord-2026-11-26-r11-datasets). New maker source pecron-us-stations (crawler/adapters/pecron_stations.py): PECRON''s own US Shopify
+    store www.pecron.com (robots Shopify default; terms of service have no automated-access clause). Official <th>/<td> spec-table rows only, mapped by the shared
+    _powerstation.emit_rows (same station rules as claim/mfr-power-stations-structured@10, incl. the UPS prose ruling r5 via parse_station). In the table headed
+    ''Model | <own model>'' the unsectioned Rated Power / Peak Power / Output Volts rows are read as AC Output rows (the title names the same figure as the AC
+    inverter rating). Approximate rows (''Around 28.7kg'') are dropped. Identity = the one E/F...LFP token in the title, equal to the unit-only variant SKU stem.'
+  audit:
+    by: A2-bat r11
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-A2-bat-r11.md; 9 stored pages (raw/pecron-us-stations), 7 models with spec rows; tests/test_r11_bat.py'
+    parsers: {'pecron_stations@1': 'sha256:4842a2072acd97c23612'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
+  match:
+    extractors: [pecron_stations@1]
+    source_ids: [pecron-us-stations]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys:
+      pecron-us-stations: [bat.chemistry, cap.energy_wh, in.ac_w, in.car_w, in.solar_voltage, in.solar_w, out.ac_continuous_w, out.ac_surge_w, out.ac_voltage,
+        out.ac_waveform, out.ports, phys.dimensions, phys.weight, ups.switchover_ms]
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-power-stations-pecron@2, reason: 'review-11 parser fix pecron_stations@1 -> pecron_stations@2 (A3-fix r12); stored-snapshot claims byte-identical'}
+- id: claim/mfr-power-banks-nitecore@1
+  since: '2026-11-26'
+  rationale: 'A2-bat r11 (brief coord-2026-11-26-r11-datasets). New maker source nitecore-us-powerbanks (crawler/adapters/nitecore_powerbanks.py): NITECORE''s own
+    product pages on www.nitecore.com (robots allows *, ClaudeBot; no terms page published). Official labelled rows of the Specifications table only (spec-key /
+    spec-value), mapped by the shared shopify_powerbanks2.parse2 row mapper (same rules as the SHARGE / KUXIU / EcoFlow rows of claim/mfr-power-banks-structured):
+    Capacity cell (mAh + cell V + Wh), Output per-port PDO list (one port per printed line), Total Output (all-ports W as labelled), Input, Weight, Dimensions;
+    plus Cell -> bat.chemistry. Model = the page''s printed product name, which must equal the page''s own slug (NB20000 Gen3 / nb20000Gen3); kits and pages
+    without an Output row (battery packs) mint nothing. ''Rated Energy 6,400mAh 5V (TYP 1A)'' stays unresolved (preview), not in the allowlist.'
+  audit:
+    by: A2-bat r11
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-A2-bat-r11.md; 20 stored pages (raw/nitecore-us-powerbanks), 16 models; tests/test_r11_bat.py'
+    parsers: {'nitecore_powerbanks@1': 'sha256:e223d94929868ccab8a0'}
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
+  match:
+    extractors: [nitecore_powerbanks@1]
+    source_ids: [nitecore-us-powerbanks]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    keys:
+      nitecore-us-powerbanks: [bat.chemistry, cap.cell_mah, cap.cell_voltage, cap.energy_wh, in.max_w, in.pdos, out.max_single_port_w, out.max_total_w, out.ports,
+        out.wireless_w, pd.max_fixed_voltage, phys.dimensions, phys.weight]
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-power-banks-nitecore@2, reason: 'review-11 parser fix nitecore_powerbanks@1 -> nitecore_powerbanks@2 (A3-fix r12); stored-snapshot claims byte-identical'}
+- id: claim/mfr-chargers-kuxiu@1
+  since: '2026-11-26'
+  rationale: 'r11 (A2-chg, brief coord-2026-11-26-r11-datasets): new source kuxiu-us-chargers (kuxiu.com, crawl agent in source-policy 2026-11-26.9,
+    provisional r11, licensing review later), adapter crawler/adapters/kuxiu_chargers.py (own module so the shopify_chargers@3 pins of
+    claim/mfr-chargers-structured@4 do not move; discover/fetch are the shared Shopify ones). Same rules as claim/mfr-chargers-structured@4:
+    review-3 charger semantics in the shared _charger.read_rows, official maker page, manufacturer tier, known, normalised. Identity = the
+    page''s printed Model row (RY-C40C-C, DP-A127G45, GS-45W0993, OL-H02-PD45); listings whose every variant SKU names a non-US plug and
+    plug-adapter sets mint nothing. KUXIU-specific preprocessing: bullet dashes dropped from values; ''AVS:'' lines (USB PD Adjustable Voltage
+    Supply) dropped so an AVS range is never read as PPS. pd.pps only when the protocol row names PPS (affirmative). Not allowlisted: in.rating
+    (the shared PDO normaliser rewrites the AC ''V~10A'' input literal with the DC symbol), out.ports (two spec blocks on one page name the
+    same ports differently, so the port list duplicates), gen.form_factor/gen.gan/gen.product_line/pd.protocols/id.msrp_us (never accepted
+    for chargers).'
+  audit:
+    by: A2-chg r11
+    at: '2026-11-26'
+    evidence: 'team/reports/2026-11-26-a2-chg-r11.md; 12 pages fetched (own UA, 1 req/s), 6 parse to 4 models, 6 absences (no Model row);
+      tests/test_a2_chg_r11.py (keep, Model row, stored-snapshot AVS is not PPS)'
+    parsers:
+      kuxiu_chargers@1: 'sha256:02bdc11e4bb73efbcc08'
+  approval: {state: approved, by: coordinator-delegated, at: "2026-11-26"}
+  match:
+    extractors: [kuxiu_chargers@1]
+    source_ids: [kuxiu-us-chargers]
+    kinds: [official]
+    tiers: [manufacturer]
+    statuses: [known]
+    require_normalized: true
+    keys: [gen.color, in.type, in.voltage_range, out.max_single_port_w, out.max_total_w, pd.max_fixed_voltage, pd.pps, phys.dimensions, phys.weight]
+  retired: {at: '2026-11-26', superseded_by: claim/mfr-chargers-kuxiu@2, reason: 'review-11 parser fix kuxiu_chargers@1 -> kuxiu_chargers@2 (A3-fix r12); stored-snapshot claims byte-identical'}

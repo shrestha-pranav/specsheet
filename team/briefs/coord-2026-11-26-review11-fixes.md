@@ -1,0 +1,9 @@
+# Brief: review-11 fixes. Owner: A3-fix. Read common.md and reviews/2026-11-26-astra-review-11.md first. All exit criteria in the review are mandatory, with tests.
+1. robots.py: normalize percent-encoding (RFC 9309 2.2.2: compare normalized octets; UTF-8 encode non-ASCII patterns and paths) before matching and length ranking; fixtures `/%61` vs `/a`, `/café` vs `/caf%C3%A9`, Allow ties. corrections.py robots path: use crawl.Net (or the same checker) with its real UA for matching, policy check on every redirect, Crawl-delay pacing.
+2. Delisting resurrection: a re-listed ref must be re-fetched; only a fresh successful fetch with identity check clears delisted/stale; failed refetch keeps delisted. v1_publish lifecycle: delisted entities are not `state: current` (pick an honest state, e.g. listing delisted + last_verified date); publish observation dates. End-to-end test discover -> delist -> rediscover -> failed fetch.
+3. pecron_stations.py: reject any model row (th/td variants) naming another model; approximations with or without whitespace (`~28.7kg`, `approx.`, trailing `+`/`about`) never exact. FIRST count live impact: any published PECRON value from a wrong-model table? Report.
+4. coverage_guard.py: unreadable/invalid baseline ref FAILS unless explicit --bootstrap.
+5. Low: nitecore title contradiction detection; kuxiu AVS exclusion not layout-dependent (text-level).
+6. Out-of-crawler network calls (gh CLI, backup curl) are not crawling: document the exemption list in crawler/robots.py header; no change.
+Changed parsers -> reissue pending @N+1, retire verbatim, re-pin. Parallel r12 lanes (A2-appl2, A2-safe, A2-usbif, A2-home) share the tree: don't touch their adapters; flock builds; no release.sh; no git stash/checkout/reset; approval fields empty.
+Report team/reports/2026-11-26-a3-review11-fixes.md (<=30 lines).

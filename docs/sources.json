@@ -1,7 +1,7 @@
 {
  "generated_from": "data/source-policy.yaml",
- "policy_version": "2026-11-26.10",
- "policy_sha256": "ca759fa7e0958b005d4d21ca4ca1fe95acd473aa0ee77b834111711056c9956e",
+ "policy_version": "2026-11-26.14",
+ "policy_sha256": "8987cdf3abfa7095f6e9b2320a3716135abd6efd188b577d4a2a1a73841101ea",
  "license_scope": "compilation + values whose sources[] include licence_grant:true; other values are facts with links, not licensed by us",
  "granted": [
   {
@@ -49,11 +49,40 @@
    "to_clear": "Written VESA permission for the certified-products list"
   },
   {
+   "domain": "raw.githubusercontent.com",
+   "match": "path_prefix",
+   "kind": "measurement",
+   "credit": "Zigbee2MQTT device definitions (Koenkk/zigbee-herdsman-converters, MIT)",
+   "path": "/Koenkk/zigbee-herdsman-converters/",
+   "to_clear": "LICENSING (provisional r12): MIT permits redistribution with the notice; decide licence_grant/paid in the licensing pass"
+  },
+  {
    "domain": "on.dcl.csa-iot.org",
    "match": "exact",
    "kind": "certification",
    "credit": "Connectivity Standards Alliance Distributed Compliance Ledger",
    "to_clear": "Ask CSA whether ledger data is open data"
+  },
+  {
+   "domain": "www.saferproducts.gov",
+   "match": "exact",
+   "kind": "government",
+   "credit": "U.S. Consumer Product Safety Commission (CPSC) Recalls API, saferproducts.gov",
+   "to_clear": "LICENSING (provisional r12): copyright paragraph reads as a grant for text; coordinator decides paid / licence_grant"
+  },
+  {
+   "domain": "www.cpsc.gov",
+   "match": "exact",
+   "kind": "government",
+   "credit": "U.S. Consumer Product Safety Commission (CPSC) recall notices",
+   "to_clear": "LICENSING (provisional r12): as www.saferproducts.gov"
+  },
+  {
+   "domain": "www.usb.org",
+   "match": "exact",
+   "kind": "certification",
+   "credit": "USB-IF Certified Product List (www.usb.org/products)",
+   "to_clear": "No reuse terms published: ask USB-IF (admin@usb.org) before paid / licence grant"
   },
   {
    "domain": "psref.lenovo.com",
@@ -1191,6 +1220,184 @@
     "chargers"
    ],
    "to_clear": "Robots and terms unreadable by an agent. A person may cite CCMS external-power-supply listings."
+  },
+  {
+   "domain": "cacertappliances.energy.ca.gov",
+   "match": "exact",
+   "kind": "government",
+   "credit": "California Energy Commission, Modernized Appliance Efficiency Database System (MAEDBS)",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "Whether manufacturer-filed certification rows count as third-party materials under the Conditions of Use (commercial-use bar); CEC Media Office mediaoffice@energy.ca.gov."
+  },
+  {
+   "domain": "www.energy.ca.gov",
+   "match": "exact",
+   "kind": "government",
+   "credit": "California Energy Commission",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "As cacertappliances.energy.ca.gov."
+  },
+  {
+   "domain": "www.philips-hue.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Philips Hue (Signify) official product pages",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "Signify permission for reuse of product data (licensing review later)."
+  },
+  {
+   "domain": "www.wizconnected.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "WiZ (Signify) official product pages",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "Signify permission for reuse of product data (licensing review later)."
+  },
+  {
+   "domain": "www.creelighting.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Cree Lighting official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "Cree Lighting written permission."
+  },
+  {
+   "domain": "www.gelighting.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "GE Lighting, a Savant company (Cync) official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "GE Lighting / Savant permission."
+  },
+  {
+   "domain": "cync.com",
+   "match": "subdomains",
+   "kind": "maker",
+   "credit": "Cync (GE Lighting) pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ]
+  },
+  {
+   "domain": "www.ledvance.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "LEDVANCE / SYLVANIA official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "The site opts Claude agents out in robots.txt. A person may cite."
+  },
+  {
+   "domain": "www.ledvanceus.com",
+   "match": "subdomains",
+   "kind": "maker",
+   "credit": "LEDVANCE US (redirects to www.ledvance.com)",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ]
+  },
+  {
+   "domain": "designlights.org",
+   "match": "subdomains",
+   "kind": "certification",
+   "credit": "DesignLights Consortium Qualified Products List",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "DLC data licence. Commercial luminaires / retrofit kits, not consumer bulbs."
+  },
+  {
+   "domain": "us.govee.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Govee official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "Govee permission."
+  },
+  {
+   "domain": "nanoleaf.me",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Nanoleaf official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "Nanoleaf permission."
+  },
+  {
+   "domain": "www.feit.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Feit Electric official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "Feit Electric written permission."
+  },
+  {
+   "domain": "www.lifx.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "LIFX (Feit Electric) official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "Terms unreadable by an agent; Feit/LIFX permission."
+  },
+  {
+   "domain": "us.sengled.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Sengled official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ]
+  },
+  {
+   "domain": "www.sengled.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Sengled",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ]
+  },
+  {
+   "domain": "www.kasasmart.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "TP-Link Kasa official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ]
   }
  ]
 }

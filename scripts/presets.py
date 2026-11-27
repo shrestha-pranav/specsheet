@@ -132,8 +132,12 @@ def measure(preset, category, schema, rows, default_min, default_min_brands=2, d
     wanted = set(sources) if sources is not None else None
     def has_tier(r):
         return wanted is None or bool(wanted & set(r.get("t") or []))
-    no_tier = [r for r in rows if not has_tier(r)]
-    rest = [r for r in rows if has_tier(r)]
+    # Coordinator ruling r12 (A2-safe): recall-only records (gen.record_kind recall_only: identity + CPSC recall facts, no maker or certifier
+    # record) are never in a preset's population, whatever its source scope.
+    recall_only = [r for r in rows if (r.get("v") or {}).get("gen.record_kind") == "recall_only"]
+    rows_in = [r for r in rows if (r.get("v") or {}).get("gen.record_kind") != "recall_only"]
+    no_tier = [r for r in rows_in if not has_tier(r)]
+    rest = [r for r in rows_in if has_tier(r)]
     discont = [r for r in rest if not incl_disc and r.get("lifecycle") == "discontinued"]
     pool = [r for r in rest if incl_disc or r.get("lifecycle") != "discontinued"]
     by_filters = {k: [t for t in active if t[0]["key"] == k] for k in by}
@@ -171,7 +175,7 @@ def measure(preset, category, schema, rows, default_min, default_min_brands=2, d
             if ks and ks <= set(NON_MAKER):
                 non_maker.append({"brand": b, "key": key, "kinds": sorted(ks)})
                 break
-    brands_all = Counter(brand_of(r) for r in rows)
+    brands_all = Counter(brand_of(r) for r in rows_in)
     in_scope_brands = {brand_of(r) for r in pool}
     tier_brands = {brand_of(r) for r in rest}
     not_covered = [{"brand": b, "rows": n, "reason": "no maker source" if b not in tier_brands else "discontinued only" if b not in in_scope_brands else "no value"}
@@ -179,7 +183,7 @@ def measure(preset, category, schema, rows, default_min, default_min_brands=2, d
     passes = fill >= min_fill and (not gate_keys or len(covered) >= min_brands)
     gate = {"passes": passes, "min_fill": min_fill, "min_brands": min_brands, "fill": fill, "keys": per_key,
             "scope": {"basis": basis, "sources": sources, "include_discontinued": incl_disc, "in_scope": len(pool), "category_total": category_total, "covered_brands": covered,
-                      "excluded": {"source_tier": len(no_tier), "discontinued": len(discont), "by": by_count}, "not_covered": not_covered[:8]},
+                      "excluded": {"source_tier": len(no_tier), "discontinued": len(discont), "by": by_count, "recall_only": len(recall_only)}, "not_covered": not_covered[:8]},
             "non_maker_brands": non_maker}
     if weakest:
         pop = pops[weakest["key"]]

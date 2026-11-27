@@ -32,9 +32,10 @@ class Carry(unittest.TestCase):
         doc = {"refs": [ref("a")], "complete": True}
         _run.carry_delisted(prev, doc, today="2026-12-01")
         self.assertEqual({r["key"]: r["hints"].get("delisted_at") for r in doc["refs"]}["b"], "2026-11-01")
-        doc2 = {"refs": [ref("a"), ref("b")], "complete": True}                 # listed again: fresh ref, unmarked
+        doc2 = {"refs": [ref("a"), ref("b")], "complete": True}                 # listed again: NOT resurrected by discovery (review-11)
         _run.carry_delisted(doc, doc2, today="2026-12-02")
-        self.assertEqual([r["hints"] for r in doc2["refs"] if r["key"] == "b"], [{}])
+        self.assertEqual([r["hints"] for r in doc2["refs"] if r["key"] == "b"],
+                         [{"listing": "delisted", "delisted_at": "2026-11-01", "relisted_at": "2026-12-02"}])
 
     def test_incomplete_discovery_carries_unmarked(self):
         doc = {"refs": [], "complete": False}

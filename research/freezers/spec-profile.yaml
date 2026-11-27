@@ -1,0 +1,375 @@
+# A2-appl2 r12 (2026-11-26), following A1's refrigerators profile (research/refrigerators/spec-profile.yaml: category-per-type ruling,
+# wildcard / join rules, transfer list). Freezers = the sibling A1 named there (`freezers`, data.energystar.gov 8t9c-g3tn).
+# Live check 2026-11-26: 680 rows (509 Upright, 162 Compact, 9 Chest), 56 Canada-only; 153 of 618 US models are pattern rows.
+# Dataset metadata (8t9c-g3tn model_number column) DOCUMENTS the wildcard: "an asterisk (*) represents a letter, and a number symbol (#) a
+# digit" (but the same sentence opens "can be replaced by any letter or digit"). A1's appliance matcher uses * = [A-Z0-9]: open for A1.
+profile_format: specsheet.category-profile/1
+category: freezers
+version: 0.1
+label: Freezers
+market: US
+status: draft
+scope: 'Residential stand-alone freezers sold in the US (upright, chest, compact; freestanding and built-in), DOE 10 CFR 430 covered
+  products tested under Subpart B Appendix B. Refrigerator-freezers are `refrigerators`; commercial freezers (wati-2tfp) and lab grade excluded.'
+identity:
+  levels:
+  - level: family
+    label: Line
+    meaning: 'Marketing line (Frigidaire Gallery, Thermador Freedom). Browse only; never passes values down.'
+    key_schemes: [mfr_family]
+    inherits: false
+  - level: model
+    label: Model number / certified pattern
+    meaning: 'A concrete maker model (Frigidaire FFFU20F2VW) or an ENERGY STAR pattern row (one DOE basic model), exactly as refrigerators.'
+    key_schemes: [mfr_model, x_energystar_model_pattern]
+    inherits: true
+  - level: package
+    label: Trade item / UPC
+    meaning: 'UPC per finish/hinge unit; covered-UPC lookup alias on a pattern row, never a merge key.'
+    key_schemes: [gtin]
+    inherits: true
+  primary_key: 'Maker model number of one sellable unit as filed with ENERGY STAR / DOE (finish and hinge tail included). ES pattern strings
+    are a separate key scheme. Retail titles and line names are aliases.'
+  per_brand:
+    frigidaire: 'FFFU20F2VW: tail letters = finish; Frigidaire / Gallery / Professional are separate ES brand_name values (folded via brand_aliases).'
+    thermador: 'T24UF915SS style; built-in column freezers pair with a column fridge (separate model).'
+    miele: 'F 2671 Vi style with spaces; normalised upper_strip_spaces.'
+    midea: 'MRU20M5AWW style; also files for retailer house brands (Insignia, Vissani) under their own brand_name.'
+  schemes:
+  - {scheme: mfr_family, level: family}
+  - {scheme: mfr_model, level: model, normalize: upper_strip_spaces}
+  - {scheme: x_energystar_model_pattern, level: model, pattern: '[*#/]', normalize: upper_strip_spaces}
+  - {scheme: x_energystar_pd_id, level: model}
+  - {scheme: gtin, issuer: GS1, level: package, alias_only: true}
+  variant_axes: []
+  model_defining: [config.es_product_class, capacity.total_ft3, capacity.adjusted_ft3]
+  note: 'Join rules as refrigerators identity.note (exact normalised brand + model, additional_model_information tokens, coverage edges
+    only, re-filings latest-date with disagreement = unknown, Canada-only rows dropped).'
+units:
+  system: us_customary
+  custom:
+  - {unit: ft3, base: m3, factor: 0.028316846592}
+  - {unit: kWh/yr, base: kWh/yr, factor: 1}
+conditions:
+- id: test_procedure
+  label: DOE test procedure
+  type: enum
+  enum: [appendix_b, appendix_b1, maker_unstated]
+  description: 'Basis of a volume or kWh figure. Current US freezer figures are 10 CFR 430 Subpart B Appendix B (adjusted volume = 1.73 x
+    freezer volume); pre-2014 filings used Appendix B1 with a different factor, so they do not compare. ES 8t9c-g3tn rows are current-procedure
+    by construction (Version 5.0 specification, effective 2014-09-15).'
+groups:
+- {id: general, label: General & identity, order: 0}
+- {id: config, label: Configuration, order: 1}
+- {id: capacity, label: Capacity, order: 2}
+- {id: energy, label: Energy & certification, order: 3}
+- {id: refrigerant, label: Refrigerant, order: 4}
+- {id: features, label: Features, order: 5}
+- {id: conn, label: Connectivity, order: 6}
+- {id: dims, label: Size & fit, order: 7}
+specs:
+- key: gen.brand
+  label: Brand
+  group: general
+  type: enum
+  enum: [frigidaire, midea, hisense, insignia, ge, whirlpool, thermador, miele, gaggenau, summit, danby, liebherr, sub_zero]
+  enum_open: true
+  unit: null
+  tier: core
+  level: family
+  facet: {kind: enum, column: true}
+  why: Filter; ES brand_name is the filing brand.
+  traps: ['Retail house brands (Insignia, Vissani, Conserv) are filed under their own brand_name by a contract maker; do not fold into the maker.']
+  sources: [ENERGY STAR brand_name, maker page]
+  example: frigidaire
+- key: gen.is_pattern
+  label: Certified pattern (covers several SKUs)
+  group: general
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: This row is one certified basic model covering finishes/hinges; the buyer must match their SKU to it.
+  traps: ['Derived from the key string only (contains * # or a trailing R/L); never from absence of a finish code.']
+  sources: [ENERGY STAR model_number]
+  example: false
+- key: config.es_type
+  label: Type (ENERGY STAR)
+  group: config
+  type: enum
+  enum: [upright, chest, compact]
+  unit: null
+  tier: core
+  facet: {kind: enum, column: true}
+  why: Upright vs chest is the first freezer decision (floor space, organisation, energy).
+  traps:
+  - 'ES files every compact (< 7.75 ft3, <= 36 in tall) as type "Compact" with no upright/chest split: that split is in the DOE product class (16/17 compact upright, 18 compact chest). Never guess it from the model string.'
+  sources: [ENERGY STAR type, product_class]
+  example: upright
+- key: config.es_product_class
+  label: DOE product class
+  group: config
+  type: text
+  unit: null
+  tier: detail
+  facet: false
+  why: Sets the federal kWh limit; encodes upright/chest, defrost, ice maker, compact and built-in.
+  traps: ['Store the full ES string, never the bare code (class numbers are shared with refrigerator classes in other datasets).']
+  sources: [ENERGY STAR product_class]
+  example: '9 - Upright freezers with automatic defrost without an automatic ice maker'
+- key: config.defrost
+  label: Defrost
+  group: config
+  type: enum
+  enum: [automatic, partial_automatic, manual]
+  unit: null
+  tier: important
+  facet: {kind: enum}
+  why: Manual-defrost freezers use about half the energy of auto-defrost ones but need periodic defrosting.
+  traps: ['Frost-free marketing = automatic; "frost-free" claims on chest freezers are rare: trust the ES column.']
+  sources: [ENERGY STAR defrost_type]
+  example: automatic
+- key: config.compact
+  label: Compact
+  group: config
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: DOE compact = total volume < 7.75 ft3 and <= 36 in tall.
+  sources: [ENERGY STAR compact]
+  example: false
+- key: config.built_in
+  label: Built-in
+  group: config
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: Built-in (column) freezers need a cabinet cutout and a different federal class (-BI).
+  sources: [ENERGY STAR built_in]
+  example: false
+- key: capacity.total_ft3
+  label: Total capacity (DOE)
+  group: capacity
+  type: number
+  unit: ft3
+  tier: core
+  conditions: [test_procedure]
+  basis_conditions: [test_procedure]
+  facet: {kind: range, column: true}
+  why: The storage volume buyers compare.
+  traps: ['Model-number digits and "20 cu ft class" titles are size classes, not measurements; never parse capacity from a model string or title.']
+  sources: [ENERGY STAR capacity_total_volume_ft3, maker spec]
+  example: 13.8
+- key: capacity.adjusted_ft3
+  label: Adjusted volume (DOE)
+  group: capacity
+  type: number
+  unit: ft3
+  tier: detail
+  conditions: [test_procedure]
+  basis_conditions: [test_procedure]
+  facet: {kind: range}
+  why: The volume the federal kWh limit is computed from (kWh per adjusted ft3 comparisons).
+  traps: ['Freezer adjusted volume = 1.73 x freezer volume (ALPHA RDVC138WE: 13.8 total, 24.4 adjusted): never shown as capacity, never a capacity filter.']
+  sources: [ENERGY STAR adjusted_volume_ft3]
+  example: 24.4
+- key: energy.annual_kwh
+  label: Energy use
+  group: energy
+  type: number
+  unit: kWh/yr
+  tier: core
+  conditions: [test_procedure]
+  basis_conditions: [test_procedure]
+  facet: {kind: range, column: true}
+  why: Running cost; the EnergyGuide figure.
+  traps: ['DOE Appendix B closed-door lab figure; only compare under the same procedure version.']
+  sources: [ENERGY STAR annual_energy_use_kwh_yr, EnergyGuide label]
+  example: 394
+- key: energy.federal_standard_kwh
+  label: Federal maximum
+  group: energy
+  type: number
+  unit: kWh/yr
+  tier: detail
+  facet: false
+  why: Context for the % better figure.
+  sources: [ENERGY STAR us_federal_standard_kwh_yr]
+  example: 439
+- key: energy.pct_below_federal
+  label: Better than federal standard
+  group: energy
+  type: number
+  unit: '%'
+  tier: important
+  facet: {kind: range}
+  why: Normalises efficiency across sizes and classes.
+  traps: ['Relative to the limit of ITS product class: an auto-defrost upright at 10% below uses more kWh than a manual chest at 10% below.', 'ES Version 5.0 requires >= 10% below, so 10 is the floor, not a distinction.']
+  sources: [ENERGY STAR percent_less_energy_use_than_us_federal_standard]
+  example: 10
+- key: cert.energy_star
+  label: ENERGY STAR certified
+  group: energy
+  type: bool
+  unit: null
+  tier: core
+  absence: [unknown, not_published, conflicted]
+  facet: {kind: bool, column: true}
+  why: Rebates and efficiency filter.
+  traps:
+  - 'ES lists only certified models: absent from 8t9c-g3tn = UNKNOWN, never false.'
+  - 'Wildcard pattern rows (`*`, `#`, trailing R/L): one DOE basic model. Transfer list (A1 refrigerators ruling applied to freezers): cert.*, energy.*, capacity.total_ft3, capacity.adjusted_ft3, config.es_type, config.es_product_class, config.compact, config.built_in, config.defrost (fixed by the product class), refrigerant.type. NOT per SKU: finish, hinge, any dimension, UPC, connectivity, ice maker kit, price, features.'
+  sources: [ENERGY STAR 8t9c-g3tn row, date_qualified]
+  example: true
+- key: cert.es_most_efficient
+  label: ENERGY STAR Most Efficient
+  group: energy
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: Top-tier efficiency badge; some utility rebates require it.
+  traps: ['Criteria are per calendar year; a "No" is a real false for that year only.']
+  sources: [ENERGY STAR meets_most_efficient_criteria]
+  example: false
+- key: cert.es_date
+  label: Certified on
+  group: energy
+  type: date
+  unit: null
+  tier: detail
+  facet: false
+  why: Dates the certification and the spec version it was judged under.
+  sources: [ENERGY STAR date_qualified]
+  example: '2020-07-01'
+- key: refrigerant.type
+  label: Refrigerant
+  group: refrigerant
+  type: enum
+  enum: [r600a, r134a, r290, r1234yf, other]
+  enum_open: true
+  unit: null
+  tier: important
+  facet: {kind: enum}
+  why: Hydrocarbon (R-600a, GWP ~3) vs HFC (R-134a, GWP 1,430) under the EPA SNAP phase-down.
+  traps: ['Blank on ~75% of freezer rows: unknown, never "none". Parse the R-number only; charge and GWP digits stay raw.']
+  sources: [ENERGY STAR refrigerant_type, refrigerant_with_gwp]
+  example: r600a
+- key: refrigerant.gwp
+  label: Refrigerant GWP
+  group: refrigerant
+  type: number
+  unit: null
+  tier: detail
+  facet: false
+  why: Climate impact of the refrigerant.
+  traps: ['Only from an explicit "GWP:" token; never looked up from the R-number by us.']
+  sources: [ENERGY STAR refrigerant_with_gwp]
+  example: 3
+- key: features.ice_maker
+  label: Automatic ice maker
+  group: features
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: Needs a water line; mostly built-in column freezers.
+  traps: ['ES thru_the_door_dispenser is Yes on exactly the ice-maker rows of this dataset (168/168 on 2026-11-26): a mirrored column, not evidence of a door dispenser. Not mapped.']
+  sources: [ENERGY STAR ice_maker, product_class]
+  example: false
+- key: conn.connected
+  label: Smart / connected
+  group: conn
+  type: bool
+  unit: null
+  tier: detail
+  facet: {kind: bool}
+  why: App control and utility demand-response.
+  traps: ['ES connected_functionality = meets the ES connected criteria, not merely "has an app".']
+  sources: [ENERGY STAR connected_functionality]
+  example: false
+- key: dims.width_in
+  label: Width
+  group: dims
+  type: number
+  unit: in
+  tier: important
+  facet: {kind: range}
+  why: Fit; chest freezers especially.
+  traps: ['NOT in ENERGY STAR 8t9c-g3tn (no dimension columns at all): maker pages only.']
+  sources: [maker spec]
+  example: 30
+- key: safety.recall
+  label: CPSC recall
+  group: general
+  type: text
+  unit: null
+  tier: important
+  level: model
+  facet: false
+  why: A recalled unit is a fire / injury hazard until the remedy is done; recall status is model-specific (CPSC names the model numbers).
+  traps: ['Applies only to the model numbers the notice prints; never extended by prefix, family or look-alike suffix.', 'No recall listed is unknown, never "not recalled".']
+  sources: [CPSC Recalls API (saferproducts.gov RestWebServices/Recall)]
+  example: 'CPSC 25338 (2025-06-12): The lithium-ion battery in the power bank can overheat, posing fire and burn hazards to consumers.'
+- key: safety.recall_id
+  label: CPSC recall number
+  group: general
+  type: list
+  items: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: The recall number to quote to the firm and to look up the notice.
+  sources: [CPSC Recalls API RecallNumber]
+  example: ['25338']
+- key: safety.recall_date
+  label: Recall date
+  group: general
+  type: date
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Date of the most recent recall naming this model.
+  sources: [CPSC Recalls API RecallDate]
+  example: '2025-06-12'
+- key: safety.recall_remedy
+  label: Recall remedy
+  group: general
+  type: list
+  items: enum
+  enum: [replace, refund, repair, new_instructions, dispose, label, other]
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: What the firm offers (replacement, refund, repair).
+  sources: [CPSC Recalls API RemedyOptions]
+  example: [replace]
+- key: safety.recall_url
+  label: Recall notice
+  group: general
+  type: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: The CPSC notice with the serial ranges and remedy steps (the recall usually covers only some serial numbers).
+  sources: [CPSC Recalls API URL (www.cpsc.gov/Recalls/...)]
+  example: https://www.cpsc.gov/Recalls/2025/More-than-One-Million-Anker-Power-Banks-Recalled-Due-to-Fire-and-Burn-Hazards-Manufactured-by-Anker-Innovations
+- key: gen.record_kind
+  label: Record kind
+  group: general
+  type: enum
+  enum: [recall_only]
+  unit: null
+  tier: detail
+  level: model
+  facet: {kind: enum}
+  why: 'recall_only = we hold no maker or certifier record of this model, only the CPSC recall (identity + recall facts). Coordinator ruling r12: such rows are left out of every preset population.'
+  traps: ['Absent = a normal record (maker / certifier). Never set on a model that a maker or certifier source lists.']
+  sources: [cpsc_recalls overlay (crawler/adapters/cpsc_recalls.py)]
+  example: recall_only

@@ -1,0 +1,21 @@
+name: Light bulbs
+description: "US light bulbs by maker model number (Philips Hue 9290011998B, WiZ 9290024493A, GE 93128981, Feit OM60/927CA/AG): brightness in
+  lumens with the colour temperature it was measured at (white output; full-colour output is its own column and never mixed in), real watts
+  (the '60 W equivalent' class is shown separately and is never a brightness), efficacy, CRI and R9, shape and base (A19 / BR30 / PAR38,
+  E26 / E12 / GU10), dimming, smart protocol (Wi-Fi / Zigbee / Bluetooth) and colour capability, standby power, rated life. Source this round:
+  ENERGY STAR Connected Light Bulbs (U.S. EPA; the lamps programme has ended and the list is frozen at January 2025, so certification here is
+  historical). Absent from ENERGY STAR = unknown, never 'not certified'."
+columns: [form.shape, form.base, light.lumens, light.cct_k, power.watts, light.cri, smart.color, smart.protocols]
+# Filing-brand folding (spec-profile per_brand): ENERGY STAR files Signify Hue as "Philips Hue" and other Signify smart bulbs as "PHILIPS";
+# 12NCs are unique across Signify, so both fold to philips (the key A2-home smart-home uses for Hue). WiZ stays its own brand.
+# Issuer ids are crawler/adapters/energystar_bulbs.brand_id (spelling variants already folded there).
+brand_aliases: {philips_hue: philips, ge_lighting: ge, ledvance: sylvania}
+brand_names: {philips: Philips / Philips Hue (Signify), wiz: WiZ (Signify), ge: GE Lighting (Cync), feit_electric: Feit Electric, sylvania: SYLVANIA (LEDVANCE),
+  sengled: Sengled, nanoleaf: Nanoleaf, wyze: Wyze, ikea: IKEA, satco: Satco, globe: Globe Electric, ring: Ring, sonoff: SONOFF, rab: RAB Lighting,
+  ecosmart: EcoSmart, connected_max: Connected Max, megalight: MegaLight, simply_conserve: Simply Conserve, luminus: Luminus, greenlite: Greenlite,
+  earthbulb: EarthBulb, halo: HALO, liteline: Liteline, spex_lighting: Spex Lighting, trenz_lighting: Trenz Lighting, cleanlife: CLEANLIFE,
+  delos: Delos, euri: Euri Lighting, hengte: HENGTE, noma: NOMA, peace_by_hampton: Peace by Hampton}
+# importer 'model': key = (brand, normalised model number), market not in the key. Every ES row kept states the United States market.
+identity_scope:
+  cross_market_brands: "*"
+  market_scoped_brands: []

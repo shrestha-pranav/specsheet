@@ -88,8 +88,8 @@ class Policies(unittest.TestCase):
             a = pol[i]["approval"]; self.assertIn(a["state"], ("pending", "approved"), i); self.assertTrue(a["state"] == "pending" or (a.get("by") and a.get("at")), i)  # human-approved 2026-11-23
         for i in ("claim/mfr-power-banks-structured@4", "claim/mfr-power-stations-structured@1", "claim/mfr-power-banks-structured@5", "claim/mfr-power-stations-structured@2"):   # r7: @5/@2 superseded by @6/@3
             self.assertFalse(set(pol[i]["match"]["extractors"]) & cur, f"{i} still matches a live extractor")
-        st = {registry.parser_info(s)["parser"] for s, m in registry.SOURCES.items() if m["category"] == "power-stations"}
-        self.assertEqual(set(pol["claim/mfr-power-stations-structured@10"]["match"]["extractors"]) | set(pol["claim/mfr-power-stations-pecron@1"]["match"]["extractors"]), st)   # r11: PECRON under its own policy
+        st = {registry.parser_info(s)["parser"] for s, m in registry.SOURCES.items() if m["category"] == "power-stations" and not s.startswith("cpsc-recalls-")}   # r12: CPSC overlay under claim/cpsc-recalls@1
+        self.assertEqual(set(pol["claim/mfr-power-stations-structured@10"]["match"]["extractors"]) | set(pol["claim/mfr-power-stations-pecron@2"]["match"]["extractors"]), st)   # r11: PECRON under its own policy
         self.assertEqual(pol["claim/mfr-power-stations-structured@10"]["match"]["keys"], pol["claim/mfr-power-stations-structured@1"]["match"]["keys"])
         self.assertEqual(pol["claim/mfr-power-banks-structured@6"]["match"]["keys"], pol["claim/mfr-power-banks-structured@4"]["match"]["keys"])
         self.assertEqual({t for r in pol["rel/bundle-contents@1"]["rules"] for t in r["types"]}, {"contains"})

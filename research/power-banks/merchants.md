@@ -7,7 +7,7 @@ Retail listings are aliases only (team rule). Nothing below was scraped.
 | Amazon | not a source | Brands' own titles repeat there with '26800mAh' class figures; listing titles are aliases. No product-page scraping. |
 | Best Buy / Target / Walmart | not probed | Same rule; would only add retailer SKUs (alias level). |
 | ChargerLAB (chargerlab.com) | **blocked (robots)** | robots.txt disallows ClaudeBot / anthropic-ai / Claude-Web explicitly; Content-Signal ai-train=no. Not fetched. Its measured PDO/capacity tests would be the independent `measured` tier; needs coordinator/human decision (manual reference use only). |
-| CPSC recalls API | viable, not built | saferproducts.gov REST JSON works without a key; model numbers are in free text. Planned key `safety.recall`. |
+| CPSC recalls API | built r12 (A2-safe) | crawler/adapters/cpsc_recalls.py, one source per category (cpsc-recalls-<cat>); www.saferproducts.gov + www.cpsc.gov crawl agent (source-policy 2026-11-26.12). Exact printed model only; recall-only records flagged gen.record_kind recall_only. Policy claim/cpsc-recalls@1 pending. |
 | FCC ID | not probed | only wireless (Qi/Qi2) packs have grants; fcc.gov EAS was 403 (Akamai) in the routers round. |
 | WPC Qi certified database | not probed | would verify out.wireless_standard qi2 / qi2_2 claims. |
 
@@ -49,3 +49,18 @@ Retail listings are aliases only (team rule). Nothing below was scraped.
 - Terms bar automated collection -> crawl human_only (source-policy 2026-11-26.7), no further agent fetches: www.anker.com, iniushop.com, www.cuktech.com, us.ugreen.com, sharge.com, us.ecoflow.com. Stored values unchanged pending coordinator/owner ruling.
 - kuxiu.com, www.mophie.com: no such clause found (stay agent). Baseus: still unstructured (spec images); Zendure: no power banks. Satechi: chargers lane.
 - CPSC recalls (saferproducts.gov API, robots 404 = no rules): 13 power-bank recalls name our brands (Anker A1263/A1366/A1642/A1647/A1652, Belkin BPB002/PB0003/BPD005, INIU BI-B41, Baseus PPCXM06/PPCXW06/BS-30KP365), but none matches a stored model: safety.recall needs either recall-only records (coordinator ruling) or nothing. Adapter not built.
+
+## r12 (A2-usbif, 2026-11-26): USB-IF Certified Product List overlay
+
+- Host www.usb.org: crawl agent (source-policy 2026-11-26.11, provisional r12). robots.txt only disallows /core/, /profiles/, /admin/, /search/,
+  /user/*; no site terms of use exist (footer has only the Privacy Statement; /terms-use, /terms-of-use, /terms, /legal all 404); privacy
+  statement has no automated-access or reuse clause. Free only, no paid, no licence grant (no reuse grant published).
+- Source usbif-certified-products: one GET of /vtm-products/v1/all (16,472 rows) stored in raw/usbif-certified-products. Overlay scripts/usbif.py
+  (usbif-attach@1) attaches cert.usb_if / _tid / _date / _product_type to existing chargers / power-banks / laptops entities by exact maker
+  model (listing company = brand AND part number = our mfr_model / mfr_sku / mtm). Policy claim/usbif-certified-products@1 pending.
+- Match rate is very low, by construction: the list names the LISTING company, mostly OEMs (Luxshare, CE Link, Channel Well, Best Buy China,
+  Xentris). None of Anker, Belkin, Apple, mophie, Satechi, AUKEY, Choetech, Baseus, INIU, CUKTECH, KUXIU, Sharge, Nitecore, EcoFlow lists
+  under its own name. Laptops: the newest Retail > Systems > Notebooks listing is 2017, so no current laptop can match.
+- OEM listings whose part number equals one of our models are proposals only (identity_events usbif_proposal oem_listing), e.g.
+  Channel Well TID 11361 "30W USB-C PD Cube Wall Charger with PPS" = WCA008 (Belkin's model code). A reviewed OEM -> brand crosswalk would be
+  needed to bind those.

@@ -391,7 +391,9 @@ class Hygiene(unittest.TestCase):
         self.assertEqual(RM.evaluate(80 * M, 300 * M, b)[0], "warn")
         st, msgs = RM.evaluate(80 * M, 600 * M, b)
         self.assertEqual(st, "warn"); self.assertIn("migration trigger", msgs[0])
-        self.assertEqual(json.loads((ROOT / "data" / "release-budget.json").read_text())["api_fail_mib"], 150)
+        live = json.loads((ROOT / "data" / "release-budget.json").read_text())
+        self.assertEqual(live["api_fail_mib"], 400)                       # raised 2026-11-27 by explicit reviewed edit
+        self.assertTrue(any(k.startswith("_raised_") for k in live), "a budget raise must carry its dated rationale")
 
 
 if __name__ == "__main__":

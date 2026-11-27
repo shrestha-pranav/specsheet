@@ -394,7 +394,9 @@
   const plural = (n, one, many) => `${n.toLocaleString('en-US')} ${n === 1 ? one : many}`;
   // D8: a row is in a preset's scope when it carries a source tier the preset accepts and is not discontinued (unless the preset includes those).
   // Unknown lifecycle stays in. Mirrors scripts/presets.py; the by-filters only shape the gate's denominators, never the list.
-  const inPresetScope = (row, scope) => !scope || ((!scope.sources || (row.t || []).some(tier => scope.sources.includes(tier))) && (scope.include_discontinued || row.lifecycle !== 'discontinued'));
+  // Coordinator ruling r12 (A2-safe): a recall-only record (gen.record_kind recall_only) is never in a preset's population.
+  const recallOnly = row => (row.specs?.['gen.record_kind']?.value ?? row.v?.['gen.record_kind']) === 'recall_only';
+  const inPresetScope = (row, scope) => !scope || (!recallOnly(row) && (!scope.sources || (row.t || []).some(tier => scope.sources.includes(tier))) && (scope.include_discontinued || row.lifecycle !== 'discontinued'));
   const coverNames = names => `${names.slice(0, 6).join(', ')}${names.length > 6 ? ` and ${names.length - 6} more` : ''}`;
   const firstSentence = text => (text.match(/^.*?[.!?](?=\s|$)/) || [text])[0];
   const scopeLines = preset => {
@@ -548,10 +550,15 @@
     if (seed) for (const [key, value] of Object.entries(preset.filters || {})) filters[key] = value;
     const presetCols = seed ? (preset.columns || []).filter(key => available.has(key)) : [];
     const presetSort = seed && preset.sort && ['coverage','brand','name','model',...category.fields.map(f => f.key)].includes(preset.sort.key) ? preset.sort : null;
+    // r12 (A2-bulb): a category may name its default sort (presets.json renderers.default_sort, e.g. light-bulbs by lumens, brightest first).
+    const catSort = presetData.renderers?.default_sort?.[category.id];
+    const defaultSort = catSort && category.fields.some(f => f.key === catSort.key) ? catSort : null;
+    const initSort = presetSort || (!params.has('sort') && defaultSort) || null;
     if (seed && presetCols.length) cols.splice(0, cols.length, ...presetCols);
     return {preset: preset?.id || '', all: params.get('all') === '1' && !!preset, maybe: params.get('maybe') === '1', q: params.get('q') || '', brand: params.get('brand') || '', filters,
-      sort: presetSort ? presetSort.key : ['coverage','brand','name','model',...category.fields.map(f => f.key)].includes(params.get('sort')) ? params.get('sort') : 'coverage',
-      dir: presetSort ? (presetSort.dir === 'desc' ? 'desc' : 'asc') : params.has('dir') ? (params.get('dir') === 'desc' ? 'desc' : 'asc') : (params.get('sort') && params.get('sort') !== 'coverage' ? 'asc' : 'desc'),
+      sort: initSort ? initSort.key : ['coverage','brand','name','model',...category.fields.map(f => f.key)].includes(params.get('sort')) ? params.get('sort') : 'coverage',
+      sortPinned: !!defaultSort,
+      dir: initSort ? (initSort.dir === 'desc' ? 'desc' : 'asc') : params.has('dir') ? (params.get('dir') === 'desc' ? 'desc' : 'asc') : (params.get('sort') && params.get('sort') !== 'coverage' ? 'asc' : 'desc'),
       preview: params.get('preview') === '1' && !!category.preview, certonly: params.get('certonly') === '1' && !!category.certification_only?.index?.length, view: ['grouped','sizegrid'].includes(params.get('view')) ? params.get('view') : (seed && preset.view === 'sizegrid' ? 'sizegrid' : 'flat'), cols, ids, page:Math.max(1, Number.parseInt(params.get('page') || '1', 10) || 1)};
   }
   function categoryStateQuery(state) {
@@ -565,8 +572,8 @@
     if (state.preset) params.set('preset', state.preset);
     if (state.preset && state.all) params.set('all', '1');
     if (state.maybe) params.set('maybe', '1');
-    if (state.sort !== 'coverage') params.set('sort', state.sort);
-    if (state.dir !== (state.sort === 'coverage' ? 'desc' : 'asc')) params.set('dir', state.dir);
+    if (state.sort !== 'coverage' || state.sortPinned) params.set('sort', state.sort);
+    if (state.dir !== (state.sort === 'coverage' ? 'desc' : 'asc') || state.sortPinned) params.set('dir', state.dir);
     params.set('cols', state.cols.join(','));
     if (state.ids.length) params.set('ids', state.ids.join(','));
     if (state.page > 1) params.set('page', String(state.page));

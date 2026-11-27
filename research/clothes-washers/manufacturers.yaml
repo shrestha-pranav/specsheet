@@ -1,0 +1,15 @@
+# A2-appl2 r12 discovery, clothes-washers (US). Fetched 2026-11-26 with the shared crawler client (crawl.Net, specsheet-crawler UA), robots.txt
+# + Crawl-delay 1 honoured (we wait 1.5 s). No new host: data.energystar.gov is in data/source-policy.yaml (US EPA, public domain).
+# status: adapter = built+run; blocked / human_only = no agent collection (category-survey-r2 s.0); not_probed = later round.
+cross_brand_sources:
+  energystar:
+    status: adapter            # crawler/adapters/energystar_siblings.py (clothes-washers class), raw/energystar-clothes-washers
+    url: https://data.energystar.gov/resource/bghd-e2wd.json   # Socrata, paged $limit 1000; column metadata /api/views/bghd-e2wd.json (robots-allowed)
+    rows: "421 rows / 418 refs / 369 US models (261 pattern, 108 concrete), 49 Canada-only refs dropped, on 2026-11-26"
+    note: pattern rows are their own entities (x_energystar_model_pattern); concrete SKUs link via covered_by_certification proposals only
+manufacturers:
+  lg:        {status: human_only, how: 'lg.com terms bar automated collection (category-survey-r2 s.0): ES values only.'}
+  ge:        {status: human_only, how: 'geappliances.com terms (survey r2).'}
+  whirlpool: {status: blocked, how: 'Whirlpool / KitchenAid / Maytag / JennAir sites blocked (survey r2).'}
+  samsung:   {status: not_probed, how: 'later round; read robots + terms first.'}
+  bosch:     {status: not_probed, how: 'bosch-home.com/us; later round; read robots + terms first.'}

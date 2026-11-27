@@ -1,0 +1,19 @@
+name: Clothes dryers
+description: "US clothes dryers by maker model number and by ENERGY STAR certified pattern (one DOE basic model covering several finishes,
+  shown as its own row and flagged): electric or gas, vented or ventless, heat pump (where filed), DOE drum capacity, CEF and annual kWh
+  under DOE Appendix D2, test-cycle time, voltage (where filed), dimensions, refrigerant, features, connected. Source: ENERGY STAR Certified
+  Residential Clothes Dryers (U.S. EPA). Absent from ENERGY STAR = unknown, never 'not certified'; a blank heat-pump field is unknown."
+columns: [config.fuel, config.ventless, config.heat_pump, capacity.drum_ft3, energy.cef, cert.energy_star]
+# r12 A2-appl2: same pattern-entity rules as refrigerators (scripts/escover.py); coverage edges stay proposals (see freezers/category.yaml).
+features: [es_pattern_entities]
+es_patterns: {source: energystar-clothes-dryers}
+brand_aliases: {ge_profile: ge, cafe: ge, monogram: ge, ge_adora: ge, frigidaire_gallery: frigidaire, frigidaire_professional: frigidaire,
+  lg_signature: lg, jenn_air: jennair, kitchen_aid: kitchenaid, viking_range_llc: viking, sks: signature_kitchen_suite,
+  signature_kitchen_suite_sks: signature_kitchen_suite, thorkitchen: thor_kitchen, westbend: west_bend, danby_designer: danby, danby_diplomat: danby,
+  danby_premiere: danby, summit_professional: summit}
+brand_names: {lg: LG, samsung: Samsung, whirlpool: Whirlpool, electrolux: Electrolux, maytag: Maytag, midea: Midea, ge: GE Appliances (GE / Profile),
+  miele: Miele, kenmore: Kenmore, summit: Summit, asko: Asko, blomberg: Blomberg, bosch: Bosch, frigidaire: Frigidaire, premium_levella: Premium Levella,
+  speed_queen: Speed Queen, beko: Beko, crosley: Crosley, hisense: Hisense, amana: Amana, danby: Danby, fisher_paykel: Fisher & Paykel}
+identity_scope:
+  cross_market_brands: "*"
+  market_scoped_brands: []

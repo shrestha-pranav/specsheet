@@ -1,0 +1,20 @@
+# A2-home r12 discovery, smart-home (US). 2026-11-26, shared crawler client (specsheet-crawler UA), robots.txt + terms read before any other request.
+# status: adapter = built+run; blocked = unreachable for agents; human_only = terms bar automated collection; not_probed = later round.
+cross_brand_sources:
+  zigbee2mqtt:
+    status: adapter            # crawler/adapters/zigbee2mqtt_devices.py, raw/zigbee2mqtt-devices
+    url: https://raw.githubusercontent.com/Koenkk/zigbee-herdsman-converters/master/src/devices/index.ts   # + one GET per vendor file
+    licence: MIT (Copyright (c) 2018 Koen Kanters); GitHub ToS D.8 (public repository contents)
+    note: community integration database (source-policy kind measurement, claim kind reported); not the maker
+  csa_dcl:
+    status: blocked            # robots.txt answers 501 -> crawler/robots.py (RFC 9309) disallow-all; no workaround, no other fetcher
+    url: https://on.dcl.csa-iot.org/dcl/model/models
+    note: intended source of smart.matter / matter.cert_id / matter.spec_version / device type; also stops csa-dcl-robovac re-discovery
+manufacturers:
+  aqara:     {status: human_only, how: 'Terms personal non-commercial (A5 r2 survey); not added to source-policy this round.'}
+  philips:   {status: not_probed, how: 'Hue (www.philips-hue.com): survey r2 found no automated clause; read robots + terms before any fetch.'}
+  eve:       {status: not_probed, how: 'evehome.com: survey r2 found no automated clause; read robots + terms before any fetch.'}
+  ikea:      {status: not_probed, how: 'Not surveyed.'}
+  tp_link:   {status: human_only, how: 'www.tp-link.com / www.tapo.com human_only (source-policy 2026-11-26.6/.10).'}
+  apple:     {status: human_only, how: 'Apple site terms (source-policy 2026-11-25.5).'}
+  samsung:   {status: human_only, how: 'Samsung terms (source-policy 2026-11-25.6).'}

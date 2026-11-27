@@ -1,0 +1,20 @@
+1. **P1 — Close robots enforcement gaps.** [robots.py:89](/home/pranavsh/projects/specsheet/crawler/robots.py:89) ranks raw character lengths rather than normalized octets. Reproduced: `Disallow: /%61` beats equivalent `Allow: /a`; `Disallow: /café` permits `/caf%C3%A9`. Both contradict [RFC 9309 §2.2.2](https://www.rfc-editor.org/rfc/rfc9309.html#section-2.2.2).
+   [corrections.py:565](/home/pranavsh/projects/specsheet/scripts/corrections.py:565) bypasses `crawl.Net`: robots redirects use an unrestricted opener, matching defaults to `specsheet-crawler` despite sending `specsheet-corrections`, and Crawl-delay is ignored.
+   **Exit criteria:** encoding-equivalence/Allow-tie fixtures pass; corrections selects its actual UA, checks every redirect’s policy, and honors pacing.
+
+2. **P1 — Require fresh evidence before resurrecting delisted refs.** [ _run.py:38](/home/pranavsh/projects/specsheet/crawler/adapters/_run.py:38) drops old delisting metadata whenever the key reappears; [line 66](/home/pranavsh/projects/specsheet/crawler/adapters/_run.py:66) then skips fetching because any historical 200 counts as done. Parsing reuses that old snapshot—even after newer failures.
+   [v1_publish.py:356](/home/pranavsh/projects/specsheet/scripts/v1_publish.py:356) preserves `state: current` alongside delisting metadata; after resurrection even that warning disappears. Old claims can therefore appear current without successful revalidation.
+   **Exit criteria:** discover → delist → rediscover → failed fetch retains stale/delisted status; only a fresh successful identity check clears it. Assert published lifecycle and observation dates.
+
+3. **P1 — Reject PECRON tables identifying another model.** [pecron_stations.py:60](/home/pranavsh/projects/specsheet/crawler/adapters/pecron_stations.py:60) checks only `<th>Model</th><th>…</th>`. Reproduced: an E1000LFP page accepts `<th>Model</th><td>E2000LFP</td>` and its `1920Wh` capacity. The later check examines labels, not model values.
+   **Exit criteria:** reject conflicting model rows across `th`/`td` variants before emitting claims; add end-to-end wrong-model fixtures. Also reject `~28.7kg` and trailing approximations: [line 71](/home/pranavsh/projects/specsheet/crawler/adapters/pecron_stations.py:71) requires whitespace after the approximation prefix.
+
+Additional findings within scope:
+
+- **Coverage can fail open:** [coverage_guard.py:19](/home/pranavsh/projects/specsheet/scripts/coverage_guard.py:19) treats every failed `git show`, including an explicitly invalid `--ref`, as first release and returns success at line 59. Require an explicit bootstrap option; missing/unreadable requested baselines must fail.
+- **Test exit propagation:** [run-tests.sh:15](/home/pranavsh/projects/specsheet/scripts/run-tests.sh:15) captures Python’s exit directly and returns nonzero for failures; no pipeline masking found there.
+- **Other Net bypasses:** GitHub CLI calls in [corrections.py:519](/home/pranavsh/projects/specsheet/scripts/corrections.py:519), [requests_weekly.py:65](/home/pranavsh/projects/specsheet/scripts/requests_weekly.py:65), and monitoring curl in [backup.sh:17](/home/pranavsh/projects/specsheet/scripts/backup.sh:17).
+- **Appliances:** separate pattern identity, multi-model UPC suppression, width quarantine, and GTIN-dispute recording are present. DOE conditions remain unconditional dataset assumptions at [energystar_appliances.py:132](/home/pranavsh/projects/specsheet/crawler/adapters/energystar_appliances.py:132); procedure applicability was not independently established.
+- **Adapter limits:** KUXIU’s AVS exclusion is HTML-layout-dependent ([kuxiu_chargers.py:52](/home/pranavsh/projects/specsheet/crawler/adapters/kuxiu_chargers.py:52)); NITECORE selects the first matching title rather than detecting contradictory titles ([nitecore_powerbanks.py:49](/home/pranavsh/projects/specsheet/crawler/adapters/nitecore_powerbanks.py:49)).
+
+Read-only review; three in-memory reproductions run, no full test suite.

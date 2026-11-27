@@ -1,0 +1,321 @@
+# A2-home r12 (2026-11-26). Smart-home devices (A5 category survey r2 #2): Matter and Zigbee end devices sold in the US: plugs, switches,
+# bulbs, sensors, locks, thermostats, covers, buttons, hubs/border routers. ONE category for all device types (unlike appliances): the buyer
+# question is cross-type ("does it work locally, on which protocol, without the vendor hub"), every row shares the protocol / power / local
+# keys, and the device types are a facet (gen.device_type), not separate grids.
+# Sources: Zigbee2MQTT device definitions (Koenkk/zigbee-herdsman-converters, MIT; raw.githubusercontent.com, kind measurement) = the only
+# source wired this round. CSA Matter DCL (on.dcl.csa-iot.org) is the intended source of every matter.* key, but its robots.txt answers 501
+# and crawler/robots.py (RFC 9309) reads a 5xx as disallow-all, so it is unreachable for agents this round (research/smart-home/merchants.md).
+profile_format: specsheet.category-profile/1
+category: smart-home
+version: 0.1
+label: Smart-home devices
+market: US
+status: draft
+scope: 'Consumer smart-home end devices and hubs that speak Zigbee, Thread/Matter, Matter over Wi-Fi, or Z-Wave: lights, plugs and in-wall
+  switches, sensors (motion, contact, leak, smoke, climate), locks, thermostats, shades/covers, buttons/remotes, sirens, hubs and Thread
+  border routers. Excludes cameras, speakers/displays without a Matter controller role, appliances (own categories), robot vacuums
+  (robot-vacuums category carries smart.matter), and Tuya white-label chip ids (TS0xxx) that name a module, not a buyable model.'
+identity:
+  levels:
+  - level: model
+    label: Model number
+    meaning: 'The maker''s model id as printed on the device / box (IKEA E1743, Aqara RTCGQ11LM, Philips Hue 9290012573A, Third Reality
+      3RSS008Z). Zigbee2MQTT `model` is that id (a slash list "E1524/E1810" = Zigbee2MQTT treats both ids as ONE device: one row, each id an
+      alias). The Zigbee model string the device itself reports (`zigbeeModel`, "TRADFRI remote control") is an alias, never the key.'
+    key_schemes: [mfr_model]
+    inherits: true
+  - level: package
+    label: Kit / multipack
+    meaning: 'Starter kits and multipacks (Hue starter kit, 2-pack sensors). No source this round; package rows never carry device keys.'
+    key_schemes: [gtin]
+    inherits: true
+  primary_key: 'Brand + maker model id exactly as the definition / certificate names it (normalised: upper case, spaces stripped).
+    Rebadged siblings (Zigbee2MQTT whiteLabel: a Lidl or Immax device that is a Tuya module) are aliases of the defining row, not rows.'
+  per_brand:
+    ikea: 'E-number (E1743 ON/OFF switch, E2134 VALLHORN). Regional variants share the E-number.'
+    aqara: 'Xiaomi/Aqara codes (RTCGQ11LM, MCCGQ11LM); Z2M files Aqara devices under vendor "Aqara" (older ones "Xiaomi"). Aqara site terms
+      are personal non-commercial (A5 r2): maker pages human_only, so Aqara rows come from Z2M only.'
+    philips: 'Hue 12-digit product number (9290012573A) or the 3-letter Zigbee ids (LCT015) as alias. Z2M uses the product number.'
+    tuya: 'TS0xxx are Tuya module/firmware ids shared by hundreds of unrelated white-label products: never a key here.'
+  schemes:
+  - {scheme: mfr_model, level: model, normalize: upper_strip_spaces}
+  - {scheme: x_dcl_vid_pid, level: model}
+  - {scheme: gtin, issuer: GS1, level: package, alias_only: true}
+  variant_axes: []
+  model_defining: [gen.device_type, conn.protocols]
+  note: 'Join rules. (1) A Zigbee2MQTT definition <-> a Matter DCL row only on exact normalised (brand, model id) = DCL partNumber or
+    productName; never on description text. (2) DCL rows are global (regional and kit names): a DCL row mints a row only when its
+    partNumber is a real model id (not "-", "0", "1", or the product name). (3) Zigbee2MQTT is global too (no market field): rows carry
+    market null; a US-store adapter (Philips Hue, Eve, Third Reality) is the later US confirmation.'
+units:
+  system: us_customary
+groups:
+- {id: general, label: General & identity, order: 0}
+- {id: conn, label: Protocols & local control, order: 1}
+- {id: matter, label: Matter certification, order: 2}
+- {id: power, label: Power, order: 3}
+- {id: sensor, label: Sensors, order: 4}
+- {id: ctl, label: Control, order: 5}
+specs:
+- key: gen.brand
+  label: Brand
+  group: general
+  type: enum
+  enum: [ikea, philips, aqara, xiaomi, sengled, sonoff, third_reality, inovelli, innr, ledvance, lutron, schneider_electric, legrand, ge, samsung, eve]
+  enum_open: true
+  unit: null
+  tier: core
+  facet: {kind: enum, column: true}
+  why: First filter; ecosystem lock-in is per brand.
+  traps: ['Rebadged Tuya modules carry the seller''s brand on the box and the Tuya id in firmware: the brand is the defining vendor of the row, white labels are aliases.']
+  sources: [Zigbee2MQTT definition vendor, CSA DCL vendorName]
+  example: ikea
+- key: gen.description
+  label: Description
+  group: general
+  type: text
+  unit: null
+  tier: detail
+  why: The definition's one-line product name ("TRADFRI motion sensor"); helps match a box to a row.
+  traps: ['Community-written, not the maker''s title; never used for identity or a facet.']
+  sources: [Zigbee2MQTT definition description, CSA DCL productName]
+  example: TRADFRI motion sensor
+- key: gen.device_type
+  label: Device type
+  group: general
+  type: enum
+  enum: [light, plug_or_switch, motion_sensor, contact_sensor, water_leak_sensor, smoke_sensor, climate_sensor, vibration_sensor, lock, thermostat,
+    cover, remote_or_button, siren, air_quality_sensor, gas_co_sensor, energy_meter, valve, light_sensor, hub_or_bridge, thread_border_router, other]
+  unit: null
+  tier: core
+  facet: {kind: enum, column: true}
+  why: What the thing is; every preset starts here.
+  traps:
+  - 'Zigbee2MQTT has no device-type field: the type is a rule over what the definition exposes (adapter DEVICE_TYPE table, most specific
+    first: lock > thermostat > cover > smoke > leak > light > motion > contact > ... > button). A multi-sensor with motion + contact is a
+    motion_sensor. When no exposes rule matches (vendor helpers, Tuya datapoint tables) the definition''s description decides (adapter
+    DESC_TYPE keyword table); a complete exposes list matching nothing is `other`; otherwise unknown. Matter DCL deviceTypeId is the declared type when that source is wired; the two can disagree (a Matter bridge exposes
+    many types).'
+  sources: [Zigbee2MQTT exposes (rule), CSA DCL deviceTypeId]
+  example: motion_sensor
+- key: conn.protocols
+  label: Protocols
+  group: conn
+  type: list
+  enum: [zigbee, thread, matter, wifi, bluetooth, z_wave]
+  unit: null
+  tier: core
+  facet: {kind: multi, column: true}
+  why: Decides which hub/controller the device needs.
+  traps:
+  - '"Works with Matter" on a box can mean a Matter BRIDGE in the hub, not a Matter device: only a DCL certificate for the device itself makes it Matter.'
+  - 'Thread is the radio; Matter is the application layer: a Thread device without Matter (older HomeKit-over-Thread Eve units before their
+    Matter update) is thread without matter.'
+  - 'A Zigbee2MQTT definition proves zigbee only; it says nothing about Wi-Fi/Thread radios in the same product (list is not exhaustive).'
+  sources: [Zigbee2MQTT definition (zigbee), CSA DCL compliance transport, maker spec page]
+  example: [zigbee]
+- key: compat.zigbee2mqtt
+  label: Supported by Zigbee2MQTT
+  group: conn
+  type: bool
+  unit: null
+  tier: core
+  facet: {kind: bool}
+  why: 'Works locally with an open coordinator (no vendor hub, no cloud).'
+  traps: ['Only true is written (a device missing from the database is unknown, it may still pair as a generic device).']
+  sources: [Zigbee2MQTT device definitions]
+  example: true
+- key: smart.matter
+  label: Matter certified
+  group: matter
+  type: bool
+  unit: null
+  tier: core
+  facet: {kind: bool}
+  why: Cross-ecosystem (Apple Home, Google Home, Alexa, Home Assistant) without the vendor app.
+  traps: ['Only a DCL compliance record in status 2 (certified) with a certificate id counts; a registered model without one is unknown, never false.']
+  sources: [CSA DCL compliance-info]
+  example: true
+- key: matter.cert_id
+  label: Matter certificate id
+  group: matter
+  type: text
+  unit: null
+  tier: important
+  why: Lets the buyer check the certificate at csa-iot.org.
+  traps: ['One model has a certificate per certified software version; the row shows the earliest certified one and lists the others in raw.']
+  sources: [CSA DCL compliance-info cDCertificateId]
+  example: CSA23B12MAT40123-24
+- key: matter.spec_version
+  label: Matter version
+  group: matter
+  type: enum
+  enum: ['1.0', '1.1', '1.2', '1.3', '1.4', '1.5']
+  unit: null
+  tier: important
+  facet: {kind: enum}
+  why: Device types and features arrive per Matter version (energy reporting 1.3, cameras 1.5).
+  traps: ['DCL specificationVersion is an encoded integer (0x01030000 = 1.3), per software version; the latest certified software version wins and the others stay in raw.']
+  sources: [CSA DCL compliance-info specificationVersion]
+  example: '1.3'
+- key: conn.thread_border_router
+  label: Thread border router
+  group: conn
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool}
+  why: A Thread device needs one on the network (HomePod mini, Nest Hub 2nd gen, Aqara M3, SkyConnect/ZBT-1 with OTBR).
+  traps: ['Marketing says "Thread-ready" for end devices; only a border-router statement on the maker spec page or a DCL Thread Border
+      Router device type counts.']
+  sources: [maker spec page, CSA DCL deviceTypeId]
+  example: true
+- key: power.source
+  label: Power source
+  group: power
+  type: enum
+  enum: [battery, mains, usb, hardwired]
+  unit: null
+  tier: core
+  facet: {kind: enum, column: true}
+  why: Placement and maintenance (battery swaps) differ entirely.
+  traps: ['Zigbee2MQTT gives battery only (the definition exposes battery state); it never states mains, so mains/hardwired need a maker page or the DCL.']
+  sources: [Zigbee2MQTT exposes (battery), maker spec page]
+  example: battery
+- key: power.battery
+  label: Reports battery level
+  group: power
+  type: bool
+  unit: null
+  tier: detail
+  facet: {kind: bool}
+  why: Battery devices that report their level warn before they die.
+  traps: ['False only from a complete exposes enumeration (see sensor.illuminance).']
+  sources: [Zigbee2MQTT exposes]
+  example: true
+- key: power.metering
+  label: Energy metering
+  group: power
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool, column: true}
+  why: 'Plugs that report W / kWh to the local hub (energy dashboards, appliance-done automations).'
+  traps: ['Some plugs meter in the vendor app only; this key means the local Zigbee exposes include power or energy.',
+    'False only from a complete exposes enumeration.']
+  sources: [Zigbee2MQTT exposes (power, energy, electricityMeter)]
+  example: true
+- key: sensor.occupancy
+  label: Motion / occupancy
+  group: sensor
+  type: bool
+  unit: null
+  tier: core
+  facet: {kind: bool}
+  why: Motion-triggered lights and presence automations.
+  traps: ['PIR motion and mmWave presence both map here; the description says which.']
+  sources: [Zigbee2MQTT exposes]
+  example: true
+- key: sensor.illuminance
+  label: Light level (lux)
+  group: sensor
+  type: bool
+  unit: null
+  tier: important
+  facet: {kind: bool, column: true}
+  why: Motion lights that only switch on when it is dark need lux from the same sensor.
+  traps:
+  - 'Basis = what the device reports over Zigbee to a local coordinator (Zigbee2MQTT exposes). False is written ONLY when the definition''s
+    exposes are a complete static list (no extend helper, no code); otherwise only true. A device with a lux sensor its firmware never
+    reports is false here, which is the buyer''s question (usable locally).'
+  - 'Some sensors report a day/night flag only (IKEA E1525 "illuminance_above_threshold"); that is not lux and stays false.'
+  sources: [Zigbee2MQTT exposes]
+  example: true
+- {key: sensor.temperature, label: Temperature, group: sensor, type: bool, unit: null, tier: detail, facet: {kind: bool}, why: Climate automations.,
+   traps: ['Device (chip) temperature is not a room temperature sensor and is not counted.'], sources: [Zigbee2MQTT exposes], example: true}
+- {key: sensor.humidity, label: Humidity, group: sensor, type: bool, unit: null, tier: detail, facet: {kind: bool}, why: Climate automations., sources: [Zigbee2MQTT exposes], example: true}
+- {key: sensor.contact, label: Door / window contact, group: sensor, type: bool, unit: null, tier: detail, facet: {kind: bool}, why: Security and HVAC-off automations., sources: [Zigbee2MQTT exposes], example: true}
+- {key: sensor.water_leak, label: Water leak, group: sensor, type: bool, unit: null, tier: detail, facet: {kind: bool}, why: Leak alerts and shutoff valves., sources: [Zigbee2MQTT exposes], example: true}
+- {key: sensor.smoke, label: Smoke, group: sensor, type: bool, unit: null, tier: detail, facet: {kind: bool}, why: Alarm integration.,
+   traps: ['Not a UL 217 listing: a reported smoke state says nothing about listing; never treat as a code-compliant alarm.'], sources: [Zigbee2MQTT exposes], example: true}
+- {key: sensor.vibration, label: Vibration, group: sensor, type: bool, unit: null, tier: detail, facet: {kind: bool}, why: Washer-done and tamper automations., sources: [Zigbee2MQTT exposes], example: true}
+- {key: ctl.light, label: Light, group: ctl, type: bool, unit: null, tier: detail, facet: {kind: bool}, why: "Bulbs, light strips and dimmers.", sources: [Zigbee2MQTT exposes], example: true}
+- {key: ctl.color, label: Colour (RGB), group: ctl, type: bool, unit: null, tier: detail, facet: {kind: bool}, why: Colour bulbs vs white-only., sources: [Zigbee2MQTT exposes], example: true}
+- {key: ctl.color_temp, label: Tunable white, group: ctl, type: bool, unit: null, tier: detail, facet: {kind: bool}, why: Warm-to-cool white., sources: [Zigbee2MQTT exposes], example: true}
+- {key: ctl.on_off, label: On / off switching, group: ctl, type: bool, unit: null, tier: detail, facet: {kind: bool}, why: "Plugs, relays and switches.", sources: [Zigbee2MQTT exposes], example: true}
+- {key: ctl.cover, label: Shade / cover control, group: ctl, type: bool, unit: null, tier: detail, facet: {kind: bool}, why: Blinds and curtains., sources: [Zigbee2MQTT exposes], example: true}
+- {key: ctl.lock, label: Lock, group: ctl, type: bool, unit: null, tier: detail, facet: {kind: bool}, why: Door locks., sources: [Zigbee2MQTT exposes], example: true}
+- {key: ctl.thermostat, label: Thermostat / TRV, group: ctl, type: bool, unit: null, tier: detail, facet: {kind: bool}, why: Heating control., sources: [Zigbee2MQTT exposes], example: true}
+- {key: ctl.action, label: Buttons / actions, group: ctl, type: bool, unit: null, tier: detail, facet: {kind: bool}, why: Remotes and scene buttons., sources: [Zigbee2MQTT exposes], example: true}
+- key: safety.recall
+  label: CPSC recall
+  group: general
+  type: text
+  unit: null
+  tier: important
+  level: model
+  facet: false
+  why: A recalled unit is a fire / injury hazard until the remedy is done; recall status is model-specific (CPSC names the model numbers).
+  traps: ['Applies only to the model numbers the notice prints; never extended by prefix, family or look-alike suffix.', 'No recall listed is unknown, never "not recalled".']
+  sources: [CPSC Recalls API (saferproducts.gov RestWebServices/Recall)]
+  example: 'CPSC 25338 (2025-06-12): The lithium-ion battery in the power bank can overheat, posing fire and burn hazards to consumers.'
+- key: safety.recall_id
+  label: CPSC recall number
+  group: general
+  type: list
+  items: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: The recall number to quote to the firm and to look up the notice.
+  sources: [CPSC Recalls API RecallNumber]
+  example: ['25338']
+- key: safety.recall_date
+  label: Recall date
+  group: general
+  type: date
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Date of the most recent recall naming this model.
+  sources: [CPSC Recalls API RecallDate]
+  example: '2025-06-12'
+- key: safety.recall_remedy
+  label: Recall remedy
+  group: general
+  type: list
+  items: enum
+  enum: [replace, refund, repair, new_instructions, dispose, label, other]
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: What the firm offers (replacement, refund, repair).
+  sources: [CPSC Recalls API RemedyOptions]
+  example: [replace]
+- key: safety.recall_url
+  label: Recall notice
+  group: general
+  type: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: The CPSC notice with the serial ranges and remedy steps (the recall usually covers only some serial numbers).
+  sources: [CPSC Recalls API URL (www.cpsc.gov/Recalls/...)]
+  example: https://www.cpsc.gov/Recalls/2025/More-than-One-Million-Anker-Power-Banks-Recalled-Due-to-Fire-and-Burn-Hazards-Manufactured-by-Anker-Innovations
+- key: gen.record_kind
+  label: Record kind
+  group: general
+  type: enum
+  enum: [recall_only]
+  unit: null
+  tier: detail
+  level: model
+  facet: {kind: enum}
+  why: 'recall_only = we hold no maker or certifier record of this model, only the CPSC recall (identity + recall facts). Coordinator ruling r12: such rows are left out of every preset population.'
+  traps: ['Absent = a normal record (maker / certifier). Never set on a model that a maker or certifier source lists.']
+  sources: [cpsc_recalls overlay (crawler/adapters/cpsc_recalls.py)]
+  example: recall_only

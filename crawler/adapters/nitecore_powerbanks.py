@@ -12,6 +12,8 @@ parse    : pure. Rows = 'spec-row' / 'spec-key' / 'spec-value' pairs (the maker'
            per-port Output list, Total Output, Input, Weight, Dimensions, Battery type).
 Identity : the product name printed in the page <h1>/og:title minus 'NITECORE' and the descriptive tail ('NB20000 Gen3'), which must also be the
            page's own slug name (nb20000Gen3 -> NB20000GEN3). Model = upper-case compact form ('NB20000 GEN3'). Two names / no match -> absence.
+           v2 (review-11): every og:title / <h1> / <title> naming a power-bank line is read; if they name different models the page is an
+           absence ('contradictory page titles'), never the first match.
            NITECORE sells the same model names worldwide; the site has no US-only model numbers, so market US is the maker's global model.
 """
 import gzip, html, json, re, sys, time
@@ -23,7 +25,7 @@ import _powerbank as P
 import _run
 import shopify_powerbanks2 as S2
 
-ID, VERSION, SOURCE = "nitecore_powerbanks", 1, "nitecore-us-powerbanks"
+ID, VERSION, SOURCE = "nitecore_powerbanks", 2, "nitecore-us-powerbanks"
 CATEGORIES = {"power-banks"}
 DELAY = 1.0
 BASE = "https://www.nitecore.com"
@@ -46,15 +48,28 @@ def norm(s):
     return re.sub(r"[^A-Z0-9]", "", (s or "").upper())
 
 
-def page_name(page):
+def page_names(page):
+    """Every product name the page prints in og:title, each <h1> and <title> -> [(name, text)] (texts naming no power-bank line are skipped)."""
+    out = []
     for pat in (r'<meta property="og:title" content="([^"]+)"', r"<h1[^>]*>(.*?)</h1>", r"<title>(.*?)</title>"):
-        m = re.search(pat, page, re.S)
-        if m:
+        for m in re.finditer(pat, page, re.S):
             t = P.clean(m[1])
             n = NAME.match(t)
             if n:
-                return re.sub(r"\s+", " ", n[1].replace("™", "")).strip(), t
-    return None, None
+                out.append((re.sub(r"\s+", " ", n[1].replace("™", "")).strip(), t))
+    return out
+
+
+def page_name(page):
+    """-> (name, title, contradiction). v2 (review-11): the og:title / h1 / title names must agree; two different names = (None, title,
+    'og:title X vs h1 Y') rather than the first match winning."""
+    names = page_names(page)
+    if not names:
+        return None, None, None
+    distinct = list(dict.fromkeys(norm(n) for n, _ in names))
+    if len(distinct) > 1:
+        return None, names[0][1], "contradictory page titles: " + " vs ".join(repr(n) for n in dict.fromkeys(n for n, _ in names))
+    return names[0][0], names[0][1], None
 
 
 class NitecorePowerbanks:
@@ -101,7 +116,7 @@ class NitecorePowerbanks:
 
 
 def parse_page(ad, snap, page):
-    name, title = page_name(page)
+    name, title, clash = page_name(page)
     slug = snap.ref.key
     model = None
     if name and norm(name) == norm(slug.replace("_", "")):
@@ -109,6 +124,8 @@ def parse_page(ad, snap, page):
     rows = rows_of(page)
     if model and rows and "Output" not in rows:
         model, why = None, "no Output row: a battery pack / cell, not a power bank"
+    elif clash:
+        why = f"no model identity: {clash}"
     else:
         why = f"no model identity: page name {name!r} does not equal the page's own product slug {slug!r}"
     pr = S2.parse2(ad, snap, page, {"title": title or slug, "variants": [], "_model": model})

@@ -38,6 +38,18 @@ _PD = json.loads((CODE / "schemas" / "public-detail.schema.json").read_text())
 DETAIL_VALIDATOR = jsonschema.Draft202012Validator(_PD, resolver=jsonschema.RefResolver.from_schema(_PD, store={_REC["$id"]: _REC}))
 
 
+def lifecycle_of(lifecycle, extra_json):
+    """Published lifecycle object. r11: store stopped listing it -> listing: delisted + delisted_at, claims kept (import.mark_delisted).
+    Review-11: a delisted entity is not asserted `current` (nothing re-verified it): state `unknown` + last_verified (date of the newest
+    stored snapshot behind its claims). discontinued stays discontinued (a maker statement, still true)."""
+    lc = {"current": "current", "discontinued": "discontinued"}.get(lifecycle, "unknown")
+    lst = (json.loads(extra_json or "{}").get("listing") or {})
+    if lst.get("state") != "delisted":
+        return {"state": lc}
+    return {"state": "unknown" if lc == "current" else lc, "listing": "delisted", "delisted_at": lst["since"],
+            **({"last_verified": lst["last_verified"]} if lst.get("last_verified") else {})}
+
+
 def validate_details(cat, details):
     """Every published detail (trusted + preview) must satisfy schemas/public-detail.schema.json (review P1-8); fail the build otherwise."""
     bad = []
@@ -353,9 +365,7 @@ def publish(api: Path, build_stats: dict, gate_out: dict | None = None):
             ok_rel = ("approved",) if scope == "trusted" else ("approved", "proposed")
             relations = [{"type": r["type"], "target": r["target_id"], "status": r["status"], "method": r["method"], "decision": r["decision"]}
                          for r in rels[eid] if r["status"] in ok_rel and (scope != "trusted" or r["target_id"] in files_t)]
-            lc = {"current": "current", "discontinued": "discontinued"}.get(e["lifecycle"], "unknown")
-            lst = (json.loads(e["extra"] or "{}").get("listing") or {})      # r11: store stopped listing it; claims kept (import.mark_delisted)
-            lcd = {"state": lc, **({"listing": "delisted", "delisted_at": lst["since"]} if lst.get("state") == "delisted" else {})}
+            lcd = lifecycle_of(e["lifecycle"], e["extra"])
             model_str = next((i["value"] for i in idents[eid] if i["scheme"] in ("mtm", "mfr_model", "mfr_sku") and i["role"] == "key"), None)
             vl = variant_label(cfg, specdefs, e, specs)
             return {"record_format": "specsheet.record/1", "review_scope": scope, "id": eid, "category": cat, "kind": e["kind"],

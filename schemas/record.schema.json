@@ -99,6 +99,11 @@
           "format": "date",
           "description": "First complete discovery run that no longer listed it."
         },
+        "last_verified": {
+          "type": "string",
+          "format": "date",
+          "description": "Delisted records only (review-11): date of the newest stored snapshot behind the kept claims. state is then 'unknown' (not 'current') unless the maker said discontinued."
+        },
         "gone_since": {
           "type": [
             "string",

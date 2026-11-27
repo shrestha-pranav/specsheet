@@ -8,8 +8,9 @@ discover : {base}/products.json (public Shopify catalogue) -> titles naming a 'P
            carts, cables and chargers are packages / accessories and are not discovered.
 fetch    : inherited from shopify_powerbanks._Shop (product page HTML + /products/<handle>.json in one gzip JSON blob, 1 req/s, crawler UA).
 parse    : pure. The maker's spec table(s): <tr><th>label</th><td>value</td></tr> rows (never marketing prose), mapped by the shared station row
-           mapper _powerstation.emit_rows (via shopify_powerstations.parse_station). A table headed 'Model | <other PECRON model>' or naming
-           another model in a label is skipped. In the table headed 'Model | <own model>', the unsectioned inverter rows 'Rated Power',
+           mapper _powerstation.emit_rows (via shopify_powerstations.parse_station). v2 (review-11): a table with any Model row -- th/th, th/td,
+           td/td -- naming another PECRON model (or not the page's own) is skipped whole, as is a table naming another model in a label.
+           Approximate values ('Around 28.7kg', '~28.7kg', 'approx.28.7kg', '28.7kg+', '28.7 kg (approx.)') are never emitted. In the table headed 'Model | <own model>', the unsectioned inverter rows 'Rated Power',
            'Peak Power' and 'Output Volts' are read as 'AC Output / ...' (the page title and bullets name the same figure the AC inverter rating,
            e.g. '1800W AC Pure Sine Wave Inverter (3000W Surge)'); every other label is passed through literally.
 Identity : the one PECRON model token in the title ('E1000LFP', 'F3000LFP'), which must equal the stem of a unit-only variant SKU ('E1000LFP',
@@ -23,7 +24,7 @@ import _powerstation as PS
 import _run
 import shopify_powerstations as SS
 
-ID, VERSION, SOURCE = "pecron_stations", 1, "pecron-us-stations"
+ID, VERSION, SOURCE = "pecron_stations", 2, "pecron-us-stations"
 MODEL = re.compile(r"\b([EF]\d{3,4}LFP)\b")
 NOT_STATION = re.compile(r"solar generator|\bkit\b|expansion|battery\b|cart\b|cable|charger|box\b|bag\b|panel", re.I)
 
@@ -56,11 +57,10 @@ class PecronStations(SS._Station):
         own = set(MODEL.findall(P.clean(prod.get("title"))))
         out = []
         for i, tb in enumerate(re.findall(r"<table[^>]*>(.*?)</table>", page, re.S)):
+            if self.foreign_model_row(tb, own):
+                continue                                   # v2: a table whose Model row (any th/td shape) names another model
             rows = {}
-            head = re.search(r"<tr[^>]*>\s*<th[^>]*>\s*(?:<[^>]+>\s*)*Model\s*(?:<[^>]+>\s*)*</th>\s*<th[^>]*>(.*?)</th>", tb, re.S)
-            printed = set(MODEL.findall(P.clean(head[1]))) if head else set()
-            if printed - own:
-                continue                                   # a table headed by another PECRON model
+            head = any(self.model_row(c) for c in self.rows(tb))
             for lab, val in re.findall(r"<tr[^>]*>\s*<th[^>]*>((?:(?!</?th\b).)*?)</th>\s*<td[^>]*>(.*?)</td>", tb, re.S):
                 lab = P.clean(lab).rstrip(":").strip()
                 if not lab:
@@ -68,13 +68,40 @@ class PecronStations(SS._Station):
                 if head and re.fullmatch(r"(?i)rated power|peak power|output volts", lab):
                     lab = "AC Output / " + lab               # the 'Model <X>' table's inverter rows (title: '1800W AC Pure Sine Wave Inverter')
                 v = PS.txt(val)
-                if re.match(r"(?i)\s*(around|about|approx\.?|approximately|~)\s", v):
-                    continue                                   # 'Around 28.7kg': an approximate figure is never an exact value
+                if APPROX.search(v):
+                    continue                                   # 'Around 28.7kg', '~28.7kg', '28.7kg+': an approximate figure is never exact
                 rows.setdefault(lab, v)
             others = {t for k in rows for t in MODEL.findall(k)} - own
             if rows and not others:
                 out.append((f"Specs {i + 1}" if i else "Specs", rows))
         return out, (None if out else "no spec table rows")
+
+    @staticmethod
+    def rows(tb):
+        """-> [[cell text, ...]] per <tr>, th and td alike."""
+        return [[P.clean(c) for c in re.findall(r"<t[hd][^>]*>(.*?)</t[hd]>", tr, re.S)] for tr in re.findall(r"<tr[^>]*>(.*?)</tr>", tb, re.S)]
+
+    @staticmethod
+    def model_row(cells):
+        return len(cells) >= 2 and bool(re.fullmatch(r"(?i)model(?:\s*(?:name|no\.?|number|#))?\s*:?", cells[0].strip()))
+
+    def foreign_model_row(self, tb, own):
+        """True when some row labelled Model (<th>|<td> label, <th>|<td> value) names any model other than the page's own, or no own model
+        at all ('<th>Model</th><td>E2000LFP</td>' on the E1000LFP page: review-11)."""
+        for cells in self.rows(tb):
+            if not self.model_row(cells):
+                continue
+            vals = " ".join(cells[1:])
+            named = set(MODEL.findall(vals.upper()))
+            if (named - own) or (vals.strip() and not (named & own)):
+                return True
+        return False
+
+
+# approximation markers, with or without whitespace (review-11): leading ~ / approx. / about / around / circa / ≈, trailing + / about / approx.,
+# '(approx.)'. A range separator inside a value ('100V~120V') is not one.
+APPROX = re.compile(r"(?i)^\s*(?:~|≈|approx\.?|approximately|about|around|circa|ca\.)\s*(?=[\d.]|$)|^\s*(?:approx\.?|approximately|about|around|circa)\b"
+                    r"|\+\s*$|\b(?:approx\.?|approximately|about)\s*$|\(\s*(?:approx\.?|approximately|about|est\.?)\s*\)")
 
 
 CLASSES = (PecronStations,)

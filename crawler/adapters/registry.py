@@ -99,6 +99,14 @@ SOURCES = {
     "winix-us-airpurifiers": {"brand": "winix", "brand_name": "Winix", "category": "air-purifiers", "module": "winix_airpurifiers", "importer": "model"},
     "energystar-refrigerators": {"brand": "energystar", "brand_name": "ENERGY STAR (cross-brand)", "category": "refrigerators", "module": "energystar_appliances", "importer": "model"},   # r11 A2-appl
     "energystar-dishwashers": {"brand": "energystar", "brand_name": "ENERGY STAR (cross-brand)", "category": "dishwashers", "module": "energystar_appliances", "importer": "model"},   # r11 A2-appl
+    "energystar-freezers": {"brand": "energystar", "brand_name": "ENERGY STAR (cross-brand)", "category": "freezers", "module": "energystar_siblings", "importer": "model"},   # r12 A2-appl2
+    "energystar-clothes-washers": {"brand": "energystar", "brand_name": "ENERGY STAR (cross-brand)", "category": "clothes-washers", "module": "energystar_siblings", "importer": "model"},   # r12 A2-appl2
+    "energystar-clothes-dryers": {"brand": "energystar", "brand_name": "ENERGY STAR (cross-brand)", "category": "clothes-dryers", "module": "energystar_siblings", "importer": "model"},   # r12 A2-appl2
+    "energystar-light-bulbs": {"brand": "energystar", "brand_name": "ENERGY STAR (cross-brand)", "category": "light-bulbs", "module": "energystar_bulbs", "importer": "model"},   # r12 A2-bulb
+    "zigbee2mqtt-devices": {"brand": "zigbee2mqtt", "brand_name": "Zigbee2MQTT device definitions (cross-brand)", "category": "smart-home", "module": "zigbee2mqtt_devices", "importer": "model"},   # r12 A2-home
+    # r12 A2-safe: CPSC recalls overlay, one source per category (crawler/adapters/cpsc_recalls.py; shared fetch store raw/cpsc-recalls)
+    **{f"cpsc-recalls-{c}": {"brand": "cpsc", "brand_name": "U.S. CPSC recalls (cross-brand)", "category": c, "module": "cpsc_recalls", "importer": "model"}
+       for c in ("air-purifiers", "chargers", "clothes-dryers", "clothes-washers", "dishwashers", "freezers", "monitors", "power-banks", "power-stations", "refrigerators", "robot-vacuums", "routers", "smart-home", "tvs")},
     "tripplite": {"brand": "tripplite", "brand_name": "Tripp Lite", "category": "power-strips", "module": "tripplite", "importer": "strip"},
     "cyberpower": {"brand": "cyberpower", "brand_name": "CyberPower", "category": "power-strips", "module": "cyberpower", "importer": "strip"},
     # crawl.py v0 stores (raw/<slug>/products/<key>/{extract,feed}.json, no snapshot log): read through crawlpy_strips, never written
@@ -251,6 +259,20 @@ def cache_write(p, parser, fp, snapshot, result):
     tmp.replace(p)
 
 
+def pinned_record(snapshots, key, pin):
+    """The status-200 snapshot record `pin` of ref `key`, or None."""
+    return next((s for s in snapshots if pin and s["ref"] == key and s["snapshot"] == pin and s["status"] == 200), None) if pin else None
+
+
+def apply_pins(latest, snapshots, hints_by_key):
+    """Review-11: a re-listed delisted ref whose fresh fetch failed the identity check carries hints.pinned_snapshot (crawler/adapters/_run);
+    parse/import keep using that last verified snapshot instead of the newer unverified 200."""
+    for key, h in hints_by_key.items():
+        rec = pinned_record(snapshots, key, (h or {}).get("pinned_snapshot"))
+        if rec is not None and key in latest:
+            latest[key] = rec
+
+
 def iter_observations(source_id, reparse=False, stats=None):
     """stats (optional dict) receives cache_hits / cache_misses / reparsed counters."""
     meta = SOURCES[source_id]
@@ -270,8 +292,8 @@ def iter_observations(source_id, reparse=False, stats=None):
                 yield rec, (d["result"] if isinstance(d, dict) and d.get("cache_format") else d), {}
         return
     cls = next(getattr(mod, n) for n in dir(mod) if isinstance(getattr(mod, n), type) and getattr(getattr(mod, n), "source_id", None) == source_id)
-    latest = {}
-    for s in store.snapshots():
+    latest, snaps = {}, store.snapshots()
+    for s in snaps:
         if s["status"] == 200 and compatible(cls, s):
             latest[s["ref"]] = s
     if source_id == "cyberpower":   # the log also holds datasheet PDFs (documents); entities come from the item JSON only
@@ -285,6 +307,7 @@ def iter_observations(source_id, reparse=False, stats=None):
     if d.exists():
         for r in json.loads(d.read_text()).get("refs", []):
             refs[r["key"]] = C.Ref(source_id, r["key"], r["url"], r.get("hints") or {k: v for k, v in r.items() if k not in ("key", "url")})
+    apply_pins(latest, snaps, {k: r.hints for k, r in refs.items()})
     ad = None
     for key, rec in sorted(latest.items()):
         if key not in refs and meta.get("importer") != "strip":   # laptop adapters: only refs the discovery knows

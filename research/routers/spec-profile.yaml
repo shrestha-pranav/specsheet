@@ -1473,3 +1473,75 @@ specs:
   sources:
   - Manufacturer spec table (TP-Link/NETGEAR/ASUS product page)
   example: 129.99
+- key: safety.recall
+  label: CPSC recall
+  group: general
+  type: text
+  unit: null
+  tier: important
+  level: model
+  facet: false
+  why: A recalled unit is a fire / injury hazard until the remedy is done; recall status is model-specific (CPSC names the model numbers).
+  traps: ['Applies only to the model numbers the notice prints; never extended by prefix, family or look-alike suffix.', 'No recall listed is unknown, never "not recalled".']
+  sources: [CPSC Recalls API (saferproducts.gov RestWebServices/Recall)]
+  example: 'CPSC 25338 (2025-06-12): The lithium-ion battery in the power bank can overheat, posing fire and burn hazards to consumers.'
+- key: safety.recall_id
+  label: CPSC recall number
+  group: general
+  type: list
+  items: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: The recall number to quote to the firm and to look up the notice.
+  sources: [CPSC Recalls API RecallNumber]
+  example: ['25338']
+- key: safety.recall_date
+  label: Recall date
+  group: general
+  type: date
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: Date of the most recent recall naming this model.
+  sources: [CPSC Recalls API RecallDate]
+  example: '2025-06-12'
+- key: safety.recall_remedy
+  label: Recall remedy
+  group: general
+  type: list
+  items: enum
+  enum: [replace, refund, repair, new_instructions, dispose, label, other]
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: What the firm offers (replacement, refund, repair).
+  sources: [CPSC Recalls API RemedyOptions]
+  example: [replace]
+- key: safety.recall_url
+  label: Recall notice
+  group: general
+  type: text
+  unit: null
+  tier: detail
+  level: model
+  facet: false
+  why: The CPSC notice with the serial ranges and remedy steps (the recall usually covers only some serial numbers).
+  sources: [CPSC Recalls API URL (www.cpsc.gov/Recalls/...)]
+  example: https://www.cpsc.gov/Recalls/2025/More-than-One-Million-Anker-Power-Banks-Recalled-Due-to-Fire-and-Burn-Hazards-Manufactured-by-Anker-Innovations
+- key: gen.record_kind
+  label: Record kind
+  group: general
+  type: enum
+  enum: [recall_only]
+  unit: null
+  tier: detail
+  level: model
+  facet: {kind: enum}
+  why: 'recall_only = we hold no maker or certifier record of this model, only the CPSC recall (identity + recall facts). Coordinator ruling r12: such rows are left out of every preset population.'
+  traps: ['Absent = a normal record (maker / certifier). Never set on a model that a maker or certifier source lists.']
+  sources: [cpsc_recalls overlay (crawler/adapters/cpsc_recalls.py)]
+  example: recall_only

@@ -52,8 +52,8 @@ class Kuxiu(unittest.TestCase):
     def test_policy_pins_and_allowlist(self):
         d = yaml.safe_load((ROOT / "data" / "decisions" / "policies.yaml").read_text())
         act = {x["id"]: x for x in d["claim_policies"]}
-        p = act["claim/mfr-chargers-kuxiu@1"]
-        self.assertEqual(p["audit"]["parsers"]["kuxiu_chargers@1"], R.parser_fingerprint("kuxiu_chargers"))
+        p = act["claim/mfr-chargers-kuxiu@2"]
+        self.assertEqual(p["audit"]["parsers"]["kuxiu_chargers@2"], R.parser_fingerprint("kuxiu_chargers"))
         self.assertFalse({"gen.gan", "gen.form_factor", "gen.product_line", "pd.protocols", "id.msrp_us", "in.rating", "out.ports"} & set(p["match"]["keys"]))
         old = act["claim/mfr-chargers-structured@4"]["audit"]["parsers"]
         self.assertEqual(old["ugreen_chargers@3"], R.parser_fingerprint("shopify_chargers"), "shopify_chargers unchanged: approved @4 still holds")

@@ -1426,6 +1426,62 @@ specs:
   - Intel/AMD ARK
   example: Intel SoC (System on Chip) platform
   level: model
+- key: cert.usb_if
+  label: USB-IF certified
+  group: general
+  type: bool
+  unit: null
+  tier: important
+  why: A USB-IF listing (TID) means the product passed USB-IF compliance testing, the only independent check of USB PD / Type-C behaviour a buyer can look up
+  level: model
+  facet:
+    kind: enum
+  traps:
+  - 'True only from the USB-IF Certified Product List itself (www.usb.org/products), bound by EXACT maker model: the listing company must be the brand and the part number must equal our model number (scripts/usbif.py). An OEM/ODM listing (Channel Well, Luxshare, ...) with the same code is a proposal, not a fact.'
+  - 'Absent from the list = unknown, never false: most brand-name laptops are listed under their OEM, or not at all. A USB-C/PD logo on the box is not certification.'
+  - A certified cable or PD controller inside the product does not certify the product; the row's product type must match the category
+  sources:
+  - USB-IF Certified Product List (www.usb.org/vtm-products/v1/all)
+  example: true
+- key: cert.usb_if_tid
+  label: USB-IF TID
+  group: general
+  type: text
+  unit: null
+  tier: detail
+  why: The Test ID lets a buyer look the listing up at usb.org
+  level: model
+  facet: false
+  traps:
+  - Only when exactly one listing binds; several TIDs stay on the source locators
+  sources:
+  - USB-IF Certified Product List
+  example: '1000081'
+- key: cert.usb_if_date
+  label: USB-IF certified on
+  group: general
+  type: date
+  unit: null
+  tier: detail
+  why: Dates the listing (and the spec revision it was tested against)
+  level: model
+  facet: false
+  sources:
+  - USB-IF Certified Product List (global_pass_date)
+  example: '2017-09-06'
+- key: cert.usb_if_product_type
+  label: USB-IF product type
+  group: general
+  type: enum
+  enum: [power_brick, power_bank, notebook, pd_controller, psd, cable, other]
+  unit: null
+  tier: detail
+  why: What USB-IF certified (the brick itself, not a cable or controller in it)
+  level: model
+  facet: false
+  sources:
+  - USB-IF Certified Product List (PD marketing category / device category)
+  example: power_brick
 profile_format: specsheet.category-profile/1
 market: US
 status: pilot

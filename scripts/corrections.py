@@ -35,12 +35,14 @@ Hardening (Codex review-7, 2026-11-25):
     sanitize_doc() is the last pass before data/corrections is written (dry-run prints the same sanitized text).
   - Crawl policy on every hop. Every fetch here goes through policy_open(): the first URL and each redirect target must be either
     the GitHub issue-attachment INTAKE exception or a listed `crawl: agent` source; human_only, none and unlisted hosts get zero requests.
+    A `crawl: agent` host is also robots.txt-checked as our real product token (specsheet-corrections), its robots.txt redirects are
+    policy-checked per hop, and every request / hop waits max(1 s, Crawl-delay) per host (review-11).
     INTAKE exception (documented, narrow): attachment hashing of images a contributor uploaded to a field-correction issue may fetch
     github.com/user-attachments/assets/*, (private-)user-images.githubusercontent.com and the GitHub asset CDN those redirect to, even
     though github.com issue pages are `crawl: human_only`: the contributor submitted the file to us for exactly this check, and the
     bytes are hashed in memory, never stored. Issue text itself is read only through `gh api` (api.github.com, the same intake).
 """
-import argparse, datetime as dt, hashlib, html, json, os, re, subprocess, sys, urllib.error, urllib.parse, urllib.request
+import argparse, datetime as dt, hashlib, html, json, os, re, subprocess, sys, time, urllib.error, urllib.parse, urllib.request
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -548,54 +550,102 @@ def fetch_allowed(url, pol):
 
 
 UA = "specsheet-corrections/0.1 (+https://github.com/shrestha-pranav/specsheet)"
-_ROBOTS = {}
+AGENT = UA.split("/", 1)[0]          # robots.txt product token we actually send (review-11: was matched as specsheet-crawler)
+DELAY = 1.0                          # per-host floor between requests (team rule ~1 req/s); robots.txt Crawl-delay raises it
+ROBOTS_HOPS = 5                      # RFC 9309 2.3.1.2: follow at least five robots.txt redirects
+_ROBOTS, _LAST = {}, {}
+_sleep, _now = time.sleep, time.monotonic       # tests patch these
 
 
-def robots_ok(url, handlers=(), timeout=30):
-    """RFC 9309 robots.txt check (crawler/robots.py, A3-rob r11) for a crawl: agent source; the GitHub intake (the submitter's own upload,
-    not a crawl) is exempt. Fetched once per origin (cached only on the real transport); 4xx = allow, 5xx / unreachable = refuse."""
+def _pace(url, rb=None):
+    """Wait until max(DELAY, Crawl-delay) has passed since the last request this process sent to url's host (every request and hop)."""
+    h = (urllib.parse.urlsplit(url).netloc or "").lower()
+    d = max(DELAY, (rb.crawl_delay if rb is not None else 0) or 0)
+    last = _LAST.get(h)
+    if last is not None:
+        wait = last + d - _now()
+        if wait > 0:
+            _sleep(wait)
+    _LAST[h] = _now()
+
+
+class _RobotsRedirect(urllib.request.HTTPRedirectHandler):
+    """robots.txt redirects: each hop must itself be a listed `crawl: agent` source (policy, not robots -- no recursion), paced."""
+    max_redirections = ROBOTS_HOPS
+
+    def __init__(self, pol):
+        self.pol = pol
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        newurl = urllib.parse.urljoin(req.full_url, newurl)
+        if fetch_allowed(newurl, self.pol) != "agent":
+            raise BlockedFetch(f"robots.txt redirect to {SP.host_of(newurl) or newurl} refused by the crawl policy")
+        _pace(newurl)
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+def robots_for(url, pol, handlers=(), timeout=30):
+    """crawler/robots.py Robots for url's origin, matched as AGENT (our real UA). Fetched once per origin (process cache on the real
+    transport, per fake transport in tests); 4xx = allow, 5xx / unreachable / a policy-refused robots redirect = refuse all."""
     sys.path.insert(0, str(CODE / "crawler"))
     import robots as RB
     sp = urllib.parse.urlsplit(url)
     origin = f"{sp.scheme}://{sp.netloc.lower()}"
-    rb = _ROBOTS.get(origin) if not handlers else None
+    cache = _ROBOTS if not handlers else handlers[0].__dict__.setdefault("_robots_cache", {})    # a fake transport gets its own cache
+    rb = cache.get(origin)
     if rb is None:
         req = urllib.request.Request(origin + "/robots.txt", headers={"User-Agent": UA})
+        _pace(req.full_url)
         try:
-            with urllib.request.build_opener(*handlers).open(req, timeout=timeout) as resp:
-                rb = RB.Robots.from_response(resp.getcode() or 200, resp.read(RB.MAX_BYTES).decode("utf-8", "replace"))
+            with urllib.request.build_opener(_RobotsRedirect(pol), *handlers).open(req, timeout=timeout) as resp:
+                rb = RB.Robots.from_response(resp.getcode() or 200, resp.read(RB.MAX_BYTES).decode("utf-8", "replace"), agent=AGENT)
         except urllib.error.HTTPError as e:
-            rb = RB.Robots.from_response(e.code, "")
+            rb = RB.Robots.from_response(e.code, "", agent=AGENT)
         except Exception:
-            rb = RB.Robots.from_response(None, "")
-        if not handlers:
-            _ROBOTS[origin] = rb
-    return rb.allowed(url)
+            rb = RB.Robots.from_response(None, "", agent=AGENT)
+        cache[origin] = rb
+    return rb
+
+
+def robots_ok(url, pol=None, handlers=(), timeout=30):
+    """RFC 9309 robots.txt check (crawler/robots.py) for a crawl: agent source; the GitHub intake (the submitter's own upload, not a
+    crawl) is exempt."""
+    return robots_for(url, pol if pol is not None else SP.load(), handlers, timeout).allowed(url)
 
 
 def _allowed_hop(url, pol, handlers=(), timeout=30):
+    """-> the Robots to pace by (None for intake) when url may be requested; raises BlockedFetch otherwise."""
     mode = fetch_allowed(url, pol)
-    return mode == "intake" or (mode == "agent" and robots_ok(url, handlers, timeout))
+    if mode == "intake":
+        return None
+    if mode == "agent":
+        rb = robots_for(url, pol, handlers, timeout)
+        if rb.allowed(url):
+            return rb
+    raise BlockedFetch(f"{SP.host_of(url) or url} refused by the crawl policy or robots.txt")
 
 
 class PolicyRedirect(urllib.request.HTTPRedirectHandler):
-    """Re-checks every redirect hop before the next request is built: a refused hop raises, so no request reaches it."""
+    """Re-checks every redirect hop before the next request is built: a refused hop raises, so no request reaches it. Each hop is paced."""
     def __init__(self, pol, handlers=()):
         self.pol, self.handlers = pol, handlers
 
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         newurl = urllib.parse.urljoin(req.full_url, newurl)
-        if not _allowed_hop(newurl, self.pol, self.handlers):
-            raise BlockedFetch(f"redirect to {SP.host_of(newurl) or newurl} refused by the crawl policy or robots.txt")
+        try:
+            rb = _allowed_hop(newurl, self.pol, self.handlers)
+        except BlockedFetch:
+            raise BlockedFetch(f"redirect to {SP.host_of(newurl) or newurl} refused by the crawl policy or robots.txt") from None
+        _pace(newurl, rb)
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
 def policy_open(url, pol, timeout=30, handlers=()):
     """The only network opener in this module. `handlers` lets tests inject a fake transport (zero real requests)."""
-    if not _allowed_hop(url, pol, handlers, timeout):
-        raise BlockedFetch(f"{SP.host_of(url) or url} refused by the crawl policy or robots.txt")
+    rb = _allowed_hop(url, pol, handlers, timeout)
     opener = urllib.request.build_opener(PolicyRedirect(pol, handlers), *handlers)
     req = urllib.request.Request(url, headers={"User-Agent": UA})
+    _pace(url, rb)
     return opener.open(req, timeout=timeout)
 
 

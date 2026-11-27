@@ -330,7 +330,7 @@ function d8Gate(preset, all, facets, scope, minFill = preset.min_fill ?? 0.8, mi
 // ---- killer-query presets (A4, 2026-11-24): data-driven gallery, build-time fill gate, unknown-might-match, PDO pill, size grid, beacons off
 {
   const data = await ui.loadPresets();
-  assert(data.presets.length >= 6 && data.presets.length <= 14, 'presets: 6-14 cards from presets.json');
+  assert(data.presets.length >= 6 && data.presets.length <= 24, 'presets: 6-24 cards from presets.json');   // r12 A2-bulb: 14 -> 24 (r12 washer/dryer, smart-home, light-bulbs presets)
   const src = await json('presets.json');
   assert.deepEqual(data.presets.map(p => p.id), src.presets.map(p => p.id), 'built presets.json carries every source preset (no hard-coded list in app.js)');
   assert(!/ram-upgradable|no-pwm-usbc-monitor/.test(source), 'preset ids are data, never hard-coded in app.js');
