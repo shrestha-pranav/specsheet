@@ -1,0 +1,697 @@
+{
+ "id": "dishwashers",
+ "schema_version": "0.1",
+ "groups": [
+  {
+   "id": "general",
+   "label": "General & identity",
+   "order": 0
+  },
+  {
+   "id": "config",
+   "label": "Type & installation",
+   "order": 1
+  },
+  {
+   "id": "dims",
+   "label": "Size & fit",
+   "order": 2
+  },
+  {
+   "id": "capacity",
+   "label": "Capacity",
+   "order": 3
+  },
+  {
+   "id": "energy",
+   "label": "Energy & certification",
+   "order": 4
+  },
+  {
+   "id": "water",
+   "label": "Water",
+   "order": 5
+  },
+  {
+   "id": "noise",
+   "label": "Noise",
+   "order": 6
+  },
+  {
+   "id": "features",
+   "label": "Drying & features",
+   "order": 7
+  },
+  {
+   "id": "conn",
+   "label": "Connectivity",
+   "order": 8
+  }
+ ],
+ "conditions": [
+  {
+   "id": "test_procedure",
+   "label": "DOE test procedure",
+   "type": "enum",
+   "enum": [
+    "appendix_c1",
+    "appendix_c2",
+    "maker_unstated"
+   ],
+   "description": "Basis of kWh/yr and gal/cycle. Current filings use 10 CFR 430 Subpart B Appendix C1 (normal cycle, soil-sensing average, 215 cycles/yr). DOE's newer Appendix C2 (adopted with the amended standards; to verify the mandatory date before an adapter tags it) changes cycle/soil definitions, so C1 and C2 figures are not comparable. ES active rows = the procedure of the active specification."
+  },
+  {
+   "id": "noise_basis",
+   "label": "Noise basis",
+   "type": "enum",
+   "enum": [
+    "maker_dba_unstated_method",
+    "sound_power_db_re_1pw"
+   ],
+   "description": "US makers print \"dBA\" without method (in practice a sound-power-style rating on the normal or quietest cycle, varies by maker); EU label figures are sound power dB(A) re 1 pW. Cycle is rarely stated. Not comparable across makers with confidence."
+  },
+  {
+   "id": "noise_cycle",
+   "label": "Cycle measured",
+   "type": "enum",
+   "enum": [
+    "normal",
+    "quietest",
+    "unstated"
+   ],
+   "description": "Which wash cycle a noise figure is for; \"Quiet/Silence\" cycles can be 2-4 dB lower than Normal."
+  }
+ ],
+ "fields": [
+  {
+   "key": "gen.brand",
+   "label": "Brand",
+   "group": "general",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "bosch",
+    "whirlpool",
+    "kitchenaid",
+    "maytag",
+    "ge",
+    "lg",
+    "samsung",
+    "frigidaire",
+    "midea",
+    "miele",
+    "thermador",
+    "beko",
+    "fisher_paykel",
+    "asko"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "gen.is_pattern",
+   "label": "Certified pattern (covers several SKUs)",
+   "group": "general",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "config.es_type",
+   "label": "Size class (ENERGY STAR)",
+   "group": "config",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "standard",
+    "compact"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "config.install",
+   "label": "Installation",
+   "group": "config",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "built_in",
+    "drawer",
+    "portable",
+    "countertop",
+    "integrated_panel_ready"
+   ],
+   "items": null,
+   "tier": "important",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "dims.width_in",
+   "label": "Width",
+   "group": "dims",
+   "type": "number",
+   "unit": "in",
+   "display_unit": "in",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "dims.depth_in",
+   "label": "Depth",
+   "group": "dims",
+   "type": "number",
+   "unit": "in",
+   "display_unit": "in",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "dims.height_in",
+   "label": "Height (min-max)",
+   "group": "dims",
+   "type": "range",
+   "unit": "in",
+   "display_unit": "in",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "capacity.place_settings",
+   "label": "Place settings",
+   "group": "capacity",
+   "type": "integer",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "energy.annual_kwh",
+   "label": "Energy use",
+   "group": "energy",
+   "type": "number",
+   "unit": "kWh/yr",
+   "display_unit": "kWh/yr",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": [
+    "test_procedure"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "energy.pct_below_federal",
+   "label": "Better than federal standard (energy)",
+   "group": "energy",
+   "type": "number",
+   "unit": "%",
+   "display_unit": "%",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "water.gal_per_cycle",
+   "label": "Water use",
+   "group": "water",
+   "type": "number",
+   "unit": "gal",
+   "display_unit": "gal",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": [
+    "test_procedure"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "cert.energy_star",
+   "label": "ENERGY STAR certified",
+   "group": "energy",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 30,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cert.es_most_efficient",
+   "label": "ENERGY STAR Most Efficient",
+   "group": "energy",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cert.es_date",
+   "label": "Certified on",
+   "group": "energy",
+   "type": "date",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 50,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "noise.dba",
+   "label": "Noise",
+   "group": "noise",
+   "type": "number",
+   "unit": "dBA",
+   "display_unit": "dBA",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": [
+    "noise_basis",
+    "noise_cycle"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "features.tub_material",
+   "label": "Tub",
+   "group": "features",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "stainless",
+    "hybrid",
+    "plastic"
+   ],
+   "items": null,
+   "tier": "important",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "features.drying_method",
+   "label": "Drying system",
+   "group": "features",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "heated",
+    "condensation",
+    "fan_assisted",
+    "auto_door_open",
+    "mineral_zeolite",
+    "air",
+    "turbo",
+    "other"
+   ],
+   "items": "enum",
+   "tier": "important",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "multi",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "features.soil_sensor",
+   "label": "Soil sensor",
+   "group": "features",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "features.third_rack",
+   "label": "Third rack",
+   "group": "features",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "conn.connected",
+   "label": "Smart / connected",
+   "group": "conn",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall",
+   "label": "CPSC recall",
+   "group": "general",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_id",
+   "label": "CPSC recall number",
+   "group": "general",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": "text",
+   "tier": "detail",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_date",
+   "label": "Recall date",
+   "group": "general",
+   "type": "date",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 50,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_remedy",
+   "label": "Recall remedy",
+   "group": "general",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "replace",
+    "refund",
+    "repair",
+    "new_instructions",
+    "dispose",
+    "label",
+    "other"
+   ],
+   "items": "enum",
+   "tier": "detail",
+   "priority": 60,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_url",
+   "label": "Recall notice",
+   "group": "general",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 70,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "gen.record_kind",
+   "label": "Record kind",
+   "group": "general",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "recall_only"
+   ],
+   "items": null,
+   "tier": "detail",
+   "priority": 80,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  }
+ ]
+}

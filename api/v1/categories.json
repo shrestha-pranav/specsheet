@@ -1,0 +1,1716 @@
+[
+ {
+  "id": "power-strips-demo",
+  "name": "Power strips (demo)",
+  "description": "Fictional demonstration of a second category schema.",
+  "count": 4,
+  "demo": true,
+  "products": "power-strips-demo/products.json",
+  "fields": [
+   {
+    "key": "outlet_count",
+    "label": "AC outlets",
+    "group": "Capacity",
+    "type": "number",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "usb_port_count",
+    "label": "USB ports",
+    "group": "Capacity",
+    "type": "number",
+    "unit": null,
+    "facet": true,
+    "priority": 20,
+    "column": true
+   },
+   {
+    "key": "max_load_w",
+    "label": "Rated load",
+    "group": "Capacity",
+    "type": "number",
+    "unit": "W",
+    "facet": true,
+    "priority": 30,
+    "column": true
+   },
+   {
+    "key": "cord_length_m",
+    "label": "Cord length",
+    "group": "Form",
+    "type": "number",
+    "unit": "m",
+    "facet": true,
+    "priority": 10,
+    "column": false
+   },
+   {
+    "key": "mounting",
+    "label": "Mounting",
+    "group": "Form",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 20,
+    "column": true,
+    "options": [
+     "none",
+     "wall",
+     "desk"
+    ]
+   },
+   {
+    "key": "surge_protection",
+    "label": "Surge protection",
+    "group": "Protection",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "joule_rating",
+    "label": "Surge rating",
+    "group": "Protection",
+    "type": "number",
+    "unit": "J",
+    "facet": true,
+    "priority": 20,
+    "column": false
+   },
+   {
+    "key": "clamping_range",
+    "label": "Clamping range",
+    "group": "Protection",
+    "type": "range",
+    "unit": "V",
+    "facet": true,
+    "priority": 30,
+    "column": false
+   },
+   {
+    "key": "indicator_lights",
+    "label": "Indicator lights",
+    "group": "Protection",
+    "type": "list",
+    "unit": null,
+    "facet": true,
+    "priority": 40,
+    "column": false
+   },
+   {
+    "key": "notes_on_layout",
+    "label": "Outlet layout",
+    "group": "Form",
+    "type": "text",
+    "unit": null,
+    "facet": true,
+    "priority": 30,
+    "column": false
+   }
+  ]
+ },
+ {
+  "id": "air-purifiers",
+  "name": "Air purifiers",
+  "description": "Portable room air cleaners by manufacturer model number (Levoit LAP-C401S-WUSR / Core 400S, Coway AP-1512HH, Winix C545, Blueair 3232111100): smoke/dust/pollen/PM2.5 CADR with its basis (ENERGY STAR certified vs maker-stated AHAM vs self-claimed), suggested room size with its basis, true HEPA only when stated, replacement filter part/life/price, noise per speed, rated power and ENERGY STAR efficiency, CARB certification (dated, mechanical vs electronic), Wi-Fi. Sources: ENERGY STAR Certified Room Air Cleaners, the CARB certified list, Levoit and Winix US pages.",
+  "count": 217,
+  "demo": false,
+  "status": "accepted",
+  "schema": "air-purifiers/schema.json",
+  "index": [
+   "air-purifiers/index.json"
+  ],
+  "facets": "air-purifiers/facets.json",
+  "products": "air-purifiers/products.json",
+  "fields": [
+   {
+    "key": "cadr.smoke_cfm",
+    "label": "Smoke CADR",
+    "group": "cadr",
+    "type": "number",
+    "unit": "cfm",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "room.size_sqft",
+    "label": "Suggested room size",
+    "group": "room",
+    "type": "number",
+    "unit": "ft2",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "filter.true_hepa",
+    "label": "True HEPA",
+    "group": "filter",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "ozone.carb_certified",
+    "label": "CARB certified",
+    "group": "ozone",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "noise.db",
+    "label": "Noise",
+    "group": "noise",
+    "type": "number",
+    "unit": "dB",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "eff.energy_star",
+    "label": "ENERGY STAR certified",
+    "group": "power",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 100,
+    "column": true
+   },
+   {
+    "key": "smart.wifi",
+    "label": "Wi-Fi / app",
+    "group": "smart",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/air-purifiers/index.json"
+   ],
+   "count": 34,
+   "products": "preview/air-purifiers/products/",
+   "only_preview": 0
+  },
+  "certification_only": {
+   "index": [
+    "air-purifiers/index-certonly.json"
+   ],
+   "count": 926,
+   "certification_keys": [
+    "cert.maker_listed",
+    "eff.energy_star",
+    "eff.most_efficient",
+    "gen.record_kind",
+    "ozone.carb_certified",
+    "ozone.carb_date",
+    "ozone.carb_eo",
+    "ozone.carb_type",
+    "safety.recall",
+    "safety.recall_date",
+    "safety.recall_id",
+    "safety.recall_remedy",
+    "safety.recall_url"
+   ],
+   "rule": "trusted record whose values are all certification / regulatory metadata (profile index_rows): in lookup and products/, not a default index row"
+  }
+ },
+ {
+  "id": "chargers",
+  "name": "USB chargers",
+  "description": "USB wall chargers, multi-port GaN and desktop charging stations, travel and car chargers by manufacturer model number (Anker A2147, Belkin WCH010, UGREEN 15202, AUKEY PA-C4): labelled total output vs all-ports-at-once output vs best single port, per-port USB PD fixed PDOs and PPS ranges, EPR (28 V+), port counts, input, size and weight. Sources: thirteen maker US stores. Supersedes the v0 gan-chargers pilot (old ids redirect).",
+  "count": 151,
+  "demo": false,
+  "status": "accepted",
+  "schema": "chargers/schema.json",
+  "index": [
+   "chargers/index.json"
+  ],
+  "facets": "chargers/facets.json",
+  "products": "chargers/products.json",
+  "fields": [
+   {
+    "key": "out.max_total_w",
+    "label": "Maximum total output",
+    "group": "output",
+    "type": "number",
+    "unit": "W",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "out.max_single_port_w",
+    "label": "Best single-port output",
+    "group": "output",
+    "type": "number",
+    "unit": "W",
+    "facet": true,
+    "priority": 30,
+    "column": true
+   },
+   {
+    "key": "out.port_count",
+    "label": "Ports",
+    "group": "output",
+    "type": "number",
+    "unit": null,
+    "facet": true,
+    "priority": 50,
+    "column": true
+   },
+   {
+    "key": "pd.pps_max_current_a",
+    "label": "Highest PPS current",
+    "group": "pd",
+    "type": "number",
+    "unit": "A",
+    "facet": true,
+    "priority": 20,
+    "column": true
+   },
+   {
+    "key": "phys.weight",
+    "label": "Weight",
+    "group": "phys",
+    "type": "number",
+    "unit": "g",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/chargers/index.json"
+   ],
+   "count": 192,
+   "products": "preview/chargers/products/",
+   "only_preview": 44
+  }
+ },
+ {
+  "id": "clothes-dryers",
+  "name": "Clothes dryers",
+  "description": "US clothes dryers by maker model number and by ENERGY STAR certified pattern (one DOE basic model covering several finishes, shown as its own row and flagged): electric or gas, vented or ventless, heat pump (where filed), DOE drum capacity, CEF and annual kWh under DOE Appendix D2, test-cycle time, voltage (where filed), dimensions, refrigerant, features, connected. Source: ENERGY STAR Certified Residential Clothes Dryers (U.S. EPA). Absent from ENERGY STAR = unknown, never 'not certified'; a blank heat-pump field is unknown.",
+  "count": 554,
+  "demo": false,
+  "status": "accepted",
+  "schema": "clothes-dryers/schema.json",
+  "index": [
+   "clothes-dryers/index.json"
+  ],
+  "facets": "clothes-dryers/facets.json",
+  "products": "clothes-dryers/products.json",
+  "fields": [
+   {
+    "key": "config.fuel",
+    "label": "Fuel",
+    "group": "config",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 20,
+    "column": true
+   },
+   {
+    "key": "config.ventless",
+    "label": "Ventless",
+    "group": "config",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 30,
+    "column": true
+   },
+   {
+    "key": "config.heat_pump",
+    "label": "Heat pump",
+    "group": "config",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 40,
+    "column": true
+   },
+   {
+    "key": "capacity.drum_ft3",
+    "label": "Drum capacity (DOE)",
+    "group": "capacity",
+    "type": "number",
+    "unit": "ft3",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "energy.cef",
+    "label": "Combined energy factor (CEF)",
+    "group": "energy",
+    "type": "number",
+    "unit": "lb/kWh",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "cert.energy_star",
+    "label": "ENERGY STAR certified",
+    "group": "energy",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 50,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/clothes-dryers/index.json"
+   ],
+   "count": 441,
+   "products": "preview/clothes-dryers/products/",
+   "only_preview": 0
+  }
+ },
+ {
+  "id": "clothes-washers",
+  "name": "Clothes washers",
+  "description": "US clothes washers by maker model number and by ENERGY STAR certified pattern (one DOE basic model covering several finishes, shown as its own row and flagged): front- or top-load, combo / laundry center, DOE capacity (never the larger IEC figure), IMEF and IWF under DOE Appendix J2 with the federal limits, annual kWh and gallons, width (height and depth where filed), features, connected. Source: ENERGY STAR Certified Residential Clothes Washers (U.S. EPA). Absent from ENERGY STAR = unknown, never 'not certified'.",
+  "count": 404,
+  "demo": false,
+  "status": "accepted",
+  "schema": "clothes-washers/schema.json",
+  "index": [
+   "clothes-washers/index.json"
+  ],
+  "facets": "clothes-washers/facets.json",
+  "products": "clothes-washers/products.json",
+  "fields": [
+   {
+    "key": "config.load",
+    "label": "Loading",
+    "group": "config",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "capacity.doe_ft3",
+    "label": "Capacity (DOE cu ft)",
+    "group": "capacity",
+    "type": "number",
+    "unit": "ft3",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "energy.annual_kwh",
+    "label": "Energy use",
+    "group": "energy",
+    "type": "number",
+    "unit": "kWh/yr",
+    "facet": true,
+    "priority": 30,
+    "column": true
+   },
+   {
+    "key": "water.iwf",
+    "label": "Integrated water factor (IWF)",
+    "group": "water",
+    "type": "number",
+    "unit": "gal/cycle/ft3",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "cert.energy_star",
+    "label": "ENERGY STAR certified",
+    "group": "energy",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 40,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/clothes-washers/index.json"
+   ],
+   "count": 261,
+   "products": "preview/clothes-washers/products/",
+   "only_preview": 0
+  }
+ },
+ {
+  "id": "dishwashers",
+  "name": "Dishwashers",
+  "description": "US dishwashers by maker model number (Bosch SHP78CM5N, Samsung DW80B7070US/AA) and by ENERGY STAR certified pattern (one DOE basic model covering several finishes, shown as its own row and flagged): standard vs compact, width and depth, place settings, annual kWh and gallons per cycle under the DOE test procedure, % below the federal standard, tub, drying system, soil sensor, connected. Noise (dBA) is a maker-only figure and has no source yet. Source: ENERGY STAR Certified Residential Dishwashers (U.S. EPA). Absent from ENERGY STAR = unknown, never 'not certified'.",
+  "count": 699,
+  "demo": false,
+  "status": "accepted",
+  "schema": "dishwashers/schema.json",
+  "index": [
+   "dishwashers/index.json"
+  ],
+  "facets": "dishwashers/facets.json",
+  "products": "dishwashers/products.json",
+  "fields": [
+   {
+    "key": "dims.width_in",
+    "label": "Width",
+    "group": "dims",
+    "type": "number",
+    "unit": "in",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "capacity.place_settings",
+    "label": "Place settings",
+    "group": "capacity",
+    "type": "number",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "energy.annual_kwh",
+    "label": "Energy use",
+    "group": "energy",
+    "type": "number",
+    "unit": "kWh/yr",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "water.gal_per_cycle",
+    "label": "Water use",
+    "group": "water",
+    "type": "number",
+    "unit": "gal",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "cert.energy_star",
+    "label": "ENERGY STAR certified",
+    "group": "energy",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 30,
+    "column": true
+   },
+   {
+    "key": "noise.dba",
+    "label": "Noise",
+    "group": "noise",
+    "type": "number",
+    "unit": "dBA",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/dishwashers/index.json"
+   ],
+   "count": 361,
+   "products": "preview/dishwashers/products/",
+   "only_preview": 0
+  }
+ },
+ {
+  "id": "freezers",
+  "name": "Freezers",
+  "description": "US stand-alone freezers (upright, chest, compact) by maker model number and by ENERGY STAR certified pattern (one DOE basic model covering several finishes or hinges, shown as its own row and flagged): ENERGY STAR type and DOE product class, defrost, compact / built-in, DOE total and adjusted volume (adjusted volume is never shown as capacity), annual kWh under DOE Appendix B with the federal limit and % below it, refrigerant, ice maker, connected. ENERGY STAR publishes no dimensions for freezers. Source: ENERGY STAR Certified Residential Freezers (U.S. EPA). Absent from ENERGY STAR = unknown, never 'not certified'.",
+  "count": 615,
+  "demo": false,
+  "status": "accepted",
+  "schema": "freezers/schema.json",
+  "index": [
+   "freezers/index.json"
+  ],
+  "facets": "freezers/facets.json",
+  "products": "freezers/products.json",
+  "fields": [
+   {
+    "key": "config.es_type",
+    "label": "Type (ENERGY STAR)",
+    "group": "config",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "config.defrost",
+    "label": "Defrost",
+    "group": "config",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 30,
+    "column": true
+   },
+   {
+    "key": "capacity.total_ft3",
+    "label": "Total capacity (DOE)",
+    "group": "capacity",
+    "type": "number",
+    "unit": "ft3",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "energy.annual_kwh",
+    "label": "Energy use",
+    "group": "energy",
+    "type": "number",
+    "unit": "kWh/yr",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "cert.energy_star",
+    "label": "ENERGY STAR certified",
+    "group": "energy",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 40,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/freezers/index.json"
+   ],
+   "count": 154,
+   "products": "preview/freezers/products/",
+   "only_preview": 0
+  }
+ },
+ {
+  "id": "laptops",
+  "name": "Laptops",
+  "description": "US-market laptop configurations by manufacturer part number (Lenovo MTM, ASUS part/model code, Apple model).",
+  "count": 2525,
+  "demo": false,
+  "status": "accepted",
+  "schema": "laptops/schema.json",
+  "index": [
+   "laptops/index-0.json",
+   "laptops/index-1.json"
+  ],
+  "facets": "laptops/facets.json",
+  "products": "laptops/products.json",
+  "fields": [
+   {
+    "key": "cpu.model",
+    "label": "Processor model",
+    "group": "cpu",
+    "type": "text",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "gpu.model",
+    "label": "GPU",
+    "group": "gpu",
+    "type": "text",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "mem.size",
+    "label": "Installed RAM",
+    "group": "memory",
+    "type": "number",
+    "unit": "GB",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "stor.size",
+    "label": "Installed storage",
+    "group": "storage",
+    "type": "number",
+    "unit": "GB",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "disp.size",
+    "label": "Screen size",
+    "group": "display",
+    "type": "number",
+    "unit": "in",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "pwr.battery_wh",
+    "label": "Battery capacity",
+    "group": "power",
+    "type": "number",
+    "unit": "Wh",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "phys.weight",
+    "label": "Weight (config-specific)",
+    "group": "physical",
+    "type": "number",
+    "unit": "kg",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/laptops/index-0.json",
+    "preview/laptops/index-1.json"
+   ],
+   "count": 2164,
+   "products": "preview/laptops/products/",
+   "only_preview": 130
+  }
+ },
+ {
+  "id": "light-bulbs",
+  "name": "Light bulbs",
+  "description": "US light bulbs by maker model number (Philips Hue 9290011998B, WiZ 9290024493A, GE 93128981, Feit OM60/927CA/AG): brightness in lumens with the colour temperature it was measured at (white output; full-colour output is its own column and never mixed in), real watts (the '60 W equivalent' class is shown separately and is never a brightness), efficacy, CRI and R9, shape and base (A19 / BR30 / PAR38, E26 / E12 / GU10), dimming, smart protocol (Wi-Fi / Zigbee / Bluetooth) and colour capability, standby power, rated life. Source this round: ENERGY STAR Connected Light Bulbs (U.S. EPA; the lamps programme has ended and the list is frozen at January 2025, so certification here is historical). Absent from ENERGY STAR = unknown, never 'not certified'.",
+  "count": 304,
+  "demo": false,
+  "status": "accepted",
+  "schema": "light-bulbs/schema.json",
+  "index": [
+   "light-bulbs/index.json"
+  ],
+  "facets": "light-bulbs/facets.json",
+  "products": "light-bulbs/products.json",
+  "fields": [
+   {
+    "key": "light.lumens",
+    "label": "Brightness (white, lumens)",
+    "group": "light",
+    "type": "number",
+    "unit": "lm",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "light.cct_k",
+    "label": "Colour temperature (rated)",
+    "group": "light",
+    "type": "number",
+    "unit": "K",
+    "facet": true,
+    "priority": 50,
+    "column": true
+   },
+   {
+    "key": "light.cri",
+    "label": "Colour rendering (CRI Ra)",
+    "group": "light",
+    "type": "number",
+    "unit": null,
+    "facet": true,
+    "priority": 80,
+    "column": true
+   },
+   {
+    "key": "form.shape",
+    "label": "Shape",
+    "group": "form",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "form.base",
+    "label": "Base",
+    "group": "form",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 20,
+    "column": true
+   },
+   {
+    "key": "power.watts",
+    "label": "Power draw",
+    "group": "power",
+    "type": "number",
+    "unit": "W",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "smart.protocols",
+    "label": "Radio / protocol",
+    "group": "smart",
+    "type": "list",
+    "unit": null,
+    "facet": true,
+    "priority": 20,
+    "column": true
+   },
+   {
+    "key": "smart.color",
+    "label": "Colour capability",
+    "group": "smart",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 30,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/light-bulbs/index.json"
+   ],
+   "count": 23,
+   "products": "preview/light-bulbs/products/",
+   "only_preview": 0
+  },
+  "certification_only": {
+   "index": [
+    "light-bulbs/index-certonly.json"
+   ],
+   "count": 0,
+   "certification_keys": [
+    "cert.energy_star",
+    "cert.es_date"
+   ],
+   "rule": "trusted record whose values are all certification / regulatory metadata (profile index_rows): in lookup and products/, not a default index row"
+  }
+ },
+ {
+  "id": "monitors",
+  "name": "Monitors",
+  "description": "Computer monitors by manufacturer model number: size, resolution, panel, refresh, HDR tier, power. Sources: LG, ASUS, Lenovo PSREF, ENERGY STAR, VESA DisplayHDR.",
+  "count": 4306,
+  "demo": false,
+  "status": "accepted",
+  "schema": "monitors/schema.json",
+  "index": [
+   "monitors/index-0.json",
+   "monitors/index-1.json"
+  ],
+  "facets": "monitors/facets.json",
+  "products": "monitors/products.json",
+  "fields": [
+   {
+    "key": "gen.size_class",
+    "label": "Size class (marketed diagonal)",
+    "group": "general",
+    "type": "number",
+    "unit": "in",
+    "facet": true,
+    "priority": 20,
+    "column": true
+   },
+   {
+    "key": "panel.technology",
+    "label": "Panel technology",
+    "group": "panel",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "res.native",
+    "label": "Native resolution",
+    "group": "res",
+    "type": "text",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "res.refresh_max",
+    "label": "Refresh rate: max (incl OC)",
+    "group": "res",
+    "type": "number",
+    "unit": "Hz",
+    "facet": false,
+    "priority": 70,
+    "column": true
+   },
+   {
+    "key": "hdr.vesa_tier",
+    "label": "VESA DisplayHDR tier (certified)",
+    "group": "hdr",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "pwr.typical",
+    "label": "Typical power",
+    "group": "power",
+    "type": "number",
+    "unit": "W",
+    "facet": false,
+    "priority": 10,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/monitors/index.json"
+   ],
+   "count": 1481,
+   "products": "preview/monitors/products/",
+   "only_preview": 0
+  }
+ },
+ {
+  "id": "power-banks",
+  "name": "Power banks",
+  "description": "Portable USB power banks by manufacturer model number (Anker A1340, Belkin BPB012, INIU P63-E1, CUKTECH PB200N): cell mAh vs rated Wh vs 5 V rated capacity, per-port USB PD/PPS PDO table, total vs single-port output, recharge input, cell chemistry, airline (100 Wh) limit. Sources: Anker, Belkin, INIU, CUKTECH, UGREEN US store pages.",
+  "count": 193,
+  "demo": false,
+  "status": "accepted",
+  "schema": "power-banks/schema.json",
+  "index": [
+   "power-banks/index.json"
+  ],
+  "facets": "power-banks/facets.json",
+  "products": "power-banks/products.json",
+  "fields": [
+   {
+    "key": "cap.cell_mah",
+    "label": "Capacity (cell, mAh)",
+    "group": "capacity",
+    "type": "number",
+    "unit": "mAh",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "cap.energy_wh",
+    "label": "Rated energy",
+    "group": "capacity",
+    "type": "number",
+    "unit": "Wh",
+    "facet": true,
+    "priority": 40,
+    "column": true
+   },
+   {
+    "key": "out.max_total_w",
+    "label": "All-ports simultaneous output",
+    "group": "output",
+    "type": "number",
+    "unit": "W",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "out.max_single_port_w",
+    "label": "Best single-port output",
+    "group": "output",
+    "type": "number",
+    "unit": "W",
+    "facet": true,
+    "priority": 30,
+    "column": true
+   },
+   {
+    "key": "in.max_w",
+    "label": "Max recharge input",
+    "group": "input",
+    "type": "number",
+    "unit": "W",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "phys.weight",
+    "label": "Weight",
+    "group": "phys",
+    "type": "number",
+    "unit": "g",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/power-banks/index.json"
+   ],
+   "count": 160,
+   "products": "preview/power-banks/products/",
+   "only_preview": 6
+  }
+ },
+ {
+  "id": "power-stations",
+  "name": "Portable power stations",
+  "description": "Portable power stations by manufacturer model number / unit SKU (EcoFlow EFDELTA3P, Anker SOLIX A1763, BLUETTI AC180P, Goal Zero 36300, Jackery Explorer 1000 v2): rated Wh (usable kept apart), continuous vs surge vs boost AC output, outlets and waveform, LFP/NMC with cycle life to a stated retention, AC/solar/car input with the solar voltage window, recharge time with its charge range, UPS switchover, extra batteries, UL 2743 (affirmative only). Sources: EcoFlow, Anker SOLIX, BLUETTI, Jackery, Goal Zero US store spec tables.",
+  "count": 83,
+  "demo": false,
+  "status": "accepted",
+  "schema": "power-stations/schema.json",
+  "index": [
+   "power-stations/index.json"
+  ],
+  "facets": "power-stations/facets.json",
+  "products": "power-stations/products.json",
+  "fields": [
+   {
+    "key": "cap.energy_wh",
+    "label": "Rated capacity",
+    "group": "capacity",
+    "type": "number",
+    "unit": "Wh",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "out.ac_continuous_w",
+    "label": "AC continuous output (all outlets)",
+    "group": "ac",
+    "type": "number",
+    "unit": "W",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "in.ac_w",
+    "label": "AC charging input",
+    "group": "input",
+    "type": "number",
+    "unit": "W",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "in.solar_w",
+    "label": "Max solar input (combined)",
+    "group": "input",
+    "type": "number",
+    "unit": "W",
+    "facet": true,
+    "priority": 20,
+    "column": true
+   },
+   {
+    "key": "bat.chemistry",
+    "label": "Cell chemistry",
+    "group": "battery",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "phys.weight",
+    "label": "Weight",
+    "group": "phys",
+    "type": "number",
+    "unit": "kg",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/power-stations/index.json"
+   ],
+   "count": 67,
+   "products": "preview/power-stations/products/",
+   "only_preview": 0
+  }
+ },
+ {
+  "id": "power-strips",
+  "name": "Power strips & surge protectors",
+  "description": "Surge protectors and power strips by manufacturer model number: joules, clamping voltage, outlets, cord.",
+  "count": 591,
+  "demo": false,
+  "status": "accepted",
+  "schema": "power-strips/schema.json",
+  "index": [
+   "power-strips/index.json"
+  ],
+  "facets": "power-strips/facets.json",
+  "products": "power-strips/products.json",
+  "fields": [
+   {
+    "key": "type.kind",
+    "label": "Product kind",
+    "group": "type",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "surge.vpr_max",
+    "label": "VPR worst mode (derived)",
+    "group": "surge",
+    "type": "number",
+    "unit": "V",
+    "facet": true,
+    "priority": 40,
+    "column": true
+   },
+   {
+    "key": "surge.joules",
+    "label": "Energy rating",
+    "group": "surge",
+    "type": "number",
+    "unit": "J",
+    "facet": true,
+    "priority": 60,
+    "column": true
+   },
+   {
+    "key": "outlets.count",
+    "label": "AC outlets (total)",
+    "group": "outlets",
+    "type": "number",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "cord.length_ft",
+    "label": "Cord length",
+    "group": "cord",
+    "type": "number",
+    "unit": "ft",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "load.max_amps",
+    "label": "Max current",
+    "group": "load",
+    "type": "number",
+    "unit": "A",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/power-strips/index.json"
+   ],
+   "count": 511,
+   "products": "preview/power-strips/products/",
+   "only_preview": 288
+  }
+ },
+ {
+  "id": "refrigerators",
+  "name": "Refrigerators",
+  "description": "US refrigerators and refrigerator-freezers by maker model number (Bosch B36CL80SNS, Frigidaire FRFS2823AS) and by ENERGY STAR certified pattern (Samsung BRB106003**: one DOE basic model covering several finishes/hinges, shown as its own row and flagged): ENERGY STAR type and DOE product class, counter-depth / compact / built-in flags, width and height, DOE total and adjusted volume (adjusted volume is never shown as capacity), annual kWh under the DOE test procedure with the federal limit and % below it, refrigerant, ice maker, connected. Source: ENERGY STAR Certified Residential Refrigerators (U.S. EPA). Absent from ENERGY STAR = unknown, never 'not certified'.",
+  "count": 4411,
+  "demo": false,
+  "status": "accepted",
+  "schema": "refrigerators/schema.json",
+  "index": [
+   "refrigerators/index-0.json",
+   "refrigerators/index-1.json"
+  ],
+  "facets": "refrigerators/facets.json",
+  "products": "refrigerators/products.json",
+  "fields": [
+   {
+    "key": "config.es_type",
+    "label": "Type (ENERGY STAR)",
+    "group": "config",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "config.counter_depth",
+    "label": "Counter-depth",
+    "group": "config",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 40,
+    "column": true
+   },
+   {
+    "key": "dims.width_in",
+    "label": "Width",
+    "group": "dims",
+    "type": "number",
+    "unit": "in",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "capacity.total_ft3",
+    "label": "Total capacity (DOE)",
+    "group": "capacity",
+    "type": "number",
+    "unit": "ft3",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "energy.annual_kwh",
+    "label": "Energy use",
+    "group": "energy",
+    "type": "number",
+    "unit": "kWh/yr",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "cert.energy_star",
+    "label": "ENERGY STAR certified",
+    "group": "energy",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 40,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/refrigerators/index.json"
+   ],
+   "count": 1584,
+   "products": "preview/refrigerators/products/",
+   "only_preview": 0
+  }
+ },
+ {
+  "id": "robot-vacuums",
+  "name": "Robot vacuums & mops",
+  "description": "Robot vacuums and vacuum-mop robots by manufacturer model: claimed suction with its test basis, battery, dustbin and dock tanks, dock features (self-empty, mop wash, hot water, hot-air dry, plumbed refill), navigation and obstacle-sensor type, mop type, robot height. Sources: Dreame, Roborock and Narwal US stores (manufacturer spec blocks). Every figure is a manufacturer claim unless marked certified or measured.",
+  "count": 144,
+  "demo": false,
+  "status": "accepted",
+  "schema": "robot-vacuums/schema.json",
+  "index": [
+   "robot-vacuums/index.json"
+  ],
+  "facets": "robot-vacuums/facets.json",
+  "products": "robot-vacuums/products.json",
+  "fields": [
+   {
+    "key": "clean.suction_pa",
+    "label": "Maximum suction (claimed)",
+    "group": "clean",
+    "type": "number",
+    "unit": "Pa",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "mop.type",
+    "label": "Mop type",
+    "group": "mop",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "nav.type",
+    "label": "Navigation",
+    "group": "nav",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "dock.self_empty",
+    "label": "Self-emptying dock",
+    "group": "dock",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "dock.mop_wash",
+    "label": "Dock washes mops",
+    "group": "dock",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 30,
+    "column": true
+   },
+   {
+    "key": "phys.robot_height_mm",
+    "label": "Robot height",
+    "group": "phys",
+    "type": "number",
+    "unit": "mm",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/robot-vacuums/index.json"
+   ],
+   "count": 88,
+   "products": "preview/robot-vacuums/products/",
+   "only_preview": 4
+  }
+ },
+ {
+  "id": "routers",
+  "name": "Wi-Fi routers & mesh",
+  "description": "Wi-Fi routers and whole-home mesh systems by manufacturer model number: Wi-Fi generation, per-band rates and streams, WAN/LAN port speeds, mesh backhaul, SoC/RAM/flash (revision-level), VPN, firmware support. Sources: TP-Link, NETGEAR, ASUS product pages; FCC filings and OpenWrt for silicon.",
+  "count": 334,
+  "demo": false,
+  "status": "accepted",
+  "schema": "routers/schema.json",
+  "index": [
+   "routers/index.json"
+  ],
+  "facets": "routers/facets.json",
+  "products": "routers/products.json",
+  "fields": [
+   {
+    "key": "gen.pack_count",
+    "label": "Nodes in pack",
+    "group": "general",
+    "type": "number",
+    "unit": null,
+    "facet": true,
+    "priority": 40,
+    "column": true
+   },
+   {
+    "key": "wifi.generation",
+    "label": "Wi-Fi generation (highest)",
+    "group": "wifi",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "wifi.marketing_class",
+    "label": "Marketing class (AX5400, BE19000)",
+    "group": "wifi",
+    "type": "text",
+    "unit": null,
+    "facet": false,
+    "priority": 20,
+    "column": true
+   },
+   {
+    "key": "wifi.band_count",
+    "label": "Number of radios (bands)",
+    "group": "wifi",
+    "type": "number",
+    "unit": null,
+    "facet": true,
+    "priority": 30,
+    "column": true
+   },
+   {
+    "key": "hw.ram_mb",
+    "label": "RAM (MB)",
+    "group": "silicon",
+    "type": "number",
+    "unit": "MB",
+    "facet": true,
+    "priority": 50,
+    "column": true
+   },
+   {
+    "key": "port.wan_speed_mbps",
+    "label": "WAN port max speed",
+    "group": "ports",
+    "type": "number",
+    "unit": "Mbps",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "port.lan_count",
+    "label": "LAN ports",
+    "group": "ports",
+    "type": "number",
+    "unit": null,
+    "facet": true,
+    "priority": 30,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/routers/index.json"
+   ],
+   "count": 162,
+   "products": "preview/routers/products/",
+   "only_preview": 0
+  }
+ },
+ {
+  "id": "smart-home",
+  "name": "Smart-home devices",
+  "description": "Zigbee and Matter smart-home devices by maker model id (IKEA E1743, Aqara RTCGQ11LM, Philips Hue 9290012573A): device type, protocols, whether Zigbee2MQTT supports it (works locally without the vendor hub), what it reports over Zigbee (motion, lux, temperature, contact, leak, smoke, energy metering, battery level), light colour / tunable white, and (when the CSA ledger is reachable) Matter certificate and version. Source this round: Zigbee2MQTT device definitions (zigbee-herdsman-converters, MIT), a community integration database, not the maker. 'Reports X' means Zigbee2MQTT exposes X for the paired device; no means its definition lists every expose and X is not one of them.",
+  "count": 4188,
+  "demo": false,
+  "status": "accepted",
+  "schema": "smart-home/schema.json",
+  "index": [
+   "smart-home/index-0.json",
+   "smart-home/index-1.json",
+   "smart-home/index-2.json"
+  ],
+  "facets": "smart-home/facets.json",
+  "products": "smart-home/products.json",
+  "fields": [
+   {
+    "key": "gen.device_type",
+    "label": "Device type",
+    "group": "general",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 30,
+    "column": true
+   },
+   {
+    "key": "conn.protocols",
+    "label": "Protocols",
+    "group": "conn",
+    "type": "list",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "power.source",
+    "label": "Power source",
+    "group": "power",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "power.metering",
+    "label": "Energy metering",
+    "group": "power",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 30,
+    "column": true
+   },
+   {
+    "key": "sensor.illuminance",
+    "label": "Light level (lux)",
+    "group": "sensor",
+    "type": "bool",
+    "unit": null,
+    "facet": true,
+    "priority": 20,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/smart-home/index.json"
+   ],
+   "count": 0,
+   "products": "preview/smart-home/products/",
+   "only_preview": 0
+  }
+ },
+ {
+  "id": "ssds",
+  "name": "SSDs",
+  "description": "Consumer SSDs by manufacturer part number: capacity, interface, controller/NAND/DRAM (revision-level), endurance, form factor. Sources: Samsung/WD/Crucial/Kingston datasheets, review teardowns.",
+  "count": 586,
+  "demo": false,
+  "status": "accepted",
+  "schema": "ssds/schema.json",
+  "index": [
+   "ssds/index.json"
+  ],
+  "facets": "ssds/facets.json",
+  "products": "ssds/products.json",
+  "fields": [
+   {
+    "key": "gen.capacity",
+    "label": "Capacity",
+    "group": "general",
+    "type": "number",
+    "unit": "GB",
+    "facet": true,
+    "priority": 40,
+    "column": true
+   },
+   {
+    "key": "gen.form_factor",
+    "label": "Form factor",
+    "group": "general",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 50,
+    "column": true
+   },
+   {
+    "key": "if.pcie_gen",
+    "label": "PCIe generation",
+    "group": "interface",
+    "type": "number",
+    "unit": null,
+    "facet": true,
+    "priority": 20,
+    "column": true
+   },
+   {
+    "key": "hw.nand_type",
+    "label": "NAND cell type",
+    "group": "silicon",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 40,
+    "column": true
+   },
+   {
+    "key": "hw.dram_type",
+    "label": "DRAM cache",
+    "group": "silicon",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 70,
+    "column": true
+   },
+   {
+    "key": "perf.seq_read",
+    "label": "Sequential read (rated)",
+    "group": "perf",
+    "type": "number",
+    "unit": "MB/s",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "end.tbw",
+    "label": "Endurance (TBW)",
+    "group": "endurance",
+    "type": "number",
+    "unit": "TB",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/ssds/index.json"
+   ],
+   "count": 55,
+   "products": "preview/ssds/products/",
+   "only_preview": 0
+  }
+ },
+ {
+  "id": "tvs",
+  "name": "Televisions",
+  "description": "Televisions by manufacturer model number, one size per model (Samsung QN65S90FAFXZA, LG OLED65B5PUA, TCL 65QM8K): panel per size (LCD VA/IPS, OLED, Mini-LED), native vs marketing refresh, HDMI ports with 4K 120 Hz, HDR formats, VRR, platform, ENERGY STAR on-mode power with its basis, size and weight with/without stand. Sources: ENERGY STAR Certified Televisions, Samsung, LG and TCL US spec data.",
+  "count": 1371,
+  "demo": false,
+  "status": "accepted",
+  "schema": "tvs/schema.json",
+  "index": [
+   "tvs/index.json"
+  ],
+  "facets": "tvs/facets.json",
+  "products": "tvs/products.json",
+  "fields": [
+   {
+    "key": "gen.size_class",
+    "label": "Size class",
+    "group": "general",
+    "type": "number",
+    "unit": "in",
+    "facet": true,
+    "priority": 30,
+    "column": true
+   },
+   {
+    "key": "panel.display_tech",
+    "label": "Display technology",
+    "group": "panel",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "res.class",
+    "label": "Resolution class",
+    "group": "res",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 20,
+    "column": true
+   },
+   {
+    "key": "refresh.native_hz",
+    "label": "Native refresh rate",
+    "group": "res",
+    "type": "number",
+    "unit": "Hz",
+    "facet": true,
+    "priority": 50,
+    "column": true
+   },
+   {
+    "key": "hdmi.ports_4k120",
+    "label": "HDMI ports with 4K 120 Hz",
+    "group": "gaming",
+    "type": "number",
+    "unit": null,
+    "facet": true,
+    "priority": 20,
+    "column": true
+   },
+   {
+    "key": "os.platform",
+    "label": "Smart TV platform",
+    "group": "smart",
+    "type": "enum",
+    "unit": null,
+    "facet": true,
+    "priority": 10,
+    "column": true
+   },
+   {
+    "key": "pwr.on_mode_w",
+    "label": "On-mode power",
+    "group": "power",
+    "type": "number",
+    "unit": "W",
+    "facet": true,
+    "priority": 10,
+    "column": true
+   }
+  ],
+  "preview": {
+   "review_scope": "preview",
+   "index": [
+    "preview/tvs/index.json"
+   ],
+   "count": 879,
+   "products": "preview/tvs/products/",
+   "only_preview": 0
+  }
+ }
+]

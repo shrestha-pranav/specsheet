@@ -1,0 +1,713 @@
+{
+ "id": "clothes-washers",
+ "schema_version": "0.1",
+ "groups": [
+  {
+   "id": "general",
+   "label": "General & identity",
+   "order": 0
+  },
+  {
+   "id": "config",
+   "label": "Type",
+   "order": 1
+  },
+  {
+   "id": "capacity",
+   "label": "Capacity",
+   "order": 2
+  },
+  {
+   "id": "energy",
+   "label": "Energy & certification",
+   "order": 3
+  },
+  {
+   "id": "water",
+   "label": "Water",
+   "order": 4
+  },
+  {
+   "id": "dims",
+   "label": "Size & fit",
+   "order": 5
+  },
+  {
+   "id": "features",
+   "label": "Features",
+   "order": 6
+  },
+  {
+   "id": "conn",
+   "label": "Connectivity",
+   "order": 7
+  }
+ ],
+ "conditions": [
+  {
+   "id": "test_procedure",
+   "label": "DOE test procedure",
+   "type": "enum",
+   "enum": [
+    "appendix_j2",
+    "appendix_j",
+    "maker_unstated"
+   ],
+   "description": "Basis of capacity, IMEF, IWF and the annual figures. ES bghd-e2wd rows are 10 CFR 430 Subpart B Appendix J2 (the column descriptions cite J2; 295 loads/yr). DOE's 2022 test-procedure rule added a NEW Appendix J that reports different metrics (EER, WER, per-load) for the amended standards: J figures are never put under the IMEF / IWF keys and never compared with J2 ones."
+  }
+ ],
+ "fields": [
+  {
+   "key": "gen.brand",
+   "label": "Brand",
+   "group": "general",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "lg",
+    "samsung",
+    "ge",
+    "midea",
+    "whirlpool",
+    "electrolux",
+    "maytag",
+    "summit",
+    "miele",
+    "hisense",
+    "bosch",
+    "speed_queen"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "gen.is_pattern",
+   "label": "Certified pattern (covers several SKUs)",
+   "group": "general",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "config.load",
+   "label": "Loading",
+   "group": "config",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "front",
+    "top"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "config.special_type",
+   "label": "Combo / laundry center",
+   "group": "config",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "all_in_one_washer_dryer",
+    "laundry_center"
+   ],
+   "items": null,
+   "tier": "important",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "config.intended_market",
+   "label": "Market",
+   "group": "config",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "residential",
+    "commercial",
+    "both"
+   ],
+   "items": null,
+   "tier": "detail",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "capacity.doe_ft3",
+   "label": "Capacity (DOE cu ft)",
+   "group": "capacity",
+   "type": "number",
+   "unit": "ft3",
+   "display_unit": "ft3",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": [
+    "test_procedure"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "capacity.iec_ft3",
+   "label": "Capacity (IEC equivalent)",
+   "group": "capacity",
+   "type": "number",
+   "unit": "ft3",
+   "display_unit": "ft3",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "energy.imef",
+   "label": "Integrated modified energy factor (IMEF)",
+   "group": "energy",
+   "type": "number",
+   "unit": "ft3/kWh/cycle",
+   "display_unit": "ft3/kWh/cycle",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": [
+    "test_procedure"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "energy.federal_standard_imef",
+   "label": "Federal minimum IMEF",
+   "group": "energy",
+   "type": "number",
+   "unit": "ft3/kWh/cycle",
+   "display_unit": "ft3/kWh/cycle",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": [
+    "test_procedure"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "energy.annual_kwh",
+   "label": "Energy use",
+   "group": "energy",
+   "type": "number",
+   "unit": "kWh/yr",
+   "display_unit": "kWh/yr",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 30,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": [
+    "test_procedure"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "water.iwf",
+   "label": "Integrated water factor (IWF)",
+   "group": "water",
+   "type": "number",
+   "unit": "gal/cycle/ft3",
+   "display_unit": "gal/cycle/ft3",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": [
+    "test_procedure"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "water.federal_standard_iwf",
+   "label": "Federal maximum IWF",
+   "group": "water",
+   "type": "number",
+   "unit": "gal/cycle/ft3",
+   "display_unit": "gal/cycle/ft3",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": [
+    "test_procedure"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "water.annual_gal",
+   "label": "Water use",
+   "group": "water",
+   "type": "number",
+   "unit": "gal/yr",
+   "display_unit": "gal/yr",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": [
+    "test_procedure"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "cert.energy_star",
+   "label": "ENERGY STAR certified",
+   "group": "energy",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 40,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cert.es_most_efficient",
+   "label": "ENERGY STAR Most Efficient",
+   "group": "energy",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 50,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cert.es_date",
+   "label": "Certified on",
+   "group": "energy",
+   "type": "date",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 60,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "dims.width_in",
+   "label": "Width",
+   "group": "dims",
+   "type": "number",
+   "unit": "in",
+   "display_unit": "in",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "dims.height_in",
+   "label": "Height",
+   "group": "dims",
+   "type": "number",
+   "unit": "in",
+   "display_unit": "in",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "dims.depth_in",
+   "label": "Depth",
+   "group": "dims",
+   "type": "number",
+   "unit": "in",
+   "display_unit": "in",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "features.washer",
+   "label": "Features",
+   "group": "features",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "steam",
+    "anti_wrinkle",
+    "gentle",
+    "delicates",
+    "delay_start",
+    "sanitize",
+    "hand_wash",
+    "drum_clean",
+    "supplementary_wash",
+    "pre_soak",
+    "impeller",
+    "agitator",
+    "other"
+   ],
+   "items": "enum",
+   "tier": "detail",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "multi",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "conn.connected",
+   "label": "Smart / connected",
+   "group": "conn",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "conn.protocols",
+   "label": "Connects using",
+   "group": "conn",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "wifi",
+    "bluetooth",
+    "zigbee",
+    "thread",
+    "matter",
+    "other"
+   ],
+   "items": "enum",
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "multi",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall",
+   "label": "CPSC recall",
+   "group": "general",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_id",
+   "label": "CPSC recall number",
+   "group": "general",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": "text",
+   "tier": "detail",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_date",
+   "label": "Recall date",
+   "group": "general",
+   "type": "date",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 50,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_remedy",
+   "label": "Recall remedy",
+   "group": "general",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "replace",
+    "refund",
+    "repair",
+    "new_instructions",
+    "dispose",
+    "label",
+    "other"
+   ],
+   "items": "enum",
+   "tier": "detail",
+   "priority": 60,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_url",
+   "label": "Recall notice",
+   "group": "general",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 70,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "gen.record_kind",
+   "label": "Record kind",
+   "group": "general",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "recall_only"
+   ],
+   "items": null,
+   "tier": "detail",
+   "priority": 80,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  }
+ ]
+}

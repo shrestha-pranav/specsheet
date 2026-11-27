@@ -1,0 +1,393 @@
+[
+ {
+  "id": "demo-strip-4",
+  "category": "power-strips-demo",
+  "brand": "Demo Lab",
+  "name": "Desk strip — four outlet",
+  "family": "Fictional demonstration",
+  "model": "DS-04",
+  "variant": null,
+  "identifiers": [
+   {
+    "scheme": "demo_model",
+    "value": "DS-04",
+    "issuer": "Demo Lab",
+    "market": null,
+    "package_level": "single"
+   }
+  ],
+  "specs": {
+   "outlet_count": {
+    "value": 4,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "usb_port_count": {
+    "value": 2,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "max_load_w": {
+    "value": 1800,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "cord_length_m": {
+    "value": 1.5,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "mounting": {
+    "value": "desk",
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "surge_protection": {
+    "value": true,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "joule_rating": {
+    "value": 600,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "clamping_range": {
+    "value": {
+     "min": 330,
+     "max": 400
+    },
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "indicator_lights": {
+    "value": [
+     "grounded",
+     "protected"
+    ],
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "notes_on_layout": {
+    "value": "Wide-spaced outer outlets",
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   }
+  },
+  "confidence": {
+   "level": "illustrative",
+   "scope": "demo"
+  },
+  "demo": true
+ },
+ {
+  "id": "demo-strip-6",
+  "category": "power-strips-demo",
+  "brand": "Demo Lab",
+  "name": "Wall strip — six outlet",
+  "family": "Fictional demonstration",
+  "model": "WS-06",
+  "variant": null,
+  "identifiers": [
+   {
+    "scheme": "demo_model",
+    "value": "WS-06",
+    "issuer": "Demo Lab",
+    "market": null,
+    "package_level": "single"
+   }
+  ],
+  "specs": {
+   "outlet_count": {
+    "value": 6,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "usb_port_count": {
+    "value": 0,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "max_load_w": {
+    "value": 1875,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "cord_length_m": {
+    "value": 0,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "mounting": {
+    "value": "wall",
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "surge_protection": {
+    "value": false,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "joule_rating": {
+    "value": null,
+    "status": "not_applicable",
+    "sources": [],
+    "confidence": null,
+    "source_scope": "none"
+   },
+   "clamping_range": {
+    "value": null,
+    "status": "not_applicable",
+    "sources": [],
+    "confidence": null,
+    "source_scope": "none"
+   },
+   "indicator_lights": {
+    "value": [],
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "notes_on_layout": {
+    "value": "Two rows of three",
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   }
+  },
+  "confidence": {
+   "level": "illustrative",
+   "scope": "demo"
+  },
+  "demo": true
+ },
+ {
+  "id": "demo-strip-8",
+  "category": "power-strips-demo",
+  "brand": "Demo Lab",
+  "name": "Workshop strip — eight outlet",
+  "family": "Fictional demonstration",
+  "model": "WK-08",
+  "variant": null,
+  "identifiers": [
+   {
+    "scheme": "demo_model",
+    "value": "WK-08",
+    "issuer": "Demo Lab",
+    "market": null,
+    "package_level": "single"
+   }
+  ],
+  "specs": {
+   "outlet_count": {
+    "value": 8,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "usb_port_count": {
+    "value": 4,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "max_load_w": {
+    "value": 1800,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "cord_length_m": {
+    "value": 3,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "mounting": {
+    "value": "none",
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "surge_protection": {
+    "value": true,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "joule_rating": {
+    "value": "1200 J or 900 J",
+    "status": "conflicted",
+    "sources": [],
+    "confidence": null,
+    "source_scope": "none"
+   },
+   "clamping_range": {
+    "value": {
+     "min": 300,
+     "max": 420
+    },
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "indicator_lights": {
+    "value": [
+     "protected"
+    ],
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "notes_on_layout": {
+    "value": "Spaced for adapters",
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   }
+  },
+  "confidence": {
+   "level": "illustrative",
+   "scope": "demo"
+  },
+  "demo": true
+ },
+ {
+  "id": "demo-strip-3",
+  "category": "power-strips-demo",
+  "brand": "Demo Lab",
+  "name": "Travel strip — three outlet",
+  "family": "Fictional demonstration",
+  "model": "TV-03",
+  "variant": null,
+  "identifiers": [
+   {
+    "scheme": "demo_model",
+    "value": "TV-03",
+    "issuer": "Demo Lab",
+    "market": null,
+    "package_level": "single"
+   }
+  ],
+  "specs": {
+   "outlet_count": {
+    "value": 3,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "usb_port_count": {
+    "value": 2,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "max_load_w": {
+    "value": 1500,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "cord_length_m": {
+    "value": 1,
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "mounting": {
+    "value": "none",
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   },
+   "surge_protection": {
+    "value": null,
+    "status": "unknown",
+    "sources": [],
+    "confidence": null,
+    "source_scope": "none"
+   },
+   "joule_rating": {
+    "value": null,
+    "status": "unknown",
+    "sources": [],
+    "confidence": null,
+    "source_scope": "none"
+   },
+   "clamping_range": {
+    "value": null,
+    "status": "unknown",
+    "sources": [],
+    "confidence": null,
+    "source_scope": "none"
+   },
+   "indicator_lights": {
+    "value": null,
+    "status": "not_yet_extracted",
+    "sources": [],
+    "confidence": null,
+    "source_scope": "none"
+   },
+   "notes_on_layout": {
+    "value": "Compact layout",
+    "status": "known",
+    "sources": [],
+    "confidence": "illustrative",
+    "source_scope": "demo"
+   }
+  },
+  "confidence": {
+   "level": "illustrative",
+   "scope": "demo"
+  },
+  "demo": true
+ }
+]

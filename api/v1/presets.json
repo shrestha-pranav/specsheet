@@ -1,0 +1,5444 @@
+{
+ "version": 1,
+ "default_min_fill": 0.8,
+ "default_min_brands": 2,
+ "renderers": {
+  "pdo_pill": {
+   "label": "Samsung 45 W",
+   "categories": [
+    "power-banks",
+    "chargers"
+   ],
+   "min_amps": 4.5,
+   "v_lo": 9,
+   "v_hi": 11,
+   "rule": "yes when an output port lists a PPS range covering 9 to 11 V at 4.5 A or more; no when every output port lists its PPS (or the product states no PPS) and none qualifies; otherwise unknown"
+  },
+  "size_grid": {
+   "categories": [
+    "tvs"
+   ],
+   "size_key": "gen.size_class",
+   "panel_keys": [
+    "panel.display_tech",
+    "panel.lcd_type",
+    "panel.oled_subtype"
+   ],
+   "zone_key": "hdr.dimming_zones",
+   "hdmi_key": "hdmi.ports_4k120"
+  },
+  "default_sort": {
+   "light-bulbs": {
+    "key": "light.lumens",
+    "dir": "desc"
+   }
+  }
+ },
+ "presets": [
+  {
+   "id": "ram-upgradable",
+   "category": "laptops",
+   "title": "Laptops with upgradable RAM, 32 GB+ possible, 14 inch, under 1.4 kg",
+   "filters": {
+    "f_mem.soldered_value": "socketed",
+    "f_mem.max_min": "32",
+    "f_disp.size_min": "13.9",
+    "f_disp.size_max": "14.2",
+    "f_phys.weight_max": "1.4"
+   },
+   "scope": {
+    "basis": "Current US-market laptop configurations with a maker spec page (Lenovo PSREF, ASUS)."
+   },
+   "columns": [
+    "cpu.model",
+    "mem.size",
+    "mem.soldered",
+    "mem.max",
+    "disp.size",
+    "phys.weight"
+   ],
+   "sort": {
+    "key": "phys.weight",
+    "dir": "asc"
+   },
+   "category_name": "Laptops",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": true,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.8804,
+    "keys": [
+     {
+      "key": "mem.soldered",
+      "label": "RAM soldered / on-package",
+      "known": 2342,
+      "total": 2525,
+      "fill": 0.9275,
+      "by_kind": {
+       "official": 2342
+      }
+     },
+     {
+      "key": "mem.max",
+      "label": "Max RAM possible for this config",
+      "known": 2372,
+      "total": 2525,
+      "fill": 0.9394,
+      "by_kind": {
+       "official": 2372
+      }
+     },
+     {
+      "key": "disp.size",
+      "label": "Screen size",
+      "known": 2223,
+      "total": 2525,
+      "fill": 0.8804,
+      "by_kind": {
+       "official": 2223
+      }
+     },
+     {
+      "key": "phys.weight",
+      "label": "Weight (config-specific)",
+      "known": 2235,
+      "total": 2525,
+      "fill": 0.8851,
+      "by_kind": {
+       "official": 2235
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Current US-market laptop configurations with a maker spec page (Lenovo PSREF, ASUS).",
+     "sources": [
+      "manufacturer"
+     ],
+     "include_discontinued": false,
+     "in_scope": 2525,
+     "category_total": 2525,
+     "covered_brands": [
+      "ASUS",
+      "Lenovo"
+     ],
+     "excluded": {
+      "source_tier": 0,
+      "discontinued": 0,
+      "by": {},
+      "recall_only": 0
+     },
+     "not_covered": [
+      {
+       "brand": "Dell",
+       "rows": 98,
+       "reason": "no value"
+      },
+      {
+       "brand": "Microsoft Surface",
+       "rows": 8,
+       "reason": "no value"
+      }
+     ]
+    },
+    "non_maker_brands": [],
+    "key": "disp.size",
+    "label": "Screen size",
+    "known": 2223,
+    "total": 2525,
+    "missing_brands": [
+     {
+      "brand": "Dell",
+      "rows": 98
+     },
+     {
+      "brand": "Microsoft Surface",
+      "rows": 8
+     }
+    ],
+    "missing_brand_count": 2,
+    "uncovered_brands": [
+     {
+      "brand": "Dell",
+      "rows": 98,
+      "label": "RAM soldered / on-package"
+     }
+    ]
+   },
+   "count": {
+    "matches": 193,
+    "maybe": 144,
+    "unknown": 144,
+    "disagree": 0,
+    "ruled_out": 2188,
+    "total": 2525,
+    "out_of_scope": 0
+   }
+  },
+  {
+   "id": "no-pwm-usbc-monitor",
+   "evidence_type": "E3",
+   "category": "monitors",
+   "title": "USB-C monitors 27 inch and up with no PWM flicker and 65 W+ power delivery",
+   "filters": {
+    "f_usb.usbc_inputs_min": "1",
+    "f_flk.pwm_value": "none",
+    "f_usb.usbc_pd_w_min": "65",
+    "f_gen.size_class_min": "27"
+   },
+   "scope": {
+    "by": [
+     "usb.usbc_inputs"
+    ],
+    "basis": "Current monitors with a maker spec page. Rows known to have no USB-C input do not count against the power-delivery fill. ENERGY STAR and DisplayHDR listing-only rows are out of scope: those lists never carry PWM or USB-C power."
+   },
+   "columns": [
+    "gen.size_class",
+    "panel.technology",
+    "res.native",
+    "flk.pwm",
+    "usb.usbc_inputs",
+    "usb.usbc_pd_w"
+   ],
+   "sort": {
+    "key": "usb.usbc_pd_w",
+    "dir": "desc"
+   },
+   "category_name": "Monitors",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": false,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.7733,
+    "keys": [
+     {
+      "key": "usb.usbc_inputs",
+      "label": "USB-C video input count",
+      "known": 1068,
+      "total": 1148,
+      "fill": 0.9303,
+      "by_kind": {
+       "official": 1068
+      }
+     },
+     {
+      "key": "flk.pwm",
+      "label": "PWM dimming",
+      "known": 382,
+      "total": 494,
+      "fill": 0.7733,
+      "by_kind": {
+       "derived": 33,
+       "official": 349
+      }
+     },
+     {
+      "key": "usb.usbc_pd_w",
+      "label": "USB-C upstream PD power",
+      "known": 399,
+      "total": 494,
+      "fill": 0.8077,
+      "by_kind": {
+       "official": 399
+      }
+     },
+     {
+      "key": "gen.size_class",
+      "label": "Size class (marketed diagonal)",
+      "known": 492,
+      "total": 494,
+      "fill": 0.996,
+      "by_kind": {
+       "official": 492
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Current monitors with a maker spec page. Rows known to have no USB-C input do not count against the power-delivery fill. ENERGY STAR and DisplayHDR listing-only rows are out of scope: those lists never carry PWM or USB-C power.",
+     "sources": [
+      "manufacturer"
+     ],
+     "include_discontinued": false,
+     "in_scope": 1148,
+     "category_total": 4306,
+     "covered_brands": [
+      "ASUS",
+      "BenQ",
+      "Dell",
+      "LG",
+      "Lenovo"
+     ],
+     "excluded": {
+      "source_tier": 2842,
+      "discontinued": 316,
+      "by": {
+       "usb.usbc_inputs": 654
+      },
+      "recall_only": 0
+     },
+     "not_covered": [
+      {
+       "brand": "Philips",
+       "rows": 270,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "ViewSonic",
+       "rows": 220,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "Acer",
+       "rows": 213,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "MSI",
+       "rows": 193,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "AOC",
+       "rows": 166,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "HP",
+       "rows": 114,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "Samsung",
+       "rows": 96,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "Gigabyte",
+       "rows": 57,
+       "reason": "no maker source"
+      }
+     ]
+    },
+    "non_maker_brands": [],
+    "key": "flk.pwm",
+    "label": "PWM dimming",
+    "known": 382,
+    "total": 494,
+    "missing_brands": [],
+    "missing_brand_count": 0
+   },
+   "count": {
+    "matches": 165,
+    "maybe": 142,
+    "unknown": 142,
+    "disagree": 0,
+    "ruled_out": 841,
+    "total": 1148,
+    "out_of_scope": 3158
+   }
+  },
+  {
+   "id": "ssd-dram-2tb",
+   "evidence_type": "E3",
+   "category": "ssds",
+   "title": "2 TB NVMe SSDs with a real DRAM cache (not HMB, not DRAM-less)",
+   "filters": {
+    "f_gen.capacity_min": "1900",
+    "f_gen.capacity_max": "2100",
+    "f_if.protocol_value": "nvme",
+    "f_hw.dram_type_value": "dram"
+   },
+   "scope": {
+    "by": [
+     "if.protocol"
+    ],
+    "basis": "SSDs with a maker spec page. Drives known to be SATA do not count against the DRAM fill. NAND type is shown but not filtered: makers rarely print it (see D8)."
+   },
+   "columns": [
+    "gen.capacity",
+    "hw.dram_type",
+    "hw.nand_type",
+    "if.pcie_gen",
+    "perf.seq_read",
+    "end.tbw"
+   ],
+   "sort": {
+    "key": "perf.seq_read",
+    "dir": "desc"
+   },
+   "category_name": "SSDs",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": false,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.6768,
+    "keys": [
+     {
+      "key": "gen.capacity",
+      "label": "Capacity",
+      "known": 318,
+      "total": 362,
+      "fill": 0.8785,
+      "by_kind": {
+       "official": 318
+      }
+     },
+     {
+      "key": "if.protocol",
+      "label": "Protocol",
+      "known": 542,
+      "total": 586,
+      "fill": 0.9249,
+      "by_kind": {
+       "official": 542
+      }
+     },
+     {
+      "key": "hw.dram_type",
+      "label": "DRAM cache",
+      "known": 245,
+      "total": 362,
+      "fill": 0.6768,
+      "by_kind": {
+       "official": 245
+      }
+     }
+    ],
+    "scope": {
+     "basis": "SSDs with a maker spec page. Drives known to be SATA do not count against the DRAM fill. NAND type is shown but not filtered: makers rarely print it (see D8).",
+     "sources": [
+      "manufacturer"
+     ],
+     "include_discontinued": false,
+     "in_scope": 586,
+     "category_total": 586,
+     "covered_brands": [
+      "Kingston",
+      "TEAMGROUP",
+      "WD / SanDisk"
+     ],
+     "excluded": {
+      "source_tier": 0,
+      "discontinued": 0,
+      "by": {
+       "if.protocol": 224
+      },
+      "recall_only": 0
+     },
+     "not_covered": [
+      {
+       "brand": "Samsung",
+       "rows": 55,
+       "reason": "no value"
+      }
+     ]
+    },
+    "non_maker_brands": [],
+    "key": "hw.dram_type",
+    "label": "DRAM cache",
+    "known": 245,
+    "total": 362,
+    "missing_brands": [],
+    "missing_brand_count": 0
+   },
+   "count": {
+    "matches": 30,
+    "maybe": 64,
+    "unknown": 49,
+    "disagree": 15,
+    "ruled_out": 492,
+    "total": 586,
+    "out_of_scope": 0
+   }
+  },
+  {
+   "id": "power-bank-samsung-45w",
+   "evidence_type": "E4",
+   "category": "power-banks",
+   "title": "Power banks with PPS and a 45 W+ port (open one for the Samsung 45 W check)",
+   "filters": {
+    "f_pd.pps_value": "yes",
+    "f_out.max_single_port_w_min": "45"
+   },
+   "scope": {
+    "by": [
+     "out.max_single_port_w"
+    ],
+    "basis": "Power banks with a maker store page. Banks known to top out below 45 W do not count against the PPS fill: they cannot do Samsung 45 W either way."
+   },
+   "columns": [
+    "cap.energy_wh",
+    "out.max_single_port_w",
+    "pd.pps",
+    "out.max_total_w"
+   ],
+   "sort": {
+    "key": "out.max_single_port_w",
+    "dir": "desc"
+   },
+   "category_name": "Power banks",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": false,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.2519,
+    "keys": [
+     {
+      "key": "pd.pps",
+      "label": "PPS support",
+      "known": 34,
+      "total": 135,
+      "fill": 0.2519,
+      "by_kind": {
+       "official": 34
+      }
+     },
+     {
+      "key": "out.max_single_port_w",
+      "label": "Best single-port output",
+      "known": 96,
+      "total": 184,
+      "fill": 0.5217,
+      "by_kind": {
+       "official": 96
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Power banks with a maker store page. Banks known to top out below 45 W do not count against the PPS fill: they cannot do Samsung 45 W either way.",
+     "sources": [
+      "manufacturer"
+     ],
+     "include_discontinued": false,
+     "in_scope": 184,
+     "category_total": 193,
+     "covered_brands": [
+      "Anker",
+      "Belkin",
+      "CUKTECH",
+      "EcoFlow",
+      "INIU",
+      "SHARGE",
+      "UGREEN"
+     ],
+     "excluded": {
+      "source_tier": 0,
+      "discontinued": 0,
+      "by": {
+       "out.max_single_port_w": 49
+      },
+      "recall_only": 9
+     },
+     "not_covered": [
+      {
+       "brand": "mophie",
+       "rows": 22,
+       "reason": "no value"
+      },
+      {
+       "brand": "NITECORE",
+       "rows": 16,
+       "reason": "no value"
+      },
+      {
+       "brand": "KUXIU",
+       "rows": 8,
+       "reason": "no value"
+      }
+     ]
+    },
+    "non_maker_brands": [],
+    "key": "pd.pps",
+    "label": "PPS support",
+    "known": 34,
+    "total": 135,
+    "missing_brands": [
+     {
+      "brand": "mophie",
+      "rows": 16
+     },
+     {
+      "brand": "KUXIU",
+      "rows": 6
+     },
+     {
+      "brand": "NITECORE",
+      "rows": 6
+     }
+    ],
+    "missing_brand_count": 3
+   },
+   "count": {
+    "matches": 32,
+    "maybe": 102,
+    "unknown": 102,
+    "disagree": 0,
+    "ruled_out": 50,
+    "total": 184,
+    "out_of_scope": 9
+   }
+  },
+  {
+   "id": "monitor-1440p-144",
+   "category": "monitors",
+   "title": "27-inch-plus 1440p monitors at 144 Hz or more",
+   "filters": {
+    "f_gen.size_class_min": "27",
+    "f_res.native_value": "x1440",
+    "f_res.refresh_native_min": "144"
+   },
+   "scope": {
+    "basis": "Current monitors with a maker spec page. 1440p means a native resolution ending in x1440 (2560x1440, 3440x1440, 5120x1440). The refresh filter is the native rate, not an overclock (\"165Hz OC\" counts as 144). ENERGY STAR and DisplayHDR listing-only rows are out of scope. PWM and USB-C power are shown as columns, not filtered."
+   },
+   "columns": [
+    "gen.size_class",
+    "res.native",
+    "res.refresh_native",
+    "panel.technology",
+    "flk.pwm",
+    "usb.usbc_pd_w"
+   ],
+   "sort": {
+    "key": "res.refresh_native",
+    "dir": "desc"
+   },
+   "category_name": "Monitors",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": false,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.6934,
+    "keys": [
+     {
+      "key": "gen.size_class",
+      "label": "Size class (marketed diagonal)",
+      "known": 1137,
+      "total": 1148,
+      "fill": 0.9904,
+      "by_kind": {
+       "official": 1137
+      }
+     },
+     {
+      "key": "res.native",
+      "label": "Native resolution",
+      "known": 1142,
+      "total": 1148,
+      "fill": 0.9948,
+      "by_kind": {
+       "official": 1142
+      }
+     },
+     {
+      "key": "res.refresh_native",
+      "label": "Refresh rate: native (no overclock)",
+      "known": 796,
+      "total": 1148,
+      "fill": 0.6934,
+      "by_kind": {
+       "official": 796
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Current monitors with a maker spec page. 1440p means a native resolution ending in x1440 (2560x1440, 3440x1440, 5120x1440). The refresh filter is the native rate, not an overclock (\"165Hz OC\" counts as 144). ENERGY STAR and DisplayHDR listing-only rows are out of scope. PWM and USB-C power are shown as columns, not filtered.",
+     "sources": [
+      "manufacturer"
+     ],
+     "include_discontinued": false,
+     "in_scope": 1148,
+     "category_total": 4306,
+     "covered_brands": [
+      "ASUS",
+      "BenQ",
+      "Dell",
+      "LG",
+      "Lenovo"
+     ],
+     "excluded": {
+      "source_tier": 2842,
+      "discontinued": 316,
+      "by": {},
+      "recall_only": 0
+     },
+     "not_covered": [
+      {
+       "brand": "Philips",
+       "rows": 270,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "ViewSonic",
+       "rows": 220,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "Acer",
+       "rows": 213,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "MSI",
+       "rows": 193,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "AOC",
+       "rows": 166,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "HP",
+       "rows": 114,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "Samsung",
+       "rows": 96,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "Gigabyte",
+       "rows": 57,
+       "reason": "no maker source"
+      }
+     ]
+    },
+    "non_maker_brands": [],
+    "key": "res.refresh_native",
+    "label": "Refresh rate: native (no overclock)",
+    "known": 796,
+    "total": 1148,
+    "missing_brands": [],
+    "missing_brand_count": 0
+   },
+   "count": {
+    "matches": 112,
+    "maybe": 117,
+    "unknown": 114,
+    "disagree": 3,
+    "ruled_out": 919,
+    "total": 1148,
+    "out_of_scope": 3158
+   }
+  },
+  {
+   "id": "robovac-under-89mm",
+   "category": "robot-vacuums",
+   "title": "Robot vacuums that fit under 3.5 in (89 mm)",
+   "filters": {
+    "f_phys.robot_height_mm_max": "89"
+   },
+   "scope": {
+    "basis": "Current robot vacuums with a maker spec page. Height is the robot body as the maker states it; a raised LiDAR turret counts when the maker includes it. Mop lift and self-empty are shown as columns, unknown kept visible, not filtered."
+   },
+   "columns": [
+    "phys.robot_height_mm",
+    "nav.type",
+    "mop.lifting",
+    "dock.self_empty"
+   ],
+   "sort": {
+    "key": "phys.robot_height_mm",
+    "dir": "asc"
+   },
+   "category_name": "Robot vacuums & mops",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": true,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.8681,
+    "keys": [
+     {
+      "key": "phys.robot_height_mm",
+      "label": "Robot height",
+      "known": 125,
+      "total": 144,
+      "fill": 0.8681,
+      "by_kind": {
+       "official": 125
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Current robot vacuums with a maker spec page. Height is the robot body as the maker states it; a raised LiDAR turret counts when the maker includes it. Mop lift and self-empty are shown as columns, unknown kept visible, not filtered.",
+     "sources": [
+      "manufacturer"
+     ],
+     "include_discontinued": false,
+     "in_scope": 144,
+     "category_total": 144,
+     "covered_brands": [
+      "Dreame",
+      "ECOVACS",
+      "MOVA",
+      "Narwal",
+      "Roborock",
+      "iRobot"
+     ],
+     "excluded": {
+      "source_tier": 0,
+      "discontinued": 0,
+      "by": {},
+      "recall_only": 0
+     },
+     "not_covered": []
+    },
+    "non_maker_brands": [],
+    "key": "phys.robot_height_mm",
+    "label": "Robot height",
+    "known": 125,
+    "total": 144,
+    "missing_brands": [],
+    "missing_brand_count": 0,
+    "uncovered_brands": []
+   },
+   "count": {
+    "matches": 23,
+    "maybe": 19,
+    "unknown": 19,
+    "disagree": 0,
+    "ruled_out": 102,
+    "total": 144,
+    "out_of_scope": 0
+   }
+  },
+  {
+   "id": "station-lfp-1kwh",
+   "category": "power-stations",
+   "title": "LiFePO4 power stations with 1 kWh or more",
+   "filters": {
+    "f_bat.chemistry_value": "lfp",
+    "f_cap.energy_wh_min": "1000"
+   },
+   "scope": {
+    "by": [
+     "cap.energy_wh"
+    ],
+    "basis": "Current power stations with a maker spec page. Stations known to hold under 1 kWh do not count against the chemistry fill. UPS switchover time is not shown yet: the key is in the profile but not carried in the index."
+   },
+   "columns": [
+    "cap.energy_wh",
+    "bat.chemistry",
+    "out.ac_continuous_w",
+    "in.solar_w"
+   ],
+   "sort": {
+    "key": "cap.energy_wh",
+    "dir": "asc"
+   },
+   "category_name": "Portable power stations",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": true,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.8113,
+    "keys": [
+     {
+      "key": "bat.chemistry",
+      "label": "Cell chemistry",
+      "known": 43,
+      "total": 53,
+      "fill": 0.8113,
+      "by_kind": {
+       "official": 43
+      }
+     },
+     {
+      "key": "cap.energy_wh",
+      "label": "Rated capacity",
+      "known": 65,
+      "total": 78,
+      "fill": 0.8333,
+      "by_kind": {
+       "official": 65
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Current power stations with a maker spec page. Stations known to hold under 1 kWh do not count against the chemistry fill. UPS switchover time is not shown yet: the key is in the profile but not carried in the index.",
+     "sources": [
+      "manufacturer"
+     ],
+     "include_discontinued": false,
+     "in_scope": 78,
+     "category_total": 83,
+     "covered_brands": [
+      "Anker",
+      "BLUETTI",
+      "EcoFlow",
+      "Goal Zero",
+      "Jackery",
+      "PECRON"
+     ],
+     "excluded": {
+      "source_tier": 0,
+      "discontinued": 4,
+      "by": {
+       "cap.energy_wh": 25
+      },
+      "recall_only": 1
+     },
+     "not_covered": []
+    },
+    "non_maker_brands": [],
+    "key": "bat.chemistry",
+    "label": "Cell chemistry",
+    "known": 43,
+    "total": 53,
+    "missing_brands": [],
+    "missing_brand_count": 0,
+    "uncovered_brands": []
+   },
+   "count": {
+    "matches": 34,
+    "maybe": 10,
+    "unknown": 10,
+    "disagree": 0,
+    "ruled_out": 34,
+    "total": 78,
+    "out_of_scope": 5
+   }
+  },
+  {
+   "id": "surge-ul1449-2000j",
+   "category": "power-strips",
+   "title": "Surge protectors listed to UL 1449 with 2,000 J+ and a VPR of 400 V or less",
+   "filters": {
+    "f_type.ul1449_listed_value": "yes",
+    "f_surge.joules_min": "2000",
+    "f_surge.vpr_max_max": "400"
+   },
+   "scope": {
+    "basis": "Current US power strips and surge protectors with a maker spec page. UL 1449 is the surge standard; UL 1363 alone is a plain power strip. VPR is the highest voltage protection rating the maker lists across line, neutral and ground."
+   },
+   "columns": [
+    "type.ul1449_listed",
+    "surge.joules",
+    "surge.vpr_max",
+    "outlets.count"
+   ],
+   "sort": {
+    "key": "surge.joules",
+    "dir": "desc"
+   },
+   "category_name": "Power strips & surge protectors",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": false,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.5421,
+    "keys": [
+     {
+      "key": "type.ul1449_listed",
+      "label": "UL 1449 listed (Type 3 SPD)",
+      "known": 243,
+      "total": 428,
+      "fill": 0.5678,
+      "by_kind": {
+       "official": 243
+      }
+     },
+     {
+      "key": "surge.joules",
+      "label": "Energy rating",
+      "known": 299,
+      "total": 428,
+      "fill": 0.6986,
+      "by_kind": {
+       "official": 299
+      }
+     },
+     {
+      "key": "surge.vpr_max",
+      "label": "VPR worst mode (derived)",
+      "known": 232,
+      "total": 428,
+      "fill": 0.5421,
+      "by_kind": {
+       "official": 232
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Current US power strips and surge protectors with a maker spec page. UL 1449 is the surge standard; UL 1363 alone is a plain power strip. VPR is the highest voltage protection rating the maker lists across line, neutral and ground.",
+     "sources": [
+      "manufacturer"
+     ],
+     "include_discontinued": false,
+     "in_scope": 428,
+     "category_total": 591,
+     "covered_brands": [
+      "CyberPower",
+      "Tripp Lite"
+     ],
+     "excluded": {
+      "source_tier": 0,
+      "discontinued": 163,
+      "by": {},
+      "recall_only": 0
+     },
+     "not_covered": [
+      {
+       "brand": "Belkin",
+       "rows": 53,
+       "reason": "no value"
+      }
+     ]
+    },
+    "non_maker_brands": [],
+    "key": "surge.vpr_max",
+    "label": "VPR worst mode (derived)",
+    "known": 232,
+    "total": 428,
+    "missing_brands": [
+     {
+      "brand": "Belkin",
+      "rows": 53
+     }
+    ],
+    "missing_brand_count": 1
+   },
+   "count": {
+    "matches": 34,
+    "maybe": 143,
+    "unknown": 133,
+    "disagree": 10,
+    "ruled_out": 251,
+    "total": 428,
+    "out_of_scope": 163
+   }
+  },
+  {
+   "id": "tv-panel-by-size",
+   "category": "tvs",
+   "title": "What panel does each TV size use?",
+   "filters": {},
+   "require": [
+    "gen.size_class",
+    "panel.display_tech"
+   ],
+   "view": "sizegrid",
+   "scope": {
+    "basis": "Current TV models with a maker spec page. ENERGY STAR listing-only rows have no size class, so they can never sit on the size grid."
+   },
+   "columns": [
+    "gen.size_class",
+    "panel.display_tech",
+    "hdr.dimming_zones",
+    "hdmi.ports_4k120"
+   ],
+   "sort": {
+    "key": "gen.size_class",
+    "dir": "asc"
+   },
+   "category_name": "Televisions",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": true,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.9003,
+    "keys": [
+     {
+      "key": "gen.size_class",
+      "label": "Size class",
+      "known": 568,
+      "total": 622,
+      "fill": 0.9132,
+      "by_kind": {
+       "official": 568
+      }
+     },
+     {
+      "key": "panel.display_tech",
+      "label": "Display technology",
+      "known": 560,
+      "total": 622,
+      "fill": 0.9003,
+      "by_kind": {
+       "official": 560
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Current TV models with a maker spec page. ENERGY STAR listing-only rows have no size class, so they can never sit on the size grid.",
+     "sources": [
+      "manufacturer"
+     ],
+     "include_discontinued": false,
+     "in_scope": 622,
+     "category_total": 1371,
+     "covered_brands": [
+      "LG",
+      "Samsung",
+      "TCL",
+      "Vizio"
+     ],
+     "excluded": {
+      "source_tier": 112,
+      "discontinued": 637,
+      "by": {},
+      "recall_only": 0
+     },
+     "not_covered": [
+      {
+       "brand": "Sansui",
+       "rows": 29,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "Philips",
+       "rows": 12,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "Xitrix",
+       "rows": 6,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "Hisense",
+       "rows": 5,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "Clear Tunes",
+       "rows": 4,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "Emerson",
+       "rows": 4,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "Loewe",
+       "rows": 4,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "Insignia",
+       "rows": 1,
+       "reason": "no maker source"
+      }
+     ]
+    },
+    "non_maker_brands": [],
+    "key": "panel.display_tech",
+    "label": "Display technology",
+    "known": 560,
+    "total": 622,
+    "missing_brands": [],
+    "missing_brand_count": 0,
+    "uncovered_brands": []
+   },
+   "count": {
+    "matches": 622,
+    "maybe": 0,
+    "unknown": 0,
+    "disagree": 0,
+    "ruled_out": 0,
+    "total": 622,
+    "out_of_scope": 749
+   }
+  },
+  {
+   "id": "tv-4-hdmi-4k120",
+   "category": "tvs",
+   "title": "TVs with a 120 Hz panel and at least one 4K 120 Hz HDMI input (port count shown)",
+   "_id_note": "The id predates the retitle (2026-11-25, product/demand-r6.md): kept stable so old ?preset= links work. The title says what the gate checks today (any 4K 120 Hz port). next_gate is not applied: switch to it when hdmi.ports_4k120 reaches the fill gate in this scope (72% on 2026-11-25), then the title becomes \"4 HDMI inputs at 4K 120 Hz\".",
+   "next_gate": {
+    "filters": {
+     "f_hdmi.ports_4k120_min": "4"
+    },
+    "when": "hdmi.ports_4k120 fill >= min_fill in this preset's scope"
+   },
+   "filters": {
+    "f_refresh.native_hz_min": "120",
+    "f_hdmi.has_4k120_value": "yes"
+   },
+   "scope": {
+    "by": [
+     "refresh.native_hz"
+    ],
+    "basis": "Current TV models with a maker spec page and a native 120 Hz (or faster) panel. TVs known to have a 60 Hz panel do not count against the 4K 120 Hz fill: they cannot show 4K at 120 Hz. A TV qualifies when its maker states that at least one HDMI input takes 4K at 120 Hz; the number of such ports is shown as a column where the maker lists them per port (LG often states only that its inputs support 4K 120 Hz)."
+   },
+   "columns": [
+    "gen.size_class",
+    "panel.display_tech",
+    "hdmi.has_4k120",
+    "hdmi.ports_4k120",
+    "hdmi.count",
+    "refresh.native_hz"
+   ],
+   "sort": {
+    "key": "gen.size_class",
+    "dir": "asc"
+   },
+   "category_name": "Televisions",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": true,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.8721,
+    "keys": [
+     {
+      "key": "refresh.native_hz",
+      "label": "Native refresh rate",
+      "known": 603,
+      "total": 622,
+      "fill": 0.9695,
+      "by_kind": {
+       "official": 603
+      }
+     },
+     {
+      "key": "hdmi.has_4k120",
+      "label": "Has a 4K 120 Hz HDMI input",
+      "known": 300,
+      "total": 344,
+      "fill": 0.8721,
+      "by_kind": {
+       "official": 300
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Current TV models with a maker spec page and a native 120 Hz (or faster) panel. TVs known to have a 60 Hz panel do not count against the 4K 120 Hz fill: they cannot show 4K at 120 Hz. A TV qualifies when its maker states that at least one HDMI input takes 4K at 120 Hz; the number of such ports is shown as a column where the maker lists them per port (LG often states only that its inputs support 4K 120 Hz).",
+     "sources": [
+      "manufacturer"
+     ],
+     "include_discontinued": false,
+     "in_scope": 622,
+     "category_total": 1371,
+     "covered_brands": [
+      "LG",
+      "Samsung",
+      "TCL"
+     ],
+     "excluded": {
+      "source_tier": 112,
+      "discontinued": 637,
+      "by": {
+       "refresh.native_hz": 278
+      },
+      "recall_only": 0
+     },
+     "not_covered": [
+      {
+       "brand": "Vizio",
+       "rows": 79,
+       "reason": "no value"
+      },
+      {
+       "brand": "Sansui",
+       "rows": 29,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "Philips",
+       "rows": 12,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "Xitrix",
+       "rows": 6,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "Hisense",
+       "rows": 5,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "Clear Tunes",
+       "rows": 4,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "Emerson",
+       "rows": 4,
+       "reason": "no maker source"
+      },
+      {
+       "brand": "Loewe",
+       "rows": 4,
+       "reason": "no maker source"
+      }
+     ]
+    },
+    "non_maker_brands": [],
+    "key": "hdmi.has_4k120",
+    "label": "Has a 4K 120 Hz HDMI input",
+    "known": 300,
+    "total": 344,
+    "missing_brands": [
+     {
+      "brand": "Vizio",
+      "rows": 5
+     }
+    ],
+    "missing_brand_count": 1,
+    "uncovered_brands": []
+   },
+   "count": {
+    "matches": 291,
+    "maybe": 53,
+    "unknown": 53,
+    "disagree": 0,
+    "ruled_out": 278,
+    "total": 622,
+    "out_of_scope": 749
+   }
+  },
+  {
+   "id": "router-wifi7-6ghz",
+   "category": "routers",
+   "title": "Wi-Fi 7 routers with a 6 GHz band, ranked by 5 GHz link rate (stream counts shown where the maker states them)",
+   "filters": {
+    "f_wifi.generation_value": "wifi7",
+    "f_wifi.has_6ghz_value": "yes"
+   },
+   "require": [
+    "wifi.rate_5_mbps"
+   ],
+   "scope": {
+    "by": [
+     "wifi.generation"
+    ],
+    "basis": "Routers, mesh systems and access points with a maker spec page. Wi-Fi 5 and Wi-Fi 6 models do not count against the 6 GHz fill. Per-band stream counts are not filtered: TP-Link and NETGEAR never print them (see D8)."
+   },
+   "columns": [
+    "wifi.marketing_class",
+    "wifi.band_count",
+    "wifi.rate_5_mbps",
+    "wifi.streams_5",
+    "wifi.max_width_6_mhz"
+   ],
+   "sort": {
+    "key": "wifi.rate_5_mbps",
+    "dir": "desc"
+   },
+   "category_name": "Wi-Fi routers & mesh",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": true,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.8214,
+    "keys": [
+     {
+      "key": "wifi.generation",
+      "label": "Wi-Fi generation (highest)",
+      "known": 315,
+      "total": 323,
+      "fill": 0.9752,
+      "by_kind": {
+       "official": 315
+      }
+     },
+     {
+      "key": "wifi.has_6ghz",
+      "label": "Has 6 GHz band",
+      "known": 136,
+      "total": 140,
+      "fill": 0.9714,
+      "by_kind": {
+       "official": 136
+      }
+     },
+     {
+      "key": "wifi.rate_5_mbps",
+      "label": "PHY rate 5 GHz (first 5 GHz radio)",
+      "known": 115,
+      "total": 140,
+      "fill": 0.8214,
+      "by_kind": {
+       "official": 115
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Routers, mesh systems and access points with a maker spec page. Wi-Fi 5 and Wi-Fi 6 models do not count against the 6 GHz fill. Per-band stream counts are not filtered: TP-Link and NETGEAR never print them (see D8).",
+     "sources": [
+      "manufacturer"
+     ],
+     "include_discontinued": false,
+     "in_scope": 334,
+     "category_total": 334,
+     "covered_brands": [
+      "ASUS",
+      "GL.iNet",
+      "NETGEAR",
+      "TP-Link",
+      "Ubiquiti"
+     ],
+     "excluded": {
+      "source_tier": 0,
+      "discontinued": 0,
+      "by": {
+       "wifi.generation": 183
+      },
+      "recall_only": 0
+     },
+     "not_covered": []
+    },
+    "non_maker_brands": [],
+    "key": "wifi.rate_5_mbps",
+    "label": "PHY rate 5 GHz (first 5 GHz radio)",
+    "known": 115,
+    "total": 140,
+    "missing_brands": [],
+    "missing_brand_count": 0,
+    "uncovered_brands": []
+   },
+   "count": {
+    "matches": 79,
+    "maybe": 16,
+    "unknown": 16,
+    "disagree": 0,
+    "ruled_out": 239,
+    "total": 334,
+    "out_of_scope": 0
+   }
+  },
+  {
+   "id": "purifier-400sqft-smoke",
+   "category": "air-purifiers",
+   "title": "Purifiers with a smoke CADR of 260+ cfm (enough for about 400 sq ft)",
+   "filters": {
+    "f_cadr.smoke_cfm_min": "260"
+   },
+   "scope": {
+    "sources": [
+     "manufacturer",
+     "regulatory"
+    ],
+    "basis": "Purifiers on the ENERGY STAR list or with a maker page. The CADR is ENERGY STAR-certified (AHAM AC-1 test) on most rows; each value's basis is on its detail page. 260 cfm comes from the AHAM room-size rule (room area = 1.55 x smoke CADR, so 400 sq ft needs 258 cfm). Ranking per filter dollar is not offered: filter prices are preview-only by policy (dated store prices)."
+   },
+   "columns": [
+    "cadr.smoke_cfm",
+    "room.size_sqft",
+    "filter.hepa_class",
+    "eff.smoke_cadr_per_w",
+    "noise.db"
+   ],
+   "sort": {
+    "key": "cadr.smoke_cfm",
+    "dir": "desc"
+   },
+   "category_name": "Air purifiers",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": true,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.9493,
+    "keys": [
+     {
+      "key": "cadr.smoke_cfm",
+      "label": "Smoke CADR",
+      "known": 206,
+      "total": 217,
+      "fill": 0.9493,
+      "by_kind": {
+       "official": 206
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Purifiers on the ENERGY STAR list or with a maker page. The CADR is ENERGY STAR-certified (AHAM AC-1 test) on most rows; each value's basis is on its detail page. 260 cfm comes from the AHAM room-size rule (room area = 1.55 x smoke CADR, so 400 sq ft needs 258 cfm). Ranking per filter dollar is not offered: filter prices are preview-only by policy (dated store prices).",
+     "sources": [
+      "manufacturer",
+      "regulatory"
+     ],
+     "include_discontinued": false,
+     "in_scope": 217,
+     "category_total": 217,
+     "covered_brands": [
+      "Activepure",
+      "Aeocky",
+      "Aeronova",
+      "Aerus",
+      "Afloia",
+      "AirDoctor",
+      "Alen",
+      "Alrocket",
+      "Amazon Basics",
+      "Aroeve",
+      "BLACK+DECKER",
+      "Bionaire",
+      "Blueair",
+      "Bosch",
+      "Breezome",
+      "Byzeng",
+      "CUCKOO",
+      "Clorox",
+      "Coway",
+      "Danby",
+      "Dreame",
+      "Dreo",
+      "Frigidaire",
+      "Govee",
+      "Greenlite",
+      "Healthway",
+      "Honeywell",
+      "Ikea",
+      "Intellipure",
+      "Ionic Pro",
+      "Isinlive",
+      "Kloudic",
+      "Lago",
+      "Leedarson",
+      "Levoit",
+      "Longstar",
+      "Maxlite",
+      "Medify Air",
+      "Megalight",
+      "Midea",
+      "Morelite",
+      "Noma",
+      "Nuwave",
+      "Okaysou",
+      "Pelonis",
+      "Pro Aire",
+      "PureCode",
+      "Reemkizz",
+      "Senville",
+      "Sharp",
+      "Siesean",
+      "Simply Conserve",
+      "Smart Air",
+      "Soleusair",
+      "Tabyik",
+      "Taotronics",
+      "Toshiba",
+      "Voopnu",
+      "Windmill",
+      "Winix",
+      "Woozoo",
+      "Wozoyo"
+     ],
+     "excluded": {
+      "source_tier": 0,
+      "discontinued": 0,
+      "by": {},
+      "recall_only": 0
+     },
+     "not_covered": []
+    },
+    "non_maker_brands": [],
+    "key": "cadr.smoke_cfm",
+    "label": "Smoke CADR",
+    "known": 206,
+    "total": 217,
+    "missing_brands": [],
+    "missing_brand_count": 0,
+    "uncovered_brands": []
+   },
+   "count": {
+    "matches": 67,
+    "maybe": 11,
+    "unknown": 11,
+    "disagree": 0,
+    "ruled_out": 139,
+    "total": 217,
+    "out_of_scope": 0
+   }
+  },
+  {
+   "id": "fridge-counter-depth",
+   "category": "refrigerators",
+   "title": "Full-size counter-depth refrigerators up to 36 in wide with 20+ cu ft, ENERGY STAR, 600 kWh/yr or less",
+   "filters": {
+    "f_gen.is_pattern_value": "no",
+    "f_config.counter_depth_value": "yes",
+    "f_config.compact_value": "no",
+    "f_dims.width_in_max": "36.25",
+    "f_capacity.total_ft3_min": "20",
+    "f_energy.annual_kwh_max": "600",
+    "f_cert.energy_star_value": "yes"
+   },
+   "scope": {
+    "sources": [
+     "regulatory",
+     "manufacturer"
+    ],
+    "by": [
+     "gen.is_pattern",
+     "config.counter_depth",
+     "config.compact"
+    ],
+    "basis": "Full-size (not compact) refrigerators their ENERGY STAR filing declares counter-depth, by concrete model number. ENERGY STAR certified patterns (one filing covering several finishes or hinges, e.g. BRB106003**) are left out: their width does not transfer to a specific SKU (A1 ruling). Capacity is the DOE total volume (fresh + freezer), never the larger adjusted volume or a model-number size class. Counter-depth is the maker's own ENERGY STAR declaration; ENERGY STAR publishes no depth, so check the depth on the maker's sheet."
+   },
+   "columns": [
+    "dims.width_in",
+    "dims.height_in",
+    "capacity.total_ft3",
+    "energy.annual_kwh",
+    "config.es_type",
+    "features.ice_maker"
+   ],
+   "sort": {
+    "key": "energy.annual_kwh",
+    "dir": "asc"
+   },
+   "category_name": "Refrigerators",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": true,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 1.0,
+    "keys": [
+     {
+      "key": "gen.is_pattern",
+      "label": "Certified pattern (covers several SKUs)",
+      "known": 1312,
+      "total": 1312,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 1312
+      }
+     },
+     {
+      "key": "config.counter_depth",
+      "label": "Counter-depth",
+      "known": 1491,
+      "total": 1491,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 1491
+      }
+     },
+     {
+      "key": "config.compact",
+      "label": "Compact",
+      "known": 580,
+      "total": 580,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 580
+      }
+     },
+     {
+      "key": "dims.width_in",
+      "label": "Width",
+      "known": 199,
+      "total": 199,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 199
+      }
+     },
+     {
+      "key": "capacity.total_ft3",
+      "label": "Total capacity (DOE)",
+      "known": 199,
+      "total": 199,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 199
+      }
+     },
+     {
+      "key": "energy.annual_kwh",
+      "label": "Energy use",
+      "known": 199,
+      "total": 199,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 199
+      }
+     },
+     {
+      "key": "cert.energy_star",
+      "label": "ENERGY STAR certified",
+      "known": 199,
+      "total": 199,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 199
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Full-size (not compact) refrigerators their ENERGY STAR filing declares counter-depth, by concrete model number. ENERGY STAR certified patterns (one filing covering several finishes or hinges, e.g. BRB106003**) are left out: their width does not transfer to a specific SKU (A1 ruling). Capacity is the DOE total volume (fresh + freezer), never the larger adjusted volume or a model-number size class. Counter-depth is the maker's own ENERGY STAR declaration; ENERGY STAR publishes no depth, so check the depth on the maker's sheet.",
+     "sources": [
+      "regulatory",
+      "manufacturer"
+     ],
+     "include_discontinued": false,
+     "in_scope": 4373,
+     "category_total": 4411,
+     "covered_brands": [
+      "Beko",
+      "Beko_Blomberg",
+      "Bertazzoni",
+      "Blomberg",
+      "Bosch",
+      "Farberware",
+      "Fhiaba",
+      "Fisher & Paykel",
+      "Forno_Elisii",
+      "Frestec",
+      "Frigidaire",
+      "Gaggenau",
+      "Greenline",
+      "Insignia",
+      "JennAir",
+      "KitchenAid",
+      "LG",
+      "Liebherr",
+      "Miele",
+      "Smeg",
+      "Summit",
+      "Thermador",
+      "Viking",
+      "Vissani",
+      "Whirlpool"
+     ],
+     "excluded": {
+      "source_tier": 0,
+      "discontinued": 0,
+      "by": {
+       "gen.is_pattern": 1461,
+       "config.counter_depth": 2332,
+       "config.compact": 381
+      },
+      "recall_only": 38
+     },
+     "not_covered": [
+      {
+       "brand": "GE Appliances (GE / Profile / Cafe / Monogram)",
+       "rows": 208,
+       "reason": "no value"
+      },
+      {
+       "brand": "Midea",
+       "rows": 140,
+       "reason": "no value"
+      },
+      {
+       "brand": "Magic Chef",
+       "rows": 120,
+       "reason": "no value"
+      },
+      {
+       "brand": "Upstreman",
+       "rows": 115,
+       "reason": "no value"
+      },
+      {
+       "brand": "Galanz",
+       "rows": 113,
+       "reason": "no value"
+      },
+      {
+       "brand": "Samsung",
+       "rows": 95,
+       "reason": "no value"
+      },
+      {
+       "brand": "Danby",
+       "rows": 93,
+       "reason": "no value"
+      },
+      {
+       "brand": "Kenmore",
+       "rows": 93,
+       "reason": "no value"
+      }
+     ]
+    },
+    "non_maker_brands": [],
+    "key": "gen.is_pattern",
+    "label": "Certified pattern (covers several SKUs)",
+    "known": 1312,
+    "total": 1312,
+    "missing_brands": [],
+    "missing_brand_count": 0,
+    "uncovered_brands": []
+   },
+   "count": {
+    "matches": 21,
+    "maybe": 0,
+    "unknown": 0,
+    "disagree": 0,
+    "ruled_out": 4352,
+    "total": 4373,
+    "out_of_scope": 38
+   }
+  },
+  {
+   "id": "dishwasher-24in-14ps",
+   "category": "dishwashers",
+   "title": "24 in dishwashers with 14+ place settings using 3.5 gal or less per cycle (energy use shown)",
+   "filters": {
+    "f_gen.is_pattern_value": "no",
+    "f_config.es_type_value": "standard",
+    "f_dims.width_in_min": "23",
+    "f_dims.width_in_max": "24.25",
+    "f_capacity.place_settings_min": "14",
+    "f_water.gal_per_cycle_max": "3.5"
+   },
+   "require": [
+    "energy.annual_kwh"
+   ],
+   "scope": {
+    "sources": [
+     "regulatory",
+     "manufacturer"
+    ],
+    "by": [
+     "gen.is_pattern",
+     "config.es_type",
+     "dims.width_in"
+    ],
+    "basis": "Standard-size dishwashers whose unit width fits a 24 in cutout (23 to 24.25 in as filed with ENERGY STAR; 23.5-23.9 in is typical), by concrete model number. ENERGY STAR certified patterns are left out: their width does not transfer to a specific SKU (A1 ruling). Water and energy are DOE normal-cycle figures (Appendix C1). Noise is shown when a maker states it, but is not part of the gate: only one maker publishes dBA we can read, so a noise filter would cover one brand."
+   },
+   "columns": [
+    "dims.width_in",
+    "capacity.place_settings",
+    "water.gal_per_cycle",
+    "energy.annual_kwh",
+    "features.drying_method",
+    "noise.dba"
+   ],
+   "sort": {
+    "key": "energy.annual_kwh",
+    "dir": "asc"
+   },
+   "category_name": "Dishwashers",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": true,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.9398,
+    "keys": [
+     {
+      "key": "gen.is_pattern",
+      "label": "Certified pattern (covers several SKUs)",
+      "known": 597,
+      "total": 597,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 597
+      }
+     },
+     {
+      "key": "config.es_type",
+      "label": "Size class (ENERGY STAR)",
+      "known": 278,
+      "total": 278,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 278
+      }
+     },
+     {
+      "key": "dims.width_in",
+      "label": "Width",
+      "known": 312,
+      "total": 332,
+      "fill": 0.9398,
+      "by_kind": {
+       "official": 312
+      }
+     },
+     {
+      "key": "capacity.place_settings",
+      "label": "Place settings",
+      "known": 270,
+      "total": 270,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 270
+      }
+     },
+     {
+      "key": "water.gal_per_cycle",
+      "label": "Water use",
+      "known": 270,
+      "total": 270,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 270
+      }
+     },
+     {
+      "key": "energy.annual_kwh",
+      "label": "Energy use",
+      "known": 267,
+      "total": 270,
+      "fill": 0.9889,
+      "by_kind": {
+       "official": 267
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Standard-size dishwashers whose unit width fits a 24 in cutout (23 to 24.25 in as filed with ENERGY STAR; 23.5-23.9 in is typical), by concrete model number. ENERGY STAR certified patterns are left out: their width does not transfer to a specific SKU (A1 ruling). Water and energy are DOE normal-cycle figures (Appendix C1). Noise is shown when a maker states it, but is not part of the gate: only one maker publishes dBA we can read, so a noise filter would cover one brand.",
+     "sources": [
+      "regulatory",
+      "manufacturer"
+     ],
+     "include_discontinued": false,
+     "in_scope": 690,
+     "category_total": 699,
+     "covered_brands": [
+      "AEG",
+      "BLACK+DECKER",
+      "Beko",
+      "Bertazzoni",
+      "Blomberg",
+      "Bosch",
+      "Brama",
+      "Cosmo",
+      "Cove",
+      "Criterion",
+      "Dacor",
+      "Danby",
+      "Dreame",
+      "Empava",
+      "Equator",
+      "FDV",
+      "Fisher & Paykel",
+      "Forno",
+      "Frigidaire",
+      "Fulgor_Milano",
+      "Gaggenau",
+      "Grandeur",
+      "Heynemo",
+      "Hisense",
+      "Honeywell",
+      "Ikea",
+      "Insignia",
+      "Janska",
+      "JennAir",
+      "Kenmore",
+      "KitchenAid",
+      "Koolmore",
+      "Kostch",
+      "LG",
+      "Miele",
+      "Robam",
+      "SPT",
+      "Samsung",
+      "Savalo",
+      "Sharp",
+      "Smeg",
+      "Summit",
+      "Sunvivi",
+      "THOR Kitchen",
+      "Unique",
+      "West_Bend",
+      "ZLINE"
+     ],
+     "excluded": {
+      "source_tier": 0,
+      "discontinued": 0,
+      "by": {
+       "gen.is_pattern": 338,
+       "config.es_type": 20,
+       "dims.width_in": 62
+      },
+      "recall_only": 9
+     },
+     "not_covered": [
+      {
+       "brand": "GE Appliances (GE / Profile / Cafe / Monogram)",
+       "rows": 62,
+       "reason": "no value"
+      },
+      {
+       "brand": "Midea",
+       "rows": 22,
+       "reason": "no value"
+      },
+      {
+       "brand": "Asko",
+       "rows": 13,
+       "reason": "no value"
+      },
+      {
+       "brand": "Whirlpool",
+       "rows": 11,
+       "reason": "no value"
+      },
+      {
+       "brand": "Avanti",
+       "rows": 7,
+       "reason": "no value"
+      },
+      {
+       "brand": "Electrolux",
+       "rows": 6,
+       "reason": "no value"
+      },
+      {
+       "brand": "Viking",
+       "rows": 6,
+       "reason": "no value"
+      },
+      {
+       "brand": "Crosley",
+       "rows": 5,
+       "reason": "no value"
+      }
+     ]
+    },
+    "non_maker_brands": [],
+    "key": "dims.width_in",
+    "label": "Width",
+    "known": 312,
+    "total": 332,
+    "missing_brands": [
+     {
+      "brand": "Viking",
+      "rows": 6
+     },
+     {
+      "brand": "Porter_Charles",
+      "rows": 2
+     },
+     {
+      "brand": "Big_Chill",
+      "rows": 1
+     },
+     {
+      "brand": "Bluestar",
+      "rows": 1
+     }
+    ],
+    "missing_brand_count": 4,
+    "uncovered_brands": []
+   },
+   "count": {
+    "matches": 205,
+    "maybe": 1,
+    "unknown": 1,
+    "disagree": 0,
+    "ruled_out": 484,
+    "total": 690,
+    "out_of_scope": 9
+   }
+  },
+  {
+   "id": "dryer-ventless-heat-pump-4cuft",
+   "category": "clothes-dryers",
+   "title": "Ventless heat-pump dryers with 4+ cu ft drums (no outside vent needed), ENERGY STAR",
+   "filters": {
+    "f_config.ventless_value": "yes",
+    "f_config.heat_pump_value": "heat_pump",
+    "f_capacity.drum_ft3_min": "4",
+    "f_cert.energy_star_value": "yes"
+   },
+   "require": [
+    "energy.cef"
+   ],
+   "scope": {
+    "sources": [
+     "regulatory",
+     "manufacturer"
+    ],
+    "by": [
+     "config.ventless",
+     "capacity.drum_ft3"
+    ],
+    "basis": "Dryers their ENERGY STAR filing declares ventless, with a DOE drum capacity of 4 cu ft or more (Appendix D2), by model number or certified pattern: venting, heat-pump technology, drum size and CEF are energy-defining facts of the certified basic model, so a pattern row counts (A1 ruling). Heat pump is as filed: ENERGY STAR leaves the field blank on many ventless rows, and a blank is unknown (never inferred from the CEF). Hybrid heat-pump dryers are shown under their own value. Voltage is not part of the gate (rarely filed)."
+   },
+   "columns": [
+    "capacity.drum_ft3",
+    "energy.cef",
+    "energy.annual_kwh",
+    "config.heat_pump",
+    "config.fuel",
+    "dims.width_in"
+   ],
+   "sort": {
+    "key": "energy.cef",
+    "dir": "desc"
+   },
+   "category_name": "Clothes dryers",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": false,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.6204,
+    "keys": [
+     {
+      "key": "config.ventless",
+      "label": "Ventless",
+      "known": 539,
+      "total": 551,
+      "fill": 0.9782,
+      "by_kind": {
+       "official": 539
+      }
+     },
+     {
+      "key": "config.heat_pump",
+      "label": "Heat pump",
+      "known": 67,
+      "total": 108,
+      "fill": 0.6204,
+      "by_kind": {
+       "official": 67
+      }
+     },
+     {
+      "key": "capacity.drum_ft3",
+      "label": "Drum capacity (DOE)",
+      "known": 110,
+      "total": 110,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 110
+      }
+     },
+     {
+      "key": "cert.energy_star",
+      "label": "ENERGY STAR certified",
+      "known": 108,
+      "total": 108,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 108
+      }
+     },
+     {
+      "key": "energy.cef",
+      "label": "Combined energy factor (CEF)",
+      "known": 108,
+      "total": 108,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 108
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Dryers their ENERGY STAR filing declares ventless, with a DOE drum capacity of 4 cu ft or more (Appendix D2), by model number or certified pattern: venting, heat-pump technology, drum size and CEF are energy-defining facts of the certified basic model, so a pattern row counts (A1 ruling). Heat pump is as filed: ENERGY STAR leaves the field blank on many ventless rows, and a blank is unknown (never inferred from the CEF). Hybrid heat-pump dryers are shown under their own value. Voltage is not part of the gate (rarely filed).",
+     "sources": [
+      "regulatory",
+      "manufacturer"
+     ],
+     "include_discontinued": false,
+     "in_scope": 553,
+     "category_total": 554,
+     "covered_brands": [
+      "Asko",
+      "Beko",
+      "Blomberg",
+      "Bosch",
+      "Breda",
+      "GE Appliances (GE / Profile / Cafe / Monogram)",
+      "LG",
+      "Miele",
+      "Samsung",
+      "Smeg",
+      "Summit",
+      "Whirlpool"
+     ],
+     "excluded": {
+      "source_tier": 0,
+      "discontinued": 0,
+      "by": {
+       "config.ventless": 443,
+       "capacity.drum_ft3": 2
+      },
+      "recall_only": 1
+     },
+     "not_covered": [
+      {
+       "brand": "Electrolux",
+       "rows": 35,
+       "reason": "no value"
+      },
+      {
+       "brand": "Maytag",
+       "rows": 28,
+       "reason": "no value"
+      },
+      {
+       "brand": "Midea",
+       "rows": 26,
+       "reason": "no value"
+      },
+      {
+       "brand": "Kenmore",
+       "rows": 9,
+       "reason": "no value"
+      },
+      {
+       "brand": "Frigidaire",
+       "rows": 4,
+       "reason": "no value"
+      },
+      {
+       "brand": "Premium_Levella",
+       "rows": 4,
+       "reason": "no value"
+      },
+      {
+       "brand": "Speed Queen",
+       "rows": 4,
+       "reason": "no value"
+      },
+      {
+       "brand": "Crosley",
+       "rows": 3,
+       "reason": "no value"
+      }
+     ]
+    },
+    "non_maker_brands": [],
+    "key": "config.heat_pump",
+    "label": "Heat pump",
+    "known": 67,
+    "total": 108,
+    "missing_brands": [
+     {
+      "brand": "Premium_Levella",
+      "rows": 4
+     },
+     {
+      "brand": "Electrolux",
+      "rows": 3
+     },
+     {
+      "brand": "Hisense",
+      "rows": 3
+     },
+     {
+      "brand": "Danby",
+      "rows": 2
+     },
+     {
+      "brand": "Element",
+      "rows": 2
+     },
+     {
+      "brand": "Midea",
+      "rows": 2
+     },
+     {
+      "brand": "Avanti",
+      "rows": 1
+     },
+     {
+      "brand": "Crown",
+      "rows": 1
+     }
+    ],
+    "missing_brand_count": 16
+   },
+   "count": {
+    "matches": 52,
+    "maybe": 49,
+    "unknown": 49,
+    "disagree": 0,
+    "ruled_out": 452,
+    "total": 553,
+    "out_of_scope": 1
+   }
+  },
+  {
+   "id": "washer-front-4p5-iwf32",
+   "category": "clothes-washers",
+   "title": "Front-load washers with 4.5+ cu ft (DOE) using 3.2 gal/cycle/cu ft of water or less, ENERGY STAR",
+   "filters": {
+    "f_config.load_value": "front",
+    "f_capacity.doe_ft3_min": "4.5",
+    "f_water.iwf_max": "3.2",
+    "f_cert.energy_star_value": "yes"
+   },
+   "require": [
+    "energy.annual_kwh"
+   ],
+   "scope": {
+    "sources": [
+     "regulatory",
+     "manufacturer"
+    ],
+    "by": [
+     "config.load",
+     "capacity.doe_ft3"
+    ],
+    "basis": "Front-load washers with a DOE tub capacity of 4.5 cu ft or more (Appendix J2; the larger IEC figure makers advertise is never used), by model number or certified pattern: loading, DOE capacity and IWF are energy-defining facts of the certified basic model, so a pattern row counts (A1 ruling). IWF is gallons per cycle per cu ft of capacity (lower is better)."
+   },
+   "columns": [
+    "capacity.doe_ft3",
+    "water.iwf",
+    "energy.imef",
+    "energy.annual_kwh",
+    "water.annual_gal",
+    "dims.width_in"
+   ],
+   "sort": {
+    "key": "water.iwf",
+    "dir": "asc"
+   },
+   "category_name": "Clothes washers",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": true,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 1.0,
+    "keys": [
+     {
+      "key": "config.load",
+      "label": "Loading",
+      "known": 262,
+      "total": 262,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 262
+      }
+     },
+     {
+      "key": "capacity.doe_ft3",
+      "label": "Capacity (DOE cu ft)",
+      "known": 253,
+      "total": 253,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 253
+      }
+     },
+     {
+      "key": "water.iwf",
+      "label": "Integrated water factor (IWF)",
+      "known": 157,
+      "total": 157,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 157
+      }
+     },
+     {
+      "key": "cert.energy_star",
+      "label": "ENERGY STAR certified",
+      "known": 157,
+      "total": 157,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 157
+      }
+     },
+     {
+      "key": "energy.annual_kwh",
+      "label": "Energy use",
+      "known": 157,
+      "total": 157,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 157
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Front-load washers with a DOE tub capacity of 4.5 cu ft or more (Appendix J2; the larger IEC figure makers advertise is never used), by model number or certified pattern: loading, DOE capacity and IWF are energy-defining facts of the certified basic model, so a pattern row counts (A1 ruling). IWF is gallons per cycle per cu ft of capacity (lower is better).",
+     "sources": [
+      "regulatory",
+      "manufacturer"
+     ],
+     "include_discontinued": false,
+     "in_scope": 369,
+     "category_total": 404,
+     "covered_brands": [
+      "BLACK+DECKER",
+      "Crosley",
+      "Electrolux",
+      "GE Appliances (GE / Profile / Cafe / Monogram)",
+      "Hisense",
+      "Kenmore",
+      "Koolmore",
+      "LG",
+      "Maytag",
+      "Midea",
+      "Samsung",
+      "Techomey",
+      "Whirlpool"
+     ],
+     "excluded": {
+      "source_tier": 0,
+      "discontinued": 0,
+      "by": {
+       "config.load": 116,
+       "capacity.doe_ft3": 96
+      },
+      "recall_only": 35
+     },
+     "not_covered": [
+      {
+       "brand": "Summit",
+       "rows": 11,
+       "reason": "no value"
+      },
+      {
+       "brand": "Miele",
+       "rows": 9,
+       "reason": "no value"
+      },
+      {
+       "brand": "Premium_Levella",
+       "rows": 6,
+       "reason": "no value"
+      },
+      {
+       "brand": "Breda",
+       "rows": 4,
+       "reason": "no value"
+      },
+      {
+       "brand": "Asko",
+       "rows": 3,
+       "reason": "no value"
+      },
+      {
+       "brand": "Beko",
+       "rows": 3,
+       "reason": "no value"
+      },
+      {
+       "brand": "Blomberg",
+       "rows": 3,
+       "reason": "no value"
+      },
+      {
+       "brand": "Bosch",
+       "rows": 3,
+       "reason": "no value"
+      }
+     ]
+    },
+    "non_maker_brands": [],
+    "key": "config.load",
+    "label": "Loading",
+    "known": 262,
+    "total": 262,
+    "missing_brands": [],
+    "missing_brand_count": 0,
+    "uncovered_brands": []
+   },
+   "count": {
+    "matches": 157,
+    "maybe": 0,
+    "unknown": 0,
+    "disagree": 0,
+    "ruled_out": 212,
+    "total": 369,
+    "out_of_scope": 35
+   }
+  },
+  {
+   "id": "zigbee-motion-lux-local",
+   "category": "smart-home",
+   "title": "Zigbee motion sensors that also report light level (lux), working locally with Zigbee2MQTT",
+   "filters": {
+    "f_gen.device_type_value": "motion_sensor",
+    "f_sensor.illuminance_value": "yes"
+   },
+   "require": [],
+   "scope": {
+    "sources": [
+     "other"
+    ],
+    "by": [
+     "gen.device_type"
+    ],
+    "basis": "Zigbee devices in the Zigbee2MQTT device database (a community integration database, not the maker), so every row works locally with an open Zigbee coordinator, no vendor hub or cloud. Lux means the sensor reports a light level over Zigbee; a day/night flag (IKEA TRADFRI) does not count. No means the definition lists everything the device exposes and lux is not in it. Device type is a rule over what the device exposes (most specific first), or its description when the exposes do not decide it."
+   },
+   "columns": [
+    "gen.device_type",
+    "sensor.illuminance",
+    "power.source",
+    "sensor.temperature",
+    "power.battery"
+   ],
+   "sort": {
+    "key": "gen.brand",
+    "dir": "asc"
+   },
+   "category_name": "Smart-home devices",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": true,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.8627,
+    "keys": [
+     {
+      "key": "gen.device_type",
+      "label": "Device type",
+      "known": 4188,
+      "total": 4188,
+      "fill": 1.0,
+      "by_kind": {
+       "reported": 4188
+      }
+     },
+     {
+      "key": "sensor.illuminance",
+      "label": "Light level (lux)",
+      "known": 201,
+      "total": 233,
+      "fill": 0.8627,
+      "by_kind": {
+       "reported": 201
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Zigbee devices in the Zigbee2MQTT device database (a community integration database, not the maker), so every row works locally with an open Zigbee coordinator, no vendor hub or cloud. Lux means the sensor reports a light level over Zigbee; a day/night flag (IKEA TRADFRI) does not count. No means the definition lists everything the device exposes and lux is not in it. Device type is a rule over what the device exposes (most specific first), or its description when the exposes do not decide it.",
+     "sources": [
+      "other"
+     ],
+     "include_discontinued": false,
+     "in_scope": 4188,
+     "category_total": 4188,
+     "covered_brands": [
+      "Adeo",
+      "Aqara",
+      "Arteco",
+      "Aurora_Lighting",
+      "Bacchus",
+      "Besisglas",
+      "Blitzwolf",
+      "Bosch",
+      "Brimate",
+      "Centralite",
+      "Datek",
+      "Develco",
+      "Dongguan_Pinjia_Technology_Co_Ltd",
+      "Easyiot",
+      "Ewelink",
+      "Excellux",
+      "Fantem",
+      "Feibit",
+      "GS",
+      "HEIMAN",
+      "HEJ",
+      "Heimgard_Technologies",
+      "Hive",
+      "Hobeian",
+      "Hommyn",
+      "Hysyiot",
+      "Hzc_Electric",
+      "Ihorn",
+      "Ikea",
+      "Immax",
+      "Imou",
+      "Iris",
+      "J_Xuan",
+      "Kmpcil",
+      "Konke",
+      "LDS",
+      "Leapmmw",
+      "Leedarson",
+      "Lidl",
+      "Lifecontrol",
+      "Lincukoo",
+      "Linkind",
+      "Linptech",
+      "Livingwise",
+      "Mercator_Ikuu",
+      "Mowe",
+      "Multir",
+      "Namron",
+      "Niko",
+      "Novato",
+      "Nyce",
+      "OSRAM",
+      "Orvibo",
+      "Owon",
+      "Perenio",
+      "Philips",
+      "RTX",
+      "Robb",
+      "SONOFF",
+      "Sber",
+      "Schneider Electric",
+      "Sengled",
+      "Sercomm",
+      "Shinasystem",
+      "Smabit_Bitron_Video",
+      "Smartthings",
+      "Somfy",
+      "Sunricher",
+      "Swann",
+      "TP-Link",
+      "Tapestry",
+      "Technicolor",
+      "Terncy",
+      "Third Reality",
+      "Tis_Control",
+      "Trust",
+      "Tuya",
+      "Universal_Electronics_Inc",
+      "Vesternet",
+      "Visonic",
+      "Vsmart",
+      "Wenzhi",
+      "Wiren_Board",
+      "Xiaomi",
+      "Yandex"
+     ],
+     "excluded": {
+      "source_tier": 0,
+      "discontinued": 0,
+      "by": {
+       "gen.device_type": 3955
+      },
+      "recall_only": 0
+     },
+     "not_covered": [
+      {
+       "brand": "Innr",
+       "rows": 120,
+       "reason": "no value"
+      },
+      {
+       "brand": "GLEDOPTO",
+       "rows": 93,
+       "reason": "no value"
+      },
+      {
+       "brand": "LEDVANCE",
+       "rows": 53,
+       "reason": "no value"
+      },
+      {
+       "brand": "MOES",
+       "rows": 42,
+       "reason": "no value"
+      },
+      {
+       "brand": "Paulmann",
+       "rows": 39,
+       "reason": "no value"
+      },
+      {
+       "brand": "Efekta",
+       "rows": 38,
+       "reason": "no value"
+      },
+      {
+       "brand": "Legrand",
+       "rows": 38,
+       "reason": "no value"
+      },
+      {
+       "brand": "Slacky_Diy",
+       "rows": 34,
+       "reason": "no value"
+      }
+     ]
+    },
+    "non_maker_brands": [
+     {
+      "brand": "Adeo",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Aqara",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Arteco",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Aurora_Lighting",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Bacchus",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Besisglas",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Blitzwolf",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Bosch",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Brimate",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Centralite",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Datek",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Develco",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Dongguan_Pinjia_Technology_Co_Ltd",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Easyiot",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Ewelink",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Excellux",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Fantem",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Feibit",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "GS",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "HEIMAN",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "HEJ",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Heimgard_Technologies",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Hive",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Hobeian",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Hommyn",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Hysyiot",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Hzc_Electric",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Ihorn",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Ikea",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Immax",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Imou",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Iris",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "J_Xuan",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Kmpcil",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Konke",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "LDS",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Leapmmw",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Leedarson",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Lidl",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Lifecontrol",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Lincukoo",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Linkind",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Linptech",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Livingwise",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Mercator_Ikuu",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Mowe",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Multir",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Namron",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Niko",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Novato",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Nyce",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "OSRAM",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Orvibo",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Owon",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Perenio",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Philips",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "RTX",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Robb",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "SONOFF",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Sber",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Schneider Electric",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Sengled",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Sercomm",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Shinasystem",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Smabit_Bitron_Video",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Smartthings",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Somfy",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Sunricher",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Swann",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "TP-Link",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Tapestry",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Technicolor",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Terncy",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Third Reality",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Tis_Control",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Trust",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Tuya",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Universal_Electronics_Inc",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Vesternet",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Visonic",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Vsmart",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Wenzhi",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Wiren_Board",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Xiaomi",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Yandex",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     }
+    ],
+    "key": "sensor.illuminance",
+    "label": "Light level (lux)",
+    "known": 201,
+    "total": 233,
+    "missing_brands": [
+     {
+      "brand": "NEO",
+      "rows": 3
+     },
+     {
+      "brand": "Adurosmart",
+      "rows": 2
+     },
+     {
+      "brand": "Shelly",
+      "rows": 2
+     },
+     {
+      "brand": "Aoyan",
+      "rows": 1
+     },
+     {
+      "brand": "Ialarm",
+      "rows": 1
+     },
+     {
+      "brand": "Livolo",
+      "rows": 1
+     },
+     {
+      "brand": "Nodieby",
+      "rows": 1
+     }
+    ],
+    "missing_brand_count": 7,
+    "uncovered_brands": []
+   },
+   "count": {
+    "matches": 99,
+    "maybe": 32,
+    "unknown": 32,
+    "disagree": 0,
+    "ruled_out": 4057,
+    "total": 4188,
+    "out_of_scope": 0
+   }
+  },
+  {
+   "id": "zigbee-color-bulb-local",
+   "category": "smart-home",
+   "title": "Zigbee colour bulbs and lights with tunable white, working locally with Zigbee2MQTT",
+   "filters": {
+    "f_gen.device_type_value": "light",
+    "f_ctl.color_value": "yes",
+    "f_ctl.color_temp_value": "yes"
+   },
+   "require": [],
+   "scope": {
+    "sources": [
+     "other"
+    ],
+    "by": [
+     "gen.device_type"
+    ],
+    "basis": "Zigbee lights in the Zigbee2MQTT device database (a community integration database, not the maker): colour (RGB) and tunable white as Zigbee2MQTT exposes them for the paired light. No means the definition lists everything the light exposes and colour (or colour temperature) is not in it. Device type is a rule over what the device exposes."
+   },
+   "columns": [
+    "ctl.color",
+    "ctl.color_temp",
+    "power.metering",
+    "power.source"
+   ],
+   "sort": {
+    "key": "gen.brand",
+    "dir": "asc"
+   },
+   "category_name": "Smart-home devices",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": true,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.899,
+    "keys": [
+     {
+      "key": "gen.device_type",
+      "label": "Device type",
+      "known": 4188,
+      "total": 4188,
+      "fill": 1.0,
+      "by_kind": {
+       "reported": 4188
+      }
+     },
+     {
+      "key": "ctl.color",
+      "label": "Colour (RGB)",
+      "known": 1549,
+      "total": 1723,
+      "fill": 0.899,
+      "by_kind": {
+       "reported": 1549
+      }
+     },
+     {
+      "key": "ctl.color_temp",
+      "label": "Tunable white",
+      "known": 1584,
+      "total": 1723,
+      "fill": 0.9193,
+      "by_kind": {
+       "reported": 1584
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Zigbee lights in the Zigbee2MQTT device database (a community integration database, not the maker): colour (RGB) and tunable white as Zigbee2MQTT exposes them for the paired light. No means the definition lists everything the light exposes and colour (or colour temperature) is not in it. Device type is a rule over what the device exposes.",
+     "sources": [
+      "other"
+     ],
+     "include_discontinued": false,
+     "in_scope": 4188,
+     "category_total": 4188,
+     "covered_brands": [
+      "Acuity_Brands_Lighting_Abl",
+      "Adeo",
+      "Adurosmart",
+      "Airam",
+      "Ajax_Online",
+      "Alchemy",
+      "Aqara",
+      "Aurora_Lighting",
+      "Awox",
+      "Bankamp",
+      "Bega",
+      "Belkin",
+      "CWD",
+      "Calex",
+      "Candeo",
+      "Centralite",
+      "Clicksmart",
+      "Commercial_Electric",
+      "Control4",
+      "Cree",
+      "Ctm_Lyng",
+      "Custom_Devices_Diy",
+      "Cy_Lighting",
+      "Directsigns",
+      "Domraem",
+      "Dowsing_Reynolds",
+      "EVN",
+      "Eaton_Halo_Led",
+      "EcoDim",
+      "EcoSmart",
+      "Efekta",
+      "Eglo",
+      "Elko",
+      "Enbrighten",
+      "Enkin",
+      "Envilar",
+      "Essentielb",
+      "Eucontrols",
+      "Ewelink",
+      "Feibit",
+      "Fischer_Honsel",
+      "Futurehome",
+      "GE Appliances (GE / Profile / Cafe / Monogram)",
+      "GLEDOPTO",
+      "GS",
+      "Gewiss",
+      "Gidealed",
+      "Giderwel",
+      "Gmy_Smart_Bulb",
+      "Gumax",
+      "HEIMAN",
+      "Halemeier",
+      "Hampton_Bay",
+      "Handshake_Finland",
+      "Heatit",
+      "Heimgard_Technologies",
+      "Hejhome",
+      "Hfh_Solutions",
+      "Hilux",
+      "Hive",
+      "Hobeian",
+      "Hoftronic",
+      "Hornbach",
+      "Hzc_Electric",
+      "Icasa",
+      "Idinio",
+      "Ikea",
+      "Ilightsin",
+      "Iluminize",
+      "Ilux",
+      "Immax",
+      "Innr",
+      "Iolloi",
+      "Istar",
+      "Jasco_Products",
+      "Jiawen",
+      "Jumitech_Aps",
+      "Klikaanklikuit",
+      "Konke",
+      "Kurvia",
+      "LDS",
+      "LEDVANCE",
+      "L_S_Lighting",
+      "Lanesto",
+      "Leedarson",
+      "Letsleds",
+      "Leviton",
+      "Lg_Electronics",
+      "Lidl",
+      "Lifecontrol",
+      "Light_Solutions",
+      "Linkind",
+      "Livingwise",
+      "Lonsonho",
+      "Lubeez",
+      "MLI",
+      "M_Elec",
+      "Matcall",
+      "Megaman",
+      "Mercator_Ikuu",
+      "Miboxer",
+      "Micro_Matic_Norge_As",
+      "Modular",
+      "Muller_Licht",
+      "Namron",
+      "Nanoleaf",
+      "Niviss",
+      "Nordtronic",
+      "Nue_3A",
+      "OSRAM",
+      "Orvibo",
+      "Owon",
+      "Oz_Smart_Things",
+      "Paul_Neuhaus",
+      "Paulmann",
+      "Philips",
+      "Prolight",
+      "QA",
+      "Quotra",
+      "Rademacher",
+      "Radium",
+      "Rgb_Genie",
+      "Robb",
+      "SLC",
+      "SLV",
+      "SYLVANIA (LEDVANCE)",
+      "Samotech",
+      "Savolar",
+      "Scan_Products",
+      "Schneider Electric",
+      "Schwaiger",
+      "Sengled",
+      "Shada",
+      "Shenzhen_Homa",
+      "Simon",
+      "Sinope",
+      "Skydance",
+      "Smabit_Bitron_Video",
+      "Smart_Home_Pty",
+      "Smartthings",
+      "Somgoms",
+      "Sowilo_Ds",
+      "Streda",
+      "Sunricher",
+      "Superled",
+      "Svetomaniya",
+      "TCI",
+      "Task_Lighting",
+      "Terncy",
+      "The_Light_Group",
+      "Third Reality",
+      "Tlw_Global",
+      "Trust",
+      "Tuya",
+      "Vbled",
+      "Vesternet",
+      "Villeroy_Boch",
+      "Vimar",
+      "Wisdom",
+      "Woox",
+      "XAL",
+      "Xiaomi",
+      "Ynoa",
+      "Ysrsai",
+      "Zemismart",
+      "Zipato"
+     ],
+     "excluded": {
+      "source_tier": 0,
+      "discontinued": 0,
+      "by": {
+       "gen.device_type": 2465
+      },
+      "recall_only": 0
+     },
+     "not_covered": [
+      {
+       "brand": "SONOFF",
+       "rows": 52,
+       "reason": "no value"
+      },
+      {
+       "brand": "Shinasystem",
+       "rows": 43,
+       "reason": "no value"
+      },
+      {
+       "brand": "MOES",
+       "rows": 42,
+       "reason": "no value"
+      },
+      {
+       "brand": "Legrand",
+       "rows": 38,
+       "reason": "no value"
+      },
+      {
+       "brand": "Slacky_Diy",
+       "rows": 34,
+       "reason": "no value"
+      },
+      {
+       "brand": "Develco",
+       "rows": 30,
+       "reason": "no value"
+      },
+      {
+       "brand": "Yale",
+       "rows": 29,
+       "reason": "no value"
+      },
+      {
+       "brand": "Lincukoo",
+       "rows": 25,
+       "reason": "no value"
+      }
+     ]
+    },
+    "non_maker_brands": [
+     {
+      "brand": "Acuity_Brands_Lighting_Abl",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Adeo",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Adurosmart",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Airam",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Ajax_Online",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Alchemy",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Aqara",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Aurora_Lighting",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Awox",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Bankamp",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Bega",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Belkin",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "CWD",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Calex",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Candeo",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Centralite",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Clicksmart",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Commercial_Electric",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Control4",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Cree",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Ctm_Lyng",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Custom_Devices_Diy",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Cy_Lighting",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Directsigns",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Domraem",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Dowsing_Reynolds",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "EVN",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Eaton_Halo_Led",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "EcoDim",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "EcoSmart",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Efekta",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Eglo",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Elko",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Enbrighten",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Enkin",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Envilar",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Essentielb",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Eucontrols",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Ewelink",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Feibit",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Fischer_Honsel",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Futurehome",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "GE Appliances (GE / Profile / Cafe / Monogram)",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "GLEDOPTO",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "GS",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Gewiss",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Gidealed",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Giderwel",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Gmy_Smart_Bulb",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Gumax",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "HEIMAN",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Halemeier",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Hampton_Bay",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Handshake_Finland",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Heatit",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Heimgard_Technologies",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Hejhome",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Hfh_Solutions",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Hilux",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Hive",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Hobeian",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Hoftronic",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Hornbach",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Hzc_Electric",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Icasa",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Idinio",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Ikea",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Ilightsin",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Iluminize",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Ilux",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Immax",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Innr",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Iolloi",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Istar",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Jasco_Products",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Jiawen",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Jumitech_Aps",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Klikaanklikuit",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Konke",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Kurvia",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "LDS",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "LEDVANCE",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "L_S_Lighting",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Lanesto",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Leedarson",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Letsleds",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Leviton",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Lg_Electronics",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Lidl",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Lifecontrol",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Light_Solutions",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Linkind",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Livingwise",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Lonsonho",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Lubeez",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "MLI",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "M_Elec",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Matcall",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Megaman",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Mercator_Ikuu",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Miboxer",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Micro_Matic_Norge_As",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Modular",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Muller_Licht",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Namron",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Nanoleaf",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Niviss",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Nordtronic",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Nue_3A",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "OSRAM",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Orvibo",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Owon",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Oz_Smart_Things",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Paul_Neuhaus",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Paulmann",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Philips",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Prolight",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "QA",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Quotra",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Rademacher",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Radium",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Rgb_Genie",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Robb",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "SLC",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "SLV",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "SYLVANIA (LEDVANCE)",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Samotech",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Savolar",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Scan_Products",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Schneider Electric",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Schwaiger",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Sengled",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Shada",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Shenzhen_Homa",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Simon",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Sinope",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Skydance",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Smabit_Bitron_Video",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Smart_Home_Pty",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Smartthings",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Somgoms",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Sowilo_Ds",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Streda",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Sunricher",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Superled",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Svetomaniya",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "TCI",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Task_Lighting",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Terncy",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "The_Light_Group",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Third Reality",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Tlw_Global",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Trust",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Tuya",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Vbled",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Vesternet",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Villeroy_Boch",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Vimar",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Wisdom",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Woox",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "XAL",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Xiaomi",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Ynoa",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Ysrsai",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Zemismart",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     },
+     {
+      "brand": "Zipato",
+      "key": "gen.device_type",
+      "kinds": [
+       "reported"
+      ]
+     }
+    ],
+    "key": "ctl.color",
+    "label": "Colour (RGB)",
+    "known": 1549,
+    "total": 1723,
+    "missing_brands": [
+     {
+      "brand": "Onokom",
+      "rows": 13
+     },
+     {
+      "brand": "Inovelli",
+      "rows": 4
+     },
+     {
+      "brand": "Legrand",
+      "rows": 4
+     },
+     {
+      "brand": "Avatto",
+      "rows": 3
+     },
+     {
+      "brand": "Ekaza",
+      "rows": 2
+     },
+     {
+      "brand": "MOES",
+      "rows": 2
+     },
+     {
+      "brand": "Shelly",
+      "rows": 2
+     },
+     {
+      "brand": "Ubisys",
+      "rows": 2
+     }
+    ],
+    "missing_brand_count": 20,
+    "uncovered_brands": [
+     {
+      "brand": "Onokom",
+      "rows": 13,
+      "label": "Colour (RGB)"
+     }
+    ]
+   },
+   "count": {
+    "matches": 640,
+    "maybe": 182,
+    "unknown": 182,
+    "disagree": 0,
+    "ruled_out": 3366,
+    "total": 4188,
+    "out_of_scope": 0
+   }
+  },
+  {
+   "id": "light-bulbs-brightest-smart-a19",
+   "category": "light-bulbs",
+   "title": "Brightest smart A19 bulbs (E26 base, 1100 lumens or more)",
+   "filters": {
+    "f_smart.connected_value": "yes",
+    "f_form.shape_value": "a19",
+    "f_form.base_value": "e26",
+    "f_light.lumens_min": "1100"
+   },
+   "require": [],
+   "scope": {
+    "sources": [
+     "regulatory",
+     "manufacturer"
+    ],
+    "by": [
+     "smart.connected",
+     "form.shape",
+     "form.base"
+    ],
+    "basis": "Smart (connected) A19 bulbs with a standard E26 base. Lumens are white output at full power as certified or printed, with the colour temperature they were measured at; 'equivalent watts' is never used. ENERGY STAR connected-bulb filings (2016-2023, the lamps programme has ended) are the only reachable source this round."
+   },
+   "columns": [
+    "light.lumens",
+    "light.cct_k",
+    "power.watts",
+    "smart.color",
+    "smart.protocols",
+    "light.cri"
+   ],
+   "sort": {
+    "key": "light.lumens",
+    "dir": "desc"
+   },
+   "category_name": "Light bulbs",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": true,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.9926,
+    "keys": [
+     {
+      "key": "smart.connected",
+      "label": "Smart (connected)",
+      "known": 139,
+      "total": 139,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 139
+      }
+     },
+     {
+      "key": "form.shape",
+      "label": "Shape",
+      "known": 269,
+      "total": 271,
+      "fill": 0.9926,
+      "by_kind": {
+       "official": 269
+      }
+     },
+     {
+      "key": "form.base",
+      "label": "Base",
+      "known": 142,
+      "total": 142,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 142
+      }
+     },
+     {
+      "key": "light.lumens",
+      "label": "Brightness (white, lumens)",
+      "known": 139,
+      "total": 139,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 139
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Smart (connected) A19 bulbs with a standard E26 base. Lumens are white output at full power as certified or printed, with the colour temperature they were measured at; 'equivalent watts' is never used. ENERGY STAR connected-bulb filings (2016-2023, the lamps programme has ended) are the only reachable source this round.",
+     "sources": [
+      "regulatory",
+      "manufacturer"
+     ],
+     "include_discontinued": false,
+     "in_scope": 304,
+     "category_total": 304,
+     "covered_brands": [
+      "Connected Max",
+      "Delos",
+      "EarthBulb",
+      "EcoSmart",
+      "Euri Lighting",
+      "Feit Electric",
+      "GE Appliances (GE / Profile / Cafe / Monogram)",
+      "Globe Electric",
+      "Greenlite",
+      "HALO",
+      "Ikea",
+      "Liteline",
+      "Luminus",
+      "Megalight",
+      "Nanoleaf",
+      "Philips",
+      "RAB Lighting",
+      "Ring",
+      "SONOFF",
+      "SYLVANIA (LEDVANCE)",
+      "Satco",
+      "Sengled",
+      "Simply Conserve",
+      "Spex Lighting",
+      "Trenz Lighting",
+      "WiZ (Signify)",
+      "Wyze"
+     ],
+     "excluded": {
+      "source_tier": 0,
+      "discontinued": 0,
+      "by": {
+       "smart.connected": 0,
+       "form.shape": 162,
+       "form.base": 3
+      },
+      "recall_only": 0
+     },
+     "not_covered": []
+    },
+    "non_maker_brands": [],
+    "key": "form.shape",
+    "label": "Shape",
+    "known": 269,
+    "total": 271,
+    "missing_brands": [],
+    "missing_brand_count": 0,
+    "uncovered_brands": []
+   },
+   "count": {
+    "matches": 6,
+    "maybe": 0,
+    "unknown": 0,
+    "disagree": 0,
+    "ruled_out": 298,
+    "total": 304,
+    "out_of_scope": 0
+   }
+  },
+  {
+   "id": "light-bulbs-brightest-smart-br30",
+   "category": "light-bulbs",
+   "title": "Brightest smart BR30 flood bulbs (650 lumens or more)",
+   "filters": {
+    "f_smart.connected_value": "yes",
+    "f_form.shape_value": "br30",
+    "f_light.lumens_min": "650"
+   },
+   "require": [],
+   "scope": {
+    "sources": [
+     "regulatory",
+     "manufacturer"
+    ],
+    "by": [
+     "smart.connected",
+     "form.shape"
+    ],
+    "basis": "Smart (connected) BR30 reflector bulbs (recessed cans). 650 lm is the 65 W-replacement class. Lumens are white output at full power as certified or printed, with the colour temperature they were measured at; 'equivalent watts' is never used. ENERGY STAR connected-bulb filings (2016-2023, the lamps programme has ended) are the only reachable source this round."
+   },
+   "columns": [
+    "light.lumens",
+    "light.beam_angle_deg",
+    "light.cct_k",
+    "power.watts",
+    "smart.color",
+    "smart.protocols"
+   ],
+   "sort": {
+    "key": "light.lumens",
+    "dir": "desc"
+   },
+   "category_name": "Light bulbs",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": true,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.9901,
+    "keys": [
+     {
+      "key": "smart.connected",
+      "label": "Smart (connected)",
+      "known": 66,
+      "total": 66,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 66
+      }
+     },
+     {
+      "key": "form.shape",
+      "label": "Shape",
+      "known": 301,
+      "total": 304,
+      "fill": 0.9901,
+      "by_kind": {
+       "official": 301
+      }
+     },
+     {
+      "key": "light.lumens",
+      "label": "Brightness (white, lumens)",
+      "known": 66,
+      "total": 66,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 66
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Smart (connected) BR30 reflector bulbs (recessed cans). 650 lm is the 65 W-replacement class. Lumens are white output at full power as certified or printed, with the colour temperature they were measured at; 'equivalent watts' is never used. ENERGY STAR connected-bulb filings (2016-2023, the lamps programme has ended) are the only reachable source this round.",
+     "sources": [
+      "regulatory",
+      "manufacturer"
+     ],
+     "include_discontinued": false,
+     "in_scope": 304,
+     "category_total": 304,
+     "covered_brands": [
+      "Connected Max",
+      "EarthBulb",
+      "EcoSmart",
+      "Feit Electric",
+      "GE Appliances (GE / Profile / Cafe / Monogram)",
+      "Globe Electric",
+      "Greenlite",
+      "Luminus",
+      "Megalight",
+      "Nanoleaf",
+      "Philips",
+      "RAB Lighting",
+      "SYLVANIA (LEDVANCE)",
+      "Satco",
+      "Simply Conserve",
+      "WiZ (Signify)",
+      "Wyze"
+     ],
+     "excluded": {
+      "source_tier": 0,
+      "discontinued": 0,
+      "by": {
+       "smart.connected": 0,
+       "form.shape": 238
+      },
+      "recall_only": 0
+     },
+     "not_covered": [
+      {
+       "brand": "Ikea",
+       "rows": 11,
+       "reason": "no value"
+      },
+      {
+       "brand": "Sengled",
+       "rows": 10,
+       "reason": "no value"
+      },
+      {
+       "brand": "Ring",
+       "rows": 3,
+       "reason": "no value"
+      },
+      {
+       "brand": "HALO",
+       "rows": 2,
+       "reason": "no value"
+      },
+      {
+       "brand": "Liteline",
+       "rows": 2,
+       "reason": "no value"
+      },
+      {
+       "brand": "SONOFF",
+       "rows": 2,
+       "reason": "no value"
+      },
+      {
+       "brand": "Spex Lighting",
+       "rows": 2,
+       "reason": "no value"
+      },
+      {
+       "brand": "Trenz Lighting",
+       "rows": 2,
+       "reason": "no value"
+      }
+     ]
+    },
+    "non_maker_brands": [],
+    "key": "form.shape",
+    "label": "Shape",
+    "known": 301,
+    "total": 304,
+    "missing_brands": [],
+    "missing_brand_count": 0,
+    "uncovered_brands": []
+   },
+   "count": {
+    "matches": 63,
+    "maybe": 1,
+    "unknown": 1,
+    "disagree": 0,
+    "ruled_out": 240,
+    "total": 304,
+    "out_of_scope": 0
+   }
+  },
+  {
+   "id": "light-bulbs-bright-color",
+   "category": "light-bulbs",
+   "title": "Colour bulbs that stay bright in full colour (800 lumens or more at full colour)",
+   "filters": {
+    "f_smart.color_value": "full_color",
+    "f_light.lumens_color_max_min": "800"
+   },
+   "require": [],
+   "scope": {
+    "sources": [
+     "regulatory",
+     "manufacturer"
+    ],
+    "by": [
+     "smart.color"
+    ],
+    "basis": "Full-colour (RGB + white) bulbs. The gate is the output at full colour, which only makers print (ENERGY STAR tests in white); it is never derived from the white figure."
+   },
+   "columns": [
+    "light.lumens_color_max",
+    "light.lumens",
+    "form.shape",
+    "smart.protocols"
+   ],
+   "sort": {
+    "key": "light.lumens_color_max",
+    "dir": "desc"
+   },
+   "category_name": "Light bulbs",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": false,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.0,
+    "keys": [
+     {
+      "key": "smart.color",
+      "label": "Colour capability",
+      "known": 181,
+      "total": 304,
+      "fill": 0.5954,
+      "by_kind": {
+       "official": 181
+      }
+     },
+     {
+      "key": "light.lumens_color_max",
+      "label": "Brightness at full colour (lumens)",
+      "known": 0,
+      "total": 235,
+      "fill": 0.0,
+      "by_kind": {}
+     }
+    ],
+    "scope": {
+     "basis": "Full-colour (RGB + white) bulbs. The gate is the output at full colour, which only makers print (ENERGY STAR tests in white); it is never derived from the white figure.",
+     "sources": [
+      "regulatory",
+      "manufacturer"
+     ],
+     "include_discontinued": false,
+     "in_scope": 304,
+     "category_total": 304,
+     "covered_brands": [],
+     "excluded": {
+      "source_tier": 0,
+      "discontinued": 0,
+      "by": {
+       "smart.color": 69
+      },
+      "recall_only": 0
+     },
+     "not_covered": [
+      {
+       "brand": "Philips",
+       "rows": 73,
+       "reason": "no value"
+      },
+      {
+       "brand": "Feit Electric",
+       "rows": 45,
+       "reason": "no value"
+      },
+      {
+       "brand": "WiZ (Signify)",
+       "rows": 34,
+       "reason": "no value"
+      },
+      {
+       "brand": "SYLVANIA (LEDVANCE)",
+       "rows": 21,
+       "reason": "no value"
+      },
+      {
+       "brand": "Globe Electric",
+       "rows": 19,
+       "reason": "no value"
+      },
+      {
+       "brand": "GE Appliances (GE / Profile / Cafe / Monogram)",
+       "rows": 15,
+       "reason": "no value"
+      },
+      {
+       "brand": "Satco",
+       "rows": 13,
+       "reason": "no value"
+      },
+      {
+       "brand": "Ikea",
+       "rows": 11,
+       "reason": "no value"
+      }
+     ]
+    },
+    "non_maker_brands": [],
+    "key": "light.lumens_color_max",
+    "label": "Brightness at full colour (lumens)",
+    "known": 0,
+    "total": 235,
+    "missing_brands": [
+     {
+      "brand": "Philips",
+      "rows": 64
+     },
+     {
+      "brand": "Feit Electric",
+      "rows": 41
+     },
+     {
+      "brand": "WiZ (Signify)",
+      "rows": 30
+     },
+     {
+      "brand": "Globe Electric",
+      "rows": 14
+     },
+     {
+      "brand": "GE Appliances (GE / Profile / Cafe / Monogram)",
+      "rows": 13
+     },
+     {
+      "brand": "SYLVANIA (LEDVANCE)",
+      "rows": 11
+     },
+     {
+      "brand": "Connected Max",
+      "rows": 9
+     },
+     {
+      "brand": "Sengled",
+      "rows": 9
+     }
+    ],
+    "missing_brand_count": 23
+   },
+   "count": {
+    "matches": 0,
+    "maybe": 235,
+    "unknown": 235,
+    "disagree": 0,
+    "ruled_out": 69,
+    "total": 304,
+    "out_of_scope": 0
+   }
+  },
+  {
+   "id": "light-bulbs-high-cri-dimmable",
+   "category": "light-bulbs",
+   "title": "High-CRI (90+) dimmable bulbs",
+   "filters": {
+    "f_ctl.dimmable_value": "yes",
+    "f_light.cri_min": "90"
+   },
+   "require": [
+    "light.lumens"
+   ],
+   "scope": {
+    "sources": [
+     "regulatory",
+     "manufacturer"
+    ],
+    "by": [
+     "ctl.dimmable"
+    ],
+    "basis": "Bulbs stated dimmable on a wall dimmer. CRI is Ra as certified or printed; R9 is shown when filed. Lumens are white output at full power as certified or printed, with the colour temperature they were measured at; 'equivalent watts' is never used. ENERGY STAR connected-bulb filings (2016-2023, the lamps programme has ended) are the only reachable source this round."
+   },
+   "columns": [
+    "light.cri",
+    "light.r9",
+    "light.lumens",
+    "light.cct_k",
+    "form.shape",
+    "smart.connected"
+   ],
+   "sort": {
+    "key": "light.cri",
+    "dir": "desc"
+   },
+   "category_name": "Light bulbs",
+   "min_fill": 0.8,
+   "gate": {
+    "passes": true,
+    "min_fill": 0.8,
+    "min_brands": 2,
+    "fill": 0.9868,
+    "keys": [
+     {
+      "key": "ctl.dimmable",
+      "label": "Dimmable (wall dimmer)",
+      "known": 301,
+      "total": 304,
+      "fill": 0.9901,
+      "by_kind": {
+       "official": 301
+      }
+     },
+     {
+      "key": "light.cri",
+      "label": "Colour rendering (CRI Ra)",
+      "known": 300,
+      "total": 304,
+      "fill": 0.9868,
+      "by_kind": {
+       "official": 300
+      }
+     },
+     {
+      "key": "light.lumens",
+      "label": "Brightness (white, lumens)",
+      "known": 304,
+      "total": 304,
+      "fill": 1.0,
+      "by_kind": {
+       "official": 304
+      }
+     }
+    ],
+    "scope": {
+     "basis": "Bulbs stated dimmable on a wall dimmer. CRI is Ra as certified or printed; R9 is shown when filed. Lumens are white output at full power as certified or printed, with the colour temperature they were measured at; 'equivalent watts' is never used. ENERGY STAR connected-bulb filings (2016-2023, the lamps programme has ended) are the only reachable source this round.",
+     "sources": [
+      "regulatory",
+      "manufacturer"
+     ],
+     "include_discontinued": false,
+     "in_scope": 304,
+     "category_total": 304,
+     "covered_brands": [
+      "Connected Max",
+      "Delos",
+      "EarthBulb",
+      "EcoSmart",
+      "Euri Lighting",
+      "Feit Electric",
+      "GE Appliances (GE / Profile / Cafe / Monogram)",
+      "Globe Electric",
+      "Greenlite",
+      "HALO",
+      "Ikea",
+      "Liteline",
+      "Luminus",
+      "Megalight",
+      "Nanoleaf",
+      "Philips",
+      "RAB Lighting",
+      "Ring",
+      "SONOFF",
+      "SYLVANIA (LEDVANCE)",
+      "Satco",
+      "Sengled",
+      "Simply Conserve",
+      "Spex Lighting",
+      "Trenz Lighting",
+      "WiZ (Signify)",
+      "Wyze"
+     ],
+     "excluded": {
+      "source_tier": 0,
+      "discontinued": 0,
+      "by": {
+       "ctl.dimmable": 0
+      },
+      "recall_only": 0
+     },
+     "not_covered": []
+    },
+    "non_maker_brands": [],
+    "key": "light.cri",
+    "label": "Colour rendering (CRI Ra)",
+    "known": 300,
+    "total": 304,
+    "missing_brands": [],
+    "missing_brand_count": 0,
+    "uncovered_brands": []
+   },
+   "count": {
+    "matches": 252,
+    "maybe": 7,
+    "unknown": 7,
+    "disagree": 0,
+    "ruled_out": 45,
+    "total": 304,
+    "out_of_scope": 0
+   }
+  }
+ ]
+}

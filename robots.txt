@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /v1/query
+Disallow: /v1/match
+Disallow: /mcp
+
+Sitemap: https://shrestha-pranav.github.io/specsheet/sitemap.xml

@@ -1,0 +1,292 @@
+{
+ "policy_version": "2026-11-26.14",
+ "policy_sha256": "8987cdf3abfa7095f6e9b2320a3716135abd6efd188b577d4a2a1a73841101ea",
+ "license": "ODbL-1.0",
+ "license_url": "https://opendatacommons.org/licenses/odbl/1-0/",
+ "license_scope": "compilation + values whose sources[] include licence_grant:true; other values are facts with links, not licensed by us",
+ "attribution": {
+  "dataset": "Data: specsheet (ODbL), sources linked per value",
+  "sources": [
+   {
+    "domain": "data.energystar.gov",
+    "credit": "U.S. EPA ENERGY STAR (data.energystar.gov)",
+    "line": "Source: U.S. EPA ENERGY STAR"
+   },
+   {
+    "domain": "github.com",
+    "credit": "Contributor evidence (GitHub issue)",
+    "line": "Source: Contributor evidence (GitHub issue)"
+   }
+  ]
+ },
+ "tier": "free",
+ "definition": "records = published record files; values = known spec values. free = shown on the free tier (facts with links); granted = free values with at least one licence_grant:true source (under our ODbL grant); paid = paid-tier values",
+ "categories": {
+  "air-purifiers": {
+   "free": {
+    "records": 1143,
+    "values": 8021
+   },
+   "granted": {
+    "records": 199,
+    "values": 3260
+   },
+   "paid": {
+    "records": 199,
+    "values": 3260
+   }
+  },
+  "chargers": {
+   "free": {
+    "records": 151,
+    "values": 763
+   },
+   "granted": {
+    "records": 0,
+    "values": 0
+   },
+   "paid": {
+    "records": 0,
+    "values": 0
+   }
+  },
+  "clothes-dryers": {
+   "free": {
+    "records": 554,
+    "values": 6830
+   },
+   "granted": {
+    "records": 553,
+    "values": 6826
+   },
+   "paid": {
+    "records": 553,
+    "values": 6826
+   }
+  },
+  "clothes-washers": {
+   "free": {
+    "records": 404,
+    "values": 5103
+   },
+   "granted": {
+    "records": 369,
+    "values": 4929
+   },
+   "paid": {
+    "records": 369,
+    "values": 4929
+   }
+  },
+  "dishwashers": {
+   "free": {
+    "records": 699,
+    "values": 8991
+   },
+   "granted": {
+    "records": 690,
+    "values": 8953
+   },
+   "paid": {
+    "records": 690,
+    "values": 8953
+   }
+  },
+  "freezers": {
+   "free": {
+    "records": 615,
+    "values": 9789
+   },
+   "granted": {
+    "records": 614,
+    "values": 9784
+   },
+   "paid": {
+    "records": 614,
+    "values": 9784
+   }
+  },
+  "laptops": {
+   "free": {
+    "records": 3213,
+    "values": 107414
+   },
+   "granted": {
+    "records": 0,
+    "values": 0
+   },
+   "paid": {
+    "records": 0,
+    "values": 0
+   }
+  },
+  "light-bulbs": {
+   "free": {
+    "records": 304,
+    "values": 8082
+   },
+   "granted": {
+    "records": 304,
+    "values": 8082
+   },
+   "paid": {
+    "records": 304,
+    "values": 8082
+   }
+  },
+  "monitors": {
+   "free": {
+    "records": 4306,
+    "values": 44662
+   },
+   "granted": {
+    "records": 1465,
+    "values": 11582
+   },
+   "paid": {
+    "records": 1465,
+    "values": 11582
+   }
+  },
+  "power-banks": {
+   "free": {
+    "records": 193,
+    "values": 1365
+   },
+   "granted": {
+    "records": 0,
+    "values": 0
+   },
+   "paid": {
+    "records": 0,
+    "values": 0
+   }
+  },
+  "power-stations": {
+   "free": {
+    "records": 258,
+    "values": 1272
+   },
+   "granted": {
+    "records": 0,
+    "values": 0
+   },
+   "paid": {
+    "records": 0,
+    "values": 0
+   }
+  },
+  "power-strips": {
+   "free": {
+    "records": 594,
+    "values": 9940
+   },
+   "granted": {
+    "records": 0,
+    "values": 0
+   },
+   "paid": {
+    "records": 0,
+    "values": 0
+   }
+  },
+  "refrigerators": {
+   "free": {
+    "records": 4411,
+    "values": 79051
+   },
+   "granted": {
+    "records": 4373,
+    "values": 78858
+   },
+   "paid": {
+    "records": 4373,
+    "values": 78858
+   }
+  },
+  "robot-vacuums": {
+   "free": {
+    "records": 145,
+    "values": 1676
+   },
+   "granted": {
+    "records": 0,
+    "values": 0
+   },
+   "paid": {
+    "records": 0,
+    "values": 0
+   }
+  },
+  "routers": {
+   "free": {
+    "records": 579,
+    "values": 8002
+   },
+   "granted": {
+    "records": 0,
+    "values": 0
+   },
+   "paid": {
+    "records": 0,
+    "values": 0
+   }
+  },
+  "smart-home": {
+   "free": {
+    "records": 4188,
+    "values": 75110
+   },
+   "granted": {
+    "records": 0,
+    "values": 0
+   },
+   "paid": {
+    "records": 0,
+    "values": 0
+   }
+  },
+  "ssds": {
+   "free": {
+    "records": 906,
+    "values": 6604
+   },
+   "granted": {
+    "records": 0,
+    "values": 0
+   },
+   "paid": {
+    "records": 0,
+    "values": 0
+   }
+  },
+  "tvs": {
+   "free": {
+    "records": 1371,
+    "values": 32728
+   },
+   "granted": {
+    "records": 184,
+    "values": 1100
+   },
+   "paid": {
+    "records": 184,
+    "values": 1100
+   }
+  }
+ },
+ "total": {
+  "free": {
+   "records": 24034,
+   "values": 415403
+  },
+  "granted": {
+   "records": 8751,
+   "values": 133374
+  },
+  "paid": {
+   "records": 8751,
+   "values": 133374
+  }
+ }
+}

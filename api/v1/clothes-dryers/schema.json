@@ -1,0 +1,761 @@
+{
+ "id": "clothes-dryers",
+ "schema_version": "0.1",
+ "groups": [
+  {
+   "id": "general",
+   "label": "General & identity",
+   "order": 0
+  },
+  {
+   "id": "config",
+   "label": "Type & installation",
+   "order": 1
+  },
+  {
+   "id": "capacity",
+   "label": "Capacity",
+   "order": 2
+  },
+  {
+   "id": "energy",
+   "label": "Energy & certification",
+   "order": 3
+  },
+  {
+   "id": "dims",
+   "label": "Size & fit",
+   "order": 4
+  },
+  {
+   "id": "refrigerant",
+   "label": "Refrigerant",
+   "order": 5
+  },
+  {
+   "id": "features",
+   "label": "Features",
+   "order": 6
+  },
+  {
+   "id": "conn",
+   "label": "Connectivity",
+   "order": 7
+  }
+ ],
+ "conditions": [
+  {
+   "id": "test_procedure",
+   "label": "DOE test procedure",
+   "type": "enum",
+   "enum": [
+    "appendix_d2",
+    "appendix_d1",
+    "maker_unstated"
+   ],
+   "description": "Basis of CEF, drum capacity, test-cycle time and annual kWh. ES t9u7-4d2j cites 10 CFR 430 Subpart B Appendix D2 (automatic termination, over-drying counted; 283 cycles/yr). Appendix D1 (the federal-standard procedure many DOE CCD filings use) credits drying differently and typically gives a HIGHER CEF for the same dryer: D1 and D2 figures are never compared."
+  }
+ ],
+ "fields": [
+  {
+   "key": "gen.brand",
+   "label": "Brand",
+   "group": "general",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "lg",
+    "whirlpool",
+    "samsung",
+    "electrolux",
+    "ge",
+    "maytag",
+    "midea",
+    "kenmore",
+    "miele",
+    "summit",
+    "asko",
+    "bosch"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "gen.is_pattern",
+   "label": "Certified pattern (covers several SKUs)",
+   "group": "general",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "config.es_product_type",
+   "label": "DOE product type",
+   "group": "config",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "config.fuel",
+   "label": "Fuel",
+   "group": "config",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "electric",
+    "gas"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 20,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "config.ventless",
+   "label": "Ventless",
+   "group": "config",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 30,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "config.heat_pump",
+   "label": "Heat pump",
+   "group": "config",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "heat_pump",
+    "hybrid_heat_pump",
+    "none"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 40,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "config.special_type",
+   "label": "Combo / laundry center",
+   "group": "config",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "all_in_one_washer_dryer",
+    "laundry_center"
+   ],
+   "items": null,
+   "tier": "important",
+   "priority": 50,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "elec.voltage",
+   "label": "Voltage",
+   "group": "config",
+   "type": "number",
+   "unit": "V",
+   "display_unit": "V",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 60,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "capacity.drum_ft3",
+   "label": "Drum capacity (DOE)",
+   "group": "capacity",
+   "type": "number",
+   "unit": "ft3",
+   "display_unit": "ft3",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": [
+    "test_procedure"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "energy.cef",
+   "label": "Combined energy factor (CEF)",
+   "group": "energy",
+   "type": "number",
+   "unit": "lb/kWh",
+   "display_unit": "lb/kWh",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": [
+    "test_procedure"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "energy.cef_max_dry",
+   "label": "CEF at max dryness (calculated)",
+   "group": "energy",
+   "type": "number",
+   "unit": "lb/kWh",
+   "display_unit": "lb/kWh",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "energy.annual_kwh",
+   "label": "Energy use",
+   "group": "energy",
+   "type": "number",
+   "unit": "kWh/yr",
+   "display_unit": "kWh/yr",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": [
+    "test_procedure"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "energy.test_cycle_min",
+   "label": "Test-cycle time",
+   "group": "energy",
+   "type": "number",
+   "unit": "min",
+   "display_unit": "min",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": [
+    "test_procedure"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "cert.energy_star",
+   "label": "ENERGY STAR certified",
+   "group": "energy",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 50,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cert.es_most_efficient",
+   "label": "ENERGY STAR Most Efficient",
+   "group": "energy",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 60,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cert.es_date",
+   "label": "Certified on",
+   "group": "energy",
+   "type": "date",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 70,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "dims.width_in",
+   "label": "Width",
+   "group": "dims",
+   "type": "number",
+   "unit": "in",
+   "display_unit": "in",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "dims.height_in",
+   "label": "Height",
+   "group": "dims",
+   "type": "number",
+   "unit": "in",
+   "display_unit": "in",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "dims.depth_in",
+   "label": "Depth",
+   "group": "dims",
+   "type": "number",
+   "unit": "in",
+   "display_unit": "in",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "refrigerant.type",
+   "label": "Refrigerant (heat pump)",
+   "group": "refrigerant",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "r290",
+    "r134a",
+    "r600a",
+    "r1234yf",
+    "other"
+   ],
+   "items": null,
+   "tier": "detail",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "refrigerant.gwp",
+   "label": "Refrigerant GWP",
+   "group": "refrigerant",
+   "type": "number",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "features.dryer",
+   "label": "Features",
+   "group": "features",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "drum_light",
+    "wrinkle_prevention",
+    "steam",
+    "sanitize",
+    "filter_indicator",
+    "energy_monitor",
+    "time_remaining",
+    "supplementary_drying",
+    "other"
+   ],
+   "items": "enum",
+   "tier": "detail",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "multi",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "conn.connected",
+   "label": "Smart / connected",
+   "group": "conn",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "conn.protocols",
+   "label": "Connects using",
+   "group": "conn",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "wifi",
+    "bluetooth",
+    "zigbee",
+    "thread",
+    "matter",
+    "other"
+   ],
+   "items": "enum",
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "multi",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall",
+   "label": "CPSC recall",
+   "group": "general",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_id",
+   "label": "CPSC recall number",
+   "group": "general",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": "text",
+   "tier": "detail",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_date",
+   "label": "Recall date",
+   "group": "general",
+   "type": "date",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 50,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_remedy",
+   "label": "Recall remedy",
+   "group": "general",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "replace",
+    "refund",
+    "repair",
+    "new_instructions",
+    "dispose",
+    "label",
+    "other"
+   ],
+   "items": "enum",
+   "tier": "detail",
+   "priority": 60,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_url",
+   "label": "Recall notice",
+   "group": "general",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 70,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "gen.record_kind",
+   "label": "Record kind",
+   "group": "general",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "recall_only"
+   ],
+   "items": null,
+   "tier": "detail",
+   "priority": 80,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  }
+ ]
+}

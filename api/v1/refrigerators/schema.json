@@ -1,0 +1,921 @@
+{
+ "id": "refrigerators",
+ "schema_version": "0.1",
+ "groups": [
+  {
+   "id": "general",
+   "label": "General & identity",
+   "order": 0
+  },
+  {
+   "id": "config",
+   "label": "Configuration",
+   "order": 1
+  },
+  {
+   "id": "dims",
+   "label": "Size & fit",
+   "order": 2
+  },
+  {
+   "id": "capacity",
+   "label": "Capacity",
+   "order": 3
+  },
+  {
+   "id": "energy",
+   "label": "Energy & certification",
+   "order": 4
+  },
+  {
+   "id": "refrigerant",
+   "label": "Refrigerant",
+   "order": 5
+  },
+  {
+   "id": "features",
+   "label": "Ice, water & features",
+   "order": 6
+  },
+  {
+   "id": "conn",
+   "label": "Connectivity",
+   "order": 7
+  },
+  {
+   "id": "noise",
+   "label": "Noise",
+   "order": 8
+  }
+ ],
+ "conditions": [
+  {
+   "id": "test_procedure",
+   "label": "DOE test procedure",
+   "type": "enum",
+   "enum": [
+    "appendix_a",
+    "appendix_a1",
+    "appendix_b",
+    "maker_unstated"
+   ],
+   "description": "Basis of a volume or kWh figure. Current US refrigerator-freezer figures are 10 CFR 430 Subpart B Appendix A (freezers: Appendix B); pre-2014 filings used Appendix A1 with a different adjusted-volume factor and kWh basis, so pre-2014 figures do not compare. ES p5st-her9 rows are current-procedure by construction (active specification); a maker spec sheet states no procedure = maker_unstated."
+  },
+  {
+   "id": "depth_basis",
+   "label": "Depth measured to",
+   "type": "enum",
+   "enum": [
+    "case",
+    "doors",
+    "handles",
+    "doors_open_90",
+    "unstated"
+   ],
+   "description": "Fridge depth is printed four ways and they differ by 2-5 in: cabinet only, to the door face, to the handle tips, and installation depth with doors open 90 deg. A depth without its basis is maker-stated, unstated basis."
+  },
+  {
+   "id": "noise_basis",
+   "label": "Noise basis",
+   "type": "enum",
+   "enum": [
+    "maker_dba_unstated_method",
+    "sound_power_db_re_1pw",
+    "sound_pressure_dba"
+   ],
+   "description": "US maker pages print \"dBA\" with no method; EU energy labels give sound POWER dB(A) re 1 pW (IEC 60704), which reads several dB higher than a sound-pressure figure for the same unit. Never compare across bases."
+  }
+ ],
+ "fields": [
+  {
+   "key": "gen.brand",
+   "label": "Brand",
+   "group": "general",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "frigidaire",
+    "whirlpool",
+    "ge",
+    "lg",
+    "samsung",
+    "bosch",
+    "kitchenaid",
+    "maytag",
+    "midea",
+    "hisense",
+    "haier",
+    "summit",
+    "galanz",
+    "magic_chef",
+    "insignia",
+    "kenmore"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "gen.is_pattern",
+   "label": "Certified pattern (covers several SKUs)",
+   "group": "general",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "config.es_type",
+   "label": "Type (ENERGY STAR)",
+   "group": "config",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "bottom_freezer",
+    "top_freezer",
+    "side_by_side",
+    "freezerless_single_door",
+    "compact_refrigerator",
+    "compact_cooler",
+    "cooler"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "config.style",
+   "label": "Door style",
+   "group": "config",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "french_door",
+    "french_door_4_door",
+    "bottom_freezer_single_door",
+    "top_freezer",
+    "side_by_side",
+    "column",
+    "single_door",
+    "under_counter",
+    "drawer"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "config.es_product_class",
+   "label": "DOE product class",
+   "group": "config",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "config.counter_depth",
+   "label": "Counter-depth",
+   "group": "config",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 40,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "config.compact",
+   "label": "Compact",
+   "group": "config",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 50,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "config.built_in",
+   "label": "Built-in",
+   "group": "config",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 60,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "config.defrost",
+   "label": "Defrost",
+   "group": "config",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "automatic",
+    "partial_automatic",
+    "manual"
+   ],
+   "items": null,
+   "tier": "detail",
+   "priority": 70,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "dims.width_in",
+   "label": "Width",
+   "group": "dims",
+   "type": "number",
+   "unit": "in",
+   "display_unit": "in",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "dims.height_in",
+   "label": "Height",
+   "group": "dims",
+   "type": "number",
+   "unit": "in",
+   "display_unit": "in",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "dims.depth_in",
+   "label": "Depth",
+   "group": "dims",
+   "type": "number",
+   "unit": "in",
+   "display_unit": "in",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": [
+    "depth_basis"
+   ],
+   "headline_condition": {
+    "depth_basis": "doors"
+   }
+  },
+  {
+   "key": "capacity.total_ft3",
+   "label": "Total capacity (DOE)",
+   "group": "capacity",
+   "type": "number",
+   "unit": "ft3",
+   "display_unit": "ft3",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": [
+    "test_procedure"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "capacity.adjusted_ft3",
+   "label": "Adjusted volume (DOE)",
+   "group": "capacity",
+   "type": "number",
+   "unit": "ft3",
+   "display_unit": "ft3",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": [
+    "test_procedure"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "capacity.fresh_food_ft3",
+   "label": "Fresh-food volume",
+   "group": "capacity",
+   "type": "number",
+   "unit": "ft3",
+   "display_unit": "ft3",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "capacity.freezer_ft3",
+   "label": "Freezer volume",
+   "group": "capacity",
+   "type": "number",
+   "unit": "ft3",
+   "display_unit": "ft3",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "energy.annual_kwh",
+   "label": "Energy use",
+   "group": "energy",
+   "type": "number",
+   "unit": "kWh/yr",
+   "display_unit": "kWh/yr",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": [
+    "test_procedure"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "energy.federal_standard_kwh",
+   "label": "Federal maximum",
+   "group": "energy",
+   "type": "number",
+   "unit": "kWh/yr",
+   "display_unit": "kWh/yr",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "energy.pct_below_federal",
+   "label": "Better than federal standard",
+   "group": "energy",
+   "type": "number",
+   "unit": "%",
+   "display_unit": "%",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cert.energy_star",
+   "label": "ENERGY STAR certified",
+   "group": "energy",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 40,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cert.es_most_efficient",
+   "label": "ENERGY STAR Most Efficient",
+   "group": "energy",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 50,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cert.es_date",
+   "label": "Certified on",
+   "group": "energy",
+   "type": "date",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 60,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "refrigerant.type",
+   "label": "Refrigerant",
+   "group": "refrigerant",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "r600a",
+    "r134a",
+    "r1234yf",
+    "r290",
+    "r513a",
+    "other"
+   ],
+   "items": null,
+   "tier": "important",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "refrigerant.gwp",
+   "label": "Refrigerant GWP",
+   "group": "refrigerant",
+   "type": "number",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "features.ice_maker",
+   "label": "Automatic ice maker",
+   "group": "features",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "features.dispenser",
+   "label": "Through-the-door dispenser",
+   "group": "features",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "none",
+    "water",
+    "ice_and_water"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "conn.connected",
+   "label": "Smart / connected",
+   "group": "conn",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "conn.protocols",
+   "label": "Connects using",
+   "group": "conn",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "wifi",
+    "bluetooth",
+    "zigbee",
+    "thread",
+    "matter",
+    "other"
+   ],
+   "items": "enum",
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "multi",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "noise.dba",
+   "label": "Noise",
+   "group": "noise",
+   "type": "number",
+   "unit": "dBA",
+   "display_unit": "dBA",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": [
+    "noise_basis"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall",
+   "label": "CPSC recall",
+   "group": "general",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_id",
+   "label": "CPSC recall number",
+   "group": "general",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": "text",
+   "tier": "detail",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_date",
+   "label": "Recall date",
+   "group": "general",
+   "type": "date",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 50,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_remedy",
+   "label": "Recall remedy",
+   "group": "general",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "replace",
+    "refund",
+    "repair",
+    "new_instructions",
+    "dispose",
+    "label",
+    "other"
+   ],
+   "items": "enum",
+   "tier": "detail",
+   "priority": 60,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_url",
+   "label": "Recall notice",
+   "group": "general",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 70,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "gen.record_kind",
+   "label": "Record kind",
+   "group": "general",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "recall_only"
+   ],
+   "items": null,
+   "tier": "detail",
+   "priority": 80,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  }
+ ]
+}

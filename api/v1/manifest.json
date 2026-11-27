@@ -1,0 +1,935 @@
+{
+ "dataset_version": "1.0.0",
+ "build": "521bb3f2de10",
+ "generated_at": "2026-11-27T13:27:27Z",
+ "record_format": "specsheet.record/1",
+ "tier": "free",
+ "policy_version": "2026-11-26.14",
+ "policy_sha256": "8987cdf3abfa7095f6e9b2320a3716135abd6efd188b577d4a2a1a73841101ea",
+ "license": "ODbL-1.0",
+ "license_url": "https://opendatacommons.org/licenses/odbl/1-0/",
+ "license_scope": "compilation + values whose sources[] include licence_grant:true; other values are facts with links, not licensed by us",
+ "attribution": {
+  "dataset": "Data: specsheet (ODbL), sources linked per value",
+  "sources": [
+   {
+    "domain": "data.energystar.gov",
+    "credit": "U.S. EPA ENERGY STAR (data.energystar.gov)",
+    "line": "Source: U.S. EPA ENERGY STAR"
+   },
+   {
+    "domain": "github.com",
+    "credit": "Contributor evidence (GitHub issue)",
+    "line": "Source: Contributor evidence (GitHub issue)"
+   }
+  ]
+ },
+ "coverage": "coverage.json",
+ "categories": [
+  {
+   "id": "power-strips-demo",
+   "schema_version": "0",
+   "count": 4,
+   "index": [],
+   "facets": null,
+   "demo": true,
+   "legacy": true
+  },
+  {
+   "id": "air-purifiers",
+   "schema_version": "0.1.1",
+   "count": 217,
+   "index": [
+    "air-purifiers/index.json"
+   ],
+   "facets": "air-purifiers/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/air-purifiers/index.json"
+    ],
+    "count": 34,
+    "products": "preview/air-purifiers/products/",
+    "only_preview": 0
+   },
+   "certification_only": {
+    "index": [
+     "air-purifiers/index-certonly.json"
+    ],
+    "count": 926,
+    "certification_keys": [
+     "cert.maker_listed",
+     "eff.energy_star",
+     "eff.most_efficient",
+     "gen.record_kind",
+     "ozone.carb_certified",
+     "ozone.carb_date",
+     "ozone.carb_eo",
+     "ozone.carb_type",
+     "safety.recall",
+     "safety.recall_date",
+     "safety.recall_id",
+     "safety.recall_remedy",
+     "safety.recall_url"
+    ],
+    "rule": "trusted record whose values are all certification / regulatory metadata (profile index_rows): in lookup and products/, not a default index row"
+   }
+  },
+  {
+   "id": "chargers",
+   "schema_version": "1.0.0",
+   "count": 151,
+   "index": [
+    "chargers/index.json"
+   ],
+   "facets": "chargers/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/chargers/index.json"
+    ],
+    "count": 192,
+    "products": "preview/chargers/products/",
+    "only_preview": 44
+   }
+  },
+  {
+   "id": "clothes-dryers",
+   "schema_version": "0.1",
+   "count": 554,
+   "index": [
+    "clothes-dryers/index.json"
+   ],
+   "facets": "clothes-dryers/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/clothes-dryers/index.json"
+    ],
+    "count": 441,
+    "products": "preview/clothes-dryers/products/",
+    "only_preview": 0
+   }
+  },
+  {
+   "id": "clothes-washers",
+   "schema_version": "0.1",
+   "count": 404,
+   "index": [
+    "clothes-washers/index.json"
+   ],
+   "facets": "clothes-washers/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/clothes-washers/index.json"
+    ],
+    "count": 261,
+    "products": "preview/clothes-washers/products/",
+    "only_preview": 0
+   }
+  },
+  {
+   "id": "dishwashers",
+   "schema_version": "0.1",
+   "count": 699,
+   "index": [
+    "dishwashers/index.json"
+   ],
+   "facets": "dishwashers/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/dishwashers/index.json"
+    ],
+    "count": 361,
+    "products": "preview/dishwashers/products/",
+    "only_preview": 0
+   }
+  },
+  {
+   "id": "freezers",
+   "schema_version": "0.1",
+   "count": 615,
+   "index": [
+    "freezers/index.json"
+   ],
+   "facets": "freezers/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/freezers/index.json"
+    ],
+    "count": 154,
+    "products": "preview/freezers/products/",
+    "only_preview": 0
+   }
+  },
+  {
+   "id": "laptops",
+   "schema_version": "0.2",
+   "count": 2525,
+   "index": [
+    "laptops/index-0.json",
+    "laptops/index-1.json"
+   ],
+   "facets": "laptops/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/laptops/index-0.json",
+     "preview/laptops/index-1.json"
+    ],
+    "count": 2164,
+    "products": "preview/laptops/products/",
+    "only_preview": 130
+   }
+  },
+  {
+   "id": "light-bulbs",
+   "schema_version": "0.1",
+   "count": 304,
+   "index": [
+    "light-bulbs/index.json"
+   ],
+   "facets": "light-bulbs/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/light-bulbs/index.json"
+    ],
+    "count": 23,
+    "products": "preview/light-bulbs/products/",
+    "only_preview": 0
+   },
+   "certification_only": {
+    "index": [
+     "light-bulbs/index-certonly.json"
+    ],
+    "count": 0,
+    "certification_keys": [
+     "cert.energy_star",
+     "cert.es_date"
+    ],
+    "rule": "trusted record whose values are all certification / regulatory metadata (profile index_rows): in lookup and products/, not a default index row"
+   }
+  },
+  {
+   "id": "monitors",
+   "schema_version": "0.2.0",
+   "count": 4306,
+   "index": [
+    "monitors/index-0.json",
+    "monitors/index-1.json"
+   ],
+   "facets": "monitors/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/monitors/index.json"
+    ],
+    "count": 1481,
+    "products": "preview/monitors/products/",
+    "only_preview": 0
+   }
+  },
+  {
+   "id": "power-banks",
+   "schema_version": "0.1.0",
+   "count": 193,
+   "index": [
+    "power-banks/index.json"
+   ],
+   "facets": "power-banks/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/power-banks/index.json"
+    ],
+    "count": 160,
+    "products": "preview/power-banks/products/",
+    "only_preview": 6
+   }
+  },
+  {
+   "id": "power-stations",
+   "schema_version": "0.1.0",
+   "count": 83,
+   "index": [
+    "power-stations/index.json"
+   ],
+   "facets": "power-stations/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/power-stations/index.json"
+    ],
+    "count": 67,
+    "products": "preview/power-stations/products/",
+    "only_preview": 0
+   }
+  },
+  {
+   "id": "power-strips",
+   "schema_version": "0.1",
+   "count": 591,
+   "index": [
+    "power-strips/index.json"
+   ],
+   "facets": "power-strips/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/power-strips/index.json"
+    ],
+    "count": 511,
+    "products": "preview/power-strips/products/",
+    "only_preview": 288
+   }
+  },
+  {
+   "id": "refrigerators",
+   "schema_version": "0.1",
+   "count": 4411,
+   "index": [
+    "refrigerators/index-0.json",
+    "refrigerators/index-1.json"
+   ],
+   "facets": "refrigerators/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/refrigerators/index.json"
+    ],
+    "count": 1584,
+    "products": "preview/refrigerators/products/",
+    "only_preview": 0
+   }
+  },
+  {
+   "id": "robot-vacuums",
+   "schema_version": "0.1.0",
+   "count": 144,
+   "index": [
+    "robot-vacuums/index.json"
+   ],
+   "facets": "robot-vacuums/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/robot-vacuums/index.json"
+    ],
+    "count": 88,
+    "products": "preview/robot-vacuums/products/",
+    "only_preview": 4
+   }
+  },
+  {
+   "id": "routers",
+   "schema_version": "0.2.0",
+   "count": 334,
+   "index": [
+    "routers/index.json"
+   ],
+   "facets": "routers/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/routers/index.json"
+    ],
+    "count": 162,
+    "products": "preview/routers/products/",
+    "only_preview": 0
+   }
+  },
+  {
+   "id": "smart-home",
+   "schema_version": "0.1",
+   "count": 4188,
+   "index": [
+    "smart-home/index-0.json",
+    "smart-home/index-1.json",
+    "smart-home/index-2.json"
+   ],
+   "facets": "smart-home/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/smart-home/index.json"
+    ],
+    "count": 0,
+    "products": "preview/smart-home/products/",
+    "only_preview": 0
+   }
+  },
+  {
+   "id": "ssds",
+   "schema_version": "0.2.0",
+   "count": 586,
+   "index": [
+    "ssds/index.json"
+   ],
+   "facets": "ssds/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/ssds/index.json"
+    ],
+    "count": 55,
+    "products": "preview/ssds/products/",
+    "only_preview": 0
+   }
+  },
+  {
+   "id": "tvs",
+   "schema_version": "0.1.0",
+   "count": 1371,
+   "index": [
+    "tvs/index.json"
+   ],
+   "facets": "tvs/facets.json",
+   "demo": false,
+   "preview": {
+    "review_scope": "preview",
+    "index": [
+     "preview/tvs/index.json"
+    ],
+    "count": 879,
+    "products": "preview/tvs/products/",
+    "only_preview": 0
+   }
+  }
+ ],
+ "release": {
+  "accepted_digest": "1e06ad4a6743a28889d6b931257e5030a79f043cb221be490c2a17a145b2ef48",
+  "policies": [
+   "claim/smart-home-zigbee2mqtt@2",
+   "claim/cpsc-recalls@1",
+   "claim/appliances-energystar@2",
+   "claim/appliances-es-pattern@2",
+   "claim/light-bulbs-energystar@1",
+   "claim/appliances-siblings-energystar@1",
+   "claim/appliances-siblings-es-pattern@1",
+   "claim/mfr-power-banks-nitecore@2",
+   "claim/mfr-power-stations-pecron@2",
+   "claim/mfr-structured-datasheet@5",
+   "claim/asus-techspec-typed@5",
+   "claim/cpu-split@2",
+   "claim/mfr-monitor-structured@12",
+   "claim/derive-tuv-eye-comfort-5star@6",
+   "claim/energystar-certified-power@2",
+   "claim/displayhdr-certified-tier@2",
+   "claim/mfr-ssd-structured@8",
+   "claim/mfr-ssd-samsung@4",
+   "claim/mfr-routers-structured@5",
+   "claim/mfr-routers-class@5",
+   "claim/mfr-robovac-structured@5",
+   "claim/dcl-matter-certified@2",
+   "claim/mfr-power-banks-structured@10",
+   "claim/derive-samsung-sfc2-pps@3",
+   "claim/mfr-strips-belkin-printed@1",
+   "claim/mfr-power-stations-structured@10",
+   "claim/tvs-structured@4",
+   "claim/tvs-es-certification-coverage@1",
+   "claim/tvs-es-power-applicability@1",
+   "claim/air-purifiers-structured@1",
+   "claim/air-purifiers-es-same-hardware@1",
+   "claim/mfr-chargers-structured@4",
+   "claim/mfr-chargers-kuxiu@2",
+   "claim/psref-split@1",
+   "claim/monitor-flicker-label-map@1",
+   "claim/mfr-routers-direct@4",
+   "claim/mfr-monitor-benq@5",
+   "claim/mfr-monitor-dell@3",
+   "claim/mfr-ssd-sandisk-datasheet@4",
+   "claim/mfr-ssd-samsung-datasheet@2",
+   "claim/document-power-pdo@5",
+   "claim/spec-image-power-pdo@3",
+   "claim/hub-document-power-pdo@3",
+   "claim/document-spec-r2@2",
+   "claim/belkin-support-articles@1",
+   "claim/lenovo-monitor-datasheets@1",
+   "claim/mfr-ssd-kingston@4",
+   "claim/document-spec-r3@2",
+   "claim/document-tv-ports@3",
+   "claim/mfr-laptop-ports@4",
+   "claim/mfr-monitor-aoc@3",
+   "claim/usbif-certified-products@1",
+   "rel/appliances-es-pattern-coverage@2",
+   "rel/bundle-contents@10",
+   "rel/tvs-es-certification-scope@1",
+   "rel/tvs-crosswalk@1",
+   "rel/air-purifiers-es-same-hardware@1",
+   "rel/air-purifiers-crosswalk@1",
+   "rel/source-stated-hierarchy@18"
+  ],
+  "ledger_lines": 0,
+  "profiles": {
+   "air-purifiers": "0.1.1",
+   "chargers": "1.0.0",
+   "clothes-dryers": "0.1",
+   "clothes-washers": "0.1",
+   "dishwashers": "0.1",
+   "freezers": "0.1",
+   "laptops": "0.2",
+   "light-bulbs": "0.1",
+   "monitors": "0.2.0",
+   "power-banks": "0.1.0",
+   "power-stations": "0.1.0",
+   "power-strips": "0.1",
+   "refrigerators": "0.1",
+   "robot-vacuums": "0.1.0",
+   "routers": "0.2.0",
+   "smart-home": "0.1",
+   "ssds": "0.2.0",
+   "tvs": "0.1.0"
+  },
+  "coverage": {
+   "lenovo-psref": {
+    "mtms_observed": "484104",
+    "mtms_published_scope": "2103",
+    "regions": "{\"UAE\": 47097, \"Africa-French-Portuguese\": 27702, \"Hungary\": 19447, \"CIS\": 19290, \"Nordics\": 18925, \"Middle-EAST-EM\": 18692, \"South Africa\": 15559, \"Egypt\": 15521, \"Denmark\": 14469, \"Africa-UK\": 13977, \"Bulgaria\": 13531, \"Israel\": 13377, \"Saudi Arabia\": 13231, \"Cyprus\": 9583, \"Middle East\": 9568, \"France\": 9338, \"Romania\": 9086, \"Germany\": 7982, \"Czech, Slovakia\": 7878, \"Greece\": 7846, \"Netherlands\": 7645, \"Belgium\": 7556, \"Poland\": 7447, \"T\\u00fcrkiye\": 7288, \"Switzerland\": 7263, \"Italy\": 7235, \"Spain\": 7045, \"Portugal\": 6484, \"Croatia\": 6440, \"Serbia\": 6437, \"Luxembourg\": 6139, \"Ukraine\": 6101, \"Pakistan\": 6087, \"UK\": 6080, \"Iceland\": 5868, \"Austria\": 5827, \"Algeria\": 4923, \"Morocco\": 4919, \"India\": 3568, \"Russia\": 3387, \"Korea\": 2886, \"Philippines\": 2727, \"Thailand\": 2661, \"Australia\": 2252, \"Croatia, Slovenia\": 2202, \"Singapore\": 2131, \"US\": 2103, \"Kazakhstan\": 2053, \"Japan\": 1992, \"Indonesia\": 1959, \"Hong Kong S.A.R. of China\": 1954, \"Vietnam\": 1883, \"UK Group\": 1881, \"Malaysia\": 1846, \"LA Group\": 1695, \"Canada\": 1658, \"Mexico\": 1606, \"Taiwan, China\": 1525, \"Sweden\": 1019, \"Brazil\": 975, \"Cambodia, Laos\": 965, \"Slovenia\": 850, \"Argentina\": 844, \"Emat-FR\": 834, \"Chile\": 785, \"South East Europe\": 773, \"Sri Lanka\": 683, \"Emat-UK\": 510, \"Norway\": 505, \"Ireland\": 467, \"Central America\": 266, \"Estonia, Latvia, Lithuania\": 241, \"CA Group\": 234, \"Georgia\": 214, \"Lebanon\": 175, \"Emat-PO\": 172, \"South Africa Off Shore Group\": 155, \"New Zealand\": 139, \"Moldova\": 107, \"Colombia\": 80, \"Caribbean Group\": 69, \"North West LA Group\": 55, \"Ecuador\": 45, \"Azerbaijan\": 30, \"Peru\": 30, \"USA\": 23, \"Uruguay\": 4, \"Bolivia\": 2, \"Paraguay\": 1}",
+    "regional_claims_materialised": "no (US only; evidence by reference: snapshot + MTM)",
+    "observations": "282",
+    "discovery_complete": "1"
+   },
+   "asus-us": {
+    "observations": "142",
+    "discovery_complete": "1"
+   },
+   "apple-support": {
+    "observations": "20",
+    "discovery_complete": "1"
+   },
+   "dell-us": {
+    "observations": "100",
+    "discovery_complete": "1"
+   },
+   "microsoft-surface": {
+    "observations": "15",
+    "discovery_complete": "1"
+   },
+   "framework-us": {
+    "observations": "0",
+    "discovery_complete": "0"
+   },
+   "samsung-us": {
+    "observations": "3",
+    "discovery_complete": "1"
+   },
+   "razer-us": {
+    "observations": "15",
+    "discovery_complete": "1"
+   },
+   "energystar-monitors": {
+    "observations": "1504",
+    "discovery_complete": "1"
+   },
+   "lenovo-psref-monitors": {
+    "observations": "195",
+    "discovery_complete": "1"
+   },
+   "lenovo-psref-monitor-datasheets": {
+    "observations": "44",
+    "discovery_complete": "1"
+   },
+   "displayhdr": {
+    "observations": "2129",
+    "discovery_complete": "1"
+   },
+   "lg-us": {
+    "observations": "504",
+    "discovery_complete": "1"
+   },
+   "benq-us-monitors": {
+    "observations": "136",
+    "discovery_complete": "1"
+   },
+   "asus-us-monitors": {
+    "observations": "346",
+    "discovery_complete": "1"
+   },
+   "dell-us-monitors": {
+    "observations": "89",
+    "discovery_complete": "1"
+   },
+   "aoc-us-monitors": {
+    "observations": "177",
+    "discovery_complete": "1"
+   },
+   "samsung-us-ssd": {
+    "observations": "55",
+    "discovery_complete": "1"
+   },
+   "sandisk-us-ssd": {
+    "observations": "74",
+    "discovery_complete": "1"
+   },
+   "teamgroup-us-ssd": {
+    "observations": "61",
+    "discovery_complete": "1"
+   },
+   "kingston-us-ssd": {
+    "observations": "9",
+    "discovery_complete": "1"
+   },
+   "sandisk-us-ssd-datasheets": {
+    "observations": "35",
+    "discovery_complete": "1"
+   },
+   "samsung-ssd-datasheets": {
+    "observations": "27",
+    "discovery_complete": "1"
+   },
+   "tplink-us-routers": {
+    "observations": "106",
+    "discovery_complete": "1"
+   },
+   "netgear-us-routers": {
+    "observations": "60",
+    "discovery_complete": "1"
+   },
+   "asus-us-routers": {
+    "observations": "82",
+    "discovery_complete": "1"
+   },
+   "ubiquiti-us-routers": {
+    "observations": "53",
+    "discovery_complete": "1"
+   },
+   "glinet-us-routers": {
+    "observations": "45",
+    "discovery_complete": "1"
+   },
+   "anker-us-powerbanks": {
+    "observations": "22",
+    "discovery_complete": "1"
+   },
+   "belkin-us-powerbanks": {
+    "observations": "37",
+    "discovery_complete": "1"
+   },
+   "belkin-us-support": {
+    "observations": "28",
+    "discovery_complete": "1"
+   },
+   "iniu-us-powerbanks": {
+    "observations": "41",
+    "discovery_complete": "1"
+   },
+   "cuktech-us-powerbanks": {
+    "observations": "14",
+    "discovery_complete": "1"
+   },
+   "ugreen-us-powerbanks": {
+    "observations": "29",
+    "discovery_complete": "1"
+   },
+   "ecoflow-us-powerbanks": {
+    "observations": "15",
+    "discovery_complete": "1"
+   },
+   "sharge-us-powerbanks": {
+    "observations": "24",
+    "discovery_complete": "1"
+   },
+   "kuxiu-us-powerbanks": {
+    "observations": "14",
+    "discovery_complete": "1"
+   },
+   "mophie-us-powerbanks": {
+    "observations": "23",
+    "discovery_complete": "1"
+   },
+   "nitecore-us-powerbanks": {
+    "observations": "20",
+    "discovery_complete": "1"
+   },
+   "anker-us-chargers": {
+    "observations": "31",
+    "discovery_complete": "1"
+   },
+   "belkin-us-chargers": {
+    "observations": "42",
+    "discovery_complete": "1"
+   },
+   "ugreen-us-chargers": {
+    "observations": "27",
+    "discovery_complete": "1"
+   },
+   "iniu-us-chargers": {
+    "observations": "8",
+    "discovery_complete": "1"
+   },
+   "cuktech-us-chargers": {
+    "observations": "11",
+    "discovery_complete": "1"
+   },
+   "satechi-us-chargers": {
+    "observations": "15",
+    "discovery_complete": "1"
+   },
+   "sharge-us-chargers": {
+    "observations": "5",
+    "discovery_complete": "1"
+   },
+   "mophie-us-chargers": {
+    "observations": "10",
+    "discovery_complete": "1"
+   },
+   "aukey-us-chargers": {
+    "observations": "19",
+    "discovery_complete": "1"
+   },
+   "hyper-us-chargers": {
+    "observations": "8",
+    "discovery_complete": "1"
+   },
+   "nativeunion-us-chargers": {
+    "observations": "8",
+    "discovery_complete": "1"
+   },
+   "plugable-us-chargers": {
+    "observations": "7",
+    "discovery_complete": "1"
+   },
+   "nekteck-us-chargers": {
+    "observations": "5",
+    "discovery_complete": "1"
+   },
+   "choetech-us-chargers": {
+    "observations": "24",
+    "discovery_complete": "1"
+   },
+   "kuxiu-us-chargers": {
+    "observations": "12",
+    "discovery_complete": "1"
+   },
+   "ecoflow-us-stations": {
+    "observations": "18",
+    "discovery_complete": "1"
+   },
+   "bluetti-us-stations": {
+    "observations": "40",
+    "discovery_complete": "1"
+   },
+   "jackery-us-stations": {
+    "observations": "44",
+    "discovery_complete": "1"
+   },
+   "goalzero-us-stations": {
+    "observations": "22",
+    "discovery_complete": "1"
+   },
+   "ankersolix-us-stations": {
+    "observations": "33",
+    "discovery_complete": "1"
+   },
+   "pecron-us-stations": {
+    "observations": "9",
+    "discovery_complete": "1"
+   },
+   "dreame-us-robovac": {
+    "observations": "41",
+    "discovery_complete": "1"
+   },
+   "roborock-us-robovac": {
+    "observations": "35",
+    "discovery_complete": "1"
+   },
+   "narwal-us-robovac": {
+    "observations": "8",
+    "discovery_complete": "1"
+   },
+   "ecovacs-us-robovac": {
+    "observations": "48",
+    "discovery_complete": "1"
+   },
+   "irobot-us-robovac": {
+    "observations": "30",
+    "discovery_complete": "1"
+   },
+   "mova-us-robovac": {
+    "observations": "17",
+    "discovery_complete": "1"
+   },
+   "csa-dcl-robovac": {
+    "observations": "31",
+    "discovery_complete": "1"
+   },
+   "energystar-tvs": {
+    "observations": "175",
+    "discovery_complete": "1"
+   },
+   "samsung-us-tvs": {
+    "observations": "195",
+    "discovery_complete": "1"
+   },
+   "lg-us-tvs": {
+    "observations": "928",
+    "discovery_complete": "1"
+   },
+   "tcl-us-tvs": {
+    "observations": "83",
+    "discovery_complete": "1"
+   },
+   "vizio-us-tvs": {
+    "observations": "179",
+    "discovery_complete": "1"
+   },
+   "energystar-airpurifiers": {
+    "observations": "212",
+    "discovery_complete": "1"
+   },
+   "carb-airpurifiers": {
+    "observations": "1102",
+    "discovery_complete": "1"
+   },
+   "levoit-us-airpurifiers": {
+    "observations": "22",
+    "discovery_complete": "1"
+   },
+   "winix-us-airpurifiers": {
+    "observations": "20",
+    "discovery_complete": "1"
+   },
+   "energystar-refrigerators": {
+    "observations": "4696",
+    "discovery_complete": "1"
+   },
+   "energystar-dishwashers": {
+    "observations": "730",
+    "discovery_complete": "1"
+   },
+   "energystar-freezers": {
+    "observations": "671",
+    "discovery_complete": "1"
+   },
+   "energystar-clothes-washers": {
+    "observations": "418",
+    "discovery_complete": "1"
+   },
+   "energystar-clothes-dryers": {
+    "observations": "689",
+    "discovery_complete": "1"
+   },
+   "energystar-light-bulbs": {
+    "observations": "377",
+    "discovery_complete": "1"
+   },
+   "zigbee2mqtt-devices": {
+    "observations": "4201",
+    "discovery_complete": "1"
+   },
+   "cpsc-recalls-air-purifiers": {
+    "observations": "1",
+    "discovery_complete": "1"
+   },
+   "cpsc-recalls-chargers": {
+    "observations": "3",
+    "discovery_complete": "1"
+   },
+   "cpsc-recalls-clothes-dryers": {
+    "observations": "1",
+    "discovery_complete": "1"
+   },
+   "cpsc-recalls-clothes-washers": {
+    "observations": "35",
+    "discovery_complete": "1"
+   },
+   "cpsc-recalls-dishwashers": {
+    "observations": "9",
+    "discovery_complete": "1"
+   },
+   "cpsc-recalls-freezers": {
+    "observations": "1",
+    "discovery_complete": "1"
+   },
+   "cpsc-recalls-monitors": {
+    "observations": "0",
+    "discovery_complete": "1"
+   },
+   "cpsc-recalls-power-banks": {
+    "observations": "9",
+    "discovery_complete": "1"
+   },
+   "cpsc-recalls-power-stations": {
+    "observations": "1",
+    "discovery_complete": "1"
+   },
+   "cpsc-recalls-refrigerators": {
+    "observations": "40",
+    "discovery_complete": "1"
+   },
+   "cpsc-recalls-robot-vacuums": {
+    "observations": "0",
+    "discovery_complete": "1"
+   },
+   "cpsc-recalls-routers": {
+    "observations": "0",
+    "discovery_complete": "1"
+   },
+   "cpsc-recalls-smart-home": {
+    "observations": "0",
+    "discovery_complete": "1"
+   },
+   "cpsc-recalls-tvs": {
+    "observations": "4",
+    "discovery_complete": "1"
+   },
+   "tripplite": {
+    "observations": "249",
+    "discovery_complete": "unknown"
+   },
+   "cyberpower": {
+    "observations": "293",
+    "discovery_complete": "1"
+   },
+   "anker": {
+    "observations": "11",
+    "discovery_complete": "unknown"
+   },
+   "belkin": {
+    "observations": "54",
+    "discovery_complete": "unknown"
+   },
+   "ugreen": {
+    "observations": "0",
+    "discovery_complete": "unknown"
+   },
+   "baseus": {
+    "observations": "11",
+    "discovery_complete": "unknown"
+   },
+   "byjasco": {
+    "observations": "216",
+    "discovery_complete": "unknown"
+   },
+   "furman": {
+    "observations": "30",
+    "discovery_complete": "unknown"
+   },
+   "austere": {
+    "observations": "5",
+    "discovery_complete": "unknown"
+   }
+  }
+ }
+}

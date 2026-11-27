@@ -1,0 +1,964 @@
+{
+ "id": "light-bulbs",
+ "schema_version": "0.1",
+ "groups": [
+  {
+   "id": "general",
+   "label": "General & identity",
+   "order": 0
+  },
+  {
+   "id": "light",
+   "label": "Brightness & light quality",
+   "order": 1
+  },
+  {
+   "id": "form",
+   "label": "Shape & base",
+   "order": 2
+  },
+  {
+   "id": "power",
+   "label": "Power",
+   "order": 3
+  },
+  {
+   "id": "ctl",
+   "label": "Dimming & control",
+   "order": 4
+  },
+  {
+   "id": "smart",
+   "label": "Smart features",
+   "order": 5
+  },
+  {
+   "id": "life",
+   "label": "Life & warranty",
+   "order": 6
+  },
+  {
+   "id": "features",
+   "label": "Ratings & features",
+   "order": 7
+  },
+  {
+   "id": "cert",
+   "label": "Certification",
+   "order": 8
+  }
+ ],
+ "conditions": [
+  {
+   "id": "cct_k",
+   "label": "Measured at colour temperature",
+   "type": "number",
+   "unit": "K",
+   "description": "The correlated colour temperature the lumen figure was measured / rated at. A tunable bulb gives different lumens at 2700 K and 6500 K (often 20-40% apart), so a lumen figure without its CCT is not comparable to one with it. ENERGY STAR lamp filings state the CCT of the tested setting (light_appearance_kelvin). A basis condition: two figures at different CCTs are alternatives, never merged."
+  },
+  {
+   "id": "lumens_basis",
+   "label": "Lumen figure basis",
+   "type": "enum",
+   "enum": [
+    "certified_lm79",
+    "maker_max",
+    "maker_rated",
+    "maker_up_to"
+   ],
+   "description": "certified_lm79 = ENERGY STAR / regulator filed output (IES LM-79 test); maker_max = maker prints \"max lumen output\"; maker_rated = maker prints the nominal output without qualifier; maker_up_to = \"up to N lumens\" marketing qualifier (shown, never a preset gate)."
+  }
+ ],
+ "fields": [
+  {
+   "key": "gen.brand",
+   "label": "Brand",
+   "group": "general",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "philips",
+    "wiz",
+    "ge",
+    "feit_electric",
+    "sylvania",
+    "ledvance",
+    "sengled",
+    "lifx",
+    "govee",
+    "nanoleaf",
+    "cree",
+    "kasa",
+    "wyze",
+    "ikea",
+    "satco",
+    "globe",
+    "ring",
+    "sonoff"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "gen.pack_count",
+   "label": "Bulbs in pack",
+   "group": "general",
+   "type": "integer",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "gen.lamp_category",
+   "label": "Lamp category",
+   "group": "general",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "omnidirectional",
+    "directional",
+    "decorative"
+   ],
+   "items": null,
+   "tier": "important",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "gen.technology",
+   "label": "Technology",
+   "group": "general",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "led",
+    "cfl",
+    "halogen",
+    "incandescent"
+   ],
+   "items": null,
+   "tier": "detail",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "light.lumens",
+   "label": "Brightness (white, lumens)",
+   "group": "light",
+   "type": "number",
+   "unit": "lm",
+   "display_unit": "lm",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     450,
+     800,
+     1100,
+     1600,
+     2600
+    ],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": [
+    "cct_k",
+    "lumens_basis"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "light.lumens_color_max",
+   "label": "Brightness at full colour (lumens)",
+   "group": "light",
+   "type": "number",
+   "unit": "lm",
+   "display_unit": "lm",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": [
+    "lumens_basis"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "light.lumens_by_cct",
+   "label": "Lumens by colour temperature",
+   "group": "light",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": {
+    "fields": [
+     {
+      "key": "cct_k",
+      "type": "number",
+      "unit": "K"
+     },
+     {
+      "key": "lumens",
+      "type": "number",
+      "unit": "lm"
+     }
+    ]
+   },
+   "tier": "detail",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "light.efficacy_lm_w",
+   "label": "Efficacy",
+   "group": "light",
+   "type": "number",
+   "unit": "lm/W",
+   "display_unit": "lm/W",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": [
+    "cct_k"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "light.cct_k",
+   "label": "Colour temperature (rated)",
+   "group": "light",
+   "type": "number",
+   "unit": "K",
+   "display_unit": "K",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 50,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     2200,
+     2700,
+     3000,
+     4000,
+     5000,
+     6500
+    ],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "light.cct_min_k",
+   "label": "Colour temperature, warmest",
+   "group": "light",
+   "type": "number",
+   "unit": "K",
+   "display_unit": "K",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 60,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "light.cct_max_k",
+   "label": "Colour temperature, coolest",
+   "group": "light",
+   "type": "number",
+   "unit": "K",
+   "display_unit": "K",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 70,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "light.cri",
+   "label": "Colour rendering (CRI Ra)",
+   "group": "light",
+   "type": "number",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 80,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     80,
+     90,
+     95
+    ],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "light.r9",
+   "label": "R9 (saturated red)",
+   "group": "light",
+   "type": "number",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 90,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "light.beam_angle_deg",
+   "label": "Beam angle",
+   "group": "light",
+   "type": "number",
+   "unit": "deg",
+   "display_unit": "deg",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 100,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "light.cbcp_cd",
+   "label": "Centre beam intensity",
+   "group": "light",
+   "type": "number",
+   "unit": "cd",
+   "display_unit": "cd",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 110,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "form.shape",
+   "label": "Shape",
+   "group": "form",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "a19",
+    "a21",
+    "a23",
+    "a15",
+    "br30",
+    "br40",
+    "br20",
+    "r20",
+    "par16",
+    "par20",
+    "par30",
+    "par30s",
+    "par30l",
+    "par38",
+    "mr16",
+    "g25",
+    "g40",
+    "b10",
+    "b11",
+    "b13",
+    "ba10",
+    "c7",
+    "c9",
+    "st19",
+    "st64",
+    "t8"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "form.base",
+   "label": "Base",
+   "group": "form",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "e26",
+    "e12",
+    "e17",
+    "e11",
+    "gu10",
+    "gu24",
+    "g9",
+    "gx53"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 20,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "form.length_mm",
+   "label": "Length",
+   "group": "form",
+   "type": "number",
+   "unit": "mm",
+   "display_unit": "mm",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "form.diameter_mm",
+   "label": "Diameter",
+   "group": "form",
+   "type": "number",
+   "unit": "mm",
+   "display_unit": "mm",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "form.enclosed_rated",
+   "label": "Rated for enclosed fixtures",
+   "group": "features",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "power.watts",
+   "label": "Power draw",
+   "group": "power",
+   "type": "number",
+   "unit": "W",
+   "display_unit": "W",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": [
+    "cct_k"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "power.equiv_watts",
+   "label": "Incandescent equivalent (marketing)",
+   "group": "power",
+   "type": "number",
+   "unit": "W",
+   "display_unit": "W",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "power.standby_w",
+   "label": "Standby power",
+   "group": "power",
+   "type": "number",
+   "unit": "W",
+   "display_unit": "W",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "power.power_factor",
+   "label": "Power factor",
+   "group": "power",
+   "type": "number",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "ctl.dimmable",
+   "label": "Dimmable (wall dimmer)",
+   "group": "ctl",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "ctl.dims_down_to_pct",
+   "label": "Dims down to",
+   "group": "ctl",
+   "type": "number",
+   "unit": "%",
+   "display_unit": "%",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "ctl.three_way",
+   "label": "Three-way",
+   "group": "ctl",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "smart.connected",
+   "label": "Smart (connected)",
+   "group": "smart",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "smart.protocols",
+   "label": "Radio / protocol",
+   "group": "smart",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "wifi",
+    "bluetooth",
+    "zigbee",
+    "thread",
+    "matter",
+    "other"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 20,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "multi",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "smart.color",
+   "label": "Colour capability",
+   "group": "smart",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "full_color",
+    "tunable_white",
+    "fixed_white"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 30,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "smart.hub_required",
+   "label": "Hub / bridge required",
+   "group": "smart",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "life.rated_h",
+   "label": "Rated life",
+   "group": "life",
+   "type": "number",
+   "unit": "h",
+   "display_unit": "h",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "life.warranty_years",
+   "label": "Warranty",
+   "group": "life",
+   "type": "number",
+   "unit": "yr",
+   "display_unit": "yr",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "features.es_special",
+   "label": "Ratings & features (as filed)",
+   "group": "features",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "damp_rated",
+    "wet_rated",
+    "recessed_ok",
+    "not_recessed",
+    "wireless_control",
+    "timers_ok",
+    "sensors_ok",
+    "dim_to_warm",
+    "full_color_tunable",
+    "white_tunable",
+    "three_way",
+    "outdoor",
+    "other"
+   ],
+   "items": null,
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "multi",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cert.energy_star",
+   "label": "ENERGY STAR certified (lamps programme, ended)",
+   "group": "cert",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "bool",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cert.es_date",
+   "label": "ENERGY STAR certification date",
+   "group": "cert",
+   "type": "date",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  }
+ ]
+}

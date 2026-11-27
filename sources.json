@@ -1,0 +1,1403 @@
+{
+ "generated_from": "data/source-policy.yaml",
+ "policy_version": "2026-11-26.14",
+ "policy_sha256": "8987cdf3abfa7095f6e9b2320a3716135abd6efd188b577d4a2a1a73841101ea",
+ "license_scope": "compilation + values whose sources[] include licence_grant:true; other values are facts with links, not licensed by us",
+ "granted": [
+  {
+   "domain": "data.energystar.gov",
+   "match": "exact",
+   "kind": "government",
+   "credit": "U.S. EPA ENERGY STAR (data.energystar.gov)",
+   "attribution": "Source: U.S. EPA ENERGY STAR",
+   "conditions": [
+    "Attribute: 'Source: U.S. EPA ENERGY STAR'",
+    "ENERGY STAR mark only as a factual attribute, never as branding or logo",
+    "Values are manufacturer-certified data published by EPA; check dataset metadata for 'otherwise specified' notices per dataset"
+   ],
+   "paid": true
+  },
+  {
+   "domain": "github.com",
+   "match": "path_prefix",
+   "kind": "crowd",
+   "credit": "Contributor evidence (GitHub issue)",
+   "path": "/shrestha-pranav/specsheet/issues",
+   "crawl": "human_only",
+   "attribution": "Source: Contributor evidence (GitHub issue)",
+   "conditions": [
+    "Only E1/E4 claims with terms_ack cite this source",
+    "No handle, name or email is stored; photos stay on GitHub (hash only)",
+    "Grant is ODbL only: relicense false, crowd values are excluded from any alternative licence until counsel clears a relicensing clause (Q1)"
+   ],
+   "paid": false
+  }
+ ],
+ "facts_only": [
+  {
+   "domain": "ww2.arb.ca.gov",
+   "match": "exact",
+   "kind": "government",
+   "credit": "California Air Resources Board, certified air cleaning devices list",
+   "to_clear": "Read CARB/ca.gov conditions of use or email aircleaners@arb.ca.gov; then paid/licence_grant may move to yes"
+  },
+  {
+   "domain": "displayhdr.org",
+   "match": "exact",
+   "kind": "certification",
+   "credit": "VESA DisplayHDR certified products list",
+   "to_clear": "Written VESA permission for the certified-products list"
+  },
+  {
+   "domain": "raw.githubusercontent.com",
+   "match": "path_prefix",
+   "kind": "measurement",
+   "credit": "Zigbee2MQTT device definitions (Koenkk/zigbee-herdsman-converters, MIT)",
+   "path": "/Koenkk/zigbee-herdsman-converters/",
+   "to_clear": "LICENSING (provisional r12): MIT permits redistribution with the notice; decide licence_grant/paid in the licensing pass"
+  },
+  {
+   "domain": "on.dcl.csa-iot.org",
+   "match": "exact",
+   "kind": "certification",
+   "credit": "Connectivity Standards Alliance Distributed Compliance Ledger",
+   "to_clear": "Ask CSA whether ledger data is open data"
+  },
+  {
+   "domain": "www.saferproducts.gov",
+   "match": "exact",
+   "kind": "government",
+   "credit": "U.S. Consumer Product Safety Commission (CPSC) Recalls API, saferproducts.gov",
+   "to_clear": "LICENSING (provisional r12): copyright paragraph reads as a grant for text; coordinator decides paid / licence_grant"
+  },
+  {
+   "domain": "www.cpsc.gov",
+   "match": "exact",
+   "kind": "government",
+   "credit": "U.S. Consumer Product Safety Commission (CPSC) recall notices",
+   "to_clear": "LICENSING (provisional r12): as www.saferproducts.gov"
+  },
+  {
+   "domain": "www.usb.org",
+   "match": "exact",
+   "kind": "certification",
+   "credit": "USB-IF Certified Product List (www.usb.org/products)",
+   "to_clear": "No reuse terms published: ask USB-IF (admin@usb.org) before paid / licence grant"
+  },
+  {
+   "domain": "psref.lenovo.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Lenovo PSREF (Product Specifications Reference)",
+   "to_clear": "Written Lenovo permission (open-questions Q2)"
+  },
+  {
+   "domain": "psrefstuff.lenovo.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Lenovo PSREF datasheets",
+   "categories": [
+    "monitors",
+    "laptops"
+   ],
+   "to_clear": "Lenovo permission (Q2)"
+  },
+  {
+   "domain": "download.lenovo.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Lenovo user guides",
+   "categories": [
+    "monitors",
+    "laptops"
+   ]
+  },
+  {
+   "domain": "www.certipedia.com",
+   "match": "exact",
+   "kind": "certification",
+   "credit": "TÜV Rheinland Certipedia",
+   "to_clear": "TÜV legal notice (imprint page unreadable to fetch)"
+  },
+  {
+   "domain": "www.lg.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "LG official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "monitors",
+    "tvs"
+   ],
+   "to_clear": "LG permission. Existing stored values stay published as facts + link pending owner decision (same as Samsung/Apple, parked (a)); no new agent fetches."
+  },
+  {
+   "domain": "www.asus.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "ASUS official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "laptops",
+    "monitors",
+    "routers"
+   ],
+   "to_clear": "Terms/robots audit r11 (basis A+B). Stored values stay published pending owner decision (parked (a)); no new agent fetches."
+  },
+  {
+   "domain": "www.samsung.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Samsung official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "ssds",
+    "tvs"
+   ],
+   "to_clear": "Samsung permission. Existing stored values stay published as facts + link pending owner decision; no new agent fetches."
+  },
+  {
+   "domain": "www.cyberpowersystems.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "CyberPower official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-strips"
+   ],
+   "to_clear": "Terms/robots audit r11 (basis X). Stored values stay published pending owner decision (parked (a)); no new agent fetches."
+  },
+  {
+   "domain": "assets.tripplite.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Tripp Lite (Eaton) official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-strips"
+   ],
+   "to_clear": "Terms/robots audit r11 (basis X). Stored values stay published pending owner decision (parked (a)); no new agent fetches."
+  },
+  {
+   "domain": "www.tp-link.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "TP-Link official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "routers"
+   ],
+   "to_clear": "Terms/robots audit r11 (basis A+B). Stored values stay published pending owner decision (parked (a)); no new agent fetches."
+  },
+  {
+   "domain": "rog.asus.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "ASUS ROG official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "laptops",
+    "monitors"
+   ],
+   "to_clear": "Terms/robots audit r11 (basis A+B). Stored values stay published pending owner decision (parked (a)); no new agent fetches."
+  },
+  {
+   "domain": "www.teamgroupinc.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "TEAMGROUP official specification pages",
+   "categories": [
+    "ssds"
+   ]
+  },
+  {
+   "domain": "images.teamgroupinc.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "TEAMGROUP official spec sheets (PDF)",
+   "categories": [
+    "ssds"
+   ]
+  },
+  {
+   "domain": "www.sandisk.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "SanDisk official specification pages",
+   "categories": [
+    "ssds"
+   ],
+   "to_clear": "LICENSING (deferred per owner 2026-11-26): site licence limits use to personal non-commercial (audit r11 basis B); no automated-access clause, so crawl stays agent. Owner review."
+  },
+  {
+   "domain": "techspecs.ui.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Ubiquiti official tech specs",
+   "categories": [
+    "routers"
+   ]
+  },
+  {
+   "domain": "www.gl-inet.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "GL.iNet official product pages",
+   "categories": [
+    "routers"
+   ],
+   "to_clear": "LICENSING (deferred per owner 2026-11-26): site licence limits use to personal non-commercial (audit r11 basis B); no automated-access clause, so crawl stays agent. Owner review."
+  },
+  {
+   "domain": "www.benq.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "BenQ official specification pages",
+   "categories": [
+    "monitors"
+   ]
+  },
+  {
+   "domain": "www.kingston.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Kingston official datasheets",
+   "crawl": "human_only",
+   "categories": [
+    "ssds"
+   ],
+   "to_clear": "Terms/robots audit r11 (basis X). Stored values stay published pending owner decision (parked (a)); no new agent fetches."
+  },
+  {
+   "domain": "us.tcl.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "TCL official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "tvs"
+   ],
+   "to_clear": "Terms/robots audit r11 (basis A+B). Stored values stay published pending owner decision (parked (a)); no new agent fetches."
+  },
+  {
+   "domain": "www.vizio.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "VIZIO official specification pages",
+   "categories": [
+    "tvs"
+   ],
+   "to_clear": "LICENSING (deferred per owner 2026-11-26): site licence limits use to personal non-commercial (audit r11 basis B); no automated-access clause, so crawl stays agent. Owner review."
+  },
+  {
+   "domain": "www.ecovacs.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "ECOVACS official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "robot-vacuums"
+   ],
+   "to_clear": "ECOVACS written consent, or a coordinator/owner ruling on the values already stored from the r2/r5 crawls (48 models)."
+  },
+  {
+   "domain": "www.dreametech.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Dreame official specification pages",
+   "categories": [
+    "robot-vacuums"
+   ],
+   "to_clear": "LICENSING (deferred per owner 2026-11-26): site licence limits use to personal non-commercial (audit r11 basis B); no automated-access clause, so crawl stays agent. Owner review."
+  },
+  {
+   "domain": "www.anker.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Anker official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "chargers",
+    "power-banks"
+   ],
+   "to_clear": "Anker written consent, or a coordinator/owner ruling on the values already stored (power banks 23 pages; chargers: A2-chg lane)."
+  },
+  {
+   "domain": "www.netgear.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "NETGEAR official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "routers"
+   ],
+   "to_clear": "CONTESTED: 2026-11-25.5 read this clause as binding subscription Services only and set www.downloads.netgear.com (180 values) + downloads1.netgear.com agent. s12 names NETGEAR WEBSITES. The coordinator should rule once for all three hosts. Terms/robots audit r11 (basis A). Stored values stay published pending owner decision (parked (a)); no new agent fetches."
+  },
+  {
+   "domain": "www.belkin.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Belkin official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "chargers",
+    "power-banks",
+    "power-strips"
+   ],
+   "to_clear": "Belkin permission, or a coordinator/owner ruling on the values already stored (chargers 42 pages; power banks / support / strips: other lanes)."
+  },
+  {
+   "domain": "www.bluettipower.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "BLUETTI official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-stations"
+   ],
+   "to_clear": "BLUETTI permission, or a coordinator/owner ruling on the values already stored (40 pages, 34 models)."
+  },
+  {
+   "domain": "www.winixamerica.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Winix official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "air-purifiers"
+   ],
+   "to_clear": "Terms/robots audit r11 (basis B+R). Stored values stay published pending owner decision (parked (a)); no new agent fetches."
+  },
+  {
+   "domain": "iniushop.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "INIU official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "chargers",
+    "power-banks"
+   ],
+   "to_clear": "INIU permission, or a coordinator/owner ruling on the values already stored (power banks 41 pages; chargers: A2-chg lane)."
+  },
+  {
+   "domain": "www.goalzero.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Goal Zero official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-stations"
+   ],
+   "to_clear": "Goal Zero permission, or a coordinator/owner ruling on the values already stored (22 pages, 21 models)."
+  },
+  {
+   "domain": "us.mova.tech",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "MOVA official specification pages",
+   "categories": [
+    "robot-vacuums"
+   ],
+   "to_clear": "LICENSING (deferred per owner 2026-11-26): site licence limits use to personal non-commercial (audit r11 basis B); no automated-access clause, so crawl stays agent. Owner review."
+  },
+  {
+   "domain": "us.ecoflow.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "EcoFlow official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-banks",
+    "power-stations"
+   ],
+   "to_clear": "EcoFlow written consent, or a coordinator/owner ruling on the values already stored (power-banks 15 pages, power-stations 18 pages)."
+  },
+  {
+   "domain": "www.ankersolix.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Anker SOLIX official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-stations"
+   ],
+   "to_clear": "Anker written consent, or a coordinator/owner ruling on the values already stored (33 pages, 19 models)."
+  },
+  {
+   "domain": "us.ugreen.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "UGREEN official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "chargers",
+    "power-banks"
+   ],
+   "to_clear": "UGREEN permission, or a coordinator/owner ruling on the values already stored (power banks 29 pages; chargers: A2-chg lane)."
+  },
+  {
+   "domain": "sharge.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "SHARGE official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-banks"
+   ],
+   "to_clear": "SHARGE permission, or a coordinator/owner ruling on the values already stored (24 pages, 12 models)."
+  },
+  {
+   "domain": "www.irobot.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "iRobot official specification pages",
+   "categories": [
+    "robot-vacuums"
+   ],
+   "to_clear": "LICENSING (deferred per owner 2026-11-26): site licence limits use to personal non-commercial (audit r11 basis B); no automated-access clause, so crawl stays agent. Owner review."
+  },
+  {
+   "domain": "us.roborock.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Roborock official specification pages",
+   "categories": [
+    "robot-vacuums"
+   ]
+  },
+  {
+   "domain": "www.jackery.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Jackery official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-stations"
+   ],
+   "to_clear": "Jackery permission, or a coordinator/owner ruling on the values already stored (44 pages, 7 models)."
+  },
+  {
+   "domain": "kuxiu.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "KUXIU official specification pages",
+   "categories": [
+    "power-banks",
+    "chargers"
+   ],
+   "to_clear": "KUXIU consent for re-use of content (licensing review later). New source kuxiu-us-chargers (r11 A2-chg)."
+  },
+  {
+   "domain": "www.mophie.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "mophie official specification pages",
+   "categories": [
+    "chargers",
+    "power-banks"
+   ],
+   "to_clear": "ZAGG/mophie permission for reproduction (licensing review later)."
+  },
+  {
+   "domain": "www.cuktech.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "CUKTECH official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "chargers",
+    "power-banks"
+   ],
+   "to_clear": "CUKTECH written consent, or a coordinator/owner ruling on the values already stored (power banks 14 pages; chargers: A2-chg lane)."
+  },
+  {
+   "domain": "levoit.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Levoit official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "air-purifiers"
+   ],
+   "to_clear": "Terms/robots audit r11 (basis A+B). Stored values stay published pending owner decision (parked (a)); no new agent fetches."
+  },
+  {
+   "domain": "www.choetech.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "CHOETECH official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "chargers"
+   ],
+   "to_clear": "CHOETECH permission, or a coordinator/owner ruling on the values already stored (24 pages, 18 models)."
+  },
+  {
+   "domain": "www.nativeunion.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Native Union official specification pages",
+   "categories": [
+    "chargers"
+   ],
+   "to_clear": "Native Union permission for reproduction (licensing review later)."
+  },
+  {
+   "domain": "satechi.net",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Satechi official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "chargers"
+   ],
+   "to_clear": "Satechi permission, or a coordinator/owner ruling on the values already stored (15 pages, 13 models)."
+  },
+  {
+   "domain": "www.hypershop.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "HyperJuice (Targus) official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "chargers"
+   ],
+   "to_clear": "HyperJuice/Targus permission, or a coordinator/owner ruling on the values already stored (8 pages, 7 models)."
+  },
+  {
+   "domain": "us.narwal.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Narwal official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "robot-vacuums"
+   ],
+   "to_clear": "Narwal permission, or a coordinator/owner ruling on the values already stored (8 models, 1 trusted row)."
+  },
+  {
+   "domain": "www.aukey.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "AUKEY official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "chargers"
+   ],
+   "to_clear": "AUKEY permission, or a coordinator/owner ruling on the values already stored (19 pages, 18 models)."
+  },
+  {
+   "domain": "notebookcheck.net",
+   "match": "subdomains",
+   "kind": "measurement",
+   "credit": "Notebookcheck (measured)"
+  },
+  {
+   "domain": "chargerlab.com",
+   "match": "subdomains",
+   "kind": "measurement",
+   "credit": "ChargerLAB (measured)",
+   "crawl": "human_only"
+  },
+  {
+   "domain": "tomshardware.com",
+   "match": "subdomains",
+   "kind": "measurement",
+   "credit": "Tom's Hardware (measured)",
+   "crawl": "human_only"
+  },
+  {
+   "domain": "techpowerup.com",
+   "match": "subdomains",
+   "kind": "measurement",
+   "credit": "TechPowerUp reviews (measured)",
+   "crawl": "human_only"
+  },
+  {
+   "domain": "storagereview.com",
+   "match": "subdomains",
+   "kind": "measurement",
+   "credit": "StorageReview (measured)",
+   "crawl": "human_only",
+   "to_clear": "read terms"
+  },
+  {
+   "domain": "tftcentral.co.uk",
+   "match": "subdomains",
+   "kind": "measurement",
+   "credit": "TFTCentral (measured)",
+   "crawl": "human_only",
+   "to_clear": "read terms"
+  },
+  {
+   "domain": "pcmonitors.info",
+   "match": "subdomains",
+   "kind": "measurement",
+   "credit": "PCMonitors.info (measured)",
+   "crawl": "human_only",
+   "to_clear": "read terms"
+  },
+  {
+   "domain": "www.dell.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Dell official specification pages",
+   "categories": [
+    "laptops",
+    "monitors"
+   ],
+   "to_clear": "LICENSING (deferred per owner 2026-11-26): site licence limits use to personal non-commercial (audit r11 basis B); no automated-access clause, so crawl stays agent. Owner review."
+  },
+  {
+   "domain": "byjasco.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Jasco (GE-licensed) official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-strips"
+   ],
+   "to_clear": "Terms/robots audit r11 (basis A+B). Stored values stay published pending owner decision (parked (a)); no new agent fetches."
+  },
+  {
+   "domain": "www.microsoft.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Microsoft official product pages",
+   "categories": [
+    "laptops"
+   ],
+   "to_clear": "LICENSING (deferred per owner 2026-11-26): site licence limits use to personal non-commercial (audit r11 basis B); no automated-access clause, so crawl stays agent. Owner review."
+  },
+  {
+   "domain": "learn.microsoft.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Microsoft official spec documentation",
+   "categories": [
+    "laptops"
+   ],
+   "to_clear": "LICENSING (deferred per owner 2026-11-26): site licence limits use to personal non-commercial (audit r11 basis B); no automated-access clause, so crawl stays agent. Owner review."
+  },
+  {
+   "domain": "www.razer.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Razer official product pages",
+   "categories": [
+    "laptops"
+   ],
+   "to_clear": "LICENSING (deferred per owner 2026-11-26): site licence limits use to personal non-commercial (audit r11 basis B); no automated-access clause, so crawl stays agent. Owner review."
+  },
+  {
+   "domain": "support.apple.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Apple official tech-specs pages",
+   "crawl": "human_only",
+   "categories": [
+    "laptops"
+   ],
+   "to_clear": "Apple permission. Existing stored values stay published as facts + link pending owner decision; no new agent fetches."
+  },
+  {
+   "domain": "www.baseus.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Baseus official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "chargers",
+    "power-banks"
+   ],
+   "to_clear": "Baseus written consent. Stored crawl.py v0 pages (power strips) and any power-bank pages: coordinator/owner ruling."
+  },
+  {
+   "domain": "furmanpower.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Furman official product pages",
+   "categories": [
+    "power-strips"
+   ]
+  },
+  {
+   "domain": "austere.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Austere official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-strips"
+   ],
+   "to_clear": "Terms/robots audit r11 (basis A). Stored values stay published pending owner decision (parked (a)); no new agent fetches."
+  },
+  {
+   "domain": "plugable.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Plugable official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "chargers"
+   ],
+   "to_clear": "Plugable permission (7 pages stored; no Plugable charger value is published)."
+  },
+  {
+   "domain": "www.nekteck.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Nekteck official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "chargers"
+   ],
+   "to_clear": "Nekteck permission (5 pages stored; no Nekteck charger value is published)."
+  },
+  {
+   "domain": "documents.sandisk.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "SanDisk official datasheets",
+   "categories": [
+    "ssds"
+   ],
+   "to_clear": "LICENSING (deferred per owner 2026-11-26): site licence limits use to personal non-commercial (audit r11 basis B); no automated-access clause, so crawl stays agent. Owner review."
+  },
+  {
+   "domain": "semiconductor.samsung.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Samsung Semiconductor consumer-storage documents",
+   "categories": [
+    "ssds"
+   ]
+  },
+  {
+   "domain": "download.semiconductor.samsung.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Samsung SSD datasheets",
+   "categories": [
+    "ssds"
+   ]
+  },
+  {
+   "domain": "www.downloads.netgear.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "NETGEAR datasheets",
+   "crawl": "human_only",
+   "categories": [
+    "routers"
+   ],
+   "to_clear": "Coordinator ruling r11: NETGEAR terms s12 bars automated tools/web crawlers on NETGEAR websites (supersedes the 2026-11-25.5 subscription-only reading). Stored values stay published pending owner decision (parked (a))."
+  },
+  {
+   "domain": "downloads1.netgear.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "NETGEAR documents",
+   "crawl": "human_only",
+   "categories": [
+    "routers"
+   ],
+   "to_clear": "Coordinator ruling r11: NETGEAR terms s12 bars automated tools/web crawlers on NETGEAR websites (supersedes the 2026-11-25.5 subscription-only reading). Stored values stay published pending owner decision (parked (a))."
+  },
+  {
+   "domain": "dl.ui.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Ubiquiti datasheets",
+   "categories": [
+    "routers"
+   ]
+  },
+  {
+   "domain": "www.ui.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Ubiquiti datasheets",
+   "categories": [
+    "routers"
+   ]
+  },
+  {
+   "domain": "static.gl-inet.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "GL.iNet datasheets and user guides",
+   "categories": [
+    "routers"
+   ]
+  },
+  {
+   "domain": "download.microsoft.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Microsoft Surface documents",
+   "categories": [
+    "laptops"
+   ]
+  },
+  {
+   "domain": "i.dell.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Dell documents",
+   "categories": [
+    "laptops",
+    "monitors"
+   ]
+  },
+  {
+   "domain": "www.delltechnologies.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Dell Technologies documents",
+   "categories": [
+    "laptops",
+    "monitors"
+   ]
+  },
+  {
+   "domain": "images.samsung.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Samsung spec sheets",
+   "crawl": "human_only",
+   "categories": [
+    "ssds",
+    "tvs"
+   ],
+   "to_clear": "Samsung permission, or a coordinator ruling that maker spec sheets are outside the harvest clause (www.samsung.com is crawl agent under the same terms)"
+  },
+  {
+   "domain": "www.apple.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Apple documents",
+   "crawl": "human_only",
+   "categories": [
+    "laptops"
+   ],
+   "to_clear": "Apple permission; support.apple.com is crawl agent under the same terms (coordinator review)"
+  },
+  {
+   "domain": "apple.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Apple documents",
+   "crawl": "human_only",
+   "categories": [
+    "laptops"
+   ]
+  },
+  {
+   "domain": "s3.belkin.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Belkin document host",
+   "crawl": "human_only",
+   "categories": [
+    "chargers",
+    "power-banks"
+   ],
+   "to_clear": "Belkin permission. Stored leaflets unchanged pending a coordinator/owner ruling."
+  },
+  {
+   "domain": "www.se.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "APC by Schneider Electric official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-strips"
+   ],
+   "to_clear": "Terms: 'You agree not to reproduce, other than for your own personal, non-commercial use ... all or part of this website or its content' and 'not to establish any hypertext links to this website or its content'. Coordinator/owner to rule whether citing facts with a source link is acceptable before any APC value is published (none is today)."
+  },
+  {
+   "domain": "www.apc.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "APC by Schneider Electric official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-strips"
+   ],
+   "to_clear": "Same Schneider Electric terms as www.se.com (reproduction + no-hyperlink clauses)."
+  },
+  {
+   "domain": "us.eufy.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "eufy (Anker) official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "robot-vacuums"
+   ],
+   "to_clear": "Anker written consent. Pages are prose only (no labelled spec table), 4 robot models on the US store."
+  },
+  {
+   "domain": "us.switch-bot.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "SwitchBot official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "robot-vacuums"
+   ],
+   "to_clear": "SwitchBot permission. The product pages carry a labelled Specs table (6 robots: S10, S20, K10+ Pro, K11+, K11+ Pro, K20+ Pro): worth asking."
+  },
+  {
+   "domain": "www.lefant.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Lefant official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "robot-vacuums"
+   ],
+   "to_clear": "Lefant permission. Pages are prose only."
+  },
+  {
+   "domain": "www.yeedi.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "yeedi official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "robot-vacuums"
+   ],
+   "to_clear": "yeedi written consent."
+  },
+  {
+   "domain": "www.proscenic.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Proscenic official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "robot-vacuums"
+   ],
+   "to_clear": "Proscenic written consent."
+  },
+  {
+   "domain": "www.wyze.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Wyze official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "robot-vacuums"
+   ],
+   "to_clear": "Wyze permission."
+  },
+  {
+   "domain": "www.tapo.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "TP-Link Tapo official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "robot-vacuums"
+   ],
+   "to_clear": "TP-Link permission. Note for the coordinator: the same TP-Link terms page is linked from www.tp-link.com (routers, crawl agent today)."
+  },
+  {
+   "domain": "www.bissell.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "BISSELL official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "robot-vacuums"
+   ],
+   "to_clear": "The site opts AI crawlers out in robots.txt; terms not read. A person may cite; agents never fetch."
+  },
+  {
+   "domain": "www.sharkclean.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Shark official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "robot-vacuums"
+   ],
+   "to_clear": "Robots and terms unreadable by an agent; no workaround."
+  },
+  {
+   "domain": "www.nitecore.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "NITECORE official product pages",
+   "categories": [
+    "power-banks"
+   ],
+   "to_clear": "Licensing review later. New source nitecore-us-powerbanks (16 models)."
+  },
+  {
+   "domain": "www.pecron.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "PECRON official product pages",
+   "categories": [
+    "power-stations"
+   ],
+   "to_clear": "Licensing review later. New source pecron-us-stations (9 pages, 7 models with spec tables)."
+  },
+  {
+   "domain": "www.dji.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "DJI official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-stations"
+   ],
+   "to_clear": "DJI permission. DJI Power 500/1000/2000 specs live on www.dji.com/<product>/specs. store.dji.com not probed (same company terms assumed)."
+  },
+  {
+   "domain": "zendure.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Zendure official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-stations"
+   ],
+   "to_clear": "Zendure permission. Few portable stations (SuperBase V / Pro, PowerHub); the store is mostly SolarFlow balcony systems."
+  },
+  {
+   "domain": "www.dabbsson.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Dabbsson official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-stations"
+   ],
+   "to_clear": "Dabbsson permission (about 10 US station models)."
+  },
+  {
+   "domain": "vtoman.com",
+   "match": "subdomains",
+   "kind": "maker",
+   "credit": "VTOMAN official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-stations"
+   ],
+   "to_clear": "VTOMAN permission (about 8 station models)."
+  },
+  {
+   "domain": "www.fossibot.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "FOSSiBOT official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-stations"
+   ],
+   "to_clear": "FOSSiBOT permission (5 station models, US SKUs prefixed US)."
+  },
+  {
+   "domain": "www.hp.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "HP official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "laptops",
+    "monitors"
+   ],
+   "to_clear": "HP permission, or a coordinator ruling that low-volume maker spec reads are outside the Permitted Uses / AUP clauses. No HP value is published today."
+  },
+  {
+   "domain": "www.viewsonic.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "ViewSonic official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "monitors"
+   ],
+   "to_clear": "The site opts Claude/Anthropic agents out in robots.txt; terms not read (not fetched after that finding). A person may cite; agents never fetch."
+  },
+  {
+   "domain": "www.acer.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Acer official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "laptops",
+    "monitors"
+   ]
+  },
+  {
+   "domain": "www.gigabyte.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "GIGABYTE official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "monitors"
+   ]
+  },
+  {
+   "domain": "www.eaton.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Eaton (Tripp Lite) official specification pages",
+   "crawl": "human_only",
+   "categories": [
+    "power-strips"
+   ]
+  },
+  {
+   "domain": "www.otterbox.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "OtterBox official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "chargers"
+   ],
+   "to_clear": "OtterBox permission (5 wall chargers, part numbers 77-xxxxxx, labelled Specifications list)."
+  },
+  {
+   "domain": "www.esrtech.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "ESR official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "chargers"
+   ],
+   "to_clear": "ESR written consent."
+  },
+  {
+   "domain": "gonimble.com",
+   "match": "subdomains",
+   "kind": "maker",
+   "credit": "Nimble official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "chargers"
+   ],
+   "to_clear": "Nimble permission (14 chargers; SKUs NB-AL-PD45W-1C-14378 carry no printed model)."
+  },
+  {
+   "domain": "www.lention.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "LENTION official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "chargers"
+   ],
+   "to_clear": "LENTION permission (1 wall charger)."
+  },
+  {
+   "domain": "www.spigen.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Spigen official product pages",
+   "categories": [
+    "chargers"
+   ],
+   "to_clear": "Licensing review later. No adapter: only 2 car chargers (EV1133, EV603BT) and their specs are '*Label* - value' prose bullets, not labelled rows."
+  },
+  {
+   "domain": "regulations.doe.gov",
+   "match": "subdomains",
+   "kind": "government",
+   "credit": "US DOE Compliance Certification Database (external power supplies)",
+   "crawl": "human_only",
+   "categories": [
+    "chargers"
+   ],
+   "to_clear": "Robots and terms unreadable by an agent. A person may cite CCMS external-power-supply listings."
+  },
+  {
+   "domain": "cacertappliances.energy.ca.gov",
+   "match": "exact",
+   "kind": "government",
+   "credit": "California Energy Commission, Modernized Appliance Efficiency Database System (MAEDBS)",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "Whether manufacturer-filed certification rows count as third-party materials under the Conditions of Use (commercial-use bar); CEC Media Office mediaoffice@energy.ca.gov."
+  },
+  {
+   "domain": "www.energy.ca.gov",
+   "match": "exact",
+   "kind": "government",
+   "credit": "California Energy Commission",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "As cacertappliances.energy.ca.gov."
+  },
+  {
+   "domain": "www.philips-hue.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Philips Hue (Signify) official product pages",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "Signify permission for reuse of product data (licensing review later)."
+  },
+  {
+   "domain": "www.wizconnected.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "WiZ (Signify) official product pages",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "Signify permission for reuse of product data (licensing review later)."
+  },
+  {
+   "domain": "www.creelighting.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Cree Lighting official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "Cree Lighting written permission."
+  },
+  {
+   "domain": "www.gelighting.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "GE Lighting, a Savant company (Cync) official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "GE Lighting / Savant permission."
+  },
+  {
+   "domain": "cync.com",
+   "match": "subdomains",
+   "kind": "maker",
+   "credit": "Cync (GE Lighting) pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ]
+  },
+  {
+   "domain": "www.ledvance.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "LEDVANCE / SYLVANIA official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "The site opts Claude agents out in robots.txt. A person may cite."
+  },
+  {
+   "domain": "www.ledvanceus.com",
+   "match": "subdomains",
+   "kind": "maker",
+   "credit": "LEDVANCE US (redirects to www.ledvance.com)",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ]
+  },
+  {
+   "domain": "designlights.org",
+   "match": "subdomains",
+   "kind": "certification",
+   "credit": "DesignLights Consortium Qualified Products List",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "DLC data licence. Commercial luminaires / retrofit kits, not consumer bulbs."
+  },
+  {
+   "domain": "us.govee.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Govee official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "Govee permission."
+  },
+  {
+   "domain": "nanoleaf.me",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Nanoleaf official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "Nanoleaf permission."
+  },
+  {
+   "domain": "www.feit.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Feit Electric official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "Feit Electric written permission."
+  },
+  {
+   "domain": "www.lifx.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "LIFX (Feit Electric) official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ],
+   "to_clear": "Terms unreadable by an agent; Feit/LIFX permission."
+  },
+  {
+   "domain": "us.sengled.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Sengled official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ]
+  },
+  {
+   "domain": "www.sengled.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "Sengled",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ]
+  },
+  {
+   "domain": "www.kasasmart.com",
+   "match": "exact",
+   "kind": "maker",
+   "credit": "TP-Link Kasa official product pages",
+   "crawl": "human_only",
+   "categories": [
+    "light-bulbs"
+   ]
+  }
+ ]
+}

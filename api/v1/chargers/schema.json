@@ -1,0 +1,901 @@
+{
+ "id": "chargers",
+ "schema_version": "1.0.0",
+ "groups": [
+  {
+   "id": "general",
+   "label": "General & identity",
+   "order": 0
+  },
+  {
+   "id": "output",
+   "label": "Output & ports",
+   "order": 1
+  },
+  {
+   "id": "pd",
+   "label": "USB PD / PPS",
+   "order": 2
+  },
+  {
+   "id": "input",
+   "label": "Input",
+   "order": 3
+  },
+  {
+   "id": "phys",
+   "label": "Physical",
+   "order": 4
+  }
+ ],
+ "conditions": [],
+ "fields": [
+  {
+   "key": "gen.product_line",
+   "label": "Product line",
+   "group": "general",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "gen.form_factor",
+   "label": "Form factor",
+   "group": "general",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "wall",
+    "desktop",
+    "travel",
+    "car"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "gen.color",
+   "label": "Colour",
+   "group": "general",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "gen.gan",
+   "label": "GaN",
+   "group": "general",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.max_total_w",
+   "label": "Maximum total output",
+   "group": "output",
+   "type": "number",
+   "unit": "W",
+   "display_unit": "W",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     20,
+     35,
+     45,
+     65,
+     100,
+     140,
+     200
+    ],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.all_ports_w",
+   "label": "All-ports simultaneous output",
+   "group": "output",
+   "type": "number",
+   "unit": "W",
+   "display_unit": "W",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     30,
+     65,
+     100,
+     150
+    ],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.max_single_port_w",
+   "label": "Best single-port output",
+   "group": "output",
+   "type": "number",
+   "unit": "W",
+   "display_unit": "W",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 30,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     20,
+     30,
+     45,
+     65,
+     100,
+     140
+    ],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.rated_w",
+   "label": "Rated output (basis not stated)",
+   "group": "output",
+   "type": "number",
+   "unit": "W",
+   "display_unit": "W",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     20,
+     35,
+     45,
+     65,
+     100,
+     140
+    ],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.port_count",
+   "label": "Ports",
+   "group": "output",
+   "type": "integer",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 50,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     2,
+     3,
+     4,
+     6
+    ],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.usb_c_count",
+   "label": "USB-C ports",
+   "group": "output",
+   "type": "integer",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 60,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     1,
+     2,
+     3
+    ],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.usb_a_count",
+   "label": "USB-A ports",
+   "group": "output",
+   "type": "integer",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 70,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     0,
+     1,
+     2
+    ],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.ports",
+   "label": "Port table (PDOs)",
+   "group": "output",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": {
+    "id_field": "name",
+    "fields": [
+     {
+      "key": "name",
+      "type": "text",
+      "label": "Port"
+     },
+     {
+      "key": "type",
+      "type": "enum",
+      "enum": [
+       "usb_c",
+       "usb_a",
+       "cable_c",
+       "cable_lightning",
+       "wireless",
+       "ac",
+       "dc"
+      ],
+      "label": "Type"
+     },
+     {
+      "key": "direction",
+      "type": "enum",
+      "enum": [
+       "out",
+       "in",
+       "in_out"
+      ],
+      "label": "Direction"
+     },
+     {
+      "key": "max_w",
+      "type": "number",
+      "unit": "W",
+      "label": "Max W"
+     },
+     {
+      "key": "fixed_pdos",
+      "type": "text",
+      "label": "Fixed PDOs"
+     },
+     {
+      "key": "pps",
+      "type": "text",
+      "label": "PPS ranges"
+     }
+    ]
+   },
+   "tier": "core",
+   "priority": 80,
+   "column": false,
+   "display": {
+    "kind": "object_table"
+   },
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.simultaneous",
+   "label": "Printed port combinations",
+   "group": "output",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 90,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "pd.pps",
+   "label": "PPS support",
+   "group": "pd",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "pd.pps_max_current_a",
+   "label": "Highest PPS current",
+   "group": "pd",
+   "type": "number",
+   "unit": "A",
+   "display_unit": "A",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 20,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     2,
+     3,
+     5
+    ],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "pd.pps_max_voltage",
+   "label": "Highest PPS voltage",
+   "group": "pd",
+   "type": "number",
+   "unit": "V",
+   "display_unit": "V",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     11,
+     16,
+     21
+    ],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "pd.max_fixed_voltage",
+   "label": "Highest fixed PDO voltage",
+   "group": "pd",
+   "type": "number",
+   "unit": "V",
+   "display_unit": "V",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     12,
+     20,
+     28,
+     48
+    ],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "pd.epr",
+   "label": "USB PD 3.1 EPR (28 V+)",
+   "group": "pd",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 50,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "pd.protocols",
+   "label": "Fast-charge protocols",
+   "group": "pd",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 60,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "in.rating",
+   "label": "Input rating",
+   "group": "input",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "in.voltage_range",
+   "label": "Input voltage range",
+   "group": "input",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "in.type",
+   "label": "Input type",
+   "group": "input",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "ac_mains",
+    "dc_vehicle"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "phys.weight",
+   "label": "Weight",
+   "group": "phys",
+   "type": "number",
+   "unit": "g",
+   "display_unit": "g",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     50,
+     100,
+     200,
+     400
+    ],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "phys.dimensions",
+   "label": "Dimensions",
+   "group": "phys",
+   "type": "object",
+   "unit": "mm",
+   "display_unit": "mm",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "phys.foldable_plug",
+   "label": "Foldable plug",
+   "group": "phys",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "id.msrp_us",
+   "label": "Store price (US)",
+   "group": "general",
+   "type": "number",
+   "unit": "USD",
+   "display_unit": "USD",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 50,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cert.usb_if",
+   "label": "USB-IF certified",
+   "group": "general",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 60,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cert.usb_if_tid",
+   "label": "USB-IF TID",
+   "group": "general",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 70,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cert.usb_if_date",
+   "label": "USB-IF certified on",
+   "group": "general",
+   "type": "date",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 80,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cert.usb_if_product_type",
+   "label": "USB-IF product type",
+   "group": "general",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "power_brick",
+    "power_bank",
+    "notebook",
+    "pd_controller",
+    "psd",
+    "cable",
+    "other"
+   ],
+   "items": null,
+   "tier": "detail",
+   "priority": 90,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall",
+   "label": "CPSC recall",
+   "group": "general",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 100,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_id",
+   "label": "CPSC recall number",
+   "group": "general",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": "text",
+   "tier": "detail",
+   "priority": 110,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_date",
+   "label": "Recall date",
+   "group": "general",
+   "type": "date",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 120,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_remedy",
+   "label": "Recall remedy",
+   "group": "general",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "replace",
+    "refund",
+    "repair",
+    "new_instructions",
+    "dispose",
+    "label",
+    "other"
+   ],
+   "items": "enum",
+   "tier": "detail",
+   "priority": 130,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_url",
+   "label": "Recall notice",
+   "group": "general",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 140,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "gen.record_kind",
+   "label": "Record kind",
+   "group": "general",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "recall_only"
+   ],
+   "items": null,
+   "tier": "detail",
+   "priority": 150,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  }
+ ]
+}

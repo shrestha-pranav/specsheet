@@ -1,0 +1,44 @@
+# specsheet
+
+> Cross-brand product specifications with provenance: every value links to the source that states it, and "unknown" never means "no". Free, open dataset (ODbL 1.0). A paid tier is coming later.
+
+## Free dataset (static JSON)
+
+- [Manifest](https://shrestha-pranav.github.io/specsheet/api/v1/manifest.json): categories, schema versions, index shards, release id
+- [Categories](https://shrestha-pranav.github.io/specsheet/api/v1/categories.json): category list with counts
+- [Identifier lookup](https://shrestha-pranav.github.io/specsheet/api/v1/lookup/identifiers.json): GTIN / model number to product id
+- Per category: `https://shrestha-pranav.github.io/specsheet/api/v1/<category>/index-N.json` (rows), `facets.json`, `schema.json`, `products/<id>.json` (full record with per-value sources)
+- [Data contract](https://shrestha-pranav.github.io/specsheet/api/v1/README.md)
+- [Killer-query presets](https://shrestha-pranav.github.io/specsheet/api/v1/presets.json): ready-made questions (filters and columns as data), each with its measured fill and a pass/fail gate; a failing preset is a data gap, not an empty answer
+
+## Categories
+
+- air-purifiers: Air purifiers (217 products)
+- chargers: USB chargers (151 products)
+- clothes-dryers: Clothes dryers (554 products)
+- clothes-washers: Clothes washers (404 products)
+- dishwashers: Dishwashers (699 products)
+- freezers: Freezers (615 products)
+- laptops: Laptops (2525 products)
+- light-bulbs: Light bulbs (304 products)
+- monitors: Monitors (4306 products)
+- power-banks: Power banks (193 products)
+- power-stations: Portable power stations (83 products)
+- power-strips: Power strips & surge protectors (591 products)
+- refrigerators: Refrigerators (4411 products)
+- robot-vacuums: Robot vacuums & mops (144 products)
+- routers: Wi-Fi routers & mesh (334 products)
+- smart-home: Smart-home devices (4188 products)
+- ssds: SSDs (586 products)
+- tvs: Televisions (1371 products)
+
+## API and MCP (preview)
+
+- Preview: a read-only HTTP API and an MCP endpoint may be offered later; limits and paths can change without notice.
+- Until announced here, use the static dataset above.
+
+## Rules
+
+- Licence: ODbL 1.0; produced works include: "Data: specsheet (ODbL), sources linked per value". See https://shrestha-pranav.github.io/specsheet/#/terms and https://shrestha-pranav.github.io/specsheet/#/sources.
+- Spec values come from the sources named per value, not independent testing. Check the source before a purchase.
+- Corrections: a GitHub issue (https://github.com/shrestha-pranav/specsheet/issues). Takedowns: a GitHub issue (https://github.com/shrestha-pranav/specsheet/issues).

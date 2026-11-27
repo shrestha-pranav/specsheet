@@ -1,0 +1,1233 @@
+{
+ "id": "power-stations",
+ "schema_version": "0.1.0",
+ "groups": [
+  {
+   "id": "general",
+   "label": "General & identity",
+   "order": 0
+  },
+  {
+   "id": "capacity",
+   "label": "Capacity",
+   "order": 1
+  },
+  {
+   "id": "ac",
+   "label": "AC output",
+   "order": 2
+  },
+  {
+   "id": "dc",
+   "label": "DC & USB output",
+   "order": 3
+  },
+  {
+   "id": "input",
+   "label": "Charging inputs",
+   "order": 4
+  },
+  {
+   "id": "battery",
+   "label": "Battery & lifespan",
+   "order": 5
+  },
+  {
+   "id": "backup",
+   "label": "Backup / UPS",
+   "order": 6
+  },
+  {
+   "id": "expansion",
+   "label": "Expandability",
+   "order": 7
+  },
+  {
+   "id": "safety",
+   "label": "Certification",
+   "order": 8
+  },
+  {
+   "id": "phys",
+   "label": "Physical",
+   "order": 9
+  }
+ ],
+ "conditions": [
+  {
+   "id": "retention_pct",
+   "label": "Capacity retained at end of rated cycles",
+   "type": "number",
+   "unit": "%",
+   "description": "Basis of bat.cycle_life: 4000 cycles to 80 % and 4000 cycles to 70 % are different claims (Jackery prints 70 %)."
+  },
+  {
+   "id": "charge_to_pct",
+   "label": "Charged to",
+   "type": "number",
+   "unit": "%",
+   "description": "Basis of recharge times: 0-80 % vs 0-100 %. A time without it is an unresolved preview claim."
+  },
+  {
+   "id": "charger",
+   "label": "Charger / input used",
+   "type": "text",
+   "description": "The printed charger or input the time was quoted with (AC Fast Charge, 600W Power Supply)."
+  },
+  {
+   "id": "backup_mode",
+   "label": "Backup mode",
+   "type": "enum",
+   "enum": [
+    "ups",
+    "eps",
+    "aps"
+   ],
+   "description": "Maker term for the switchover: UPS (online/near-zero), EPS (emergency), Goal Zero APS. Basis of ups.switchover_ms."
+  },
+  {
+   "id": "voltage_basis",
+   "label": "Solar voltage basis",
+   "type": "enum",
+   "enum": [
+    "voc",
+    "operating",
+    "unstated"
+   ],
+   "description": "Whether the window is open-circuit voltage (Voc), the MPPT operating range, or not stated."
+  },
+  {
+   "id": "port",
+   "label": "Input port",
+   "type": "text",
+   "description": "The solar input a window or figure belongs to when a station has several (8mm vs HPP, High-PV vs Low-PV)."
+  },
+  {
+   "id": "ac_charge_mode",
+   "label": "AC charge mode",
+   "type": "text",
+   "description": "Turbo / ultra fast / standard / low speed AC charging; figures under different modes are not one headline."
+  },
+  {
+   "id": "extra_batteries",
+   "label": "Extra batteries attached",
+   "type": "number",
+   "description": "Number of extra batteries an expanded capacity is quoted with."
+  },
+  {
+   "id": "idle_mode",
+   "label": "Idle state",
+   "type": "enum",
+   "enum": [
+    "ac_on",
+    "standby",
+    "unstated"
+   ],
+   "description": "What is switched on while the idle draw is measured."
+  }
+ ],
+ "fields": [
+  {
+   "key": "gen.brand",
+   "label": "Brand",
+   "group": "general",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "ecoflow",
+    "anker",
+    "jackery",
+    "bluetti",
+    "goal_zero",
+    "dji"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "gen.color",
+   "label": "Colour",
+   "group": "general",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "gen.warranty_years",
+   "label": "Warranty",
+   "group": "general",
+   "type": "integer",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "conn.wireless",
+   "label": "App connectivity",
+   "group": "general",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cap.energy_wh",
+   "label": "Rated capacity",
+   "group": "capacity",
+   "type": "number",
+   "unit": "Wh",
+   "display_unit": "Wh",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     300,
+     1000,
+     2000,
+     3000,
+     5000
+    ],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cap.usable_wh",
+   "label": "Usable (AC) energy",
+   "group": "capacity",
+   "type": "number",
+   "unit": "Wh",
+   "display_unit": "Wh",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cap.pack_voltage_v",
+   "label": "Pack nominal voltage",
+   "group": "capacity",
+   "type": "number",
+   "unit": "V",
+   "display_unit": "V",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cap.pack_ah",
+   "label": "Pack capacity (Ah at pack voltage)",
+   "group": "capacity",
+   "type": "number",
+   "unit": "Ah",
+   "display_unit": "Ah",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.ac_continuous_w",
+   "label": "AC continuous output (all outlets)",
+   "group": "ac",
+   "type": "number",
+   "unit": "W",
+   "display_unit": "W",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     300,
+     1000,
+     1800,
+     2400,
+     3600
+    ],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.ac_surge_w",
+   "label": "AC surge / peak",
+   "group": "ac",
+   "type": "number",
+   "unit": "W",
+   "display_unit": "W",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.ac_boost_w",
+   "label": "Boost mode (resistive loads)",
+   "group": "ac",
+   "type": "number",
+   "unit": "W",
+   "display_unit": "W",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.ac_outlets",
+   "label": "AC outlets",
+   "group": "ac",
+   "type": "integer",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     2,
+     4,
+     6
+    ],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.ac_voltage",
+   "label": "AC output voltage",
+   "group": "ac",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 50,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.ac_waveform",
+   "label": "Inverter waveform",
+   "group": "ac",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "pure_sine",
+    "modified_sine"
+   ],
+   "items": null,
+   "tier": "important",
+   "priority": 60,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.usb_c_count",
+   "label": "USB-C ports",
+   "group": "dc",
+   "type": "integer",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.usb_c_max_w",
+   "label": "Best single USB-C port",
+   "group": "dc",
+   "type": "number",
+   "unit": "W",
+   "display_unit": "W",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     30,
+     60,
+     100,
+     140
+    ],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.usb_a_count",
+   "label": "USB-A ports",
+   "group": "dc",
+   "type": "integer",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.car_w",
+   "label": "12 V car outlet",
+   "group": "dc",
+   "type": "number",
+   "unit": "W",
+   "display_unit": "W",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.wireless_w",
+   "label": "Wireless charging pad",
+   "group": "dc",
+   "type": "number",
+   "unit": "W",
+   "display_unit": "W",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 50,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "out.ports",
+   "label": "DC / USB port table",
+   "group": "dc",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": {
+    "id_field": "name",
+    "fields": [
+     {
+      "key": "name",
+      "type": "text",
+      "label": "Port"
+     },
+     {
+      "key": "type",
+      "type": "enum",
+      "enum": [
+       "usb_c",
+       "usb_a",
+       "car",
+       "dc",
+       "wireless"
+      ],
+      "label": "Type"
+     },
+     {
+      "key": "count",
+      "type": "integer",
+      "label": "Count"
+     },
+     {
+      "key": "max_w",
+      "type": "number",
+      "unit": "W",
+      "label": "Max W per port"
+     }
+    ]
+   },
+   "tier": "detail",
+   "priority": 60,
+   "column": false,
+   "display": {
+    "kind": "object_table"
+   },
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "in.ac_w",
+   "label": "AC charging input",
+   "group": "input",
+   "type": "number",
+   "unit": "W",
+   "display_unit": "W",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     300,
+     600,
+     1000,
+     1500,
+     2000
+    ],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": [
+    "ac_charge_mode"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "in.solar_w",
+   "label": "Max solar input (combined)",
+   "group": "input",
+   "type": "number",
+   "unit": "W",
+   "display_unit": "W",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 20,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     200,
+     500,
+     1000,
+     2000
+    ],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "in.solar_port_w",
+   "label": "Solar input per port",
+   "group": "input",
+   "type": "number",
+   "unit": "W",
+   "display_unit": "W",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "in.solar_ports",
+   "label": "Solar input ports",
+   "group": "input",
+   "type": "integer",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "in.solar_voltage",
+   "label": "Solar input voltage window",
+   "group": "input",
+   "type": "range",
+   "unit": "V",
+   "display_unit": "V",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 50,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": [
+    "voltage_basis",
+    "port"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "in.car_w",
+   "label": "Car (12 V socket) charging input",
+   "group": "input",
+   "type": "number",
+   "unit": "W",
+   "display_unit": "W",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 60,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "in.max_w",
+   "label": "Max combined input (AC + solar)",
+   "group": "input",
+   "type": "number",
+   "unit": "W",
+   "display_unit": "W",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 70,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "in.recharge_ac_h",
+   "label": "Recharge time (AC)",
+   "group": "input",
+   "type": "range",
+   "unit": "h",
+   "display_unit": "h",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 80,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": [
+    "charge_to_pct",
+    "charger"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "in.recharge_solar_h",
+   "label": "Recharge time (solar)",
+   "group": "input",
+   "type": "range",
+   "unit": "h",
+   "display_unit": "h",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 90,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": [
+    "charge_to_pct",
+    "charger"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "in.recharge_car_h",
+   "label": "Recharge time (car)",
+   "group": "input",
+   "type": "range",
+   "unit": "h",
+   "display_unit": "h",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 100,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": [
+    "charge_to_pct",
+    "charger"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "in.passthrough",
+   "label": "Pass-through charging",
+   "group": "input",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 110,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "bat.chemistry",
+   "label": "Cell chemistry",
+   "group": "battery",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "lfp",
+    "nmc",
+    "li_ion",
+    "sodium_ion",
+    "semi_solid"
+   ],
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "bat.cycle_life",
+   "label": "Rated cycle life",
+   "group": "battery",
+   "type": "integer",
+   "unit": "cycles",
+   "display_unit": "cycles",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     500,
+     2000,
+     3000,
+     4000,
+     6000
+    ],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": [
+    "retention_pct"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "ups.switchover_ms",
+   "label": "UPS / EPS switchover time",
+   "group": "backup",
+   "type": "number",
+   "unit": "ms",
+   "display_unit": "ms",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": [
+    "backup_mode"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "ups.supported",
+   "label": "UPS / EPS function",
+   "group": "backup",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": [
+    "backup_mode"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "idle.draw_w",
+   "label": "Idle draw (self-consumption)",
+   "group": "backup",
+   "type": "number",
+   "unit": "W",
+   "display_unit": "W",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": [
+    "idle_mode"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "exp.expandable",
+   "label": "Expandable with extra batteries",
+   "group": "expansion",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "exp.batteries",
+   "label": "Compatible extra batteries",
+   "group": "expansion",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "exp.max_batteries",
+   "label": "Max extra batteries",
+   "group": "expansion",
+   "type": "integer",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "exp.max_wh",
+   "label": "Max expanded capacity",
+   "group": "expansion",
+   "type": "number",
+   "unit": "Wh",
+   "display_unit": "Wh",
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 40,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": [
+    "extra_batteries"
+   ],
+   "headline_condition": null
+  },
+  {
+   "key": "cert.marks",
+   "label": "Certification marks (as listed)",
+   "group": "safety",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 10,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cert.ul2743",
+   "label": "UL 2743 (portable power packs)",
+   "group": "safety",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "cert.ul9540",
+   "label": "UL 9540 (energy storage system)",
+   "group": "safety",
+   "type": "bool",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 30,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "phys.weight",
+   "label": "Weight",
+   "group": "phys",
+   "type": "number",
+   "unit": "kg",
+   "display_unit": "kg",
+   "enum": null,
+   "items": null,
+   "tier": "core",
+   "priority": 10,
+   "column": true,
+   "display": null,
+   "facet": {
+    "kind": "range",
+    "path": null,
+    "bins": [
+     5,
+     10,
+     20,
+     30,
+     50
+    ],
+    "unknown_bucket": true,
+    "default_visible": true
+   },
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "phys.dimensions",
+   "label": "Dimensions",
+   "group": "phys",
+   "type": "object",
+   "unit": "mm",
+   "display_unit": "mm",
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 20,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall",
+   "label": "CPSC recall",
+   "group": "general",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "important",
+   "priority": 50,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_id",
+   "label": "CPSC recall number",
+   "group": "general",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": "text",
+   "tier": "detail",
+   "priority": 60,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_date",
+   "label": "Recall date",
+   "group": "general",
+   "type": "date",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 70,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_remedy",
+   "label": "Recall remedy",
+   "group": "general",
+   "type": "list",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "replace",
+    "refund",
+    "repair",
+    "new_instructions",
+    "dispose",
+    "label",
+    "other"
+   ],
+   "items": "enum",
+   "tier": "detail",
+   "priority": 80,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "safety.recall_url",
+   "label": "Recall notice",
+   "group": "general",
+   "type": "text",
+   "unit": null,
+   "display_unit": null,
+   "enum": null,
+   "items": null,
+   "tier": "detail",
+   "priority": 90,
+   "column": false,
+   "display": null,
+   "facet": null,
+   "conditions": null,
+   "headline_condition": null
+  },
+  {
+   "key": "gen.record_kind",
+   "label": "Record kind",
+   "group": "general",
+   "type": "enum",
+   "unit": null,
+   "display_unit": null,
+   "enum": [
+    "recall_only"
+   ],
+   "items": null,
+   "tier": "detail",
+   "priority": 100,
+   "column": false,
+   "display": null,
+   "facet": {
+    "kind": "enum",
+    "path": null,
+    "bins": [],
+    "unknown_bucket": true,
+    "default_visible": false
+   },
+   "conditions": null,
+   "headline_condition": null
+  }
+ ]
+}

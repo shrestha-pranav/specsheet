@@ -1,0 +1,101 @@
+{
+ "id": "demo-strip-6",
+ "category": "power-strips-demo",
+ "brand": "Demo Lab",
+ "name": "Wall strip — six outlet",
+ "family": "Fictional demonstration",
+ "model": "WS-06",
+ "variant": null,
+ "identifiers": [
+  {
+   "scheme": "demo_model",
+   "value": "WS-06",
+   "issuer": "Demo Lab",
+   "market": null,
+   "package_level": "single"
+  }
+ ],
+ "specs": {
+  "outlet_count": {
+   "value": 6,
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "usb_port_count": {
+   "value": 0,
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "max_load_w": {
+   "value": 1875,
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "cord_length_m": {
+   "value": 0,
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "mounting": {
+   "value": "wall",
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "surge_protection": {
+   "value": false,
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "joule_rating": {
+   "value": null,
+   "status": "not_applicable",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "clamping_range": {
+   "value": null,
+   "status": "not_applicable",
+   "sources": [],
+   "confidence": null,
+   "source_scope": "none"
+  },
+  "indicator_lights": {
+   "value": [],
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  },
+  "notes_on_layout": {
+   "value": "Two rows of three",
+   "status": "known",
+   "sources": [],
+   "confidence": "illustrative",
+   "source_scope": "demo"
+  }
+ },
+ "media": [],
+ "documents": [],
+ "marketing_terms": [],
+ "sources": [],
+ "confidence": {
+  "level": "illustrative",
+  "scope": "demo"
+ },
+ "notes": "Fictional values for interface testing only. No product or source is claimed.",
+ "identity_caveat": "Fictional demo product; not a purchasable catalogue entry.",
+ "demo": true
+}
